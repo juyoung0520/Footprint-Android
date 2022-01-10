@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/ic_course_off.xml" value="0.17314814814814813" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_33_user_off.xml" value="0.26205128205128203" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_footprint_off.xml" value="0.20925925925925926" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_note_off.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_note_on.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_user_off.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_course.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_note.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_user.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/activity_onboarding.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_calendar.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_course.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_mypage.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_onboarding_first.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_onboarding_fourth.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_onboarding_second.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_onboarding_third.xml" value="0.17395833333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1787037037037037" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1787037037037037" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

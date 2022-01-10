@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.footprint.footprint.ui.main.home.HomeFragment"
+        android:label="homeFragment" />
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.CalendarFragment"
+        android:label="calendarFragment" />
+
+    <fragment
+        android:id="@+id/courseFragment"
+        android:name="com.footprint.footprint.ui.main.course.CourseFragment"
+        android:label="courseFragment" />
+
+    <fragment
+        android:id="@+id/mypageFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.MyPageFragment"
+        android:label="mypageFragment" />
+</navigation>

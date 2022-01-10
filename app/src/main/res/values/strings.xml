@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">발자국</string>
+
+    <!--메뉴-->
+    <string name="menu_home">홈</string>
+    <string name="menu_calendar">산책기록</string>
+    <string name="menu_course">코스추천</string>
+    <string name="menu_mypage">마이</string>
+
+</resources>

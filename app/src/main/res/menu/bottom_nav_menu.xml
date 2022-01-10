@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:enabled="true"
+        android:title="@string/menu_home"
+        android:icon="@drawable/selector_navi_footprint"/>
+    <item
+        android:id="@+id/calendarFragment"
+        android:enabled="true"
+        android:title="@string/menu_calendar"
+        android:icon="@drawable/selector_navi_note"/>
+    <item
+        android:id="@+id/courseFragment"
+        android:enabled="true"
+        android:title="@string/menu_course"
+        android:icon="@drawable/selector_navi_course"/>
+    <item
+        android:id="@+id/mypageFragment"
+        android:enabled="true"
+        android:title="@string/menu_mypage"
+        android:icon="@drawable/selector_navi_user" />
+</menu>

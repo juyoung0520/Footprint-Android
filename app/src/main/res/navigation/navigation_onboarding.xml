@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_onboarding"
+    app:startDestination="@id/obFirstFragment">
+
+    <fragment
+        android:id="@+id/obFirstFragment"
+        android:name="com.footprint.footprint.ui.onboarding.OnBoardingFirstFragment"
+        android:label="obFirstFragment" >
+
+        <action
+            android:id="@+id/action_obFirstFragment_to_obSecondFragment"
+            app:destination="@id/obSecondFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/obSecondFragment"
+        android:name="com.footprint.footprint.ui.onboarding.OnBoardingSecondFragment"
+        android:label="obSecondFragment" >
+
+        <action
+            android:id="@+id/action_obSecondFragment_to_obThirdFragment"
+            app:destination="@id/obThirdFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/obThirdFragment"
+        android:name="com.footprint.footprint.ui.onboarding.OnBoardingThirdFragment"
+        android:label="obThirdFragment" >
+
+        <action
+            android:id="@+id/action_obThirdFragment_to_obFourthFragment"
+            app:destination="@id/obFourthFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/obFourthFragment"
+        android:name="com.footprint.footprint.ui.onboarding.OnBoardingFourthFragment"
+        android:label="obFourthFragment" />
+
+</navigation>
