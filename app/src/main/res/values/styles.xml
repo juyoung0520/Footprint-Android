@@ -6,6 +6,11 @@
         <item name="android:textSize">48dp</item>
     </style>
 
+    <style name="tv_headline_eb_40" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">40dp</item>
+    </style>
+
     <style name="tv_headline_eb_24" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_extra_bold</item>
         <item name="android:textSize">24dp</item>
