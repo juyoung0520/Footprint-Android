@@ -75,6 +75,17 @@
     </style>
 
     <!-- normal  -->
+    <style name="tv_normal_24" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">24dp</item>
+        <item name="fontWeight">800</item>
+    </style>
+
+    <style name="tv_overline_16" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
     <style name="tv_caption_14" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">14dp</item>
