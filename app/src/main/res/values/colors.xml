@@ -5,10 +5,21 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 
     <!-- 공통-->
     <color name="primary">#4FBBE7</color>
+    <color name="primary_dark">#3387AD</color>
+    <color name="primary_light">#B9E2F4</color>
+
+    <color name="secondary">#FFC01D</color>
+    <color name="secondary_dark">#7C602A</color>
+    <color name="secondary_light">#E2B96C</color>
+
+    <color name="black">#4D4D4F</color>
+    <color name="black_dark">#241F20</color>
+
+    <color name="white">#F5F5F6</color>
+    <color name="white_dark">#E1E2E1</color>
+    <color name="white_light">#FFFFFF</color>
 
 </resources>

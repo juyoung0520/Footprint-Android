@@ -13,10 +13,11 @@
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_note.xml" value="0.19583333333333333" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/selector_navi_user.xml" value="0.19583333333333333" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/font/font_main.xml" value="0.2794871794871795" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/activity_onboarding.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_calendar.xml" value="0.25364583333333335" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_course.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_course.xml" value="0.6" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_mypage.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/layout/fragment_onboarding_first.xml" value="0.17395833333333333" />
