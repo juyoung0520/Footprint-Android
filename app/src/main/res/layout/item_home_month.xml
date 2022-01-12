@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_marginStart="5dp">
+
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/item_home_month_day_pb"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:progress_end_color="@color/secondary"
+        app:progress_start_color="@color/secondary"
+
+        app:progress_stroke_cap="round"
+        app:progress_stroke_width="17dp"
+        app:progress_text_color="#ffffff"
+        app:style="solid_line" />
+
+    <TextView
+        android:id="@+id/item_home_month_day_tv"
+        style="@style/tv_caption_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
