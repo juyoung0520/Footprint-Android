@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeMonthFragment: BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMonthBinding::inflate) {
     override fun initAfterBinding() {
         //현재 날짜 받아오기
-        var localNowDate = LocalDate.now()
+        var localNowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
         var nowDate: Date = java.sql.Date.valueOf(localNowDate.toString());
         Log.d("date", localNowDate.toString())
 

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="40dp"
     android:layout_height="40dp"
-    android:layout_marginStart="5dp">
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp">
 
     <com.dinuscxj.progressbar.CircleProgressBar
         android:id="@+id/item_home_month_day_pb"
@@ -18,9 +19,10 @@
         app:progress_start_color="@color/secondary"
 
         app:progress_stroke_cap="round"
-        app:progress_stroke_width="17dp"
+        app:progress_stroke_width="3dp"
         app:progress_text_color="#ffffff"
-        app:style="solid_line" />
+        app:style="solid_line"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/item_home_month_day_tv"

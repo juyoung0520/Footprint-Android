@@ -2,7 +2,9 @@ package com.footprint.footprint.ui.main.home
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +22,8 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerV
     init{
         homemonthCalendar.initBaseCalendar() //init 후
         dataList = homemonthCalendar.dateList //datelist -> datalist에 전달
+        Log.d("dataList", dataList.toString())
+        Log.d("dateList", homemonthCalendar.dateList.toString())
     }
 
     override fun onCreateViewHolder(
@@ -33,8 +37,10 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerV
 
     override fun onBindViewHolder(holder: HomeMonthRVAdapter.ViewHolder, position: Int) {
         // 높이 지정
-        val height = calLayout.height/6 //왜 6인지?
+        val height = calLayout.height/5 //왜 6인지?
         holder.itemView.layoutParams.height = height
+
+        holder.bind(dataList[position], position)
     }
 
     override fun getItemCount(): Int = dataList.size
@@ -56,12 +62,20 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerV
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_body_b_12)
             }
 
+            //프로그레스바 표현
+            if(position % 10 == 0){
+                binding.itemHomeMonthDayPb.visibility = View.VISIBLE
+                binding.itemHomeMonthDayPb.progress = 80
+            }
+
             // 현재 월의 1일 이전, 현재 월의 마지막일 이후 값의 텍스트를 회색처리
             if (position < firstDateIndex || position > lastDateIndex) {
                 binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#E1E2E1"))
                 binding.itemHomeMonthDayTv.background = null
+                binding.itemHomeMonthDayPb.visibility = View.GONE
             }
-            binding.itemHomeMonthDayPb.progress = 80
+
+
         }
     }
 }
