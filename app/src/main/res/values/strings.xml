@@ -26,4 +26,12 @@
     <string name="title_calorie">칼로리</string>
     <string name="title_pace">페이스</string>
 
+    <!--글 작성하기-->
+    <string name="title_post">글 작성하기</string>
+    <string name="action_save">저장</string>
+    <string name="action_add_photo">사진 추가하기</string>
+    <string name="action_next">다음</string>
+    <string name="msg_input_tag">본문에 #을 이용해 태그를 입력해보세요! (최대 5개)</string>
+    <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
+    <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
 </resources>

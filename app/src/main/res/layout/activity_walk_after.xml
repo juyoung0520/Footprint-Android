@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/walk_after_sliding_up_panel_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00FFFFFF"
+    android:gravity="bottom"
+    app:umanoDragView="@id/walk_after_slided_layout"
+    sothree:umanoOverlay="true"
+    sothree:umanoPanelHeight="377dp"
+    sothree:umanoShadowHeight="0dp"
+    tools:context=".ui.main.home.WalkAfterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/walk_after_back_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/walk_after_slided_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:background="@drawable/bg_walk_after_slided_layout"
+        android:elevation="10dp">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

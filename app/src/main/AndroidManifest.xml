@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_footprint_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Footprint">
-
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_map_sdk_client_id" />
@@ -26,11 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".ui.main.home.WalkAfterActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.onboarding.OnBoardingActivity"
             android:exported="true"/>
-
         <activity
             android:name=".ui.main.home.WalkActivity"
             android:exported="true"/>

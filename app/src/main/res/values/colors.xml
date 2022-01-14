@@ -19,10 +19,14 @@
 
     <color name="black">#4D4D4F</color>
     <color name="black_dark">#241F20</color>
+    <color name="black_light">#717172</color>
 
     <color name="white">#F5F5F6</color>
     <color name="white_dark">#E1E2E1</color>
     <color name="white_light">#FFFFFF</color>
     <color name="white_light_79">#C9FFFFFF</color>
+
+    <!--TedImagePicker(갤러리 라이브러리) 숫자뷰 배경색-->
+    <color name="ted_image_picker_primary">#4FBBE7</color>
 
 </resources>
