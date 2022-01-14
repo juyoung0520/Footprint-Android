@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fragment_post_dialog.xml post_dialog_photo_indicator -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/selected_post_dialog_photo_indicator" android:state_selected="true" />
+    <item android:drawable="@drawable/unselected_post_dialog_photo_indicator" />
+</selector>
