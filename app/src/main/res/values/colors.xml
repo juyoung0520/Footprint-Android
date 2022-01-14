@@ -7,9 +7,11 @@
     <color name="teal_700">#FF018786</color>
 
     <!-- 공통-->
-    <color name="primary">#4FBBE7</color>
+    <color name="primary">#4FB8E7</color>
     <color name="primary_dark">#3387AD</color>
     <color name="primary_light">#B9E2F4</color>
+    <color name="primary_62">#9E4FB8E7</color>
+    <color name="primary_00">#004FB8E7</color>
 
     <color name="secondary">#FFC01D</color>
     <color name="secondary_dark">#7C602A</color>
@@ -21,5 +23,6 @@
     <color name="white">#F5F5F6</color>
     <color name="white_dark">#E1E2E1</color>
     <color name="white_light">#FFFFFF</color>
+    <color name="white_light_75">#BFFFFFFF</color>
 
 </resources>
