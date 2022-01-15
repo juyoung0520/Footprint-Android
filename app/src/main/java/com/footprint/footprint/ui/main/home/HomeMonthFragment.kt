@@ -17,7 +17,7 @@ class HomeMonthFragment: BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMont
         //현재 날짜 받아오기
         var localNowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
         var nowDate: Date = java.sql.Date.valueOf(localNowDate.toString());
-        Log.d("date", localNowDate.toString())
+        //Log.d("date", localNowDate.toString())
 
         //리사이클러뷰 어댑터 연결
         var calRVAdapter = HomeMonthRVAdapter(binding.homeMonthCalLayout, nowDate)

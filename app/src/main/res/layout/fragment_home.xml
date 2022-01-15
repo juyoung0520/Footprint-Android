@@ -19,7 +19,7 @@
             android:id="@+id/home_top_date_tv"
             style="@style/tv_overline_16"
             android:layout_width="107dp"
-            android:layout_height="40dp"
+            android:layout_height="16dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="55dp"
             android:gravity="center"
@@ -40,8 +40,8 @@
 
         <ImageView
             android:id="@+id/home_top_weather_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="17dp"
+            android:layout_height="12dp"
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_weather_cloud"
             app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
@@ -54,28 +54,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="1.67dp"
-            android:text="1°C"
+            android:gravity="center"
+            android:text="1"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
             app:layout_constraintStart_toEndOf="@+id/home_top_weather_iv"
             app:layout_constraintTop_toTopOf="@+id/home_top_date_tv" />
 
         <TextView
-            android:id="@+id/home_weather_con_tv"
-            style="@style/tv_overline_16"
+            android:id="@+id/home_weather_unit_tv"
+            style="@style/tv_caption_12"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="°C"
+            android:textColor="@color/white"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
+            app:layout_constraintStart_toEndOf="@+id/home_weather_temp_tv"
+             />
+
+        <TextView
+            android:id="@+id/home_weather_con_tv"
+            style="@style/tv_normal_14"
+            android:layout_width="26dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:text="흐림"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
-            app:layout_constraintStart_toEndOf="@+id/home_weather_temp_tv"
+            app:layout_constraintStart_toEndOf="@+id/home_weather_unit_tv"
             app:layout_constraintTop_toTopOf="@+id/home_top_date_tv" />
 
         <ImageView
             android:id="@+id/home_setting_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:layout_marginEnd="24dp"
             android:src="@drawable/ic_setting"
             app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
@@ -87,7 +100,8 @@
             android:id="@+id/home_top_hello_tv"
             style="@style/tv_headline_eb_24"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginTop="28dp"
             android:layout_marginStart="24dp"
             android:text="안녕하세요,"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,8 +111,9 @@
             android:id="@+id/home_top_username_tv"
             style="@style/tv_headline_eb_24"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:text="00님!"
+            app:layout_constraintTop_toTopOf="@id/home_top_hello_tv"
             app:layout_constraintStart_toStartOf="@id/home_top_weather_iv"
             app:layout_constraintTop_toBottomOf="@id/home_top_date_tv" />
 
@@ -108,6 +123,7 @@
             android:layout_height="wrap_content"
             android:text="오늘도 발자국을 남겨볼까요?"
             android:textColor="#B3241F20"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="@id/home_top_hello_tv"
             app:layout_constraintTop_toBottomOf="@id/home_top_hello_tv" />
 
