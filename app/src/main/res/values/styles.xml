@@ -75,20 +75,14 @@
     </style>
 
     <!-- normal  -->
-    <style name="tv_number_24" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/namusquareround_bold</item>
-        <item name="android:textSize">24dp</item>
-        <item name="android:textColor">@color/black_dark</item>
-    </style>
-
     <style name="tv_caption_12" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">12dp</item>
         <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <style name="tv_overline_10" parent="TextAppearance.AppCompat">
-        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/black_dark</item>
     </style>

@@ -55,15 +55,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walk_timer_layout"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@color/white_light_75"
+        android:layout_height="wrap_content"
+        android:paddingTop="23dp"
+        android:paddingBottom="13dp"
+        android:background="@color/white_light_79"
         app:layout_constraintTop_toTopOf="@+id/walk_map_fragment">
 
         <TextView
             android:id="@+id/walk_walktime_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
             android:text="@string/title_walktime"
             style="@style/tv_body_b_14"
             app:layout_constraintTop_toTopOf="parent"
@@ -74,27 +75,18 @@
             android:id="@+id/walk_walktime_number_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="6dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/walk_walktime_title_tv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/walk_walktime_number1_tv"
+                android:id="@+id/walk_walktime_number_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="17:2"
+                android:text="00:00"
                 android:textSize="48dp"
-                style="@style/tv_headline_eb_48" />
-
-            <TextView
-                android:id="@+id/walk_walktime_number2_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textSize="48dp"
-                android:textColor="@color/secondary"
                 style="@style/tv_headline_eb_48" />
         </LinearLayout>
 
@@ -102,7 +94,7 @@
             android:id="@+id/walk_distance_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="15dp"
             android:layout_marginStart="45dp"
             android:orientation="vertical"
             android:gravity="center"
@@ -121,8 +113,10 @@
                 android:id="@+id/walk_distance_number_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2.1"
-                style="@style/tv_number_24" />
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="8dp"
+                android:text="0.0"
+                style="@style/tv_headline_eb_24" />
 
             <TextView
                 android:id="@+id/walk_distance_unit_tv"
@@ -164,8 +158,10 @@
                 android:id="@+id/walk_calorie_number_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="120"
-                style="@style/tv_number_24" />
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="8dp"
+                android:text="0"
+                style="@style/tv_headline_eb_24" />
 
             <TextView
                 android:id="@+id/walk_calorie_unit_tv"
@@ -208,8 +204,10 @@
                 android:id="@+id/walk_pace_number_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100"
-                style="@style/tv_number_24" />
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="8dp"
+                android:text="0"
+                style="@style/tv_headline_eb_24" />
 
             <TextView
                 android:id="@+id/walk_pace_unit_tv"
@@ -225,15 +223,15 @@
         android:id="@+id/walk_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="8dp"
+        android:background="@color/white_dark"
+        android:max="100"
         android:paddingTop="0dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:paddingBottom="0dp"
-        android:background="@color/white_dark"
-        android:progress="500"
+        android:progress="50"
         android:progressDrawable="@drawable/sb_custom"
         android:progressTint="@color/primary"
-        android:max="1000"
         android:thumb="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/walk_timer_layout"/>
 
