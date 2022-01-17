@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.post
+package com.footprint.footprint.ui.dialog
 
 import android.Manifest
 import android.graphics.Color
@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentPostDialogBinding
+import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import gun0912.tedimagepicker.builder.TedImagePicker
 import com.gun0912.tedpermission.PermissionListener
@@ -136,7 +137,7 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
                 imgList.clear()
                 imgList.addAll(uriList)
 
-                photoRVAdapter.addData(imgList)
+                photoRVAdapter.addImgUriData(imgList)
                 binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
 
                 if (uriList.isEmpty()) {
@@ -159,7 +160,7 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
     }
 
     private fun initAdapter() {
-        photoRVAdapter = PhotoRVAdapter()
+        photoRVAdapter = PhotoRVAdapter(0)
         photoRVAdapter.setMyItemClickListener(object : PhotoRVAdapter.MyItemClickListener {
             override fun goGalleryClick() {
                 goGallery()
