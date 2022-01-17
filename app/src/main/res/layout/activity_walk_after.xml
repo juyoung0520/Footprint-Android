@@ -8,9 +8,8 @@
     android:layout_height="match_parent"
     android:background="#00FFFFFF"
     android:gravity="bottom"
-    app:umanoDragView="@id/walk_after_slided_layout"
+    sothree:umanoDragView="@id/walk_after_up_iv"
     sothree:umanoOverlay="true"
-    sothree:umanoPanelHeight="377dp"
     sothree:umanoShadowHeight="0dp"
     tools:context=".ui.main.home.WalkAfterActivity">
 
@@ -19,15 +18,272 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/walk_after_tb"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/primary"
+            android:gravity="bottom"
+            android:paddingBottom="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="00번째 발자국"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/tv_headline_eb_16"
+            app:titleTextColor="@color/black_dark" />
+
+        <TextView
+            android:id="@+id/walk_after_cancel_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/action_cancel"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_after_tb"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/walk_after_save_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/action_save"
+            android:textAppearance="@style/tv_headline_eb_16"
+            android:textColor="@color/white_light"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_after_tb"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/walk_after_map_iv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_temp_map"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.27"
+            app:layout_constraintTop_toBottomOf="@+id/walk_after_tb" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/walk_after_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="24dp"
+            android:paddingBottom="29dp"
+            app:layout_constraintTop_toBottomOf="@+id/walk_after_map_iv">
+
+            <TextView
+                android:id="@+id/walk_after_walk_time_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/title_walk_time"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_time_calorie_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/walk_after_walk_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="20:05"
+                android:textAppearance="@style/tv_headline_eb_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/walk_after_walk_time_title_tv"
+                app:layout_constraintStart_toStartOf="@+id/walk_after_walk_time_title_tv"
+                app:layout_constraintTop_toBottomOf="@+id/walk_after_walk_time_title_tv" />
+
+            <View
+                android:id="@+id/walk_after_time_calorie_view"
+                android:layout_width="1dp"
+                android:layout_height="35dp"
+                android:background="@color/white_dark"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_walk_time_tv"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_calorie_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_walk_time_title_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_walk_time_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_calorie_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/title_calorie"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_calorie_distance_view"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_time_calorie_view"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_walk_time_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_calorie_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="end"
+                android:text="120"
+                android:textAppearance="@style/tv_headline_eb_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_calorie_unit_tv"
+                app:layout_constraintStart_toStartOf="@+id/walk_after_calorie_title_tv"
+                app:layout_constraintTop_toBottomOf="@+id/walk_after_calorie_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_calorie_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                android:gravity="bottom"
+                android:paddingBottom="4dp"
+                android:text="@string/title_calorie_unit"
+                android:textAppearance="@style/tv_caption_12"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_calorie_tv"
+                app:layout_constraintEnd_toEndOf="@+id/walk_after_calorie_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_calorie_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_calorie_tv" />
+
+            <View
+                android:id="@+id/walk_after_calorie_distance_view"
+                android:layout_width="1dp"
+                android:layout_height="35dp"
+                android:background="@color/white_dark"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_calorie_tv"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_distance_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_calorie_title_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_calorie_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_distance_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/title_distance"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_distance_record_view"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_calorie_distance_view"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_calorie_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_distance_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="2.1"
+                android:textAppearance="@style/tv_headline_eb_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_distance_unit_tv"
+                app:layout_constraintStart_toStartOf="@+id/walk_after_distance_title_tv"
+                app:layout_constraintTop_toBottomOf="@+id/walk_after_distance_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_distance_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                android:gravity="bottom"
+                android:paddingBottom="4dp"
+                android:text="@string/title_distance_unit"
+                android:textAppearance="@style/tv_caption_12"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_distance_tv"
+                app:layout_constraintEnd_toEndOf="@+id/walk_after_distance_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_distance_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_distance_tv" />
+
+            <View
+                android:id="@+id/walk_after_distance_record_view"
+                android:layout_width="1dp"
+                android:layout_height="35dp"
+                android:background="@color/white_dark"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_distance_unit_tv"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_record_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_distance_title_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_distance_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_record_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/title_record"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_distance_record_view"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_distance_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_record_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="3"
+                android:textAppearance="@style/tv_headline_eb_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/walk_after_record_unit_tv"
+                app:layout_constraintStart_toStartOf="@+id/walk_after_record_title_tv"
+                app:layout_constraintTop_toBottomOf="@+id/walk_after_record_title_tv" />
+
+            <TextView
+                android:id="@+id/walk_after_record_unit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="4dp"
+                android:gravity="bottom"
+                android:paddingBottom="4dp"
+                android:text="@string/title_record_unit"
+                android:textAppearance="@style/tv_caption_12"
+                app:layout_constraintBottom_toBottomOf="@+id/walk_after_record_tv"
+                app:layout_constraintEnd_toEndOf="@+id/walk_after_record_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/walk_after_record_tv"
+                app:layout_constraintTop_toTopOf="@+id/walk_after_record_tv" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walk_after_slided_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@drawable/bg_walk_after_slided_layout"
         android:elevation="10dp">
+
+        <ImageView
+            android:id="@+id/walk_after_up_iv"
+            android:layout_width="45dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="13dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_drawer_up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/walk_after_walk_time_desc_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:text="2021.12.23  13:40~14:01"
+            android:textAppearance="@style/tv_body_b_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/walk_after_up_iv" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/walk_after_post_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="27dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/walk_after_walk_time_desc_tv"
+            tools:listitem="@layout/item_post" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

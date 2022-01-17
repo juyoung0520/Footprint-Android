@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_fragment"
+    tools:context=".ui.dialog.WalkDialogFragment">
+
+    <TextView
+        android:id="@+id/walk_dialog_msg_tv"
+        android:layout_width="match_parent"
+        android:layout_height="144dp"
+        android:gravity="center"
+        android:text="해당 기록을 삭제할까요?"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/walk_dialog_cancel_tv"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_walk_dialog_cancel_tv"
+        android:gravity="center"
+        android:text="@string/action_cancel"
+        android:textAppearance="@style/tv_headline_eb_14"
+        app:layout_constraintEnd_toStartOf="@+id/walk_dialog_action_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/walk_dialog_action_tv"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_walk_dialog_action_tv"
+        android:gravity="center"
+        android:text="@string/action_delete"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/white_light"
+        app:layout_constraintBottom_toBottomOf="@+id/walk_dialog_cancel_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/walk_dialog_cancel_tv"
+        app:layout_constraintTop_toTopOf="@+id/walk_dialog_cancel_tv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
