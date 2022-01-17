@@ -52,28 +52,10 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
 
         //해시태그 관련 설정(TextMatcher)
         setHashTag()
-
         //뷰페이저 어댑터 설정
         initAdapter()
-
-        //취소 누르면 다이얼로그 나가기
-        binding.postDialogCancelTv.setOnClickListener {
-            dismiss()
-        }
-
-        //갤러리 이동 전 퍼미션 체크
-        binding.postDialogAddPhotoIv.setOnClickListener {
-            checkPermission()
-        }
-        binding.postDialogAddPhotoTv.setOnClickListener {
-            checkPermission()
-        }
-
-        //저장 텍스트뷰 클릭 리스너
-        binding.postDialogSaveTv.setOnClickListener {
-            val hashtags = findHashTag()
-            Log.d("PostDialogFragment", "저장! -> 해시태그: ${hashtags.subList(0, 5)}")
-        }
+        //클릭 리스너 설정
+        setMyClickListener()
 
         return binding.root
     }
@@ -132,6 +114,7 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
             .buttonTextColor(R.color.primary)
             .showTitle(false)
             .backButton(R.drawable.ic_cancel)
+            .savedDirectoryName("Footprint")
             .max(5, R.string.error_photo_cnt_exceeded)
             .startMultiImage { uriList ->
                 imgList.clear()
@@ -172,7 +155,7 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
     private fun setHashTag() {
         //해시태그 관련 설정
         var mentionStyle = MentionStyle(
-            textColor = R.color.primary_dark,
+            textColor = R.color.primary,
             isBold = false
         )
         var hashtagRule = HashtagRule(allowedCharacters = "-", style=mentionStyle)
@@ -205,6 +188,35 @@ class PostDialogFragment : DialogFragment(), TextWatcher {
         }
 
         return hashtags
+    }
+
+    private fun setMyClickListener() {
+        //취소 누르면 다이얼로그 나가기
+        binding.postDialogCancelTv.setOnClickListener {
+            dismiss()
+        }
+
+        //갤러리 이동 전 퍼미션 체크
+        binding.postDialogAddPhotoIv.setOnClickListener {
+            checkPermission()
+        }
+        binding.postDialogAddPhotoTv.setOnClickListener {
+            checkPermission()
+        }
+
+        //저장 텍스트뷰 클릭 리스너
+        binding.postDialogSaveTv.setOnClickListener {
+            val hashtags = findHashTag()
+            if (hashtags.isNotEmpty())
+                Log.d("PostDialogFragment", "저장! -> 해시태그: ${hashtags.subList(0, 5)}")
+
+            if (binding.postDialogContentEt.text!!.isBlank())   //필수 데이터(기록 내용)가 입력됐는지 확인
+                Toast.makeText(requireContext(), getString(R.string.error_blank_content), Toast.LENGTH_SHORT).show()
+            else {
+                Toast.makeText(requireContext(), getString(R.string.msg_save_post), Toast.LENGTH_SHORT).show()
+                dismiss()
+            }
+        }
     }
 
     /*//추후에 사용될 듯
