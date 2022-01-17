@@ -3,6 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_path.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_path_pattern.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_off.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_on.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_help.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_marker_end.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_marker_start.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_path_end.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_pause.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_pin_stroke.xml" value="0.536" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_pin_stroke_1.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_play.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/sb_background.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/sb_custom.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/sb_progress.xml" value="0.26979166666666665" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.21784420289855072" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.2" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_course.xml" value="0.1" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_map.xml" value="0.21784420289855072" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_onboarding_first.xml" value="0.21784420289855072" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walkmap.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/ic_course_off.xml" value="0.17314814814814813" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_33_user_off.xml" value="0.26205128205128203" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_footprint_off.xml" value="0.20925925925925926" />

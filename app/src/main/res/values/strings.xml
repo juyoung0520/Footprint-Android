@@ -1,10 +1,29 @@
 <resources>
     <string name="app_name">발자국</string>
 
+    <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
+
     <!--메뉴-->
     <string name="menu_home">홈</string>
     <string name="menu_calendar">산책기록</string>
     <string name="menu_course">코스추천</string>
     <string name="menu_mypage">마이</string>
+
+    <!--액션-->
+    <string name="action_cancel">취소</string>
+
+    <!--설명-->
+    <string name="msg_distacnce_unit">km</string>
+    <string name="msg_calroie_unit">kcal</string>
+    <string name="msg_pace_unit">걸음/분</string>
+
+    <!--에러-->
+
+    <!--제목-->
+    <string name="title_realtime_record">실시간 기록</string>
+    <string name="title_walktime">산책시간</string>
+    <string name="title_distance">거리</string>
+    <string name="title_calorie">칼로리</string>
+    <string name="title_pace">페이스</string>
 
 </resources>
