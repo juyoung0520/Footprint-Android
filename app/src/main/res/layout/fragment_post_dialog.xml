@@ -7,7 +7,7 @@
     android:background="@drawable/bg_post_dialog"
     android:paddingTop="9dp"
     android:paddingBottom="24dp"
-    tools:context=".ui.post.PostDialogFragment">
+    tools:context=".ui.dialog.PostDialogFragment">
 
     <TextView
         android:id="@+id/post_dialog_cancel_tv"
@@ -85,7 +85,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:visibility="gone"
-                app:ci_drawable="@drawable/selector_post_dialog_photo_indicator"
+                app:ci_drawable="@drawable/selected_post_dialog_photo_indicator"
                 app:ci_height="6.74dp"
                 app:ci_margin="4.49dp"
                 app:ci_width="6.74dp"

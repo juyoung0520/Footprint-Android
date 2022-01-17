@@ -27,7 +27,7 @@
 
     <dialog
         android:id="@+id/postDialogFragment"
-        android:name="com.footprint.footprint.ui.post.PostDialogFragment"
+        android:name="com.footprint.footprint.ui.dialog.PostDialogFragment"
         android:label="fragment_post_dialog"
         tools:layout="@layout/fragment_post_dialog" />
 </navigation>
