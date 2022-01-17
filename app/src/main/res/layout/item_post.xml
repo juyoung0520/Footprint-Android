@@ -26,9 +26,8 @@
 
     <ImageView
         android:id="@+id/item_post_footprint_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_foot_print_1"
+        android:layout_width="30dp"
+        android:layout_height="41dp"
         app:layout_constraintBottom_toBottomOf="@+id/item_post_post_view"
         app:layout_constraintEnd_toEndOf="@+id/item_post_post_start_iv"
         app:layout_constraintStart_toStartOf="@+id/item_post_post_start_iv"
@@ -97,6 +96,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
+        android:overScrollMode="never"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintEnd_toEndOf="@+id/item_post_post_view"
         app:layout_constraintStart_toStartOf="@+id/item_post_post_view"

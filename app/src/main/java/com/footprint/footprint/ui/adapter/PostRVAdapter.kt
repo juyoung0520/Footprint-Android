@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemPostBinding
 import com.footprint.footprint.model.PostModel
 import me.relex.circleindicator.CircleIndicator3
@@ -17,6 +18,17 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
     }
 
     private val posts: ArrayList<PostModel> = arrayListOf()
+    private val footprints: ArrayList<Int> = arrayListOf(
+        R.drawable.ic_foot_print1,
+        R.drawable.ic_foot_print2,
+        R.drawable.ic_foot_print3,
+        R.drawable.ic_foot_print4,
+        R.drawable.ic_foot_print5,
+        R.drawable.ic_foot_print6,
+        R.drawable.ic_foot_print7,
+        R.drawable.ic_foot_print8,
+        R.drawable.ic_foot_print9
+    )
 
     private lateinit var binding: ItemPostBinding
     private lateinit var myItemClickListener: MyItemClickListener
@@ -44,6 +56,8 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
         holder.deleteTv.setOnClickListener {
             myItemClickListener.showDeleteDialog()
         }
+
+        holder.footPrintIv.setImageResource(footprints[position])
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
         if (posts[position].photos.size == 0) {
@@ -112,5 +126,6 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
         val contentTv: TextView = itemView.itemPostContentTv
         val deleteTv: TextView = itemView.itemPostDeleteTv
         val viewMoreTv: TextView = itemView.itemPostViewMoreTv
+        val footPrintIv: ImageView = itemView.itemPostFootprintIv
     }
 }
