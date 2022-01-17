@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- fragment_post_dialog.xml post_dialog_photo_indicator -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="@color/white" />
-    <size
-        android:width="6.74dp"
-        android:height="6.74dp" />
-</shape>
