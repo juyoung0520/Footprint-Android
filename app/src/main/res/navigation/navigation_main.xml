@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
     app:startDestination="@id/homeFragment">
 
@@ -23,4 +24,10 @@
         android:id="@+id/mypageFragment"
         android:name="com.footprint.footprint.ui.main.mypage.MyPageFragment"
         android:label="mypageFragment" />
+
+    <dialog
+        android:id="@+id/postDialogFragment"
+        android:name="com.footprint.footprint.ui.post.PostDialogFragment"
+        android:label="fragment_post_dialog"
+        tools:layout="@layout/fragment_post_dialog" />
 </navigation>

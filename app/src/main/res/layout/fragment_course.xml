@@ -13,6 +13,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/tv_headline_eb_24"/>
+        style="@style/tv_headline_eb_16"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
