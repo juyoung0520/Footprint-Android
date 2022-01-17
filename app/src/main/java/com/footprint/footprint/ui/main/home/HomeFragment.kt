@@ -1,9 +1,15 @@
 package com.footprint.footprint.ui.main.home
 
 import android.content.Intent
-import android.widget.Toast
 import android.util.Log
-import com.footprint.footprint.data.remote.weather.ApiObject
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.data.remote.weather.ITEM
 import com.footprint.footprint.data.remote.weather.WeatherResponse
 import com.footprint.footprint.data.remote.weather.WeatherService
@@ -11,40 +17,48 @@ import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.Clock
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
-class HomeFragment(): BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+class HomeFragment(): BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate), WeatherView {
 
     //날씨 위한 변수
-    var base_time = ""
-    var base_date = ""
-    var nx = ""
-    var ny = ""
+    var nx = "55"
+    var ny = "127"
+    lateinit var weatherService: WeatherService
 
     override fun initAfterBinding() {
+        //WalkActivity로 가는 곳 
         binding.homeContentTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
+        initTB()
+        initDate()
 
-        val tbTitle = arrayListOf("일별", "월별")
-        val homeVPAdapter = HomeViewpagerAdapter(this)
-        binding.homeDaymonthVp.adapter = homeVPAdapter
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
+        var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time)
+        val base_time = getTime(time)
+        Log.d("info1", "날짜: ${base_date} 시간: ${base_time}")
 
-        TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp){ tab, position ->
-            tab.text = tbTitle[position]
-        }.attach()
+        if(base_time >= "2000"){
+            cal.add(Calendar.DATE, -1).toString()
+            base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
+        }
+        Log.d("info", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
+        weatherService = WeatherService(this)
+        weatherService.getWeather(base_date, base_time, nx, ny)
+    }
+
+
+    private fun initDate() {
         //현재 날짜 받아오기
-        var nowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
-        var dayOfWeek = when(nowDate.dayOfWeek.value){
+        val nowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
+        val dayOfWeek = when (nowDate.dayOfWeek.value) {
             1 -> '월'
             2 -> '화'
             3 -> '수'
@@ -54,106 +68,27 @@ class HomeFragment(): BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inf
             7 -> '일'
             else -> ' '
         }
-        binding.homeTopDateTv.text = String.format("%d. %d. %d %c", nowDate.year, nowDate.month.value, nowDate.dayOfMonth, dayOfWeek)
-
-        Toast.makeText(activity, "0", Toast.LENGTH_SHORT).show()
-
-        val weatherService = WeatherService()
-        weatherService.setWeatherView(this)
-
-        /*준비*/
-        //base_date(발표 날짜), base_time(발표 시각)
-        //현재 날짜, 시간 정보 받아와서 설정
-        val cal = Calendar.getInstance()
-        base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time) //현재 날짜
-        val time = SimpleDateFormat("HH", Locale.getDefault()).format(cal.time) //현재 시각
-        base_time = getTime(time)
-
-        Toast.makeText(activity, base_date, Toast.LENGTH_SHORT).show()
-
-        //현재 시각이 00시가 넘었다면 어제 예보한 데이터를 가져와야 함 (현재 시간 + 4시간 뒤의 날씨 예보를 알려주기 때문)
-        if(base_time >= "2000"){
-            cal.add(Calendar.DATE, -1).toString() //hier
-            base_date = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(cal.time)
-        }
-
-        /*날씨 불러오기*/
-        //응답 형식: Json, 한 페이지 결과 수: 10, 페이지 번호: 1, 발표 날짜, 발표 시각, 예보지점 좌표
-        val call = ApiObject.retrofitService.GetWeather( 10, 1, "JSON", base_date, base_time, nx, ny)
-
-        Toast.makeText(activity, "2", Toast.LENGTH_SHORT).show()
-
-        //비동기적으로 실행하기
-        call.enqueue(object : Callback<WeatherResponse>{
-            override fun onResponse(
-                call: Call<WeatherResponse>,
-                response: Response<WeatherResponse>
-            ) {
-                if(response.isSuccessful){
-                    Toast.makeText(activity, "success", Toast.LENGTH_SHORT).show()
-                    var it: List<ITEM> = response.body()!!.response.body.items.item
-
-                    var sky = ""
-                    var temp = ""
-
-                    for(i in 0 .. 9){
-                        when(it[i].category){
-                            "SKY" -> sky = it[i].fcstValue
-                            "TMP" -> temp = it[i].fcstValue
-                            else -> continue
-                        }
-                    }
-
-
-                    binding.homeWeatherTempTv.text = temp
-
-                    var result_sky = ""
-                    when(sky){
-                        "1" -> result_sky = "맑음"
-                        "3" -> result_sky = "구름"
-                        "4" -> result_sky = "흐림"
-                        else -> result_sky = "error"
-                    }
-                    Log.d("weather", "하늘 상태 ${sky}와 ${result_sky}와 기온 ${temp}")
-                    Toast.makeText(activity, temp + sky + result_sky, Toast.LENGTH_LONG).show()
-                }
-            }
-
-    /*private fun setMyClickListener() {
-        binding.homeContentTv.setOnClickListener {
-            startActivity(Intent(requireContext(), WalkAfterActivity::class.java))
-        }
-    }*/
-
-            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                Log.d("weather-fail", t.message.toString())
-                Toast.makeText(activity, "fail", Toast.LENGTH_SHORT).show()
-                Toast.makeText(activity, t.message, Toast.LENGTH_LONG).show()
-            }
-
-        })
-
-        Toast.makeText(activity, "fin", Toast.LENGTH_SHORT).show()
-
-        //weatherService.getWeather(base)
-
+        binding.homeTopDateTv.text = String.format(
+            "%d. %d. %d %c",
+            nowDate.year,
+            nowDate.month.value,
+            nowDate.dayOfMonth,
+            dayOfWeek
+        )
     }
 
-    override fun onWeatherLoading() {
-
-    }
-
-    override fun onWeatherSuccess() {
-
-    }
-
-    override fun onWeatherFailure() {
-
+    private fun initTB() {
+        val homeVPAdapter = HomeViewpagerAdapter(this)
+        binding.homeDaymonthVp.adapter = homeVPAdapter
+        
+        val tbTitle = arrayListOf("일별", "월별")
+        TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
+            tab.text = tbTitle[position]
+        }.attach()
     }
 
 
     /*Function*/
-
     //*getTime()*
     //동네 예보 API는 3시간마다 현재 시각 + 4시간 뒤의 예보를 알려 줌
     //따라서, 현재 시간대의 날씨를 알기 위해 사용하는 함수
@@ -171,5 +106,60 @@ class HomeFragment(): BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inf
 
         return result
     }
+
+    private fun getWeatherValue(rainType: String, sky: String): String{
+        val result: String
+        when(rainType){
+            "0" -> {
+                when(sky){
+                    "1" -> result = "맑음"
+                    "3" -> result = "구름 많음"
+                    "4" -> result = "흐림"
+                    else -> result = "null"
+                }
+            }
+            "1" -> result = "비"
+            "2" ->  result = "비/눈"
+            "3" ->  result = "눈"
+            "4" ->  result = "소나기"
+            else ->  result = "null"
+        }
+
+        return result
+    }
+
+    override fun onWeatherLoading() {
+        //로딩바띄우기
+    }
+
+    override fun onWeatherSuccess(items: List<ITEM>) {
+        //온도 바꿔주기
+        //이미지 바꾸기
+        Log.d("response", items.toString())
+        Toast.makeText(activity, "네", Toast.LENGTH_SHORT).show()
+
+        val size = items.size
+        var tmp: String = "0"
+        var pty: String = "0"
+        var sky: String = "0"
+        for(i in 0 .. size-1){
+            when(items[i].category){
+                "TMP" -> tmp = items[i].fcstValue
+                "PTY" -> pty = items[i].fcstValue
+                "SKY" -> sky = items[i].fcstValue
+            }
+        }
+        val weatherValue = getWeatherValue(pty, sky)
+
+        //UI 변경
+        binding.homeWeatherTempTv.text = tmp
+        binding.homeWeatherConTv.text = weatherValue
+    }
+
+    override fun onWeatherFailure(code: Int, message: String) {
+        //오류 메시지 띄우기 (토스트)
+        Log.d("WEATHER/API2222", code.toString() + message)
+    }
+
 
 }

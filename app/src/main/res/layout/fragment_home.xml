@@ -21,7 +21,7 @@
             android:layout_width="107dp"
             android:layout_height="16dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="55dp"
+            android:layout_marginTop="60dp"
             android:gravity="center"
             android:text="2021.12.23 목"
             android:textColor="@color/white"
@@ -53,7 +53,7 @@
             style="@style/tv_overline_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1.67dp"
+            android:layout_marginStart="4dp"
             android:gravity="center"
             android:text="1"
             android:textColor="@color/white"
@@ -78,7 +78,7 @@
             style="@style/tv_normal_14"
             android:layout_width="26dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
+            android:layout_marginStart="4dp"
             android:text="흐림"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
@@ -100,7 +100,7 @@
             android:id="@+id/home_top_hello_tv"
             style="@style/tv_headline_eb_24"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginStart="24dp"
             android:text="안녕하세요,"
@@ -111,7 +111,7 @@
             android:id="@+id/home_top_username_tv"
             style="@style/tv_headline_eb_24"
             android:layout_width="wrap_content"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:text="00님!"
             app:layout_constraintTop_toTopOf="@id/home_top_hello_tv"
             app:layout_constraintStart_toStartOf="@id/home_top_weather_iv"
@@ -161,25 +161,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--Middle: TabLayout+ViewPager-->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_bg_grayline_375x1"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/home_daymonth_tb" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/home_daymonth_tb"
         android:layout_width="match_parent"
         android:layout_height="47dp"
+        android:elevation="3dp"
         android:textAlignment="center"
         app:tabRippleColor="#00ff0000"
 
         app:tabIndicatorColor="@color/primary_dark"
         app:tabIndicatorHeight="4dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
 
         app:tabTextColor="@color/white_dark"
         app:tabSelectedTextColor="@color/primary_dark"
@@ -341,7 +333,7 @@
 
     //산책 시작
    <TextView
-       android:id="@+id/home_"
+       android:id="@+id/home_startbtn_tv"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:background="@drawable/btn_start"
@@ -349,7 +341,7 @@
        style="@style/tv_headline_eb_18"
        android:textColor="@color/white"
        android:gravity="center"
-       android:paddingBottom="10dp"
+       android:layout_marginBottom="10dp"
        app:layout_constraintTop_toBottomOf="@id/home_goal_layout"
        app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintStart_toStartOf="parent"

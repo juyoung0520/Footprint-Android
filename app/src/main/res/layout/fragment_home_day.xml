@@ -26,7 +26,7 @@
         android:layout_height="166dp"
         android:adjustViewBounds="true"
         android:background="@drawable/bg_whiteround"
-        android:elevation="8dp"
+        android:elevation="10dp"
         android:src="@drawable/bg_whiteround"
         app:layout_constraintBottom_toBottomOf="@id/home_day_pb"
         app:layout_constraintEnd_toEndOf="@id/home_day_pb"

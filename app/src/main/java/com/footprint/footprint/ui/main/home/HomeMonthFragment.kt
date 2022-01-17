@@ -23,5 +23,8 @@ class HomeMonthFragment: BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMont
         var calRVAdapter = HomeMonthRVAdapter(binding.homeMonthCalLayout, nowDate)
         binding.homeMonthCalRv.adapter = calRVAdapter
         binding.homeMonthCalRv.layoutManager = GridLayoutManager(context, 7, LinearLayoutManager.VERTICAL, false)
+
+        //목표 week 설정
+
     }
 }

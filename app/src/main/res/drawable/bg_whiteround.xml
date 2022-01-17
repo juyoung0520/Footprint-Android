@@ -1,61 +1,9 @@
-<!-- drawable/ellipse_170.xml -->
-<vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="166dp"
-    android:height="166dp"
-    android:viewportWidth="166"
-    android:viewportHeight="166"
-    >
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
 
-    <group>
-
-        <clip-path
-            android:pathData="M166 83C166 128.84 128.84 166 83 166C37.1604 166 0 128.84 0 83C0 37.1604 37.1604 0 83 0C128.84 0 166 37.1604 166 83Z"
-            />
-
-        <group
-            android:translateX="1"
-            android:translateY="0"
-            android:pivotX="83"
-            android:pivotY="83"
-            android:scaleX="2"
-            android:scaleY="2"
-            android:rotation="90"
-            >
-
-            <path
-                android:pathData="M0 0V166H166V0"
-                >
-
-                <aapt:attr name="android:fillColor">
-
-                    <gradient
-                        android:type="linear"
-                        android:startX="41.5"
-                        android:startY="83"
-                        android:endX="124.5"
-                        android:endY="83"
-                        >
-
-                        <item
-                            android:color="#FFFFFF"
-                            android:offset="0"
-                            />
-
-                        <item
-                            android:color="#FAFAFA"
-                            android:offset="1"
-                            />
-
-                    </gradient>
-
-                </aapt:attr>
-
-            </path>
-
-        </group>
-
-    </group>
-
-</vector>
+</layer-list>
