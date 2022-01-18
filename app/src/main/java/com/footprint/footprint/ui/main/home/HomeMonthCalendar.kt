@@ -11,7 +11,7 @@ class HomeMonthCalendar(date: Date) {
     //기본 세팅
     companion object {
         const val DAYS_OF_WEEK = 7
-        const val LOW_OF_CALENDAR = 5
+        const val LOW_OF_CALENDAR = 6
     }
 
     val calendar = Calendar.getInstance()

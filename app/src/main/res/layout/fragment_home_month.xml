@@ -25,7 +25,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="sun" />
+            android:text="@string/title_sun" />
 
         <TextView
             android:id="@+id/home_month_1_tv"
@@ -33,7 +33,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="mon" />
+            android:text="@string/title_mon" />
 
         <TextView
             android:id="@+id/home_month_2_tv"
@@ -41,7 +41,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="tue" />
+            android:text="@string/title_tue" />
 
         <TextView
             android:id="@+id/home_month_3_tv"
@@ -49,7 +49,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="wed" />
+            android:text="@string/title_wed" />
 
         <TextView
             android:id="@+id/home_month_4_tv"
@@ -57,7 +57,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="thu" />
+            android:text="@string/title_thu" />
 
         <TextView
             android:id="@+id/home_month_5_tv"
@@ -65,7 +65,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="fri" />
+            android:text="@string/title_fri" />
 
         <TextView
             android:id="@+id/home_month_6_tv"
@@ -73,7 +73,7 @@
             android:layout_width="50dp"
             android:layout_height="14dp"
             android:gravity="center"
-            android:text="sat" />
+            android:text="@string/title_sat" />
 
 
     </LinearLayout>
@@ -94,7 +94,7 @@
             android:layout_width="50dp"
             android:layout_height="255dp"
             android:src="@drawable/bg_calweekbackground"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

@@ -23,8 +23,6 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
     init {
         homemonthCalendar.initBaseCalendar() //init 후
         dataList = homemonthCalendar.dateList //datelist -> datalist에 전달
-        //Log.d("dataList", dataList.toString())
-        //Log.d("dateList", homemonthCalendar.dateList.toString())
     }
 
     override fun onCreateViewHolder(
