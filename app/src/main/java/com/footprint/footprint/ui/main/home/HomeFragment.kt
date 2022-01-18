@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.location.*
 import com.footprint.footprint.data.remote.weather.*
@@ -65,7 +66,19 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
             tab.text = tbTitle[position]
         }.attach()
+
     }
+
+    private fun setGoal(position: Int) {
+        if (position == 0) {
+            binding.homeMonthGoalLayout.visibility = View.VISIBLE
+            binding.homeMonthGoalLayout.visibility = View.INVISIBLE
+        } else if (position == 1) {
+            binding.homeMonthGoalLayout.visibility = View.INVISIBLE
+            binding.homeMonthGoalLayout.visibility = View.VISIBLE
+        }
+    }
+
     //상단 날짜 받아오기
     private fun initDate() {
         val nowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
@@ -175,8 +188,14 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             val rs = TransLocalPoint().convertGRID_GPS(
                                 0,
                                 location.latitude,
-                                Math.abs(location.longitude) + 5
+                                location.longitude
                             )
+                            /*//AVD
+                            val rs = TransLocalPoint().convertGRID_GPS(
+                                0,
+                                location.latitude,
+                                Math.abs(location.longitude) + 5
+                            )*/
                             Log.d("requestLocation", "rs.x: ${rs.x} rs.y: ${rs.y}")
                             Log.d("requestLocation-location", location.toString())
 

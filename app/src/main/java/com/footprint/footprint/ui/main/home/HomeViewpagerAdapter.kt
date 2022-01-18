@@ -10,7 +10,7 @@ class HomeViewpagerAdapter(fragment : Fragment) : FragmentStateAdapter(fragment)
     override fun createFragment(position: Int): Fragment {
         return when(position){
             0 -> HomeDayFragment()
-           else -> HomeMonthFragment()
+            else -> HomeMonthFragment()
         }
     }
 }

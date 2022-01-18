@@ -3,6 +3,7 @@
 
     <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
 
+    //공통
     <!--공통-->
     <string name="action_cancel">취소</string>
     <string name="action_edit">편집</string>
@@ -21,6 +22,7 @@
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>
     <string name="msg_calroie_unit">kcal</string>
+    <string name="msg_avr_calroie_unit">kcal/day</string>
     <string name="msg_pace_unit">걸음/분</string>
     <string name="msg_min_eng_unit">min</string>
     <string name="msg_min_ko_unit">분</string>
@@ -33,8 +35,12 @@
     <string name="title_distance">거리</string>
     <string name="title_calorie">칼로리</string>
     <string name="title_pace">페이스</string>
+    <string name="title_sum_walktime">누적 산책시간</string>
+    <string name="title_sum_distance">누적 거리</string>
+    <string name="title_avr_calorie">평균 칼로리</string>
 
 
+    //화면 별
     <!--홈-->
     <string name="msg_home_hello">안녕하세요, </string>
     <string name="msg_home_userunit">님!</string>
@@ -63,6 +69,7 @@
     <string name="title_view_more">더보기</string>
     <string name="title_view_short">간략히 보기</string>
 
+
     <!--글 작성하기-->
     <string name="title_post">글 작성하기</string>
     <string name="action_add_photo">사진 추가하기</string>
@@ -72,5 +79,4 @@
     <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
     <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
     <string name="error_blank_content">내용을 입력해주세요.</string>
-
 </resources>
