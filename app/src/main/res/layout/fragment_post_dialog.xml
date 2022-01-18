@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_post_dialog"
+    android:paddingTop="9dp"
+    android:paddingBottom="24dp"
+    tools:context=".ui.dialog.PostDialogFragment">
+
+    <TextView
+        android:id="@+id/post_dialog_cancel_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/action_cancel"
+        android:textAppearance="@style/tv_headline_eb_14"
+        app:layout_constraintBottom_toBottomOf="@+id/post_dialog_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/post_dialog_title_tv" />
+
+    <TextView
+        android:id="@+id/post_dialog_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="@string/title_post"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintEnd_toStartOf="@+id/post_dialog_save_tv"
+        app:layout_constraintStart_toEndOf="@+id/post_dialog_cancel_tv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/post_dialog_save_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/action_save"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/post_dialog_title_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/post_dialog_title_tv" />
+
+    <View
+        android:id="@+id/post_dialog_section_view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="47dp"
+        android:background="@color/white_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/post_dialog_content_nsv"
+        android:layout_width="0dp"
+        android:layout_height="410dp"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_dialog_section_view">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/post_dialog_photo_vp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="19dp"
+                android:visibility="gone"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <me.relex.circleindicator.CircleIndicator3
+                android:id="@+id/post_dialog_photo_indicator"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:visibility="gone"
+                app:ci_drawable="@drawable/selected_post_dialog_photo_indicator"
+                app:ci_height="6.74dp"
+                app:ci_margin="4.49dp"
+                app:ci_width="6.74dp"
+                app:layout_constraintBottom_toBottomOf="@+id/post_dialog_photo_vp"
+                app:layout_constraintEnd_toEndOf="@+id/post_dialog_photo_vp"
+                app:layout_constraintStart_toStartOf="@+id/post_dialog_photo_vp" />
+
+            <com.santalu.textmatcher.widget.MatcherEditText
+                android:id="@+id/post_dialog_content_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="19dp"
+                android:background="@android:color/transparent"
+                android:gravity="start"
+                android:hint="@string/msg_input_tag"
+                android:paddingBottom="95dp"
+                android:textAppearance="@style/tv_caption_14"
+                android:textColor="@color/black"
+                android:textColorHint="#26000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/post_dialog_photo_vp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <ImageView
+        android:id="@+id/post_dialog_add_photo_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22.1dp"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/post_dialog_add_photo_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/post_dialog_add_photo_tv" />
+
+    <TextView
+        android:id="@+id/post_dialog_add_photo_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8.37dp"
+        android:text="@string/action_add_photo"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/post_dialog_add_photo_iv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
