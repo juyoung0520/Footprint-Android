@@ -1,11 +1,10 @@
 package com.footprint.footprint.ui.main.home
 
-import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
@@ -13,13 +12,15 @@ import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
+class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
+    RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
 
     var dataList: ArrayList<Int> = arrayListOf()
 
     //커스텀 캘린더 클래스를 이용하여 날짜 세팅
     var homemonthCalendar: HomeMonthCalendar = HomeMonthCalendar(date)
-    init{
+
+    init {
         homemonthCalendar.initBaseCalendar() //init 후
         dataList = homemonthCalendar.dateList //datelist -> datalist에 전달
         //Log.d("dataList", dataList.toString())
@@ -30,29 +31,42 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerV
         viewGroup: ViewGroup,
         viewType: Int
     ): HomeMonthRVAdapter.ViewHolder {
-        val binding: ItemHomeMonthBinding = ItemHomeMonthBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding: ItemHomeMonthBinding =
+            ItemHomeMonthBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
 
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: HomeMonthRVAdapter.ViewHolder, position: Int) {
-        // 높이 지정
-        val height = calLayout.height/5 //왜 6인지?
-        holder.itemView.layoutParams.height = height
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
+
+        val days = dataList.size
+        if(days < 42){
+            //5주 기준
+            if (position < 7) params.topMargin = 0
+            else params.topMargin = 60
+        }else{
+            //6주 기준
+            if (position < 7) params.topMargin = 0
+            else params.topMargin = 30
+        }
+
+        holder.itemView.layoutParams = params
+        holder.itemView.requestApplyInsets()
 
         holder.bind(dataList[position], position)
     }
 
     override fun getItemCount(): Int = dataList.size
 
-    inner class ViewHolder(val binding: ItemHomeMonthBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(data: Int, position: Int){
+    inner class ViewHolder(val binding: ItemHomeMonthBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: Int, position: Int) {
             //첫날, 마지막날 세팅
             val firstDateIndex = homemonthCalendar.prevTail
             val lastDateIndex = dataList.size - homemonthCalendar.nextHead - 1
 
             binding.itemHomeMonthDayTv.text = data.toString()
-            //binding.itemHomeMonthDayTv.text = dataList[position].toString()
 
             /*스타일*/
             // 오늘 날짜 bold체로
@@ -63,7 +77,7 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date): RecyclerV
             }
 
             //프로그레스바 표현
-            if(position % 10 == 0){
+            if (position % 10 == 0) {
                 binding.itemHomeMonthDayPb.visibility = View.VISIBLE
                 binding.itemHomeMonthDayPb.progress = 80
             }

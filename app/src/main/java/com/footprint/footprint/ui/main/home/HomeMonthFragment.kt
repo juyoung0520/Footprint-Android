@@ -1,7 +1,6 @@
 package com.footprint.footprint.ui.main.home
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,7 @@ class HomeMonthFragment: BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMont
         //현재 날짜 받아오기
         var localNowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
         var nowDate: Date = java.sql.Date.valueOf(localNowDate.toString());
-
+        nowDate = Date(2022, 2, 13)
         //리사이클러뷰 어댑터 연결
         var calRVAdapter = HomeMonthRVAdapter(binding.homeMonthCalLayout, nowDate)
         binding.homeMonthCalRv.adapter = calRVAdapter
