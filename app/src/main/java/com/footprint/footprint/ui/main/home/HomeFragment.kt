@@ -262,10 +262,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
+
         //UI 변경
         binding.homeWeatherTempTv.text = tmp
-        binding.homeWeatherConTv.text = weatherValue.toString()
-        val imgRes = when(weatherValue.toString()){
+        binding.homeWeatherConTv.text = weatherValue
+        val imgRes = when(weatherValue){
             "맑음" -> R.drawable.ic_weather_sunny
             "구름 많음" -> R.drawable.ic_weather_clounmany
             "흐림" -> R.drawable.ic_weather_cloud

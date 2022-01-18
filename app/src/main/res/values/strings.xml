@@ -42,6 +42,15 @@
 
 
     //화면 별
+    <!--로그인-->
+    <string name="title_login">로그인</string>
+    <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>
+    <string name="msg_login_description">정보입력 없이 간편하게 로그인할 수 있어요</string>
+    <string name="title_kakaologin">카카오계정으로 로그인</string>
+    <string name="title_googlelogin">구글계정으로 로그인</string>
+    <string name="msg_nologin"><u>나중에 로그인할래요</u></string>
+    <string name="msg_copyright">© 2021. 발자국 all right reserved.</string>
+
     <!--홈-->
     <string name="msg_home_hello">안녕하세요, </string>
     <string name="msg_home_userunit">님!</string>
