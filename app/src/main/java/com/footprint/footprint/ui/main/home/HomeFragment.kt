@@ -1,32 +1,30 @@
 package com.footprint.footprint.ui.main.home
 
 import android.content.Intent
-import android.os.Build
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
-import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.viewpager2.widget.ViewPager2
+import com.footprint.footprint.R
 import com.google.android.gms.location.*
 import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.data.remote.weather.ITEM
-import com.footprint.footprint.data.remote.weather.WeatherResponse
 import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
+import com.gun0912.tedpermission.normal.TedPermission
 import java.io.IOException
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
@@ -44,7 +42,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun initAfterBinding() {
         //WalkActivity로 가는 곳 
-        binding.homeContentTv.setOnClickListener {
+        binding.homeStartbtnTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
@@ -67,14 +65,21 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             tab.text = tbTitle[position]
         }.attach()
 
+        val changeCB = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                setGoal(position)
+            }
+        }
+        binding.homeDaymonthVp.registerOnPageChangeCallback(changeCB)
     }
 
     private fun setGoal(position: Int) {
         if (position == 0) {
-            binding.homeMonthGoalLayout.visibility = View.VISIBLE
+            binding.homeDayGoalLayout.visibility = View.VISIBLE
             binding.homeMonthGoalLayout.visibility = View.INVISIBLE
         } else if (position == 1) {
-            binding.homeMonthGoalLayout.visibility = View.INVISIBLE
+            binding.homeDayGoalLayout.visibility = View.INVISIBLE
             binding.homeMonthGoalLayout.visibility = View.VISIBLE
         }
     }
@@ -139,7 +144,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 //허용 시
-                Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
                 Log.d("permission", "user GPS permission 허용")
             }
 
@@ -155,14 +160,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         }
                     }.show()
-                Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
                 Log.d("permission", "user GPS permission 거절")
             }
         }
 
         //권한 설정
-        TedPermission.with(activity)
-            .setPermissionListener(permissionListener)
+        TedPermission.create().setPermissionListener(permissionListener)
             .setRationaleMessage("정확한 날씨 정보를 위해 권한을 허용해 주세요")
             .setDeniedMessage("권한을 거부하셨습니다. [앱 설정] -> [권한]에서 허용해 주세요.")
             .setPermissions(
@@ -190,12 +194,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            /*//AVD
-                            val rs = TransLocalPoint().convertGRID_GPS(
-                                0,
-                                location.latitude,
-                                Math.abs(location.longitude) + 5
-                            )*/
                             Log.d("requestLocation", "rs.x: ${rs.x} rs.y: ${rs.y}")
                             Log.d("requestLocation-location", location.toString())
 
@@ -209,29 +207,36 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             locationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
-                Looper.myLooper()
+                Looper.myLooper()!!
             )
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
     }
 
-    private fun getWeatherValue(rainType: String, sky: String): String {
-        return when (rainType) {
-            "0" -> {
-                when (sky) {
-                    "1" -> "맑음"
-                    "3" -> "구름 많음"
-                    "4" -> "흐림"
-                    else -> "null"
+    private fun getWeatherValue(rainType: String, sky: String, wind: Int): String {
+        val result: String
+        if(wind > 13){
+            result = "바람"
+        }else{
+            result = when (rainType) {
+                "0" -> {
+                    when (sky) {
+                        "1" -> "맑음"
+                        "3" -> "구름 많음"
+                        "4" -> "흐림"
+                        else -> "null"
+                    }
                 }
+                "1" -> "비"
+                "2" -> "비/눈"
+                "3" -> "눈"
+                "4" -> "소나기"
+                else -> "null"
             }
-            "1" -> "비"
-            "2" -> "비/눈"
-            "3" -> "눈"
-            "4" -> "소나기"
-            else -> "null"
         }
+
+        return result
     }
 
 
@@ -247,18 +252,30 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         var tmp: String = "0"
         var pty: String = "0"
         var sky: String = "0"
+        var wsd: Int = 0
         for (i in 0 until size) {
             when (items[i].category) {
                 "TMP" -> tmp = items[i].fcstValue
                 "PTY" -> pty = items[i].fcstValue
                 "SKY" -> sky = items[i].fcstValue
+                "WSD" -> sky = items[i].fcstValue
             }
         }
-        val weatherValue = getWeatherValue(pty, sky)
-
+        val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
         binding.homeWeatherTempTv.text = tmp
-        binding.homeWeatherConTv.text = weatherValue
+        binding.homeWeatherConTv.text = weatherValue.toString()
+        val imgRes = when(weatherValue.toString()){
+            "맑음" -> R.drawable.ic_weather_sunny
+            "구름 많음" -> R.drawable.ic_weather_clounmany
+            "흐림" -> R.drawable.ic_weather_cloud
+            "소나기" -> R.drawable.ic_weather_shower
+            "비" -> R.drawable.ic_weather_rain
+            "눈" -> R.drawable.ic_weather_snowy
+            "바람" -> R.drawable.ic_weather_windy
+            else -> R.drawable.ic_weather_sunny
+        }
+        binding.homeTopWeatherIv.setImageResource(imgRes)
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
