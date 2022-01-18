@@ -5,8 +5,6 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface WeatherRetrofitInterface {
-
-    // getUltraSrtFcst 초단기 예보 조회
     @GET("getVilageFcst")
     fun getWeather(
         @Query("serviceKey") serviceKey: String,

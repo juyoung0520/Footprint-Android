@@ -37,7 +37,6 @@ class WeatherService(view: WeatherView) {
                 }
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-
                     weatherView.onWeatherFailure(213, t.message.toString())
                     Log.d("WEATHER/API-ERROR", t.message.toString())
                 }
