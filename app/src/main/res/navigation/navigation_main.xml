@@ -24,10 +24,4 @@
         android:id="@+id/mypageFragment"
         android:name="com.footprint.footprint.ui.main.mypage.MyPageFragment"
         android:label="mypageFragment" />
-
-    <dialog
-        android:id="@+id/postDialogFragment"
-        android:name="com.footprint.footprint.ui.dialog.PostDialogFragment"
-        android:label="fragment_post_dialog"
-        tools:layout="@layout/fragment_post_dialog" />
 </navigation>

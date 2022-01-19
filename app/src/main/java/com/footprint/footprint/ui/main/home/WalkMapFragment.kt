@@ -1,7 +1,9 @@
 package com.footprint.footprint.ui.main.home
 
+import android.content.Intent
 import android.graphics.PointF
 import android.location.Location
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -9,21 +11,23 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.content.ContextCompat.getDrawable
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
+import com.footprint.footprint.model.PostModel
+import com.footprint.footprint.model.PostsModel
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.dialog.WalkDialogFragment
+import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlin.math.roundToInt
 
-class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBinding::inflate),
+class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBinding::inflate),
     OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
     private lateinit var map: NaverMap
@@ -41,20 +45,40 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
 
     private var stopCount = 0
 
+    private val posts: PostsModel = PostsModel() //지금까지 사용자가 기록한 총 데이터
+
     override fun initAfterBinding() {
         setBinding()
 
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.walkmap_map_fragment) as MapFragment?
-            ?: MapFragment.newInstance(options).also {
-                childFragmentManager.beginTransaction().add(R.id.walkmap_map_fragment, it).commit()
-            }
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.walkmap_map_fragment) as MapFragment?
+                ?: MapFragment.newInstance(options).also {
+                    childFragmentManager.beginTransaction().add(R.id.walkmap_map_fragment, it)
+                        .commit()
+                }
 
         mapFragment.getMapAsync(this)
 
         locationSource = FusedLocationSource(requireActivity(), LOCATION_PERMISSION_REQUEST_CODE)
+
+        //실시간 글 작성하기 화면으로부터 전달 받는 post 데이터
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("post")
+            ?.observe(viewLifecycleOwner) {
+                Log.d("WalkMapFragment", "post observe -> $it")
+
+                setWalkState(true)  //화면에서 다시 돌아오면 산책 시간을 다시 측정한다.
+
+                if (it!=null)
+                    posts.posts.add(  //전역 변수인 posts 에 현재 기록한 post 데이터를 추가한다.
+                        Gson().fromJson(
+                            it,
+                            PostModel::class.java
+                        )
+                    )
+            }
     }
 
     private fun setBinding() {
@@ -66,6 +90,12 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
             if (pathArray.isNotEmpty()) {
                 putMarker(pathArray.lastIndex, R.drawable.ic_pin_stroke)
             }
+
+            if (posts.posts.size >= 9) {  //기록이 이미 9개가 됐으면
+
+            } else {    //아직 9개가 안됐으면
+                findNavController().navigate(R.id.postDialogFragment)  //글 작성하기 다이얼로그 화면 띄우기
+            }
         }
 
         binding.walkmapMiddleIv.setOnClickListener {
@@ -74,6 +104,7 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
 
         binding.walkmapStopIv.setOnClickListener {
             stopWalk()
+            showStopWalkDialog()    //실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         }
     }
 
@@ -85,7 +116,11 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
         marker.map = map
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated) {
                 map.locationTrackingMode = LocationTrackingMode.None
@@ -243,7 +278,7 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
     private inner class Walk(private val goalTime: Int) : Thread() {
         private val maxProgress = 100
 
-        private lateinit var spannable : SpannableString
+        private lateinit var spannable: SpannableString
         private val spanColor = ForegroundColorSpan(getColor(requireContext(), R.color.secondary))
 
         override fun run() {
@@ -255,33 +290,85 @@ class WalkMapFragment: BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBindi
                         currentTime++
 
                         if (currentTime < 3600) {
-                            spannable = SpannableString(String.format("%02d:%02d", currentTime / 60, currentTime % 60))
+                            spannable = SpannableString(
+                                String.format(
+                                    "%02d:%02d",
+                                    currentTime / 60,
+                                    currentTime % 60
+                                )
+                            )
                         } else {
                             spannable =
-                                SpannableString(String.format("%02d:%02d:%02d", currentTime / 3600, currentTime % 3600 / 60, currentTime % 3600 % 60))
+                                SpannableString(
+                                    String.format(
+                                        "%02d:%02d:%02d",
+                                        currentTime / 3600,
+                                        currentTime % 3600 / 60,
+                                        currentTime % 3600 % 60
+                                    )
+                                )
                         }
 
                         setSpannableString()
 
                         requireActivity().runOnUiThread {
-                            binding.walkmapProgressBar.progress = currentTime * maxProgress / goalTime
+                            binding.walkmapProgressBar.progress =
+                                currentTime * maxProgress / goalTime
                             binding.walkmapWalktimeNumberTv.text = spannable
                         }
                     }
                 }
             } catch (e: InterruptedException) {
-                Log.d("interrupt","스레드가 종료되었습니다.")
+                Log.d("interrupt", "스레드가 종료되었습니다.")
             }
 
         }
 
         fun setSpannableString() {
             if (currentTime < 60) {
-                spannable.setSpan(spanColor, 4, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(
+                    spanColor,
+                    4,
+                    spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             } else {
                 spannable.setSpan(spanColor, 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
+    }
+
+    //실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
+    private fun showStopWalkDialog() {
+        val bundle: Bundle = Bundle()
+        bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
+
+        val walkDialogFragment: WalkDialogFragment = WalkDialogFragment()
+        walkDialogFragment.arguments = bundle
+
+        walkDialogFragment.show(requireActivity().supportFragmentManager, null)
+
+        walkDialogFragment.setMyDialogCallback(object: WalkDialogFragment.MyDialogCallback {
+            override fun finish(isFinished: Boolean) {
+                if (isFinished) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
+                    val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+
+                    if (posts.posts.size!=0)
+                        intent.putExtra("posts", Gson().toJson(posts))  //우선 임의로 저장한 기록만 넘겨줌
+
+                    startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+                    (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
+                }
+                else    //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
+                    setWalkState(true)  //다시 타이머가 실행되도록
+            }
+
+            override fun save(isSaved: Boolean) {
+            }
+
+            override fun delete(isDelete: Boolean) {
+            }
+        })
     }
 
     override fun onDestroyView() {

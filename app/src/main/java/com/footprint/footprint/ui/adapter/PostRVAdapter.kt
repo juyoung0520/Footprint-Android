@@ -10,11 +10,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemPostBinding
 import com.footprint.footprint.model.PostModel
+import com.footprint.footprint.model.PostsModel
 import me.relex.circleindicator.CircleIndicator3
 
 class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
-        fun showDeleteDialog()
+        fun showDeleteDialog(position: Int)
     }
 
     private val posts: ArrayList<PostModel> = arrayListOf()
@@ -54,7 +55,7 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
 
         //기록 삭제 버튼 클릭 리스너 -> 다이얼로그 띄우기
         holder.deleteTv.setOnClickListener {
-            myItemClickListener.showDeleteDialog()
+            myItemClickListener.showDeleteDialog(position)
         }
 
         holder.footPrintIv.setImageResource(footprints[position])
@@ -65,7 +66,7 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
             holder.photoIndicator.visibility = View.GONE
         } else {
             val photoRVAdapter = PhotoRVAdapter(1)
-            photoRVAdapter.addImgIntData(posts[position].photos)
+            photoRVAdapter.addImgList(posts[position].photos)
             holder.photoVp.adapter = photoRVAdapter
             holder.photoVp.visibility = View.VISIBLE
 
@@ -108,9 +109,14 @@ class PostRVAdapter() : RecyclerView.Adapter<PostRVAdapter.PostViewHolder>() {
 
     override fun getItemCount(): Int = posts.size
 
-    fun setData(posts: ArrayList<PostModel>) {
+    fun setData(posts: PostsModel) {
         this.posts.clear()
-        this.posts.addAll(posts)
+        this.posts.addAll(posts.posts)
+        notifyDataSetChanged()
+    }
+
+    fun removeData(position: Int) {
+        this.posts.removeAt(position)
         notifyDataSetChanged()
     }
 

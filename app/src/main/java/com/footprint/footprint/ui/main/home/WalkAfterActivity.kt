@@ -1,18 +1,27 @@
 package com.footprint.footprint.ui.main.home
 
+import android.os.Bundle
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityWalkAfterBinding
-import com.footprint.footprint.model.PostModel
+import com.footprint.footprint.model.PostsModel
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.PostRVAdapter
 import com.footprint.footprint.ui.dialog.WalkDialogFragment
+import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 class WalkAfterActivity :
     BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate) {
+    private lateinit var walkDialogFragment: WalkDialogFragment
+    private lateinit var posts: PostsModel
+    private lateinit var postRVAdapter: PostRVAdapter
+
+    private var position: Int = -1  //클릭된 기록 인덱스
+
     override fun initAfterBinding() {
         initAdapter()
         setMyClickListener()
+        setWalkDialog()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -23,10 +32,17 @@ class WalkAfterActivity :
 
     override fun onBackPressed() {
         binding.walkAfterSlidingUpPanelLayout.apply {
+            //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
             if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)
                 panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-            else
-                super.onBackPressed()
+            else {
+                //‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
+                setWalkDialogBundle(getString(R.string.msg_stop_walk))
+                walkDialogFragment.show(
+                    supportFragmentManager,
+                    null
+                )
+            }
         }
     }
 
@@ -36,54 +52,76 @@ class WalkAfterActivity :
             binding.walkAfterSlidingUpPanelLayout.height - binding.walkAfterTb.height - binding.walkAfterMapIv.height - binding.walkAfterInfoLayout.height
     }
 
+    //기록 관련 리사이클러뷰 초기화
     private fun initAdapter() {
-        val posts = arrayListOf(
-            PostModel(
-                "서울 도심에 대나무 숲이 있기가 쉽지 않은데.. 숨겨진 맛집을 찾은 기분이다. 우리 동네에도 이런 곳이 있었구나. \n" +
-                        "조금 언덕이고 길이 좁긴 하지만 사람도 없고 한적해서 도심속에서 벗어나 휴양림에 들어온 기분이었다.\n" +
-                        "나중에 엄마 모시고 산책할때 다시 와봐야겠다. 좋아하실것 같아.",
-                arrayListOf(R.drawable.ic_temp_post_photo, R.drawable.ic_temp_post_photo),
-                "13:40"
-            ),
-            PostModel(
-                "산책중에 예전에 알바했던 가게를 우연히 지나쳤다. 일은 힘들어도 사장님은 참 잘해주셨었던 가게 였는데. 옛날 일할때 생각도 나면서 사장님 아직",
-                arrayListOf(),
-                "13:42"
-            ),
-            PostModel(
-                "여기도 경치 맛집이지. 주변 산들이 탁트이게 보여서 시원하고 날씨도 되게 좋았고. 항상 여기",
-                arrayListOf(R.drawable.ic_temp_post_photo),
-                "13:50"
-            )
-        )
-
-        val postRVAdapter = PostRVAdapter()
+        postRVAdapter = PostRVAdapter()
         postRVAdapter.setMyItemClickListener(object : PostRVAdapter.MyItemClickListener {
-            override fun showDeleteDialog() {
-                WalkDialogFragment(getString(R.string.msg_delete_post)).show(
-                    supportFragmentManager,
-                    null
-                )
+            //기록 삭제 텍스트뷰 클릭 리스너 -> 해당 발자국을 삭제할까요? 다이얼로그 화면 띄우기
+            override fun showDeleteDialog(position: Int) {
+                this@WalkAfterActivity.position = position  //클릭된 post 인덱스를 전역변수로 저장해 놓는다.
+                setWalkDialogBundle(getString(R.string.msg_delete_footprint))
+                walkDialogFragment.show(supportFragmentManager, null)
             }
         })
 
-        postRVAdapter.setData(posts)
+        //이전 화면(WalkMapFragment)에서 전달받은 기록 데이터(posts)로 어댑터에 데이터 저장
+        val postsStr = intent.getStringExtra("posts")
+        if (postsStr != null) {
+            posts = Gson().fromJson(postsStr, PostsModel::class.java)
+            postRVAdapter.setData(posts)
+        }
         binding.walkAfterPostRv.adapter = postRVAdapter
     }
 
     private fun setMyClickListener() {
+        //취소 텍스트뷰 클릭 리스너
         binding.walkAfterCancelTv.setOnClickListener {
-            WalkDialogFragment(getString(R.string.msg_cancel_footprint)).show(
+            //‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
+            setWalkDialogBundle(getString(R.string.msg_stop_walk))
+            walkDialogFragment.show(
                 supportFragmentManager,
                 null
             )
         }
 
+        //저장 텍스트뷰 클릭 리스너
         binding.walkAfterSaveTv.setOnClickListener {
-            WalkDialogFragment(getString(R.string.msg_save_footprint)).show(
+            //‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
+            setWalkDialogBundle(getString(R.string.msg_save_walk))
+            walkDialogFragment.show(
                 supportFragmentManager,
                 null
             )
         }
+    }
+
+    //WalkDialogFragment 초기화
+    private fun setWalkDialog() {
+        walkDialogFragment = WalkDialogFragment()
+
+        walkDialogFragment.setMyDialogCallback(object : WalkDialogFragment.MyDialogCallback {
+            override fun finish(isFinished: Boolean) {
+                if (isFinished)
+                    finish()
+            }
+
+            override fun save(isSaved: Boolean) {
+                if (isSaved)
+                    finish()
+            }
+
+            override fun delete(isDelete: Boolean) {
+                if (isDelete)
+                    postRVAdapter.removeData(this@WalkAfterActivity.position)
+            }
+        })
+    }
+
+    //WalkDialogFragment 에 넘겨준 메세지(ex.‘OO번째 산책’을 저장할까요?)를 저장하는 함수
+    private fun setWalkDialogBundle(msg: String) {
+        val bundle: Bundle = Bundle()
+        bundle.putString("msg", msg)
+
+        walkDialogFragment.arguments = bundle
     }
 }
