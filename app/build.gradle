@@ -35,6 +35,16 @@ android {
     dataBinding {
         enabled = true
     }
+
+// Java 8 사용을 위한 build.gradle 설정
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -86,4 +96,6 @@ dependencies {
 
     //Hashtag Helper
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
+
+    implementation "com.kakao.sdk:v2-user:2.8.4" // 카카오 로그인
 }

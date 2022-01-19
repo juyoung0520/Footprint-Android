@@ -21,6 +21,7 @@ import com.footprint.footprint.ui.main.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import com.kakao.sdk.user.UserApiClient
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -39,6 +40,16 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeStartbtnTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
+        }
+
+        binding.homeSettingIv.setOnClickListener {
+            UserApiClient.instance.unlink { error ->
+                if(error != null)
+                    Log.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                else
+                    Log.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+
+            }
         }
 
         initTB()
