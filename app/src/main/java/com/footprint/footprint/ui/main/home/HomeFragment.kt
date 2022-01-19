@@ -5,14 +5,10 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.google.android.gms.location.*
@@ -25,8 +21,6 @@ import com.footprint.footprint.ui.main.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -50,7 +44,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         initTB()
         initDate()
 
-        setPermission() //위치 정보 받아오기 위한 permission
+        setPermission()
+
+        //onStart
         requestLocation()
     }
 
@@ -74,6 +70,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeDaymonthVp.registerOnPageChangeCallback(changeCB)
     }
 
+    //일별/월별 목표 보여주기
     private fun setGoal(position: Int) {
         if (position == 0) {
             binding.homeDayGoalLayout.visibility = View.VISIBLE
@@ -112,7 +109,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
         var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
         val base_time = getTime(time)
-        Log.d("info1", "날짜: ${base_date} 시간: ${base_time}")
+        Log.d("info1", "날짜: ${base_date} 시간: ${time}")
 
         if (base_time >= "2000") {
             cal.add(Calendar.DATE, -1).toString()
@@ -126,7 +123,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     private fun getTime(time: String): String {
-        var result = when (time) {
+        return when (time) {
             in "00".."02" -> "2000" // 00~02
             in "03".."05" -> "2300" // 03~05
             in "06".."08" -> "0200" // 06~08
@@ -136,8 +133,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             in "18".."20" -> "1400" // 18~20
             else -> "1700"
         }
-
-        return result
     }
 
     private fun setPermission() {
@@ -281,7 +276,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onWeatherFailure(code: Int, message: String) {
         //오류 메시지 띄우기
-        Log.d("WEATHER/API2222", code.toString() + message)
+        Log.d("WEATHER/API-Failure", code.toString() + message)
     }
 
 

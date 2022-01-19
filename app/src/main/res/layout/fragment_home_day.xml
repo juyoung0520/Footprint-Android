@@ -41,7 +41,6 @@
         android:layout_height="wrap_content"
         android:text="@string/title_home_achieve"
         style="@style/tv_body_b_12"
-        android:textColor="@color/black_dark"
         android:elevation="320dp"
         app:layout_constraintBottom_toTopOf="@id/home_day_progress_tv"
         app:layout_constraintStart_toStartOf="@id/home_day_progress_tv"

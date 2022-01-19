@@ -76,6 +76,49 @@
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1787037037037037" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1787037037037037" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/bg_calweekbackground.xml" value="0.2841025641025641" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/bg_whitebluelineround.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/bg_whiteround.xml" value="0.28854166666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/bg_yellowround.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/btn_pause.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_back.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_footprint_union.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_cloud.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_clounmany.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_rain.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_shower.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_snowy.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_sunny.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_windy.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/activity_signin.xml" value="0.33" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/em.xml" value="0.5" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.67" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.33" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.5" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.25" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_photo.xml" value="0.25677083333333334" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_footprint_foreground.xml" value="0.21979166666666666" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/bg_grayround.xml" value="0.23958333333333334" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/bg_progress.xml" value="0.15833333333333333" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/bg_progressbar.xml" value="0.2359375" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/bg_whiteround.xml" value="0.1" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_bg_grayline_375x1.xml" value="0.14537037037037037" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_course_off.xml" value="0.21979166666666666" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_footprint_on.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_launcher_footprint_background.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_line16.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_line17.xml" value="0.23958333333333334" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_note_off.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_course.xml" value="0.264" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.33101851851851855" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.264" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.4" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.19947916666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.0" />
       </map>
     </option>
   </component>
