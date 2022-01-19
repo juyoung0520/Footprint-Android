@@ -6,6 +6,11 @@
         <item name="android:textSize">48dp</item>
     </style>
 
+    <style name="tv_headline_eb_40" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">40dp</item>
+    </style>
+
     <style name="tv_headline_eb_24" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_extra_bold</item>
         <item name="android:textSize">24dp</item>
@@ -75,6 +80,17 @@
     </style>
 
     <!-- normal  -->
+    <style name="tv_normal_24" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">24dp</item>
+        <item name="fontWeight">800</item>
+    </style>
+
+    <style name="tv_overline_16" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
     <style name="tv_caption_14" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">14dp</item>

@@ -4,14 +4,505 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/home_content_tv"
-        android:layout_width="wrap_content"
+    <!--Top-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:background="@color/primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--날짜와 날씨-->
+        <TextView
+            android:id="@+id/home_top_date_tv"
+            style="@style/tv_overline_16"
+            android:layout_width="107dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:text="2021.12.23 목"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/home_top_line_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_line16"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
+            app:layout_constraintStart_toEndOf="@id/home_top_date_tv"
+            app:layout_constraintTop_toTopOf="@+id/home_top_date_tv" />
+
+        <ImageView
+            android:id="@+id/home_top_weather_iv"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_weather_cloud"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
+            app:layout_constraintStart_toEndOf="@id/home_top_line_iv"
+            app:layout_constraintTop_toTopOf="@+id/home_top_line_iv" />
+
+        <TextView
+            android:id="@+id/home_weather_temp_tv"
+            style="@style/tv_overline_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
+            app:layout_constraintStart_toEndOf="@+id/home_top_weather_iv"
+            app:layout_constraintTop_toTopOf="@+id/home_top_date_tv" />
+
+        <TextView
+            android:id="@+id/home_weather_unit_tv"
+            style="@style/tv_caption_12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="°C"
+            android:textColor="@color/white"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
+            app:layout_constraintStart_toEndOf="@+id/home_weather_temp_tv"
+             />
+
+        <TextView
+            android:id="@+id/home_weather_con_tv"
+            style="@style/tv_caption_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="흐림"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_date_tv"
+            app:layout_constraintStart_toEndOf="@+id/home_weather_unit_tv"
+            app:layout_constraintTop_toTopOf="@+id/home_top_date_tv" />
+
+        <ImageView
+            android:id="@+id/home_setting_iv"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/ic_setting"
+            app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/home_top_line_iv" />
+
+        <!--문구와 유저 이름-->
+        <TextView
+            android:id="@+id/home_top_hello_tv"
+            style="@style/tv_headline_eb_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginStart="24dp"
+            android:text="@string/msg_home_hello"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_top_date_tv" />
+
+        <TextView
+            android:id="@+id/home_top_username_tv"
+            style="@style/tv_headline_eb_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            app:layout_constraintTop_toTopOf="@id/home_top_hello_tv"
+            app:layout_constraintStart_toStartOf="@id/home_top_weather_iv"
+            app:layout_constraintTop_toBottomOf="@id/home_top_date_tv" />
+
+        <TextView
+            android:id="@+id/home_top_userunit_tv"
+            style="@style/tv_headline_eb_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_home_userunit"
+            app:layout_constraintTop_toTopOf="@id/home_top_hello_tv"
+            app:layout_constraintStart_toEndOf="@id/home_top_username_tv"
+            app:layout_constraintTop_toBottomOf="@id/home_top_date_tv" />
+
+        <TextView
+            style="@style/tv_body_b_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_home_greetings"
+            android:textColor="#B3241F20"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/home_top_hello_tv"
+            app:layout_constraintTop_toBottomOf="@id/home_top_hello_tv" />
+
+        <!--발자국-->
+        <ImageView
+            android:id="@+id/top_footprint1_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="35dp"
+            android:layout_marginBottom="47dp"
+            android:src="@drawable/ic_tfootprint1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/top_footprint2_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/ic_tfootprint2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/top_footprint3_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="62dp"
+            android:layout_marginBottom="-7dp"
+            android:src="@drawable/ic_tfootprint3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--Middle: TabLayout+ViewPager-->
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/home_daymonth_tb"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:elevation="3dp"
+        android:textAlignment="center"
+        app:tabRippleColor="#00ff0000"
+
+        app:tabIndicatorColor="@color/primary_dark"
+        app:tabIndicatorHeight="4dp"
+
+        app:tabTextColor="@color/white_dark"
+        app:tabSelectedTextColor="@color/primary_dark"
+        app:tabTextAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintTop_toBottomOf="@id/home_top_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/home_daymonth_vp"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/home_daymonth_tb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!--Bottom: 목표와 산책 시작 버튼-->
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="홈 프레그먼트"
-        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_bg_grayline_375x1"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/home_daymonth_vp" />
+
+    //목표
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_day_goal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        app:layout_constraintTop_toBottomOf="@id/home_daymonth_vp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible">
+
+        //산책 시간
+
+        <TextView
+            android:id="@+id/home_day_goal_walk_title_tv"
+            style="@style/tv_body_b_12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginStart="51dp"
+            android:gravity="center"
+            android:text="@string/title_walktime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/home_day_goal_walk_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="39"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/secondary"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_walk_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_walk_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_walk_title_tv" />
+        <TextView
+            android:id="@+id/home_day_goal_walk_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_min_eng_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_walk_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_walk_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_walk_title_tv" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_line17"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_dist_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/home_day_goal_dist_tv"
+            app:layout_constraintStart_toEndOf="@id/home_day_goal_walk_tv"
+            app:layout_constraintEnd_toStartOf="@id/home_day_goal_dist_tv"/>
+
+
+        //거리
+        <TextView
+            android:id="@+id/home_day_goal_dist_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_distance"
+            style="@style/tv_body_b_12"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/home_day_goal_dist_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.1"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/black_dark"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_dist_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_dist_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_dist_title_tv" />
+        <TextView
+            android:id="@+id/home_day_goal_dist_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_distacnce_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_dist_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_dist_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_dist_title_tv" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_line17"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_dist_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/home_day_goal_dist_tv"
+            app:layout_constraintStart_toEndOf="@id/home_day_goal_dist_tv"
+            app:layout_constraintEnd_toStartOf="@id/home_day_goal_kcal_tv"/>
+
+        //칼로리
+        <TextView
+            android:id="@+id/home_day_goal_kcal_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_calorie"
+            style="@style/tv_body_b_12"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="51dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/home_day_goal_kcal_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="120"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/black_dark"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_kcal_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_kcal_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_kcal_title_tv" />
+        <TextView
+            android:id="@+id/home_day_goal_kcal_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_calroie_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_day_goal_kcal_tv"
+            app:layout_constraintStart_toStartOf="@id/home_day_goal_kcal_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_day_goal_kcal_title_tv" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_month_goal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        app:layout_constraintTop_toBottomOf="@id/home_daymonth_vp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible">
+
+        //산책 시간
+
+        <TextView
+            android:id="@+id/home_month_goal_walk_title_tv"
+            style="@style/tv_body_b_12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginStart="38dp"
+            android:gravity="center"
+            android:text="@string/title_sum_walktime"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/home_month_goal_walk_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="39"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/secondary"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_walk_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_walk_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_walk_title_tv" />
+        <TextView
+            android:id="@+id/home_month_goal_walk_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_min_eng_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_walk_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_walk_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_walk_title_tv" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_line17"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_dist_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/home_month_goal_dist_tv"
+            app:layout_constraintStart_toEndOf="@id/home_month_goal_walk_tv"
+            app:layout_constraintEnd_toStartOf="@id/home_month_goal_dist_tv"/>
+
+
+        //거리
+        <TextView
+            android:id="@+id/home_month_goal_dist_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_sum_distance"
+            style="@style/tv_body_b_12"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/home_month_goal_dist_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.1"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/black_dark"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_dist_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_dist_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_dist_title_tv" />
+        <TextView
+            android:id="@+id/home_month_goal_dist_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_distacnce_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_dist_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_dist_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_dist_title_tv" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_line17"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_dist_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/home_month_goal_dist_tv"
+            app:layout_constraintStart_toEndOf="@id/home_month_goal_dist_tv"
+            app:layout_constraintEnd_toStartOf="@id/home_month_goal_kcal_tv"/>
+
+        //칼로리
+        <TextView
+            android:id="@+id/home_month_goal_kcal_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_avr_calorie"
+            style="@style/tv_body_b_12"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="51dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/home_month_goal_kcal_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="120"
+            style="@style/tv_headline_eb_24"
+            android:textColor="@color/black_dark"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_kcal_title_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_kcal_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_kcal_title_tv" />
+        <TextView
+            android:id="@+id/home_month_goal_kcal_unit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/msg_avr_calroie_unit"
+            style="@style/tv_caption_12"
+            android:layout_marginTop="6dp"
+            app:layout_constraintTop_toBottomOf="@id/home_month_goal_kcal_tv"
+            app:layout_constraintStart_toStartOf="@id/home_month_goal_kcal_title_tv"
+            app:layout_constraintEnd_toEndOf="@id/home_month_goal_kcal_title_tv" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    //산책 시작
+   <TextView
+       android:id="@+id/home_startbtn_tv"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:background="@drawable/btn_start"
+       android:text="@string/action_startwalk"
+       style="@style/tv_headline_eb_18"
+       android:textColor="@color/white"
+       android:gravity="center"
+       android:elevation="5dp"
+       android:paddingBottom="5dp"
+       android:layout_marginTop="5dp"
+       app:layout_constraintTop_toBottomOf="@id/home_day_goal_layout"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

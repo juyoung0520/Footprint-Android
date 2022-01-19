@@ -3,16 +3,12 @@
 
     <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
 
+    //공통
     <!--공통-->
     <string name="action_cancel">취소</string>
     <string name="action_edit">편집</string>
     <string name="action_save">저장</string>
     <string name="action_delete">삭제</string>
-
-    <!--다이얼로그 프래그먼트-->
-    <string name="msg_delete_post">해당 기록을 삭제할까요?</string>
-    <string name="msg_save_footprint">‘OO번째 발자국’을 저장할까요?</string>
-    <string name="msg_cancel_footprint">‘OO번째 발자국’ 작성을 취소할까요?</string>
 
     <!--메뉴-->
     <string name="menu_home">홈</string>
@@ -21,11 +17,15 @@
     <string name="menu_mypage">마이</string>
 
     <!--액션-->
+    <string name="action_startwalk">산책 시작</string>
 
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>
     <string name="msg_calroie_unit">kcal</string>
+    <string name="msg_avr_calroie_unit">kcal/day</string>
     <string name="msg_pace_unit">걸음/분</string>
+    <string name="msg_min_eng_unit">min</string>
+    <string name="msg_min_ko_unit">분</string>
 
     <!--에러-->
 
@@ -35,16 +35,30 @@
     <string name="title_distance">거리</string>
     <string name="title_calorie">칼로리</string>
     <string name="title_pace">페이스</string>
+    <string name="title_sum_walktime">누적 산책시간</string>
+    <string name="title_sum_distance">누적 거리</string>
+    <string name="title_avr_calorie">평균 칼로리</string>
 
-    <!--글 작성하기-->
-    <string name="title_post">글 작성하기</string>
-    <string name="action_add_photo">사진 추가하기</string>
-    <string name="action_next">다음</string>
-    <string name="msg_input_tag">본문에 #을 이용해 태그를 입력해보세요! (최대 5개)</string>
-    <string name="msg_save_post">기록이 저장되었습니다.</string>
-    <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
-    <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
-    <string name="error_blank_content">내용을 입력해주세요.</string>
+
+    //화면 별
+    <!--홈-->
+    <string name="msg_home_hello">안녕하세요, </string>
+    <string name="msg_home_userunit">님!</string>
+    <string name="msg_home_greetings">오늘도 발자국을 남겨볼까요?</string>
+    <string name="title_home_achieve">달성률</string>
+    <string name="title_home_goal">오늘 목표</string>
+    <string name="title_mon">mon</string>
+    <string name="title_tue">tue</string>
+    <string name="title_wed">wed</string>
+    <string name="title_thu">thu</string>
+    <string name="title_fri">fri</string>
+    <string name="title_sat">sat</string>
+    <string name="title_sun">sun</string>
+
+    <!--다이얼로그 프래그먼트-->
+    <string name="msg_delete_post">해당 기록을 삭제할까요?</string>
+    <string name="msg_save_footprint">‘OO번째 발자국’을 저장할까요?</string>
+    <string name="msg_cancel_footprint">‘OO번째 발자국’ 작성을 취소할까요?</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
@@ -55,4 +69,14 @@
     <string name="title_view_more">더보기</string>
     <string name="title_view_short">간략히 보기</string>
 
+
+    <!--글 작성하기-->
+    <string name="title_post">글 작성하기</string>
+    <string name="action_add_photo">사진 추가하기</string>
+    <string name="action_next">다음</string>
+    <string name="msg_input_tag">본문에 #을 이용해 태그를 입력해보세요! (최대 5개)</string>
+    <string name="msg_save_post">기록이 저장되었습니다.</string>
+    <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
+    <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
+    <string name="error_blank_content">내용을 입력해주세요.</string>
 </resources>
