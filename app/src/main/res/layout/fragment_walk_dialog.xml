@@ -24,9 +24,9 @@
         android:gravity="center"
         android:text="@string/action_cancel"
         android:textAppearance="@style/tv_headline_eb_14"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/walk_dialog_action_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/walk_dialog_action_tv"
@@ -34,7 +34,6 @@
         android:layout_height="56dp"
         android:background="@drawable/bg_walk_dialog_action_tv"
         android:gravity="center"
-        android:text="@string/action_delete"
         android:textAppearance="@style/tv_headline_eb_14"
         android:textColor="@color/white_light"
         app:layout_constraintBottom_toBottomOf="@+id/walk_dialog_cancel_tv"

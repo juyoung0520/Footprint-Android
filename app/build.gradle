@@ -71,4 +71,7 @@ dependencies {
 
     //GPS API
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
