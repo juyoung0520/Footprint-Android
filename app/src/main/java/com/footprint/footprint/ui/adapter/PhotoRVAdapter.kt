@@ -52,6 +52,11 @@ class PhotoRVAdapter(private val layout: Int) : RecyclerView.Adapter<PhotoRVAdap
         notifyDataSetChanged()
     }
 
+    fun clearImgList() {
+        this.imgList.clear()
+        notifyDataSetChanged()
+    }
+
     //글 작성하기 화면에서 사용
     fun setMyItemClickListener(myItemClickListener: MyItemClickListener) {
         this.myItemClickListener = myItemClickListener

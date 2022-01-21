@@ -71,7 +71,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 setWalkState(true)  //화면에서 다시 돌아오면 산책 시간을 다시 측정한다.
 
-                if (it!=null)
+                if (it != null)
                     posts.posts.add(  //전역 변수인 posts 에 현재 기록한 post 데이터를 추가한다.
                         Gson().fromJson(
                             it,
@@ -348,18 +348,17 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         walkDialogFragment.show(requireActivity().supportFragmentManager, null)
 
-        walkDialogFragment.setMyDialogCallback(object: WalkDialogFragment.MyDialogCallback {
+        walkDialogFragment.setMyDialogCallback(object : WalkDialogFragment.MyDialogCallback {
             override fun finish(isFinished: Boolean) {
                 if (isFinished) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
                     val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
 
-                    if (posts.posts.size!=0)
+                    if (posts.posts.size != 0)
                         intent.putExtra("posts", Gson().toJson(posts))  //우선 임의로 저장한 기록만 넘겨줌
 
                     startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
                     (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-                }
-                else    //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
+                } else    //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
                     setWalkState(true)  //다시 타이머가 실행되도록
             }
 

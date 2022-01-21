@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
@@ -137,16 +138,12 @@ class PostDialogFragment() : DialogFragment(), TextWatcher {
                 photoRVAdapter.addImgList(imgList)
                 binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
 
-                if (uriList.isEmpty()) {
-                    binding.postDialogPhotoVp.visibility = View.GONE
-                    binding.postDialogPhotoIndicator.visibility = View.GONE
-                    binding.postDialogAddPhotoIv.visibility = View.VISIBLE
-                    binding.postDialogAddPhotoTv.visibility = View.VISIBLE
-                } else {
+                if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면
+                    setDeletePhotoUI()
+                } else {    //이미지를 선택했다면
                     binding.postDialogPhotoVp.visibility = View.VISIBLE
                     binding.postDialogPhotoIndicator.visibility = View.VISIBLE
-                    binding.postDialogAddPhotoIv.visibility = View.GONE
-                    binding.postDialogAddPhotoTv.visibility = View.GONE
+                    binding.postDialogAddPhotoTv.text = getString(R.string.action_delete_photo)
                 }
                 /*
                 //추후에 사용될 듯
@@ -180,9 +177,15 @@ class PostDialogFragment() : DialogFragment(), TextWatcher {
                 //현재 EditText 에 작성된 해시태그의 개수를 찾기 위한 코드
                 val hashtags = findHashTag()
 
+                //해시태그가 5개보다 많아지면
                 if (hashtags.size > 5) {
-                    Toast.makeText(requireContext(), "해시 태그는 5개까지 작성할 수 있습니다.", Toast.LENGTH_SHORT)
-                        .show()
+                    //"해시태그는 5개까지 작성할 수 있어요." 토스트 메세지 띄우기
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_hashtag_exceed_cnt),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                     textMatcherFlag = 0
                     binding.postDialogContentEt.addTextChangedListener(this)
                     binding.postDialogContentEt.removeRule(hashtagRule)
@@ -216,34 +219,44 @@ class PostDialogFragment() : DialogFragment(), TextWatcher {
 
         //갤러리 이동 전 퍼미션 체크
         binding.postDialogAddPhotoIv.setOnClickListener {
-            checkPermission()
+            if (binding.postDialogAddPhotoTv.text == getString(R.string.action_add_photo))
+                checkPermission()
+            else
+                setDeletePhotoUI()
         }
+
+        //사진 추가하기/사진 삭제하기 텍스트뷰 클릭 리스너
         binding.postDialogAddPhotoTv.setOnClickListener {
-            checkPermission()
+            if ((it as TextView).text == getString(R.string.action_add_photo))
+                checkPermission()
+            else
+                setDeletePhotoUI()
         }
 
         //저장 텍스트뷰 클릭 리스너
         binding.postDialogSaveTv.setOnClickListener {
-            if (binding.postDialogContentEt.text!!.isBlank())   //필수 데이터(기록 내용)가 입력됐는지 확인
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_blank_content),
-                    Toast.LENGTH_SHORT
-                ).show()
-            else {
-                //토스트 메세지 띄우기
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.msg_save_post),
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (binding.postDialogContentEt.text!!.isBlank() && imgList.isEmpty()) {  //필수 데이터(기록 내용)가 입력됐는지 확인
+                //"사진이나 글을 추가해주세요." 다이얼로그 화면 띄우기
+                val action =
+                    PostDialogFragmentDirections.actionPostDialogFragmentToMsgDialogFragment(
+                        getString(R.string.msg_add_photo_or_writing)
+                    )
+                findNavController().navigate(action)
+            } else {
+                dismiss()   //프래그먼트 종료
 
                 //지금까지 입력한 기록 데이터를 이전 화면(WalkMapFragment)으로 전달
                 findNavController().getBackStackEntry(R.id.walkMapFragment)?.savedStateHandle?.set(
                     "post",
                     Gson().toJson(setPostData())    //setPostData(): 지금까지 입력한 내용을 PostModel 에 바인딩
                 )
-                dismiss()
+
+                //"발자국을 남겼어요." 다이얼로그 화면 띄우기
+                val action =
+                    PostDialogFragmentDirections.actionPostDialogFragmentToMsgDialogFragment(
+                        getString(R.string.msg_leave_footprint)
+                    )
+                findNavController().navigate(action)
             }
         }
     }
@@ -251,7 +264,7 @@ class PostDialogFragment() : DialogFragment(), TextWatcher {
     private fun setPostData(): PostModel {
         var hashtags = findHashTag()
         if (hashtags.isNotEmpty() && hashtags.size > 5)
-            hashtags = hashtags.slice(0 .. 4) as java.util.ArrayList<String>
+            hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
 
         return PostModel(
             content = binding.postDialogContentEt.text.toString(),
@@ -259,6 +272,14 @@ class PostDialogFragment() : DialogFragment(), TextWatcher {
             time = SimpleDateFormat("HH:mm").format(System.currentTimeMillis()),
             hashTags = hashtags
         )
+    }
+
+    private fun setDeletePhotoUI() {
+        binding.postDialogPhotoVp.visibility = View.GONE
+        binding.postDialogPhotoIndicator.visibility = View.GONE
+        binding.postDialogAddPhotoTv.text = getString(R.string.action_add_photo)
+        imgList.clear()
+        photoRVAdapter.clearImgList()
     }
 
     /*//추후에 사용될 듯

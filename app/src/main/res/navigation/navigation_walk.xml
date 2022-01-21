@@ -17,6 +17,22 @@
         android:id="@+id/postDialogFragment"
         android:name="com.footprint.footprint.ui.dialog.PostDialogFragment"
         android:label="fragment_post_dialog"
-        tools:layout="@layout/fragment_post_dialog" />
+        tools:layout="@layout/fragment_post_dialog" >
+        <action
+            android:id="@+id/action_postDialogFragment_to_msgDialogFragment"
+            app:destination="@id/msgDialogFragment" />
+        <argument
+            android:name="msg"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/msgDialogFragment"
+        android:name="com.footprint.footprint.ui.dialog.MsgDialogFragment"
+        android:label="fragment_msg_dialog"
+        tools:layout="@layout/fragment_msg_dialog" >
+        <argument
+            android:name="msg"
+            app:argType="string" />
+    </dialog>
 
 </navigation>
