@@ -10,6 +10,7 @@
         <item name="colorSecondaryVariant">@color/secondary_dark</item>
         <item name="colorOnSecondary">@color/black_dark</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/black_dark</item>
 
         <!-- Remove the title bar -->
         <item name="windowNoTitle">true</item>

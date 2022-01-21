@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.main.home
+package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
 import com.footprint.footprint.R
