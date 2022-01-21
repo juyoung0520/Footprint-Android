@@ -79,6 +79,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                         callback = callback
                     )
                 } else if (token != null) {
+                    Toast.makeText(this, "카카오톡 로그인 완료", Toast.LENGTH_SHORT).show()
                     Log.i("KAKAO/API-SUCCESS", "카카오톡으로 로그인 성공 ${token.accessToken}")
                     signupKakao()
                 }
