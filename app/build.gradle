@@ -24,6 +24,8 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -76,7 +78,7 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    // Naver Map SDK
+    //Naver Map SDK
     implementation "com.naver.maps:map-sdk:$map_version"
 
     //CircleProgressBar
@@ -90,6 +92,13 @@ dependencies {
 
     //GPS API
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    //Calendar
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.9'
 
     //Hashtag Helper
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'

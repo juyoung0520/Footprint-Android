@@ -3,9 +3,8 @@
     <item>
         <shape android:shape="oval">
             <stroke
-                android:color="@color/primary"
+                android:color="@color/primary_light"
                 android:width="2dp"/>
         </shape>
     </item>
-
 </layer-list>

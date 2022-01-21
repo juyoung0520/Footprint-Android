@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.main.home
+package com.footprint.footprint.ui.walk
 
 import android.content.Intent
 import android.graphics.PointF

@@ -19,7 +19,7 @@
     <string name="menu_home">홈</string>
     <string name="menu_calendar">산책기록</string>
     <string name="menu_course">코스추천</string>
-    <string name="menu_mypage">마이</string>
+    <string name="menu_mypage">마이페이지</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -48,7 +48,6 @@
     <string name="title_sum_walktime">누적 산책시간</string>
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
-
 
     //화면 별
     <!--로그인-->
@@ -84,13 +83,13 @@
     <string name="msg_home_greetings">오늘도 발자국을 남겨볼까요?</string>
     <string name="title_home_achieve">달성률</string>
     <string name="title_home_goal">오늘 목표</string>
-    <string name="title_mon">mon</string>
-    <string name="title_tue">tue</string>
-    <string name="title_wed">wed</string>
-    <string name="title_thu">thu</string>
-    <string name="title_fri">fri</string>
-    <string name="title_sat">sat</string>
-    <string name="title_sun">sun</string>
+    <string name="title_mon">Mon</string>
+    <string name="title_tue">Tue</string>
+    <string name="title_wed">Wed</string>
+    <string name="title_thu">Thu</string>
+    <string name="title_fri">Fri</string>
+    <string name="title_sat">Sat</string>
+    <string name="title_sun">Sun</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
@@ -121,6 +120,10 @@
     <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
     <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
     <string name="error_blank_content">내용을 입력해주세요.</string>
+
+    <!--산책일기-->
+    <string name="msg_no_walk">산책기록이 없어요!</string>
+    <string name="action_today">TODAY</string>
     <string name="error_hashtag_exceed_cnt">해시태그는 5개까지 작성할 수 있어요.</string>
 
     <!--개별 산책 화면-->

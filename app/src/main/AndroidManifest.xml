@@ -73,14 +73,14 @@
             android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.main.home.WalkAfterActivity"
+            android:name=".ui.walk.WalkAfterActivity"
             android:exported="false" />
         <activity
             android:name=".ui.onboarding.OnBoardingActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.main.home.WalkActivity"
-            android:exported="true" />
+            android:name=".ui.walk.WalkActivity"
+            android:exported="true"/>
 
     </application>
 

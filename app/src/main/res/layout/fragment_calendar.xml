@@ -2,16 +2,272 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/calendar_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/primary"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/calendar_back_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/tv_subtitle_b_16"
+            android:src="@drawable/ic_back"
+            app:layout_constraintTop_toTopOf="@+id/calendar_title_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/calendar_title_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20.23dp"
+            android:text="00님의 발자국"
+            style="@style/tv_headline_eb_16"
+            app:layout_constraintStart_toEndOf="@id/calendar_back_iv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_search_iv"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <ImageView
+            android:id="@+id/calendar_search_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search_24"
+            app:layout_constraintTop_toTopOf="@+id/calendar_back_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/calendar_back_iv"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
-        android:id="@+id/calendar_content_tv"
+        android:id="@+id/calendar_month_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="캘린더 프레그먼트"
+        android:layout_marginTop="26dp"
+        android:text="2021.01"
+        style="@style/tv_headline_eb_16"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_top_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/calendar_left_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_left"
+        app:layout_constraintTop_toTopOf="@+id/calendar_month_title_tv"
+        app:layout_constraintEnd_toStartOf="@+id/calendar_month_title_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/calendar_month_title_tv"/>
+
+    <ImageView
+        android:id="@+id/calendar_right_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_right"
+        app:layout_constraintTop_toTopOf="@+id/calendar_month_title_tv"
+        app:layout_constraintStart_toEndOf="@+id/calendar_month_title_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/calendar_month_title_tv"/>
+
+    <TextView
+        android:id="@+id/calendar_today_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_today"
+        android:textColor="@color/primary"
+        style="@style/tv_headline_eb_12"
+        app:layout_constraintTop_toTopOf="@+id/calendar_month_title_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/calendar_month_title_tv"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/calendar_calendar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_month_title_tv">
+
+        <TextView
+            android:id="@+id/calendar_sun_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_sun"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/calendar_mon_tv"
+            app:layout_constraintBottom_toTopOf="@id/calendar_walk_cv"/>
+
+        <TextView
+            android:id="@+id/calendar_mon_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_mon"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_sun_tv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_tue_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_tue_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_tue"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_mon_tv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_wed_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_wed_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_tue"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_tue_tv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_thu_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_thu_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_tue"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_wed_tv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_fri_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_fri_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_tue"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_thu_tv"
+            app:layout_constraintEnd_toStartOf="@id/calendar_sat_tv"/>
+
+        <TextView
+            android:id="@+id/calendar_sat_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/title_sat"
+            android:gravity="center"
+            style="@style/tv_body_b_12"
+            app:layout_constraintTop_toTopOf="@+id/calendar_sun_tv"
+            app:layout_constraintStart_toEndOf="@+id/calendar_fri_tv"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.kizitonwose.calendarview.CalendarView
+            android:id="@+id/calendar_walk_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/calendar_sun_tv"
+            app:cv_dayViewResource="@layout/item_calendar_day"
+            app:cv_inDateStyle="allMonths"
+            app:cv_outDateStyle="endOfRow"
+            app:cv_maxRowCount="6"
+            app:cv_orientation="horizontal"
+            app:cv_scrollMode="paged"/>
+
+        <View
+            android:id="@+id/calendar_loading_bg_v"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            app:layout_constraintTop_toBottomOf="@id/calendar_sun_tv"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/calendar_divider_v"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="9dp"
+        android:background="@color/white_dark"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_calendar_layout"/>
+
+    <TextView
+        android:id="@+id/calendar_selected_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="24dp"
+        android:text="2021.12.20 월"
+        style="@style/tv_body_b_14"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_divider_v"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/calendar_walk_number_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="15dp"
+        android:layout_marginEnd="24dp"
+        android:text="총 0회"
+        style="@style/tv_body_b_14"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_divider_v"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/calendar_record_bakground_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/calendar_selected_day_tv"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    
+    <TextView
+        android:id="@+id/calendar_hint_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_no_walk"
+        android:textColor="@color/gray"
+        style="@style/tv_subtitle_b_16"
+        app:layout_constraintTop_toTopOf="@+id/calendar_record_bakground_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_walk_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="28dp"
+        app:layout_constraintTop_toTopOf="@+id/calendar_record_bakground_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:listitem="@layout/item_walk"/>
+
+    <ProgressBar
+        android:id="@+id/calendar_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
