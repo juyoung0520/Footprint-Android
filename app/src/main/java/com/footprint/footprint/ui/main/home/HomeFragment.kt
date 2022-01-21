@@ -42,15 +42,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
-        binding.homeSettingIv.setOnClickListener {
-            UserApiClient.instance.unlink { error ->
-                if(error != null)
-                    Log.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
-                else
-                    Log.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
 
-            }
-        }
 
         initTB()
         initDate()

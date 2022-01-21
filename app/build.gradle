@@ -96,6 +96,9 @@ dependencies {
 
     //Hashtag Helper
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
+    
+    //카카오 로그인 & 구글 로그인 
+    implementation "com.kakao.sdk:v2-user:2.8.4"
+    implementation 'com.google.android.gms:play-services-auth:20.0.1'
 
-    implementation "com.kakao.sdk:v2-user:2.8.4" // 카카오 로그인
 }
