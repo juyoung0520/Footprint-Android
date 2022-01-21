@@ -75,7 +75,7 @@
     <string name="title_view_short">간략히 보기</string>
 
     <!--글 작성하기-->
-    <string name="title_post">글 작성하기</string>
+    <string name="title_leave_footprint">발자국 남기기</string>
     <string name="action_add_photo">사진 추가하기</string>
     <string name="action_delete_photo">사진 삭제하기</string>
     <string name="action_next">다음</string>
