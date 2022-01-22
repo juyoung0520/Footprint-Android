@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import kotlin.math.roundToInt
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
@@ -15,10 +16,10 @@ fun getDeiviceWidth(): Int {
 
 fun convertDpToPx(context: Context, dp: Int): Int {
     val density = context.resources.displayMetrics.density
-    return Math.round(dp * density)
+    return (dp * density).roundToInt()
 }
 
 fun convertPxToDp(context: Context, px: Int): Int {
     val density = context.resources.displayMetrics.density
-    return Math.round(px / density)
+    return (px / density).roundToInt()
 }

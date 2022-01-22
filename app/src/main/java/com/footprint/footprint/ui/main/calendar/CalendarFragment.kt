@@ -26,6 +26,7 @@ import java.time.Year
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
+import kotlin.math.roundToInt
 
 class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
@@ -37,8 +38,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun initCalendar() {
-        val width = getDeiviceWidth()
-        val cellWidth = width / 7
+        val width = getDeiviceWidth() * 0.9
+        val cellWidth = (width / 7).roundToInt()
 
         binding.calendarWalkCv.daySize = Size(cellWidth, convertDpToPx(requireContext(), 40))
 
