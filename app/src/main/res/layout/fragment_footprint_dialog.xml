@@ -7,7 +7,7 @@
     android:background="@drawable/bg_post_dialog"
     android:paddingTop="9dp"
     android:paddingBottom="24dp"
-    tools:context=".ui.dialog.PostDialogFragment">
+    tools:context=".ui.dialog.FootprintDialogFragment">
 
     <TextView
         android:id="@+id/post_dialog_cancel_tv"

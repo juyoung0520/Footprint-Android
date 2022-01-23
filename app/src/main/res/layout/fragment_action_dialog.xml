@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_fragment"
-    tools:context=".ui.dialog.WalkDialogFragment">
+    tools:context=".ui.dialog.ActionDialogFragment">
 
     <TextView
         android:id="@+id/walk_dialog_msg_tv"
