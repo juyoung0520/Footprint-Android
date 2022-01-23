@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
-import com.footprint.footprint.ui.dialog.WalkDialogFragment
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
     override fun initAfterBinding() {
@@ -13,12 +13,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
             val bundle: Bundle = Bundle()
             bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
 
-            val walkDialogFragment: WalkDialogFragment = WalkDialogFragment()
-            walkDialogFragment.arguments = bundle
+            val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
+            actionDialogFragment.arguments = bundle
 
-            walkDialogFragment.show(supportFragmentManager, null)
+            actionDialogFragment.show(supportFragmentManager, null)
 
-            walkDialogFragment.setMyDialogCallback(object: WalkDialogFragment.MyDialogCallback {
+            actionDialogFragment.setMyDialogCallback(object: ActionDialogFragment.MyDialogCallback {
                 //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
                 override fun finish(isFinished: Boolean) {
                     if (isFinished)
