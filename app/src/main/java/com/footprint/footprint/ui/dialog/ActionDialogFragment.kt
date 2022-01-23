@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import com.footprint.footprint.R
-import com.footprint.footprint.databinding.FragmentWalkDialogBinding
+import com.footprint.footprint.databinding.FragmentActionDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils
 
-class WalkDialogFragment() : DialogFragment() {
-    private lateinit var binding: FragmentWalkDialogBinding
+class ActionDialogFragment() : DialogFragment() {
+    private lateinit var binding: FragmentActionDialogBinding
     private lateinit var myDialogCallback: MyDialogCallback
 
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
@@ -35,7 +35,7 @@ class WalkDialogFragment() : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentWalkDialogBinding.inflate(inflater, container, false)
+        binding = FragmentActionDialogBinding.inflate(inflater, container, false)
 
         //다이얼로그 프래그먼트 모서리 둥글게
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -51,7 +51,7 @@ class WalkDialogFragment() : DialogFragment() {
 
         DialogFragmentUtils.dialogFragmentResize(
             requireContext(),
-            this@WalkDialogFragment,
+            this@ActionDialogFragment,
             0.9f,
             0.24f
         )
