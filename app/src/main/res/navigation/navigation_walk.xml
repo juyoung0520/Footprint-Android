@@ -10,20 +10,28 @@
         android:name="com.footprint.footprint.ui.main.home.WalkMapFragment"
         android:label="walkMapFragment">
         <action
-            android:id="@+id/action_walkMapFragment_to_postDialogFragment"
-            app:destination="@id/postDialogFragment" />
-    </fragment>
-    <dialog
-        android:id="@+id/postDialogFragment"
-        android:name="com.footprint.footprint.ui.dialog.PostDialogFragment"
-        android:label="fragment_post_dialog"
-        tools:layout="@layout/fragment_post_dialog" >
+            android:id="@+id/action_walkMapFragment_to_footprintDialogFragment"
+            app:destination="@id/footprintDialogFragment" />
         <action
-            android:id="@+id/action_postDialogFragment_to_msgDialogFragment"
+            android:id="@+id/action_walkMapFragment_to_msgDialogFragment"
             app:destination="@id/msgDialogFragment" />
         <argument
             android:name="msg"
             app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/footprintDialogFragment"
+        android:name="com.footprint.footprint.ui.dialog.FootprintDialogFragment"
+        android:label="fragment_post_dialog"
+        tools:layout="@layout/fragment_footprint_dialog" >
+        <action
+            android:id="@+id/action_footprintDialogFragment_to_msgDialogFragment"
+            app:destination="@id/msgDialogFragment" />
+        <argument
+            android:name="footprint"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
     </dialog>
     <dialog
         android:id="@+id/msgDialogFragment"

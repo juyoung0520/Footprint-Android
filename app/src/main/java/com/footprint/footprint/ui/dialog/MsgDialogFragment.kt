@@ -3,14 +3,12 @@ package com.footprint.footprint.ui.dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
-import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMsgDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils
 
@@ -46,7 +44,8 @@ class MsgDialogFragment : DialogFragment() {
     }
 
     private fun initUI() {
-        binding.msgDialogMsgTv.text = args.msg
+        if (args.msg != null)
+            binding.msgDialogMsgTv.text = args.msg
     }
 
     private fun setMyClickListener() {

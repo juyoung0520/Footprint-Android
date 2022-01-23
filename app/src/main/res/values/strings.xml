@@ -64,6 +64,7 @@
     <string name="msg_stop_realtime_record">실시간 기록을 중지할까요?</string>
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
+    <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
