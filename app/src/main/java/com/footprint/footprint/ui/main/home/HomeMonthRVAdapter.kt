@@ -4,26 +4,13 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
-import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
+class HomeMonthRVAdapter(private val dataList: ArrayList<Int>, private val today: Int, private val firstDateIdx: Int, private val lastDateIdx: Int, private val margin:Int) :
     RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
-
-    var dataList: ArrayList<Int> = arrayListOf()
-
-    //커스텀 캘린더 클래스를 이용하여 날짜 세팅
-    var homemonthCalendar: HomeMonthCalendar = HomeMonthCalendar(date)
-
-    init {
-        homemonthCalendar.initBaseCalendar() //init 후
-        dataList = homemonthCalendar.dateList //datelist -> datalist에 전달
-    }
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
@@ -38,15 +25,10 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
 
-        val days = dataList.size
-        if(days < 42){
-            //5주 기준
-            if (position < 7) params.topMargin = 0
-            else params.topMargin = 60
+        if(position < 7){
+            params.topMargin = margin/6
         }else{
-            //6주 기준
-            if (position < 7) params.topMargin = 0
-            else params.topMargin = 30
+            params.topMargin = margin/4
         }
 
         holder.itemView.layoutParams = params
@@ -60,18 +42,13 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
     inner class ViewHolder(val binding: ItemHomeMonthBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Int, position: Int) {
-            //첫날, 마지막날 세팅
-            val firstDateIndex = homemonthCalendar.prevTail
-            val lastDateIndex = dataList.size - homemonthCalendar.nextHead - 1
-
             binding.itemHomeMonthDayTv.text = data.toString()
 
             /*스타일*/
             // 오늘 날짜 bold체로
-            var dateString: String = SimpleDateFormat("dd", Locale.KOREA).format(date)
-            var dateInt = dateString.toInt()
+            var dateInt = today
             if (dataList[position] == dateInt) {
-                binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_body_b_12)
+                binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
             }
 
             //프로그레스바 표현
@@ -81,13 +58,13 @@ class HomeMonthRVAdapter(val calLayout: LinearLayout, val date: Date) :
             }
 
             // 현재 월의 1일 이전, 현재 월의 마지막일 이후 값의 텍스트를 회색처리
-            if (position < firstDateIndex || position > lastDateIndex) {
+            if (position < firstDateIdx || position > lastDateIdx) {
                 binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#E1E2E1"))
                 binding.itemHomeMonthDayTv.background = null
                 binding.itemHomeMonthDayPb.visibility = View.GONE
             }
 
-
         }
     }
+
 }

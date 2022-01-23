@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.main.home
 
 import android.content.Intent
 import android.Manifest
+import android.R.id
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.net.Uri
@@ -9,6 +10,8 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
+import androidx.core.view.marginTop
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.google.android.gms.location.*
@@ -26,13 +29,20 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import android.R.id.text1
+
+import android.view.ViewGroup
+import android.R.id.text1
+import android.content.Context
+import android.R.id.text1
+
+
+
+
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
 
-    //날씨 위한 변수
-    var nx = "55"
-    var ny = "127"
     lateinit var weatherService: WeatherService
 
     override fun initAfterBinding() {
@@ -42,6 +52,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
+        //상단바 크기 -> Top 띄워주기
+        val height = getStatusBarHeightDP(requireContext())
+        Log.d("Height", height.toString())
+        binding.homeTopLayout.setPadding(0, height, 0,0)
 
 
         initTB()
@@ -227,7 +241,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                     }
                 }
                 "1" -> "비"
-                "2" -> "비/눈"
+                "2" -> "비 또는 눈"
                 "3" -> "눈"
                 "4" -> "소나기"
                 else -> "null"
@@ -260,7 +274,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
-
         //UI 변경
         binding.homeWeatherTempTv.text = tmp
         binding.homeWeatherConTv.text = weatherValue
@@ -271,6 +284,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             "소나기" -> R.drawable.ic_weather_shower
             "비" -> R.drawable.ic_weather_rain
             "눈" -> R.drawable.ic_weather_snowy
+            "비 또는 눈" -> R.drawable.ic_weather_snoworrain
             "바람" -> R.drawable.ic_weather_windy
             else -> R.drawable.ic_weather_sunny
         }
@@ -282,5 +296,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         Log.d("WEATHER/API-Failure", code.toString() + message)
     }
 
+    fun getStatusBarHeightDP(context: Context): Int {
+        var result = 0
+        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimension(resourceId).toInt()
+        }
+        return result
+    }
 
 }

@@ -1,7 +1,11 @@
 package com.footprint.footprint.ui.signin
 
+import android.R.id
+import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.footprint.footprint.databinding.ActivitySigninBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -21,6 +25,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import android.R.id.text1
+import androidx.constraintlayout.widget.ConstraintLayout
+import gun0912.tedimagepicker.util.ToastUtil.context
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate) {
@@ -47,8 +54,33 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
 
+        initXML()
     }
 
+    private fun initXML() {
+        val density = context.resources?.displayMetrics?.density
+        val statusbarHeight = getStatusBarHeightDP(this) + dp2px(density!!, 10)
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.setMargins(0, statusbarHeight, 0, 0) // 왼쪽, 위, 오른쪽, 아래 순서입니다.
+        binding.signinTopLayout.layoutParams = params
+    }
+
+    //dp to px 변환 함수 (params)
+    private fun dp2px(density:Float, dp: Int): Int {
+        return Math.round(dp.toFloat() * density)
+    }
+
+    fun getStatusBarHeightDP(context: Context): Int {
+        var result = 0
+        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimension(resourceId).toInt()
+        }
+        return result
+    }
 
     /*Funtion-Kakao*/
     //로그인

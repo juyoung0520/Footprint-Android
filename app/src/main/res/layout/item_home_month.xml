@@ -18,7 +18,7 @@
 
         app:progress_stroke_cap="round"
         app:progress_stroke_width="3dp"
-        app:progress_text_color="#ffffff"
+        app:progress_text_color="#00ffffff"
         app:style="solid_line"
         android:visibility="invisible"
         />

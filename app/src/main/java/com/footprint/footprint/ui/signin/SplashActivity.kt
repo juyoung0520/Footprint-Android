@@ -65,7 +65,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             }
 
             Log.d("AUTO-LOGIN/FLAG", "FLAG AUTO")
-            autoLogin()
+            autoLogin() //3번함수
         }
     }
 

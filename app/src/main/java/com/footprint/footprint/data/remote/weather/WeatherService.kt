@@ -25,7 +25,7 @@ class WeatherService(view: WeatherView) {
                 ) {
                     val header = response.body()!!.response.header
 
-                    Log.d("WEATHER/API", "hello")
+                    Log.d("WEATHER/API-ASCYNC", "Onresponse, resultCode는 ${header.resultCode} resultMsg는 ${header.resultMsg}")
                     when (header.resultCode) {
                         0 -> {
                             val it: List<ITEM> = response.body()!!.response.body.items.item
