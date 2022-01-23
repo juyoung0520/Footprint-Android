@@ -2,36 +2,36 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navigation_walk"
-    app:startDestination="@id/walkMapFragment">
+    android:id="@+id/navigation_walk_after"
+    app:startDestination="@+id/walkConfirmFragment">
 
     <fragment
-        android:id="@+id/walkMapFragment"
-        android:name="com.footprint.footprint.ui.main.home.WalkMapFragment"
-        android:label="walkMapFragment">
+        android:id="@+id/walkConfirmFragment"
+        android:name="com.footprint.footprint.ui.main.home.WalkConfirmFragment"
+        android:label="WalkConfirmFragment" >
         <action
-            android:id="@+id/action_walkMapFragment_to_footprintDialogFragment"
+            android:id="@+id/action_walkConfirmFragment_to_footprintDialogFragment"
             app:destination="@id/footprintDialogFragment" />
-        <action
-            android:id="@+id/action_walkMapFragment_to_msgDialogFragment"
-            app:destination="@id/msgDialogFragment" />
         <argument
-            android:name="msg"
+            android:name="posts"
             app:argType="string" />
+        <action
+            android:id="@+id/action_walkConfirmFragment_to_msgDialogFragment"
+            app:destination="@id/msgDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/footprintDialogFragment"
         android:name="com.footprint.footprint.ui.dialog.FootprintDialogFragment"
-        android:label="fragment_post_dialog"
+        android:label="fragment_footprint_dialog"
         tools:layout="@layout/fragment_footprint_dialog" >
-        <action
-            android:id="@+id/action_footprintDialogFragment_to_msgDialogFragment"
-            app:destination="@id/msgDialogFragment" />
         <argument
             android:name="footprint"
             app:argType="string"
             app:nullable="true"
             android:defaultValue="" />
+        <action
+            android:id="@+id/action_footprintDialogFragment_to_msgDialogFragment"
+            app:destination="@id/msgDialogFragment" />
     </dialog>
     <dialog
         android:id="@+id/msgDialogFragment"
@@ -42,5 +42,4 @@
             android:name="msg"
             app:argType="string" />
     </dialog>
-
 </navigation>
