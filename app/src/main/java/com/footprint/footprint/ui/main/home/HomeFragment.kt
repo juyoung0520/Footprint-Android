@@ -112,13 +112,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
         var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
         val base_time = getTime(time)
-        Log.d("info1", "날짜: ${base_date} 시간: ${time}")
+        Log.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
 
         if (base_time >= "2000") {
             cal.add(Calendar.DATE, -1).toString()
             base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
         }
-        Log.d("info", "최종날짜: ${base_date} 최종시간: ${base_time}")
+        Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
 
         weatherService = WeatherService(this)
@@ -143,7 +143,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             override fun onPermissionGranted() {
                 //허용 시
                 //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
-                Log.d("permission", "user GPS permission 허용")
+                Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -159,7 +159,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                         }
                     }.show()
                 //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
-                Log.d("permission", "user GPS permission 거절")
+                Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }
 
@@ -175,13 +175,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        Log.d("requestLocation", "service 요청")
+        Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
         try {
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 interval = 60 * 60 * 1000 //요청 간격 1hour
-                Log.d("requestLocation", "request")
+                Log.d("WEATHER/LOCATION-REQUEST-OK", "위치 request")
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -192,8 +192,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            Log.d("requestLocation", "rs.x: ${rs.x} rs.y: ${rs.y}")
-                            Log.d("requestLocation-location", location.toString())
+                            Log.d("WEATHER/LOCATION-RESULT-LL", "위경도 "+location.toString())
+                            Log.d("WEATHER/LOCATION-RESULT-XY", "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}")
 
                             setWeather(rs.x.toInt(), rs.y.toInt())
                         }
@@ -244,7 +244,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun onWeatherSuccess(items: List<ITEM>) {
-        Log.d("response", items.toString())
+        Log.d("WEATHER/API-SUCCESS", items.toString())
 
         val size = items.size
         var tmp: String = "0"

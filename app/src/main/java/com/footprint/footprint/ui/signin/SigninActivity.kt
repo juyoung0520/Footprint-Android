@@ -137,7 +137,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 //구글 로그인 성공
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                Toast.makeText(this, "구글 로그인 완료", Toast.LENGTH_SHORT).show()
+                Log.d("GOOGLE/API-SUCCESS", "구글 로그인 성공")
                 signupGoogle(task)
             }
         }
@@ -169,7 +169,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             startNextActivity(MainActivity::class.java)
             finish()
         } catch (e: ApiException) {
-            Log.w("failed", "signInResult:failed code=" + e.statusCode)
+            Log.w("GOOGLE/SIGNUP-FAILURE", "signInResult:failed code=" + e.statusCode)
         }
     }
 
