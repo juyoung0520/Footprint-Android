@@ -14,10 +14,10 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
-import com.footprint.footprint.model.PostModel
-import com.footprint.footprint.model.PostsModel
+import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.model.FootprintsModel
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.dialog.WalkDialogFragment
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -45,7 +45,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private var stopCount = 0
 
-    private val posts: PostsModel = PostsModel() //지금까지 사용자가 기록한 총 데이터
+    private val footprints: FootprintsModel = FootprintsModel() //지금까지 사용자가 기록한 총 데이터
 
     override fun initAfterBinding() {
         setBinding()
@@ -72,10 +72,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 setWalkState(true)  //화면에서 다시 돌아오면 산책 시간을 다시 측정한다.
 
                 if (it != null)
-                    posts.posts.add(  //전역 변수인 posts 에 현재 기록한 post 데이터를 추가한다.
+                    footprints.footprints.add(  //전역 변수인 posts 에 현재 기록한 post 데이터를 추가한다.
                         Gson().fromJson(
                             it,
-                            PostModel::class.java
+                            FootprintModel::class.java
                         )
                     )
             }
@@ -91,10 +91,13 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 putMarker(pathArray.lastIndex, R.drawable.ic_pin_stroke)
             }
 
-            if (posts.posts.size >= 9) {  //기록이 이미 9개가 됐으면
-
+            if (footprints.footprints.size >= 9) {  //기록이 이미 9개가 됐으면
+                //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
+                val action = WalkMapFragmentDirections.actionWalkMapFragmentToMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
+                findNavController().navigate(action)
             } else {    //아직 9개가 안됐으면
-                findNavController().navigate(R.id.postDialogFragment)  //글 작성하기 다이얼로그 화면 띄우기
+                val action = WalkMapFragmentDirections.actionWalkMapFragmentToFootprintDialogFragment()
+                findNavController().navigate(R.id.footprintDialogFragment)  //글 작성하기 다이얼로그 화면 띄우기
             }
         }
 
@@ -343,18 +346,18 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         val bundle: Bundle = Bundle()
         bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
 
-        val walkDialogFragment: WalkDialogFragment = WalkDialogFragment()
-        walkDialogFragment.arguments = bundle
+        val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
+        actionDialogFragment.arguments = bundle
 
-        walkDialogFragment.show(requireActivity().supportFragmentManager, null)
+        actionDialogFragment.show(requireActivity().supportFragmentManager, null)
 
-        walkDialogFragment.setMyDialogCallback(object : WalkDialogFragment.MyDialogCallback {
+        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun finish(isFinished: Boolean) {
                 if (isFinished) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
                     val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
 
-                    if (posts.posts.size != 0)
-                        intent.putExtra("posts", Gson().toJson(posts))  //우선 임의로 저장한 기록만 넘겨줌
+                    if (footprints.footprints.size != 0)
+                        intent.putExtra("posts", Gson().toJson(footprints))  //우선 임의로 저장한 기록만 넘겨줌
 
                     startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
                     (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
