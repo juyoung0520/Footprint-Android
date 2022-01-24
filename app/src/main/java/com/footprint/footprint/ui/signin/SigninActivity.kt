@@ -187,9 +187,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             val account = completedTask.getResult(ApiException::class.java)
             val email = account?.email.toString()
             val displayName = account?.displayName.toString()
-            val token = account?.idToken.toString()
-            val scope = account?.grantedScopes.toString()
             val id = account?.id.toString()
+            val token = account.idToken.toString()
+            val scope = account?.grantedScopes.toString()
 
             newUser = User(id, displayName, email)
 

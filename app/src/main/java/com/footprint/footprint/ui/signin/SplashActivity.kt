@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.signin
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -31,6 +32,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private fun checkGoogleLogin() {
         Log.d("AUTO-LOGIN/FLAG", "FLAG GOOGLE")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_login_client_id))
             .requestEmail() // email addresses도 요청함
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this@SplashActivity, gso)

@@ -2,6 +2,7 @@
     <string name="app_name">발자국</string>
 
     <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
+    <string name="google_login_client_id" translatable="false">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</string>
     <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
     <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
 
