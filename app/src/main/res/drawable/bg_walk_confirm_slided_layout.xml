@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- activity_walk_after.xml walk_after_slided_layout -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_walk_after.xml walk_after_slided_layout(walk_after 에서 이름바뀜) -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
