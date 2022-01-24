@@ -6,6 +6,8 @@ import android.widget.Toast
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.utils.removeLoginStatus
+import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -65,7 +67,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             }
 
             Log.d("AUTO-LOGIN/FLAG", "FLAG AUTO")
-            autoLogin() //3번함수
+            autoLogin()
         }
     }
 
@@ -86,12 +88,14 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             //Main Activity (Kakao)
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
             Log.d("AUTO-LOGIN/KAKAO", "Kakao 계정으로 로그인하였습니다.")
+            saveLoginStatus(this, "kakao")
             startNextActivity(MainActivity::class.java)
             finish()
         } else if (isGoogleLogin && !isKakaoLogin) {
             //Main Activity(Google)
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
             Log.d("AUTO-LOGIN/GOOGLE", "Google 계정으로 로그인하였습니다.")
+            saveLoginStatus(this, "google")
             startNextActivity(MainActivity::class.java)
             finish()
         } else if (!isGoogleLogin && !isKakaoLogin) {

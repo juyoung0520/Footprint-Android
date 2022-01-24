@@ -35,10 +35,7 @@ import android.view.ViewGroup
 import android.R.id.text1
 import android.content.Context
 import android.R.id.text1
-
-
-
-
+import android.os.Bundle
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
@@ -56,7 +53,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val height = getStatusBarHeightDP(requireContext())
         Log.d("Height", height.toString())
         binding.homeTopLayout.setPadding(0, height, 0,0)
-
 
         initTB()
         initDate()
@@ -120,7 +116,17 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         )
     }
 
-    //상단 날씨 받아오기
+    //상단바 높이 구하기
+    fun getStatusBarHeightDP(context: Context): Int {
+        var result = 0
+        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimension(resourceId).toInt()
+        }
+        return result
+    }
+
+    /*상단 날씨 받아오기*/
     private fun setWeather(nx: Int, ny: Int) {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
@@ -275,34 +281,29 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
-        binding.homeWeatherTempTv.text = tmp
-        binding.homeWeatherConTv.text = weatherValue
-        val imgRes = when(weatherValue){
-            "맑음" -> R.drawable.ic_weather_sunny
-            "구름 많음" -> R.drawable.ic_weather_clounmany
-            "흐림" -> R.drawable.ic_weather_cloud
-            "소나기" -> R.drawable.ic_weather_shower
-            "비" -> R.drawable.ic_weather_rain
-            "눈" -> R.drawable.ic_weather_snowy
-            "비 또는 눈" -> R.drawable.ic_weather_snoworrain
-            "바람" -> R.drawable.ic_weather_windy
-            else -> R.drawable.ic_weather_sunny
+        Log.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
+        if(binding.homeWeatherTempTv != null && binding.homeWeatherConTv != null){
+            binding.homeWeatherTempTv.text = tmp
+            binding.homeWeatherConTv.text = weatherValue
+            val imgRes = when(weatherValue){
+                "맑음" -> R.drawable.ic_weather_sunny
+                "구름 많음" -> R.drawable.ic_weather_clounmany
+                "흐림" -> R.drawable.ic_weather_cloud
+                "소나기" -> R.drawable.ic_weather_shower
+                "비" -> R.drawable.ic_weather_rain
+                "눈" -> R.drawable.ic_weather_snowy
+                "비 또는 눈" -> R.drawable.ic_weather_snoworrain
+                "바람" -> R.drawable.ic_weather_windy
+                else -> R.drawable.ic_weather_sunny
+            }
+            binding.homeTopWeatherIv.setImageResource(imgRes)
         }
-        binding.homeTopWeatherIv.setImageResource(imgRes)
+
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
         //오류 메시지 띄우기
         Log.d("WEATHER/API-Failure", code.toString() + message)
-    }
-
-    fun getStatusBarHeightDP(context: Context): Int {
-        var result = 0
-        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimension(resourceId).toInt()
-        }
-        return result
     }
 
 }

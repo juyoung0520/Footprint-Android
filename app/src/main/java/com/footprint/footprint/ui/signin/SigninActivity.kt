@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import android.R.id.text1
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.footprint.footprint.utils.*
 import gun0912.tedimagepicker.util.ToastUtil.context
 
 
@@ -36,11 +37,12 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var newUser: User
     override fun initAfterBinding() {
+        initXML()
+
         //카카오 로그인
         binding.signinKakaologinBtnLayout.setOnClickListener {
             setKakaoLogin()
         }
-
 
         //다음에 로그인 할래요
         binding.signinNologinTv.setOnClickListener {
@@ -53,10 +55,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
-
-        initXML()
     }
 
+    /*XML 동적 Layout*/
     private fun initXML() {
         val density = context.resources?.displayMetrics?.density
         val statusbarHeight = getStatusBarHeightDP(this) + dp2px(density!!, 10)
@@ -85,6 +86,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     /*Funtion-Kakao*/
     //로그인
     private fun setKakaoLogin() {
+        //카카오 계정으로 로그인(콜백)
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
@@ -94,7 +96,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             }
         }
 
-        // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+        //카카오톡으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this@SigninActivity)) {
             UserApiClient.instance.loginWithKakaoTalk(this@SigninActivity) { token, error ->
                 if (error != null) {
@@ -140,6 +142,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                     gender.toString(),
                     birthday.toString()
                 )
+
+                saveSpf("kakao")
                 Log.d("KAKAO/USER", newUser.toString())
             }
         }
@@ -150,6 +154,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         getKakaoUser()
 
         //2. 회원가입 api 호출
+
 
         //3. 액티비티 이동
         this.startNextActivity(MainActivity::class.java)
@@ -194,8 +199,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             Log.d("GOOGLE/USER-TOKEN", token)
             Log.d("GOOGLE/USER-SCOPE", scope)
 
-            //2. 회원가입 api 호출
-
+            //2. spf & 회원가입 api 호출
+            saveSpf("google")
 
             //3. 메인 액티비티로 이동
             startNextActivity(MainActivity::class.java)
@@ -218,5 +223,13 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             )
             Log.d("GOOGLE/USER", newUser.toString())
         }
+    }
+
+    private fun saveSpf(status: String){
+        saveUserIdx(this, newUser.userIdx!!)
+        saveLoginStatus(this, status)
+        val userId = getUserIdx(this)
+        val loginStatus = getLoginStatus(this)
+        Log.d("SIGNUP/SPF-SUCCESS", "User Idx: ${userId} LoginStatus: ${loginStatus}")
     }
 }
