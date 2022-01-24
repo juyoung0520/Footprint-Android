@@ -20,16 +20,19 @@
         <ImageView
             android:id="@+id/walk_confirm_map_iv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_temp_map"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.3"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/walk_confirm_info_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.12"
             app:layout_constraintTop_toBottomOf="@+id/walk_confirm_map_iv">
 
             <TextView
@@ -198,13 +201,27 @@
                 app:layout_constraintTop_toTopOf="@+id/walk_confirm_record_tv" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/walk_confirm_no_footprint_tv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="@string/msg_no_footprint"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            android:textColor="#C4C4C4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_default="percent"
+            app:layout_constraintHeight_percent="0.57"
+            app:layout_constraintTop_toBottomOf="@+id/walk_confirm_info_layout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walk_confirm_slided_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_walk_after_slided_layout"
+        android:background="@drawable/bg_walk_confirm_slided_layout"
         android:elevation="10dp">
 
         <ImageView
@@ -239,7 +256,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/walk_confirm_time_desc_tv"
-            tools:listitem="@layout/item_post" />
+            tools:listitem="@layout/item_footprint" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
