@@ -49,6 +49,12 @@
     </style>
 
     <!-- Bold  -->
+    <style name="tv_title_b_24" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:textColor">@color/black_dark</item>
+    </style>
+
     <style name="tv_subtitle_b_18" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_bold</item>
         <item name="android:textSize">18dp</item>
