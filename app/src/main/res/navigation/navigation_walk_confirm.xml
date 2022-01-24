@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/walkConfirmFragment2"
-        android:name="com.footprint.footprint.ui.main.home.WalkConfirmFragment"
+        android:name="com.footprint.footprint.ui.walk.WalkConfirmFragment"
         android:label="WalkConfirmFragment">
         <action
             android:id="@+id/action_walkConfirmFragment2_to_footprintDialogFragment3"
