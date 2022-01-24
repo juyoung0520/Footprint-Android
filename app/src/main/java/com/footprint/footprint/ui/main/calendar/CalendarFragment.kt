@@ -21,6 +21,8 @@ import com.kizitonwose.calendarview.ui.MonthScrollListener
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
+import com.kizitonwose.calendarview.utils.yearMonth
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Year
 import java.time.YearMonth
@@ -30,6 +32,7 @@ import kotlin.math.roundToInt
 
 class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
+    private lateinit var calendarDayBinder: CalendarDayBinder
 
     override fun initAfterBinding() {
         initCalendar()
@@ -43,19 +46,25 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         binding.calendarWalkCv.daySize = Size(cellWidth, convertDpToPx(requireContext(), 40))
 
-        val caledarDayBinder = CalendarDayBinder(requireContext())
-        caledarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
+        calendarDayBinder = CalendarDayBinder(requireContext())
+        calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
             override fun onDayClick(selection: LocalDate) {
-                binding.calendarWalkCv.notifyDateChanged(selection)
+              selectDate(selection)
+            }
+
+            override fun notifyDate(date: LocalDate) {
+                binding.calendarWalkCv.notifyDateChanged(date)
             }
         })
 
-        binding.calendarWalkCv.dayBinder = caledarDayBinder
+        binding.calendarWalkCv.dayBinder = calendarDayBinder
+
+        val localDate = LocalDate.now()
+        binding.calendarMonthTitleTv.text = String.format("%d.%d", localDate.year, localDate.monthValue)
+        binding.calendarSelectedDayTv.text =
+            String.format("%d.%d.%d %s", localDate.year, localDate.monthValue, localDate.dayOfMonth, changeDayOfWeek(localDate.dayOfWeek.toString()))
 
         currentMonth = YearMonth.now()
-
-        binding.calendarMonthTitleTv.text = "${currentMonth.year}.${currentMonth.monthValue}"
-
         val firstMonth = currentMonth.minusMonths(120)
         val lastMonth = currentMonth.plusMonths(120)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
@@ -95,8 +104,12 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         }
 
         binding.calendarTodayTv.setOnClickListener {
-            currentMonth = YearMonth.now()
-            binding.calendarWalkCv.scrollToDate(LocalDate.now())
+            val localDate = LocalDate.now()
+            currentMonth = localDate.yearMonth
+
+            binding.calendarWalkCv.scrollToDate(localDate)
+            calendarDayBinder.setSelectedDate(localDate)
+            selectDate(localDate)
         }
     }
 
@@ -113,25 +126,45 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         val adapter = WalkRVAdapter()
         adapter.setWalks(walks)
 
-        // 좀 더 생각해보자
-        adapter.walks.observe(viewLifecycleOwner) { walks ->
-            Log.d("walks", walks.size.toString())
-            if (walks.isEmpty()) {
-                binding.calendarHintTv.visibility = View.VISIBLE
-                binding.calendarWalkRv.visibility = View.GONE
-            } else {
-                binding.calendarHintTv.visibility = View.GONE
-                binding.calendarWalkRv.visibility = View.VISIBLE
-            }
-        }
-
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
             override fun onItemClick(position: Int) {
-                Toast.makeText(context,"${position}번 째 산책", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "${position}번 째 산책", Toast.LENGTH_SHORT).show()
             }
         })
+
+        adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
+            override fun onItemRemoveClick() {
+                if (adapter.itemCount == 0) {
+                    binding.calendarHintTv.visibility = View.VISIBLE
+                    binding.calendarWalkRv.visibility = View.GONE
+                } else {
+                    binding.calendarHintTv.visibility = View.GONE
+                    binding.calendarWalkRv.visibility = View.VISIBLE
+                }
+            }
+        })
+
         binding.calendarWalkRv.adapter = adapter
         binding.calendarWalkRv.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    fun selectDate(selection: LocalDate) {
+        binding.calendarWalkCv.notifyDateChanged(selection)
+        binding.calendarSelectedDayTv.text =
+            String.format("%d.%d.%d %s", selection.year, selection.monthValue, selection.dayOfMonth, changeDayOfWeek(selection.dayOfWeek.toString()))
+    }
+
+    fun changeDayOfWeek(dayOfWeek: String): String{
+        return when (dayOfWeek) {
+            "MONDAY" -> "월"
+            "TUESDAY" -> "화"
+            "WEDNESDAY" -> "수"
+            "THURSDAY" -> "목"
+            "FRIDAY" -> "금"
+            "SATURDAY" -> "토"
+            "SUNDAY" -> "일"
+            else -> ""
+        }
     }
 }

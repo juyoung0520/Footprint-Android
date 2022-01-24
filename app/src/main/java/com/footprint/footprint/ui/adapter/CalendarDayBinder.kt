@@ -17,6 +17,8 @@ import java.time.LocalDate
 class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayViewContainer> {
     interface OnDayClickListener {
         fun onDayClick(selection: LocalDate)
+
+        fun notifyDate(date: LocalDate)
     }
 
     private lateinit var mOnDayClickListener: OnDayClickListener
@@ -28,9 +30,11 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
         mOnDayClickListener = listener
     }
 
-    fun setSelectedDate(date: LocalDate) {
-        selectedDate = date
+    fun setSelectedDate(localDate: LocalDate) {
+        selectedDate = localDate
     }
+
+    fun getSelectedDate() = selectedDate
 
     override fun bind(container: DayViewContainer, day: CalendarDay) {
         container.bindDay(day)
@@ -45,6 +49,8 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
             binding.calendarDayTv.text = day.date.dayOfMonth.toString()
 
             if (day.owner != DayOwner.THIS_MONTH) {
+                setIndicator(0)
+
                 binding.calendarDayTv.setTextColor(
                     ContextCompat.getColor(
                         context,
@@ -52,10 +58,13 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
                     )
                 )
                 return
-            }
-
-            if (day.owner == DayOwner.PREVIOUS_MONTH) {
-                Log.d("out", day.date.toString())
+            } else {
+                binding.calendarDayTv.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.black_dark
+                    )
+                )
             }
 
             if (day.date == selectedDate) {
@@ -84,7 +93,7 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
                         mOnDayClickListener.onDayClick(selectedDate!!)
 
                         if (tmpSelectedDate != null) {
-                            mOnDayClickListener.onDayClick(tmpSelectedDate)
+                            mOnDayClickListener.notifyDate(tmpSelectedDate)
                         }
                     }
                 }

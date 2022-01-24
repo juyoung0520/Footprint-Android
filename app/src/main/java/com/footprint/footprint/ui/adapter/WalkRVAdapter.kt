@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
@@ -10,19 +11,24 @@ import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.ItemWalkBinding
 
 class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
-    private val _walks = NonNullMutableLiveData<ArrayList<WalkModel>>(arrayListOf())
-    val walks: LiveData<ArrayList<WalkModel>> get() = _walks
+    private val walks = arrayListOf<WalkModel>()
 
     private lateinit var mOnItemClickListener: OnItemClickListener
+    private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
+
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 
+    interface OnItemRemoveClickListener {
+        fun onItemRemoveClick()
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun setWalks(walks: ArrayList<WalkModel>) {
-        _walks.value.clear()
-        _walks.value.addAll(walks)
+        this.walks.clear()
+        this.walks.addAll(walks)
 
         notifyDataSetChanged()
     }
@@ -31,17 +37,21 @@ class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         mOnItemClickListener = listener
     }
 
+    fun setOnItemRemoveClickListener(listener: OnItemRemoveClickListener) {
+        mOnItemRemoveClickListener = listener
+    }
+
     fun addWalk(walk: WalkModel) {
-        _walks.value.add(walk)
+        walks.add(walk)
         notifyDataSetChanged()
     }
 
     fun removeWalk(position: Int) {
-        if(_walks.value.isEmpty() || position !in 0 .. _walks.value.size) {
+        if(walks.isEmpty() || position !in 0 .. walks.size) {
             return
         }
 
-        _walks.value.removeAt(position)
+        walks.removeAt(position)
         notifyDataSetChanged()
     }
 
@@ -55,12 +65,12 @@ class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return _walks.value.size
+        return walks.size
     }
 
     inner class WalkViewHolder(val binding: ItemWalkBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.walkNthRecordTv.text = _walks.value[position].walkIndex.toString()
+            binding.walkNthRecordTv.text = walks[position].walkIndex.toString()
 
             binding.root.setOnClickListener {
                 mOnItemClickListener.onItemClick(position)
@@ -68,6 +78,7 @@ class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
 
             binding.walkRemoveTv.setOnClickListener {
                 removeWalk(position)
+                mOnItemRemoveClickListener.onItemRemoveClick()
             }
         }
     }
