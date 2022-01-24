@@ -13,6 +13,7 @@ import com.footprint.footprint.data.model.FootprintsModel
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.main.calendar.WalkDetailActivity
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
@@ -28,11 +29,11 @@ class WalkConfirmFragment :
     private val backPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             binding.walkConfirmSlidingUpPanelLayout.apply {
-                //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
-                if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)
+                if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)   //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
                     panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-                else {
-                    //‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
+                else if (requireActivity() is WalkDetailActivity) { //WalkDetailActivity 화면에서 온 경우 -> 액티비티 종료
+                    requireActivity().finish()
+                } else {    //WalkAfterActivity 화면에서 온 경우 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
                     setWalkDialogBundle(getString(R.string.msg_stop_walk))
                     actionDialogFragment.show(
                         requireActivity().supportFragmentManager,
@@ -47,24 +48,34 @@ class WalkConfirmFragment :
     private var position: Int = -1  //클릭된 기록 인덱스
 
     override fun initAfterBinding() {
+        //이전 화면(WalkAfterActivity or WalkDetailActivity)에서 전달받은 기록 데이터(footprints)를 FootprintsModel 로 변환
+        val footprintsStr = args.footprints
+        if (footprintsStr.isNotBlank())  //footprintsStr 이 비어 있다는 건 발자국 데이터가 없다는 뜻
+            footprints = Gson().fromJson(footprintsStr, FootprintsModel::class.java)
+
         //어댑터 초기화는 한번만
         if (!::footprintRVAdapter.isInitialized)
             initAdapter()
 
         setWalkDialog()
-        setSlidingPanelLayoutSize()
+        setFootprintView()
         observe()
 
         requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)  //뒤로가기 콜백 리스너 등록
     }
 
-    //SlidingPanelLayout(기록 레이아웃) 높이 설정하는 함수
-    private fun setSlidingPanelLayoutSize() {
-        val heightPixels = resources.displayMetrics.heightPixels
+    //발자국 기록을 보여주는 뷰 설정
+    private fun setFootprintView() {
+        if (requireActivity() is WalkDetailActivity && !::footprints.isInitialized) { //WalkDetailActivity 에서 기록이 없을 경우 -> 산책 기록이 없어요! 텍스트뷰 보여주기
+            binding.walkConfirmNoFootprintTv.visibility = View.VISIBLE
+            binding.walkConfirmSlidedLayout.visibility = View.INVISIBLE
+        } else {    //그 이외에 모든 경우 -> slidedPanelLayout 보여주기
+            binding.walkConfirmNoFootprintTv.visibility = View.INVISIBLE
+            binding.walkConfirmSlidedLayout.visibility = View.VISIBLE
 
-        binding.walkConfirmMapIv.layoutParams.height = (heightPixels * 0.26).toInt()
-        binding.walkConfirmInfoLayout.layoutParams.height = (heightPixels * 0.1).toInt()
-        binding.walkConfirmSlidingUpPanelLayout.panelHeight = (heightPixels * 0.5).toInt()
+            val heightPixels = resources.displayMetrics.heightPixels
+            binding.walkConfirmSlidingUpPanelLayout.panelHeight = (heightPixels * 0.5).toInt()
+        }
     }
 
     private fun observe() {
@@ -90,7 +101,7 @@ class WalkConfirmFragment :
 
     //기록 관련 리사이클러뷰 초기화
     private fun initAdapter() {
-        footprintRVAdapter = FootprintRVAdapter()
+        footprintRVAdapter = FootprintRVAdapter(requireActivity().javaClass.simpleName)
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
             //발자국 삭제 텍스트뷰 클릭 리스너 -> 해당 발자국을 삭제할까요? 다이얼로그 화면 띄우기
             override fun showDeleteDialog(position: Int) {
@@ -107,14 +118,14 @@ class WalkConfirmFragment :
                 if (footprints.footprints.size >= 9) {
                     //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
                     val action =
-                        WalkConfirmFragmentDirections.actionWalkConfirmFragmentToMsgDialogFragment(
+                        WalkConfirmFragmentDirections.actionGlobalMsgDialogFragment(
                             getString(R.string.error_post_cnt_exceed)
                         )
                     findNavController().navigate(action)
                 } else {
                     //발자국 작성하기 다이얼로그 화면 띄우기
                     val action =
-                        WalkConfirmFragmentDirections.actionWalkConfirmFragmentToFootprintDialogFragment(
+                        WalkConfirmFragmentDirections.actionWalkConfirmFragment2ToFootprintDialogFragment3(
                             ""
                         )
                     findNavController().navigate(action)
@@ -128,17 +139,15 @@ class WalkConfirmFragment :
                 footprint.isUpdate = true   //수정하는 데이터임을 알리기
                 //발자국 작성하기 다이얼로그 화면 띄우기(수정)
                 val action =
-                    WalkConfirmFragmentDirections.actionWalkConfirmFragmentToFootprintDialogFragment(
+                    WalkConfirmFragmentDirections.actionWalkConfirmFragment2ToFootprintDialogFragment3(
                         Gson().toJson(footprint)
                     )
                 findNavController().navigate(action)
             }
         })
 
-        //이전 화면(WalkMapFragment)에서 전달받은 기록 데이터(posts)로 어댑터에 데이터 저장
-        val postsStr = args.posts
-        if (postsStr.isNotBlank()) {
-            footprints = Gson().fromJson(postsStr, FootprintsModel::class.java)
+        //어댑터에 데이터 저장
+        if (::footprints.isInitialized) {
             footprintRVAdapter.setData(footprints)
         }
         binding.walkConfirmPostRv.adapter = footprintRVAdapter
