@@ -2,17 +2,16 @@ package com.footprint.footprint.ui.main.home
 
 import android.content.Intent
 import android.Manifest
+import android.R.id
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.net.Uri
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.widget.LinearLayout
+import androidx.core.view.marginTop
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.google.android.gms.location.*
@@ -25,19 +24,22 @@ import com.footprint.footprint.ui.main.MainActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import java.io.IOException
-import java.lang.IllegalArgumentException
+import com.kakao.sdk.user.UserApiClient
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import android.R.id.text1
+
+import android.view.ViewGroup
+import android.R.id.text1
+import android.content.Context
+import android.R.id.text1
+import android.os.Bundle
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
 
-    //날씨 위한 변수
-    var nx = "55"
-    var ny = "127"
     lateinit var weatherService: WeatherService
 
     override fun initAfterBinding() {
@@ -47,10 +49,17 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
+        //상단바 크기 -> Top 띄워주기
+        val height = getStatusBarHeightDP(requireContext())
+        Log.d("Height", height.toString())
+        binding.homeTopLayout.setPadding(0, height, 0,0)
+
         initTB()
         initDate()
 
-        setPermission() //위치 정보 받아오기 위한 permission
+        setPermission()
+
+        //onStart
         requestLocation()
     }
 
@@ -74,6 +83,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeDaymonthVp.registerOnPageChangeCallback(changeCB)
     }
 
+    //일별/월별 목표 보여주기
     private fun setGoal(position: Int) {
         if (position == 0) {
             binding.homeDayGoalLayout.visibility = View.VISIBLE
@@ -106,19 +116,29 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         )
     }
 
-    //상단 날씨 받아오기
+    //상단바 높이 구하기
+    fun getStatusBarHeightDP(context: Context): Int {
+        var result = 0
+        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimension(resourceId).toInt()
+        }
+        return result
+    }
+
+    /*상단 날씨 받아오기*/
     private fun setWeather(nx: Int, ny: Int) {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
         var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
         val base_time = getTime(time)
-        Log.d("info1", "날짜: ${base_date} 시간: ${base_time}")
+        Log.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
 
         if (base_time >= "2000") {
             cal.add(Calendar.DATE, -1).toString()
             base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
         }
-        Log.d("info", "최종날짜: ${base_date} 최종시간: ${base_time}")
+        Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
 
         weatherService = WeatherService(this)
@@ -126,7 +146,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     private fun getTime(time: String): String {
-        var result = when (time) {
+        return when (time) {
             in "00".."02" -> "2000" // 00~02
             in "03".."05" -> "2300" // 03~05
             in "06".."08" -> "0200" // 06~08
@@ -136,8 +156,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             in "18".."20" -> "1400" // 18~20
             else -> "1700"
         }
-
-        return result
     }
 
     private fun setPermission() {
@@ -145,7 +163,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             override fun onPermissionGranted() {
                 //허용 시
                 //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
-                Log.d("permission", "user GPS permission 허용")
+                Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -161,7 +179,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                         }
                     }.show()
                 //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
-                Log.d("permission", "user GPS permission 거절")
+                Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }
 
@@ -177,13 +195,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        Log.d("requestLocation", "service 요청")
+        Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
         try {
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 interval = 60 * 60 * 1000 //요청 간격 1hour
-                Log.d("requestLocation", "request")
+                Log.d("WEATHER/LOCATION-REQUEST-OK", "위치 request")
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -194,8 +212,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            Log.d("requestLocation", "rs.x: ${rs.x} rs.y: ${rs.y}")
-                            Log.d("requestLocation-location", location.toString())
+                            Log.d("WEATHER/LOCATION-RESULT-LL", "위경도 "+location.toString())
+                            Log.d("WEATHER/LOCATION-RESULT-XY", "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}")
 
                             setWeather(rs.x.toInt(), rs.y.toInt())
                         }
@@ -229,7 +247,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                     }
                 }
                 "1" -> "비"
-                "2" -> "비/눈"
+                "2" -> "비 또는 눈"
                 "3" -> "눈"
                 "4" -> "소나기"
                 else -> "null"
@@ -246,7 +264,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun onWeatherSuccess(items: List<ITEM>) {
-        Log.d("response", items.toString())
+        Log.d("WEATHER/API-SUCCESS", items.toString())
 
         val size = items.size
         var tmp: String = "0"
@@ -263,25 +281,29 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
-        binding.homeWeatherTempTv.text = tmp
-        binding.homeWeatherConTv.text = weatherValue.toString()
-        val imgRes = when(weatherValue.toString()){
-            "맑음" -> R.drawable.ic_weather_sunny
-            "구름 많음" -> R.drawable.ic_weather_clounmany
-            "흐림" -> R.drawable.ic_weather_cloud
-            "소나기" -> R.drawable.ic_weather_shower
-            "비" -> R.drawable.ic_weather_rain
-            "눈" -> R.drawable.ic_weather_snowy
-            "바람" -> R.drawable.ic_weather_windy
-            else -> R.drawable.ic_weather_sunny
+        Log.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
+        if(binding.homeWeatherTempTv != null && binding.homeWeatherConTv != null){
+            binding.homeWeatherTempTv.text = tmp
+            binding.homeWeatherConTv.text = weatherValue
+            val imgRes = when(weatherValue){
+                "맑음" -> R.drawable.ic_weather_sunny
+                "구름 많음" -> R.drawable.ic_weather_clounmany
+                "흐림" -> R.drawable.ic_weather_cloud
+                "소나기" -> R.drawable.ic_weather_shower
+                "비" -> R.drawable.ic_weather_rain
+                "눈" -> R.drawable.ic_weather_snowy
+                "비 또는 눈" -> R.drawable.ic_weather_snoworrain
+                "바람" -> R.drawable.ic_weather_windy
+                else -> R.drawable.ic_weather_sunny
+            }
+            binding.homeTopWeatherIv.setImageResource(imgRes)
         }
-        binding.homeTopWeatherIv.setImageResource(imgRes)
+
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
         //오류 메시지 띄우기
-        Log.d("WEATHER/API2222", code.toString() + message)
+        Log.d("WEATHER/API-Failure", code.toString() + message)
     }
-
 
 }

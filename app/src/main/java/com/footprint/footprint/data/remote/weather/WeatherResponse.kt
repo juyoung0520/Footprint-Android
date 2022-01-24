@@ -1,5 +1,4 @@
 package com.footprint.footprint.data.remote.weather
-
 import com.google.gson.annotations.SerializedName
 
 data class WeatherResponse(@SerializedName("response") val response: RESPONSE)

@@ -35,6 +35,16 @@ android {
     dataBinding {
         enabled = true
     }
+
+// Java 8 사용을 위한 build.gradle 설정
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -68,7 +78,6 @@ dependencies {
 
     // Naver Map SDK
     implementation "com.naver.maps:map-sdk:$map_version"
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
 
     //CircleProgressBar
     implementation 'com.dinuscxj:circleprogressbar:1.3.0'
@@ -76,6 +85,7 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation 'com.google.code.gson:gson:2.8.7'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
 
     //GPS API
@@ -86,4 +96,9 @@ dependencies {
 
     //Hashtag Helper
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
+    
+    //카카오 로그인 & 구글 로그인 
+    implementation "com.kakao.sdk:v2-user:2.8.4"
+    implementation 'com.google.android.gms:play-services-auth:20.0.1'
+
 }
