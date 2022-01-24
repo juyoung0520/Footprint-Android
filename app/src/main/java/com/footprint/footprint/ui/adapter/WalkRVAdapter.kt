@@ -10,7 +10,7 @@ import com.footprint.footprint.classes.NonNullMutableLiveData
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.ItemWalkBinding
 
-class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
+class WalkRVAdapter : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<WalkModel>()
 
     private lateinit var mOnItemClickListener: OnItemClickListener
@@ -47,7 +47,7 @@ class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     }
 
     fun removeWalk(position: Int) {
-        if(walks.isEmpty() || position !in 0 .. walks.size) {
+        if (walks.isEmpty() || position !in 0..walks.size) {
             return
         }
 
@@ -68,7 +68,8 @@ class WalkRVAdapter: RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         return walks.size
     }
 
-    inner class WalkViewHolder(val binding: ItemWalkBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class WalkViewHolder(val binding: ItemWalkBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
             binding.walkNthRecordTv.text = walks[position].walkIndex.toString()
 

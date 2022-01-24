@@ -49,7 +49,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         calendarDayBinder = CalendarDayBinder(requireContext())
         calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
             override fun onDayClick(selection: LocalDate) {
-              selectDate(selection)
+                selectDate(selection)
             }
 
             override fun notifyDate(date: LocalDate) {
@@ -60,9 +60,16 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         binding.calendarWalkCv.dayBinder = calendarDayBinder
 
         val localDate = LocalDate.now()
-        binding.calendarMonthTitleTv.text = String.format("%d.%d", localDate.year, localDate.monthValue)
+        binding.calendarMonthTitleTv.text =
+            String.format("%d.%d", localDate.year, localDate.monthValue)
         binding.calendarSelectedDayTv.text =
-            String.format("%d.%d.%d %s", localDate.year, localDate.monthValue, localDate.dayOfMonth, changeDayOfWeek(localDate.dayOfWeek.toString()))
+            String.format(
+                "%d.%d.%d %s",
+                localDate.year,
+                localDate.monthValue,
+                localDate.dayOfMonth,
+                changeDayOfWeek(localDate.dayOfWeek.toString())
+            )
 
         currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(120)
@@ -152,10 +159,16 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     fun selectDate(selection: LocalDate) {
         binding.calendarWalkCv.notifyDateChanged(selection)
         binding.calendarSelectedDayTv.text =
-            String.format("%d.%d.%d %s", selection.year, selection.monthValue, selection.dayOfMonth, changeDayOfWeek(selection.dayOfWeek.toString()))
+            String.format(
+                "%d.%d.%d %s",
+                selection.year,
+                selection.monthValue,
+                selection.dayOfMonth,
+                changeDayOfWeek(selection.dayOfWeek.toString())
+            )
     }
 
-    fun changeDayOfWeek(dayOfWeek: String): String{
+    fun changeDayOfWeek(dayOfWeek: String): String {
         return when (dayOfWeek) {
             "MONDAY" -> "월"
             "TUESDAY" -> "화"
