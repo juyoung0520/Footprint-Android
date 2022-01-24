@@ -13,7 +13,11 @@
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.footprint.footprint.ui.main.calendar.CalendarFragment"
-        android:label="calendarFragment" />
+        android:label="calendarFragment">
+        <action
+            android:id="@+id/action_calendarFragment_to_walkDetailActivity"
+            app:destination="@id/walkDetailActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/courseFragment"
@@ -24,4 +28,10 @@
         android:id="@+id/mypageFragment"
         android:name="com.footprint.footprint.ui.main.mypage.MyPageFragment"
         android:label="mypageFragment" />
+
+    <activity
+        android:id="@+id/walkDetailActivity"
+        android:name="com.footprint.footprint.ui.main.calendar.WalkDetailActivity"
+        android:label="activity_walk_detail"
+        tools:layout="@layout/activity_walk_detail" />
 </navigation>

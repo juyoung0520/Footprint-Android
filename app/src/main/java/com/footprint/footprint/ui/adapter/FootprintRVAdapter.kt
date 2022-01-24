@@ -14,13 +14,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.model.FootprintsModel
-import com.footprint.footprint.databinding.ItemPostBinding
+import com.footprint.footprint.databinding.ItemFootprintBinding
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class FootprintRVAdapter() : RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
+class FootprintRVAdapter(private val activityClass: String) : RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
         fun showDeleteDialog(position: Int)
         fun addFootprint(position: Int)
@@ -40,7 +40,7 @@ class FootprintRVAdapter() : RecyclerView.Adapter<FootprintRVAdapter.PostViewHol
         R.drawable.ic_foot_print9
     )
 
-    private lateinit var binding: ItemPostBinding
+    private lateinit var binding: ItemFootprintBinding
     private lateinit var myItemClickListener: MyItemClickListener
     private lateinit var mTextHashTagHelper: HashTagHelper
 
@@ -48,7 +48,7 @@ class FootprintRVAdapter() : RecyclerView.Adapter<FootprintRVAdapter.PostViewHol
         parent: ViewGroup,
         viewType: Int
     ): FootprintRVAdapter.PostViewHolder {
-        binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = ItemFootprintBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         mTextHashTagHelper = HashTagHelper.Creator.create(
             ContextCompat.getColor(parent.context, R.color.primary),
@@ -139,9 +139,17 @@ class FootprintRVAdapter() : RecyclerView.Adapter<FootprintRVAdapter.PostViewHol
             }
         }
 
-        //기록 추가 텍스트뷰 클릭 리스너
-        holder.plusTv.setOnClickListener {
-            myItemClickListener.addFootprint(position)
+        if (activityClass=="WalkAfterActivity") {  //산책 종료 후 산책 정보 확인 화면일 때 -> 발자국 추가 가능
+            holder.plusTv.visibility = View.VISIBLE
+            holder.plusLine.visibility = View.VISIBLE
+
+            //기록 추가 텍스트뷰 클릭 리스너
+            holder.plusTv.setOnClickListener {
+                myItemClickListener.addFootprint(position)
+            }
+        } else {    //산책 정보 상세 화면일 때 -> 발자국 추가 불가능
+            holder.plusTv.visibility = View.INVISIBLE
+            holder.plusLine.visibility = View.INVISIBLE
         }
     }
 
@@ -179,16 +187,17 @@ class FootprintRVAdapter() : RecyclerView.Adapter<FootprintRVAdapter.PostViewHol
         this.myItemClickListener = myItemClickListener
     }
 
-    inner class PostViewHolder(itemView: ItemPostBinding) : RecyclerView.ViewHolder(itemView.root) {
-        val postStartIv: ImageView = itemView.itemPostPostStartIv
-        val postTimeTv: TextView = itemView.itemPostPostTimeTv
-        val photoVp: ViewPager2 = itemView.itemPostPhotoVp
-        val photoIndicator: CircleIndicator3 = itemView.itemPostPhotoIndicator
-        val contentTv: TextView = itemView.itemPostContentTv
-        val deleteTv: TextView = itemView.itemPostDeleteTv
-        val viewMoreTv: TextView = itemView.itemPostViewMoreTv
-        val footPrintIv: ImageView = itemView.itemPostFootprintIv
-        val plusTv: TextView = itemView.itemPostPlusTv
-        val editTv: TextView = itemView.itemPostEditTv
+    inner class PostViewHolder(itemView: ItemFootprintBinding) : RecyclerView.ViewHolder(itemView.root) {
+        val postStartIv: ImageView = itemView.itemFootprintPostStartIv
+        val postTimeTv: TextView = itemView.itemFootprintPostTimeTv
+        val photoVp: ViewPager2 = itemView.itemFootprintPhotoVp
+        val photoIndicator: CircleIndicator3 = itemView.itemFootprintPhotoIndicator
+        val contentTv: TextView = itemView.itemFootprintContentTv
+        val deleteTv: TextView = itemView.itemFootprintDeleteTv
+        val viewMoreTv: TextView = itemView.itemFootprintViewMoreTv
+        val footPrintIv: ImageView = itemView.itemFootprintFootprintIv
+        val plusTv: TextView = itemView.itemFootprintPlusTv
+        val plusLine: View = itemView.itemFootprintPlusLineView
+        val editTv: TextView = itemView.itemFootprintEditTv
     }
 }

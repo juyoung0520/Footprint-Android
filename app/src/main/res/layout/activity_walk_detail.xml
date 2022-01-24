@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/walk_after_sliding_up_panel_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.calendar.WalkDetailActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/walk_detail_tb"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/walk_detail_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/walk_detail_walk_date_tv"
+        app:layout_constraintStart_toStartOf="@+id/walk_detail_tb"
+        app:layout_constraintTop_toTopOf="@+id/walk_detail_title_tv" />
+
+    <TextView
+        android:id="@+id/walk_detail_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00번째 산책"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/walk_detail_walk_date_tv"
+        app:layout_constraintEnd_toEndOf="@+id/walk_detail_tb"
+        app:layout_constraintStart_toStartOf="@+id/walk_detail_tb"
+        app:layout_constraintTop_toTopOf="@+id/walk_detail_tb"
+        app:layout_constraintVertical_bias="0.7"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/walk_detail_walk_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:text="2021.12.23  13:40~14:01"
+        android:textAppearance="@style/tv_body_b_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="@+id/walk_detail_tb"
+        app:layout_constraintEnd_toEndOf="@+id/walk_detail_title_tv"
+        app:layout_constraintStart_toStartOf="@+id/walk_detail_title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/walk_detail_title_tv" />
+
+    <TextView
+        android:id="@+id/walk_detail_all_delete_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="22dp"
+        android:text="@string/action_all_delete"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/walk_detail_walk_date_tv"
+        app:layout_constraintEnd_toEndOf="@+id/walk_detail_tb"
+        app:layout_constraintTop_toTopOf="@+id/walk_detail_title_tv" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/walk_detail_nav_host_fragment_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/walk_detail_tb"
+        app:layout_constraintVertical_weight="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

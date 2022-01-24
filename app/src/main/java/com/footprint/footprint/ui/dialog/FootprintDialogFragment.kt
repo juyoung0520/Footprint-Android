@@ -249,7 +249,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             if (binding.postDialogContentEt.text!!.isBlank() && imgList.isEmpty()) {  //필수 데이터(기록 내용)가 입력됐는지 확인
                 //"사진이나 글을 추가해주세요." 다이얼로그 화면 띄우기
                 val action =
-                    FootprintDialogFragmentDirections.actionFootprintDialogFragmentToMsgDialogFragment(
+                    FootprintDialogFragmentDirections.actionGlobalMsgDialogFragment(
                         getString(R.string.msg_add_photo_or_writing)
                     )
                 findNavController().navigate(action)
@@ -264,7 +264,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
                 //"발자국을 남겼어요." 다이얼로그 화면 띄우기
                 val action =
-                    FootprintDialogFragmentDirections.actionFootprintDialogFragmentToMsgDialogFragment(
+                    FootprintDialogFragmentDirections.actionGlobalMsgDialogFragment(
                         getString(R.string.msg_leave_footprint)
                     )
                 findNavController().navigate(action)

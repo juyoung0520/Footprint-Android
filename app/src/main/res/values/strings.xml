@@ -86,4 +86,8 @@
     <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
     <string name="error_blank_content">내용을 입력해주세요.</string>
     <string name="error_hashtag_exceed_cnt">해시태그는 5개까지 작성할 수 있어요.</string>
+
+    <!--개별 산책 화면-->
+    <string name="msg_no_footprint">산책기록이 없어요!</string>
+    <string name="action_all_delete">전체삭제</string>
 </resources>

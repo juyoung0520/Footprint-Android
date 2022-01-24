@@ -93,11 +93,13 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
             if (footprints.footprints.size >= 9) {  //기록이 이미 9개가 됐으면
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
-                val action = WalkMapFragmentDirections.actionWalkMapFragmentToMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
+                val action =
+                    WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
                 findNavController().navigate(action)
-            } else {    //아직 9개가 안됐으면
-                val action = WalkMapFragmentDirections.actionWalkMapFragmentToFootprintDialogFragment()
-                findNavController().navigate(R.id.footprintDialogFragment)  //글 작성하기 다이얼로그 화면 띄우기
+            } else {    //아직 9개가 안됐으면 -> 발자국 남기기 다이얼로그 화면 띄우기
+                val action =
+                    WalkMapFragmentDirections.actionWalkMapFragmentToFootprintDialogFragment()
+                findNavController().navigate(action)
             }
         }
 
@@ -357,7 +359,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
 
                     if (footprints.footprints.size != 0)
-                        intent.putExtra("posts", Gson().toJson(footprints))  //우선 임의로 저장한 기록만 넘겨줌
+                        intent.putExtra(
+                            "footprints",
+                            Gson().toJson(footprints)
+                        )  //우선 임의로 저장한 기록만 넘겨줌
 
                     startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
                     (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료

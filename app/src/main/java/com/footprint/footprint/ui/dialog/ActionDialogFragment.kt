@@ -65,11 +65,17 @@ class ActionDialogFragment() : DialogFragment() {
         when (msg) {
             getString(R.string.msg_stop_realtime_record), getString(R.string.msg_stop_walk) -> binding.walkDialogActionTv.text =
                 "중지"
-            getString(R.string.action_delete), getString(R.string.msg_cancel_walk), getString(R.string.msg_delete_footprint) -> binding.walkDialogActionTv.text =
+            getString(R.string.action_delete), getString(R.string.msg_cancel_walk), getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> binding.walkDialogActionTv.text =
                 "삭제"
             getString(R.string.msg_save_post), getString(R.string.msg_save_walk) -> binding.walkDialogActionTv.text =
                 "저장"
         }
+
+        if (msg.contains("산책' 을 삭제하시겠어요?")) {
+            binding.walkDialogDescTv.visibility = View.VISIBLE
+            binding.walkDialogDescTv.text = "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요"
+        } else
+            binding.walkDialogDescTv.visibility = View.GONE
     }
 
     private fun setMyClickListener() {
@@ -83,7 +89,9 @@ class ActionDialogFragment() : DialogFragment() {
                 //‘OO번째 발자국’을 저장할까요? 일 경우 -> 저장하지 않는다는 데이터를 이전 화면에 전달
                 getString(R.string.msg_save_walk) -> myDialogCallback.save(false)
                 //해당 발자국을 삭제할까요? 일 경우 -> 삭제하지 않는다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_delete_footprint) -> myDialogCallback.delete(false)
+                getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> myDialogCallback.delete(
+                    false
+                )
             }
 
             dismiss()
@@ -99,7 +107,9 @@ class ActionDialogFragment() : DialogFragment() {
                 //‘OO번째 발자국’을 저장할까요? 일 경우 -> 저장한다는 데이터를 이전 화면에 전달
                 getString(R.string.msg_save_walk) -> myDialogCallback.save(true)
                 //해당 발자국을 삭제할까요? 일 경우 -> 삭제한다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_delete_footprint) -> myDialogCallback.delete(true)
+                getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> myDialogCallback.delete(
+                    true
+                )
             }
 
             dismiss()
