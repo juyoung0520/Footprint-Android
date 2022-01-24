@@ -16,22 +16,22 @@ class WalkAfterActivity :
 
     override fun initAfterBinding() {
         setMyClickListener()
-        setWalkDialog()
+        setActionDialog()
 
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.walk_after_nav_host_fragment_container) as NavHostFragment
         val navController: NavController = navHostFragment.findNavController()
 
-        val posts = intent.getStringExtra("posts")
+        val footprints = intent.getStringExtra("footprints")
         val bundle = Bundle()
-        if (posts==null)
-            bundle.putString("posts", "")
+        if (footprints == null)
+            bundle.putString("footprints", "")
         else
-            bundle.putString("posts", posts)
-        navController.setGraph(R.navigation.navigation_walk_after, bundle)
+            bundle.putString("footprints", footprints)
+        navController.setGraph(R.navigation.navigation_walk_confirm, bundle)
 
         val heightPixels = resources.displayMetrics.heightPixels.toFloat()
-        binding.walkAfterTb.layoutParams.height = (heightPixels*0.14).toInt()
+        binding.walkAfterTb.layoutParams.height = (heightPixels * 0.14).toInt()
     }
 
     override fun onBackPressed() {
@@ -61,7 +61,7 @@ class WalkAfterActivity :
     }
 
     //WalkDialogFragment 초기화
-    private fun setWalkDialog() {
+    private fun setActionDialog() {
         actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
