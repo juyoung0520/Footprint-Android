@@ -3,35 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/bg_dialog_fragment"
     tools:context=".ui.dialog.ActionDialogFragment">
 
     <TextView
         android:id="@+id/walk_dialog_msg_tv"
         android:layout_width="match_parent"
-        android:layout_height="144dp"
+        android:layout_height="0dp"
         android:gravity="center"
-        android:text="해당 기록을 삭제할까요?"
         android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/walk_dialog_desc_tv"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/walk_dialog_desc_tv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center|top"
+        android:lineSpacingExtra="4dp"
+        android:paddingHorizontal="32dp"
+        android:textAppearance="@style/tv_caption_14"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toTopOf="@+id/walk_dialog_cancel_tv"
+        app:layout_constraintTop_toBottomOf="@+id/walk_dialog_msg_tv" />
 
     <TextView
         android:id="@+id/walk_dialog_cancel_tv"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_walk_dialog_cancel_tv"
         android:gravity="center"
+        android:paddingVertical="20dp"
         android:text="@string/action_cancel"
         android:textAppearance="@style/tv_headline_eb_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/walk_dialog_action_tv"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/walk_dialog_desc_tv" />
 
     <TextView
         android:id="@+id/walk_dialog_action_tv"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="0dp"
         android:background="@drawable/bg_walk_dialog_action_tv"
         android:gravity="center"
         android:textAppearance="@style/tv_headline_eb_14"
