@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/walkmap_map_fragment"
+        android:name="com.naver.maps.map.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:name="com.naver.maps.map.MapFragment"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walkmap_timer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white_light_79"
         android:paddingTop="23dp"
         android:paddingBottom="13dp"
-        android:background="@color/white_light_79"
         app:layout_constraintTop_toTopOf="@+id/walkmap_map_fragment">
 
         <TextView
             android:id="@+id/walkmap_walktime_title_tv"
+            style="@style/tv_body_b_14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_walktime"
-            style="@style/tv_body_b_14"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/walkmap_walktime_number_tv"
+            style="@style/tv_headline_eb_48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:bufferType="spannable"
             android:text="00:00"
-            style="@style/tv_headline_eb_48"
-            app:layout_constraintTop_toBottomOf="@+id/walkmap_walktime_title_tv"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/walkmap_walktime_title_tv" />
 
         <LinearLayout
             android:id="@+id/walkmap_distance_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="45dp"
-            android:orientation="vertical"
+            android:layout_marginTop="15dp"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/walkmap_walktime_number_tv"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/walkmap_divider1_view"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/walkmap_divider1_view">
+            app:layout_constraintTop_toBottomOf="@+id/walkmap_walktime_number_tv">
 
             <TextView
                 android:id="@+id/walkmap_distance_title_tv"
+                style="@style/tv_body_b_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_distance"
-                style="@style/tv_body_b_12" />
+                android:text="@string/title_distance" />
 
             <TextView
                 android:id="@+id/walkmap_distance_number_tv"
+                style="@style/tv_headline_eb_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="8dp"
-                android:text="0.0"
-                style="@style/tv_headline_eb_24" />
+                android:text="0.0" />
 
             <TextView
                 android:id="@+id/walkmap_distance_unit_tv"
+                style="@style/tv_overline_10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/msg_distacnce_unit"
-                android:textColor="@color/black"
-                style="@style/tv_overline_10" />
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <View
@@ -85,44 +85,44 @@
             android:layout_width="1dp"
             android:layout_height="31dp"
             android:background="@color/white_dark"
-            app:layout_constraintTop_toTopOf="@id/walkmap_distance_layout"
-            app:layout_constraintStart_toEndOf="@+id/walkmap_distance_layout"
+            app:layout_constraintBottom_toBottomOf="@id/walkmap_distance_layout"
             app:layout_constraintEnd_toStartOf="@id/walkmap_calorie_layout"
-            app:layout_constraintBottom_toBottomOf="@id/walkmap_distance_layout"/>
+            app:layout_constraintStart_toEndOf="@+id/walkmap_distance_layout"
+            app:layout_constraintTop_toTopOf="@id/walkmap_distance_layout" />
 
         <LinearLayout
             android:id="@+id/walkmap_calorie_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="@+id/walkmap_distance_layout"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/walkmap_divider2_view"
             app:layout_constraintStart_toEndOf="@id/walkmap_divider1_view"
-            app:layout_constraintEnd_toStartOf="@+id/walkmap_divider2_view">
+            app:layout_constraintTop_toTopOf="@+id/walkmap_distance_layout">
 
             <TextView
                 android:id="@+id/walkmap_calorie_title_tv"
+                style="@style/tv_body_b_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_calorie"
-                style="@style/tv_body_b_12" />
+                android:text="@string/title_calorie" />
 
             <TextView
                 android:id="@+id/walkmap_calorie_number_tv"
+                style="@style/tv_headline_eb_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="8dp"
-                android:text="0"
-                style="@style/tv_headline_eb_24" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/walkmap_calorie_unit_tv"
+                style="@style/tv_overline_10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/msg_calroie_unit"
-                android:textColor="@color/black"
-                style="@style/tv_overline_10" />
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <View
@@ -130,45 +130,45 @@
             android:layout_width="1dp"
             android:layout_height="31dp"
             android:background="@color/white_dark"
-            app:layout_constraintTop_toTopOf="@id/walkmap_calorie_layout"
-            app:layout_constraintStart_toEndOf="@+id/walkmap_calorie_layout"
+            app:layout_constraintBottom_toBottomOf="@+id/walkmap_calorie_layout"
             app:layout_constraintEnd_toStartOf="@id/walkmap_pace_layout"
-            app:layout_constraintBottom_toBottomOf="@+id/walkmap_calorie_layout" />
+            app:layout_constraintStart_toEndOf="@+id/walkmap_calorie_layout"
+            app:layout_constraintTop_toTopOf="@id/walkmap_calorie_layout" />
 
         <LinearLayout
             android:id="@+id/walkmap_pace_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="45dp"
-            android:orientation="vertical"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="@+id/walkmap_distance_layout"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/walkmap_divider2_view"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="@+id/walkmap_distance_layout">
 
             <TextView
                 android:id="@+id/walkmap_pace_title_tv"
+                style="@style/tv_body_b_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_pace"
-                style="@style/tv_body_b_12" />
+                android:text="@string/title_pace" />
 
             <TextView
                 android:id="@+id/walkmap_pace_number_tv"
+                style="@style/tv_headline_eb_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="8dp"
-                android:text="0"
-                style="@style/tv_headline_eb_24" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/walkmap_pace_unit_tv"
+                style="@style/tv_overline_10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/msg_pace_unit"
-                android:textColor="@color/black"
-                style="@style/tv_overline_10" />
+                android:textColor="@color/black" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -178,25 +178,25 @@
         android:layout_height="8dp"
         android:background="@color/white_dark"
         android:max="100"
-        android:paddingTop="0dp"
         android:paddingStart="0dp"
+        android:paddingTop="0dp"
         android:paddingEnd="0dp"
         android:paddingBottom="0dp"
         android:progress="0"
         android:progressDrawable="@drawable/sb_custom"
         android:progressTint="@color/primary"
         android:thumb="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@+id/walkmap_timer_layout"/>
+        app:layout_constraintTop_toBottomOf="@+id/walkmap_timer_layout" />
 
     <ImageView
         android:id="@+id/walkmap_stop_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/btn_stop"
-        app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv"
         app:layout_constraintEnd_toStartOf="@+id/walkmap_middle_iv"
-        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv" />
 
     <ImageView
         android:id="@+id/walkmap_middle_iv"
@@ -204,28 +204,28 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="61dp"
         android:src="@drawable/btn_pause"
-        app:layout_constraintStart_toEndOf="@+id/walkmap_stop_iv"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/walkmap_plus_iv"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/walkmap_stop_iv" />
 
     <ImageView
         android:id="@+id/walkmap_plus_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/btn_plus"
-        app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv"
-        app:layout_constraintStart_toEndOf="@+id/walkmap_middle_iv"
+        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv"/>
+        app:layout_constraintStart_toEndOf="@+id/walkmap_middle_iv"
+        app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv" />
 
     <ProgressBar
         android:id="@+id/walk_loading_pb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/primary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="visible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

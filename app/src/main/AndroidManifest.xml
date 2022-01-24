@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".utils.GlobalApplication"
@@ -96,6 +97,10 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <service
+            android:name=".service.WalkService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

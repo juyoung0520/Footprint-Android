@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
+import android.util.Log
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -31,7 +32,5 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
                 }
             })
         }
-
-
     }
 }
