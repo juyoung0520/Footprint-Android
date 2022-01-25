@@ -85,14 +85,11 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
 
     //GPS API
     implementation 'com.google.android.gms:play-services-location:19.0.1'
-
-    //GSON
-    implementation 'com.google.code.gson:gson:2.8.9'
 
     //Hashtag Helper
     implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'

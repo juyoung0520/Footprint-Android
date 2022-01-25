@@ -36,6 +36,7 @@ import android.R.id.text1
 import android.content.Context
 import android.R.id.text1
 import android.os.Bundle
+import com.footprint.footprint.ui.register.RegisterActivity
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
@@ -47,6 +48,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeStartbtnTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
+        }
+
+        binding.homeSettingIv.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(RegisterActivity::class.java)
         }
 
         //상단바 크기 -> Top 띄워주기
@@ -61,6 +67,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //onStart
         requestLocation()
+
+
     }
 
     /*Function*/

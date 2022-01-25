@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/primary"
-        android:layout_weight="0.2"
+        android:layout_weight="0.25"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -208,7 +208,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="0.55"
+        android:layout_weight="0.5"
         app:layout_constraintTop_toBottomOf="@id/home_top_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -218,7 +218,7 @@
             android:layout_height="47dp"
             android:elevation="3dp"
             android:textAlignment="center"
-            app:tabRippleColor="#00ff0000"
+            app:tabRippleColor="@color/transparent"
 
             app:tabIndicatorColor="@color/primary_dark"
             app:tabIndicatorHeight="4dp"

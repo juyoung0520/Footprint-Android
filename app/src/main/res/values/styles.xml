@@ -79,6 +79,12 @@
         <item name="android:textColor">@color/black_dark</item>
     </style>
 
+    <style name="tv_body_b_11" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:textColor">@color/black_dark</item>
+    </style>
+
     <style name="tv_button_b_10" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_bold</item>
         <item name="android:textSize">10dp</item>
@@ -112,5 +118,10 @@
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/black_dark</item>
+    </style>
+
+    <style name="editText" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/primary</item>
+        <item name="colorControlNormal">@color/primary</item>
     </style>
 </resources>
