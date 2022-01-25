@@ -9,7 +9,7 @@ data class User(
     var email: String? = "",
     var gender: String? = "",
     var birthday: String? = "",
-    val height: Int? = 0,
-    val weight: Int? = 0
+    var height: String? = "",
+    var weight: String? = ""
 ): Serializable
 

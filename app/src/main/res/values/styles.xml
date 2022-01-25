@@ -14,6 +14,7 @@
     <style name="tv_headline_eb_24" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_extra_bold</item>
         <item name="android:textSize">24dp</item>
+        <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <style name="tv_headline_eb_20" parent="TextAppearance.AppCompat">
@@ -118,10 +119,5 @@
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">10dp</item>
         <item name="android:textColor">@color/black_dark</item>
-    </style>
-
-    <style name="editText" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorAccent">@color/primary</item>
-        <item name="colorControlNormal">@color/primary</item>
     </style>
 </resources>

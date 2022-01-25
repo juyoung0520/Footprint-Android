@@ -19,7 +19,7 @@ import java.lang.Integer.parseInt
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
-    private lateinit var newUser:User
+    private var newUser: User = User("00000000")
     private var gender: String = "null"
 
     override fun initAfterBinding() {
@@ -28,6 +28,7 @@ class RegisterInfoFragment() :
         birthEt()
         weightEt()
         heightEt()
+
 
         keyboardUp()
     }
@@ -44,31 +45,75 @@ class RegisterInfoFragment() :
                 if (nicknameEt.text.isEmpty())
                     nicknameEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                else {
+                    newUser.nickname = nicknameEt.text.toString()
+                    Log.d("NICKNAME", newUser.nickname.toString())
+                }
+
             }
         }
     }
 
-    private fun genderInput(){
+    private fun genderInput() {
         val radioF = binding.registerInfoGenderFemaleBtn
         val radioM = binding.registerInfoGenderMaleBtn
         val radioN = binding.registerInfoGenderNoneBtn
 
-        if(radioF.isChecked) gender = "female"
-        if(radioM.isChecked) gender = "male"
-        if(radioN.isChecked) gender = "null"
+        if (radioF.isChecked) gender = "female"
+        if (radioM.isChecked) gender = "male"
+        if (radioN.isChecked) gender = "null"
     }
 
     private fun birthEt() {
-        val birthEt = binding.registerInfoBirthEt
-        birthEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+        //year
+        val yearEt = binding.registerInfoBirthYearEt
+        yearEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // Focus
-                birthEt.backgroundTintList =
+                yearEt.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.primary))
+                binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
             } else {
-                if (birthEt.text.isEmpty())
-                    birthEt.backgroundTintList =
+                if (yearEt.text.isEmpty()) {
+                    yearEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                }
+
+            }
+        }
+
+        //month
+        val monthEt = binding.registerInfoBirthMonthEt
+        monthEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Focus
+                monthEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+                binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
+            } else {
+                if (monthEt.text.isEmpty()) {
+                    monthEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                }
+            }
+        }
+
+        //day
+        val dayEt = binding.registerInfoBirthDayEt
+        dayEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Focus
+                dayEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+                binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
+            } else {
+                if (dayEt.text.isEmpty()) {
+                    dayEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                }
             }
         }
     }
@@ -83,9 +128,12 @@ class RegisterInfoFragment() :
                     ColorStateList.valueOf(resources.getColor(R.color.primary))
                 heightUnit.setTextColor(resources.getColor(R.color.primary))
             } else {
-                if (heightEt.text.isEmpty())
+                if (heightEt.text.isEmpty()) {
                     heightEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoHeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                } else
+                    newUser.height = heightEt.text.toString()
 
             }
         }
@@ -101,9 +149,12 @@ class RegisterInfoFragment() :
                     ColorStateList.valueOf(resources.getColor(R.color.primary))
                 weightUnit.setTextColor(resources.getColor(R.color.primary))
             } else {
-                if (weightEt.text.isEmpty())
+                if (weightEt.text.isEmpty()) {
                     weightEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoWeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                } else
+                    newUser.weight = weightEt.text.toString()
             }
         }
     }
@@ -120,14 +171,13 @@ class RegisterInfoFragment() :
             })
     }
 
-    private fun TextWatcher() {
-//        val Et = binding.registerInfoBirthEt
-//        Et.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(p0: Editable) {}
-//
-//            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-//            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-//        })
+    private fun nicknameTextWatcher() {
+        val nicknameEt = binding.registerInfoNicknameEt
+        nicknameEt.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable) {}
+            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
+        })
     }
 }
 

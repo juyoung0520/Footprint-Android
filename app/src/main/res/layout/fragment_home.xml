@@ -159,10 +159,11 @@
             app:layout_constraintStart_toStartOf="@id/home_top_layout">
             <TextView
                 android:id="@+id/home_top_hello_tv"
-                style="@style/tv_headline_eb_24"
+                style="@style/tv_subtitle_b_18"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:text="@string/msg_home_hello"
+                android:gravity="center_vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -171,16 +172,16 @@
                 style="@style/tv_headline_eb_24"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
-                android:text="00"
+                android:layout_height="30dp"
+                android:text="최대여덟글자까지"
                 app:layout_constraintStart_toEndOf="@id/home_top_hello_tv"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/home_top_userunit_tv"
-                style="@style/tv_headline_eb_24"
+                style="@style/tv_title_b_24"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:text="@string/msg_home_userunit"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/home_top_username_tv"/>
