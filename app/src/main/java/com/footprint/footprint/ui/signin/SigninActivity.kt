@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import android.R.id.text1
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 import gun0912.tedimagepicker.util.ToastUtil.context
 
@@ -92,7 +93,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i("KAKAO/API-SUCCESS", "카카오계정으로 로그인 성공 ${token.accessToken}")
-                signupKakao()
+                getKakaoUser()
             }
         }
 
@@ -115,7 +116,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 } else if (token != null) {
                     Toast.makeText(this, "카카오톡 로그인 완료", Toast.LENGTH_SHORT).show()
                     Log.i("KAKAO/API-SUCCESS", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    signupKakao()
+                    getKakaoUser()
                 }
             }
         } else {
@@ -145,21 +146,20 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
                 saveSpf("kakao")
                 Log.d("KAKAO/USER", newUser.toString())
+
+                startRegisterActivity()
             }
         }
     }
 
-    private fun signupKakao() {
-        //1. User 정보 받아오기
-        getKakaoUser()
-
-        //2. 회원가입 api 호출
-
-
-        //3. 액티비티 이동
-        this.startNextActivity(MainActivity::class.java)
+    private fun startRegisterActivity() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        intent.putExtra("user", newUser)
+        startActivity(intent)
+        //this.startNextActivity(RegisterActivity::class.java)
         finish()
     }
+
 
     /*Funtion - Google*/
     private fun googleClient(): ActivityResultLauncher<Intent> {
@@ -193,17 +193,15 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
             newUser = User(id, displayName, email)
 
-            Log.d("GOOGLE/USER-EMAIL", email)
-            Log.d("GOOGLE/USER-NAME", displayName)
-            Log.d("GOOGLE/USER-ID", id)
+            Log.d("GOOGLE/USER", newUser.toString())
             Log.d("GOOGLE/USER-TOKEN", token)
             Log.d("GOOGLE/USER-SCOPE", scope)
 
             //2. spf & 회원가입 api 호출
             saveSpf("google")
 
-            //3. 메인 액티비티로 이동
-            startNextActivity(MainActivity::class.java)
+            //3. Register 액티비티로 이동
+            startRegisterActivity()
             finish()
         } catch (e: ApiException) {
             Log.w("GOOGLE/SIGNUP-FAILURE", "signInResult:failed code=" + e.statusCode)

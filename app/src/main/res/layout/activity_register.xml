@@ -6,7 +6,7 @@
 
     <!--TabLayout-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/register_top_laytout"
+        android:id="@+id/register_top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,34 +36,50 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!--Viewpager: 1. 정보 입력 2. 목표 설정-->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/register_vp"
+<!--    <androidx.core.widget.NestedScrollView
+        android:id="@+id/register_scroll_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/register_btn_tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/register_top_laytout" />
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/register_top_layout"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">-->
+            <!--Viewpager: 1. 정보 입력 2. 목표 설정-->
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/register_vp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/register_btn_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/register_top_layout"/>
 
-    <!--Btn-->
-    <TextView
-        android:id="@+id/register_btn_tv"
-        style="@style/tv_headline_eb_18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+            <!--Btn-->
+            <TextView
+                android:id="@+id/register_btn_tv"
+                style="@style/tv_headline_eb_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/btn_start"
-        android:elevation="100dp"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/btn_blueround_inactive"
+                android:elevation="100dp"
 
-        android:gravity="center"
-        android:text="@string/action_next"
+                android:gravity="center"
+                android:text="@string/action_next"
 
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/register_vp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+ <!--       </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

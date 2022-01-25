@@ -7,25 +7,36 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.WindowManager
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.footprint.footprint.data.model.User
 import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.utils.KeyboardVisibilityUtils
 import com.google.android.material.tabs.TabLayoutMediator
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
+    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+    private lateinit var newUser: User
     override fun initAfterBinding() {
+        initVP()
+        initMarginTop()
+        softKeyboard()
 
-        //VP & TB 세팅
-        val registerVPAdapter = RegisterViewpagerAdapter(this)
-        binding.registerVp.adapter = registerVPAdapter
-        //binding.registerVp.isUserInputEnabled = false
+        //SignIn Activity -> User 받아오기
+        if (intent.hasExtra("user")) {
+            newUser = intent.getSerializableExtra("user") as User
+            Log.d("REGISTER", newUser.toString())
+        }
 
-        TabLayoutMediator(binding.registerTb, binding.registerVp) { tab, position ->
-            tab.text = (position + 1).toString()
-        }.attach()
+        //Register Info Fragment -> 입력 다 받았으면
+        //1. 버튼 색 변경
+        //2. 버튼 누르면 -> 갤럭시 액티비티로
+    }
 
+
+    private fun initMarginTop() {
         //상단바 높이
         val statusbarHeight = getStatusBarHeightDP(this)
-        binding.registerTopLaytout.setPadding(
+        binding.registerTopLayout.setPadding(
             0,
             statusbarHeight - (statusbarHeight / 4),
             0,
@@ -35,8 +46,17 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
             "STATUSBAR",
             "상단바 높이: ${statusbarHeight} margintop: ${statusbarHeight - (statusbarHeight / 4)} marginBottom: ${statusbarHeight / 4}"
         )
+    }
 
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    private fun initVP() {
+        //VP & TB 세팅
+        val registerVPAdapter = RegisterViewpagerAdapter(this)
+        binding.registerVp.adapter = registerVPAdapter
+        //binding.registerVp.isUserInputEnabled = false
+
+        TabLayoutMediator(binding.registerTb, binding.registerVp) { tab, position ->
+            tab.text = (position + 1).toString()
+        }.attach()
     }
 
     //상단바 높이 구하기
@@ -50,8 +70,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         return result
     }
 
-    //dp to px 변환 함수 (params)
-    private fun dp2px(density: Float, dp: Int): Int {
-        return Math.round(dp.toFloat() * density)
+    //키보드 up
+    private fun softKeyboard() {
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        /*keyboardVisibilityUtils = KeyboardVisibilityUtils(window,
+    onShowKeyboard = { keyboardHeight ->
+        binding.registerScrollLayout.run {
+            smoothScrollTo(scrollX, scrollY + keyboardHeight)
+        }
+        Log.d("KEYBOARD", "Height = ${keyboardHeight}")
+    })*/
     }
 }
