@@ -12,8 +12,14 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.KeyboardVisibilityUtils
 
 import android.view.View.OnFocusChangeListener
+import androidx.databinding.adapters.ViewBindingAdapter.setPadding
 import com.footprint.footprint.data.model.User
+import com.skydoves.balloon.*
 import java.lang.Integer.parseInt
+import com.google.android.material.internal.ViewUtils.dpToPx
+import android.util.TypedValue
+import android.view.View
+import com.skydoves.balloon.OnBalloonClickListener
 
 
 class RegisterInfoFragment() :
@@ -21,7 +27,7 @@ class RegisterInfoFragment() :
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
     private var newUser: User = User("00000000")
     private var gender: String = "null"
-
+    private var isHelpBallonOn = false
     override fun initAfterBinding() {
         nicknameEt()
         genderInput()
@@ -30,9 +36,53 @@ class RegisterInfoFragment() :
         heightEt()
 
 
-        keyboardUp()
+        val textSizeinSp = dpToSp(12F, requireContext()).toFloat()
+        val balloon = Balloon.Builder(requireContext())
+            .setWidth(200)
+            .setHeight(60)
+            .setText("칼로리 계산에 이용돼요! \n (미입력시 부정확할 수 있어요)")
+            .setTextColorResource(R.color.white)
+            .setTextSize(textSizeinSp)
+            .setTextTypeface(R.font.namusquareround)
+            .setArrowVisible(true)
+            .setArrowSize(10)
+            .setArrowOrientation(ArrowOrientation.BOTTOM)
+            .setArrowPosition(0.2f)
+            .setCornerRadius(40F)
+            .setBackgroundColorResource(R.color.black_80)
+            .setBalloonAnimation(BalloonAnimation.ELASTIC)
+            .build()
+
+        keyboardUp(balloon)
+        val xoff = Math.floor(200/2 + 200*0.3).toInt()
+        binding.registerInfoWeightHelpIv.setOnClickListener {
+            isHelpBallonOn = !isHelpBallonOn
+            if (isHelpBallonOn)
+                balloon.dismiss()
+            else
+                binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
+        }
+
+        balloon.onBalloonClickListener = object : OnBalloonClickListener {
+            override fun onBalloonClick(view: View) {
+                balloon.dismiss()
+            }
+        }
+
     }
 
+    fun dpToSp(dp: Float, context: Context): Int {
+        return (dpToPx(dp, context) / context.resources.displayMetrics.scaledDensity).toInt()
+    }
+
+    fun dpToPx(dp: Float, context: Context): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.resources.displayMetrics
+        )
+            .toInt()
+    }
 
     private fun nicknameEt() {
         val nicknameEt = binding.registerInfoNicknameEt
@@ -160,13 +210,20 @@ class RegisterInfoFragment() :
     }
 
     /*Soft Keyboard*/
-    private fun keyboardUp() {
+    private fun keyboardUp(balloon: Balloon) {
         //requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
             onShowKeyboard = { keyboardHeight ->
                 binding.registerInfoScrollLayout.run {
                     smoothScrollTo(scrollX, scrollY + keyboardHeight)
                 }
+
+               /* if (isHelpBallonOn){
+                    isHelpBallonOn = !isHelpBallonOn
+                    Log.d("HEIGHT", "첨: ${!isHelpBallonOn} 지금: ${isHelpBallonOn}")
+                    balloon.dismiss()
+                }*/
+
                 Log.d("KEYBOARD", "Height = ${keyboardHeight}")
             })
     }

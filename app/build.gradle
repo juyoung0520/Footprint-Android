@@ -98,4 +98,7 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.8.4"
     implementation 'com.google.android.gms:play-services-auth:20.0.1'
 
+    //툴팁
+    implementation "com.github.skydoves:balloon:1.1.0"
+
 }
