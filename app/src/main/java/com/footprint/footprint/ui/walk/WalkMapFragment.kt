@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.main.home
+package com.footprint.footprint.ui.walk
 
 import android.content.Intent
 import android.graphics.PointF
@@ -178,9 +178,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         map.addOnOptionChangeListener {
             val mode = map.locationTrackingMode
 
-            if (mode == LocationTrackingMode.NoFollow) {
+            if (mode == LocationTrackingMode.NoFollow && isWalking) {
                 map.locationTrackingMode = LocationTrackingMode.Follow
-                locationOverlay.subIcon = null
             }
 
             if (mode == LocationTrackingMode.Follow) {

@@ -78,6 +78,7 @@ class HomeMonthCalendar(date: Date) {
         val currentDays = dateList.size
         return currentDays
     }
+
     private fun makeNextHead() {
         var date = 1
 
