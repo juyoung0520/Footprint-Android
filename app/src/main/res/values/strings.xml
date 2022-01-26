@@ -125,6 +125,8 @@
     <string name="msg_no_walk">산책기록이 없어요!</string>
     <string name="action_today">TODAY</string>
     <string name="error_hashtag_exceed_cnt">해시태그는 5개까지 작성할 수 있어요.</string>
+    <string name="msg_total">총</string>
+    <string name="msg_total_count">회</string>
 
     <!--개별 산책 화면-->
     <string name="msg_no_footprint">산책기록이 없어요!</string>

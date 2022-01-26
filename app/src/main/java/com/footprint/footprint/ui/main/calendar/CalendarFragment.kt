@@ -1,8 +1,6 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -13,18 +11,17 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.getDeiviceWidth
+import com.footprint.footprint.utils.convertPxToDp
+import com.footprint.footprint.utils.getDeviceHeight
+import com.footprint.footprint.utils.getDeviceWidth
 import com.kizitonwose.calendarview.Completion
-import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthScrollListener
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import com.kizitonwose.calendarview.utils.yearMonth
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Year
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
@@ -41,19 +38,18 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun initCalendar() {
-        val width = getDeiviceWidth() * 0.9
+        val width = getDeviceWidth() * 0.9
         val cellWidth = (width / 7).roundToInt()
+        val cellHeight = convertDpToPx(requireContext(), 50)
 
-        binding.calendarWalkCv.daySize = Size(cellWidth, convertDpToPx(requireContext(), 40))
+        binding.calendarWalkCv.daySize = Size(cellWidth, cellHeight)
 
         calendarDayBinder = CalendarDayBinder(requireContext())
-        calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
-            override fun onDayClick(selection: LocalDate) {
-                selectDate(selection)
-            }
+        calendarDayBinder.setDayLayoutParams(cellWidth, cellHeight)
 
-            override fun notifyDate(date: LocalDate) {
-                binding.calendarWalkCv.notifyDateChanged(date)
+        calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
+            override fun onDayClick(oldSelection: LocalDate?, selection: LocalDate) {
+                selectDate(oldSelection, selection)
             }
         })
 
@@ -114,9 +110,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             val localDate = LocalDate.now()
             currentMonth = localDate.yearMonth
 
+            val oldSelection = calendarDayBinder.getSelectedDate()
+
             binding.calendarWalkCv.scrollToDate(localDate)
-            calendarDayBinder.setSelectedDate(localDate)
-            selectDate(localDate)
+            selectDate(oldSelection, localDate)
         }
     }
 
@@ -130,6 +127,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             add(WalkModel(4))
         }
 
+        binding.calendarWalkNumber2Tv.text = " ${walks.size}"
+
         val adapter = WalkRVAdapter()
         adapter.setWalks(walks)
 
@@ -141,13 +140,16 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
             override fun onItemRemoveClick() {
-                if (adapter.itemCount == 0) {
+                val itemCount = adapter.itemCount
+                if (itemCount == 0) {
                     binding.calendarHintTv.visibility = View.VISIBLE
                     binding.calendarWalkRv.visibility = View.GONE
                 } else {
                     binding.calendarHintTv.visibility = View.GONE
                     binding.calendarWalkRv.visibility = View.VISIBLE
                 }
+
+                binding.calendarWalkNumber2Tv.text = " $itemCount"
             }
         })
 
@@ -156,8 +158,14 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    fun selectDate(selection: LocalDate) {
+    fun selectDate(oldSelection: LocalDate?, selection: LocalDate) {
+        calendarDayBinder.setSelectedDate(selection)
         binding.calendarWalkCv.notifyDateChanged(selection)
+
+        if (oldSelection != null) {
+            binding.calendarWalkCv.notifyDateChanged(oldSelection)
+        }
+
         binding.calendarSelectedDayTv.text =
             String.format(
                 "%d.%d.%d %s",

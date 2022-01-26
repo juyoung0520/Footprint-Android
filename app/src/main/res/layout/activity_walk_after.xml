@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#00FFFFFF"
-    tools:context=".ui.main.home.WalkAfterActivity">
+    tools:context=".ui.walk.WalkAfterActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/walk_after_tb"

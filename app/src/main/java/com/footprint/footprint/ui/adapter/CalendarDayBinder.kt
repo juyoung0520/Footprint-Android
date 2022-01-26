@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemCalendarDayBinding
@@ -16,15 +18,14 @@ import java.time.LocalDate
 
 class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayViewContainer> {
     interface OnDayClickListener {
-        fun onDayClick(selection: LocalDate)
-
-        fun notifyDate(date: LocalDate)
+        fun onDayClick(oldSelection: LocalDate?, selection: LocalDate)
     }
 
     private lateinit var mOnDayClickListener: OnDayClickListener
 
     // inner class 안에 있으면 안된다.
     private var selectedDate: LocalDate? = null
+    private var dayLayoutParams: ConstraintLayout.LayoutParams? = null
 
     fun setOnDayClickListener(listener: OnDayClickListener) {
         mOnDayClickListener = listener
@@ -32,6 +33,19 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
 
     fun setSelectedDate(localDate: LocalDate) {
         selectedDate = localDate
+    }
+
+    fun setDayLayoutParams(width: Int, height: Int) {
+        dayLayoutParams = if (width > height) {
+            ConstraintLayout.LayoutParams(height, height)
+        } else {
+            ConstraintLayout.LayoutParams(width, width)
+        }
+
+        dayLayoutParams!!.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        dayLayoutParams!!.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+        dayLayoutParams!!.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+        dayLayoutParams!!.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
     }
 
     fun getSelectedDate() = selectedDate
@@ -47,6 +61,11 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
 
         fun bindDay(day: CalendarDay) {
             binding.calendarDayTv.text = day.date.dayOfMonth.toString()
+
+            if (dayLayoutParams != null) {
+                binding.calendarDayStrokeV.layoutParams = dayLayoutParams
+                binding.calendarDayBgV.layoutParams = dayLayoutParams
+            }
 
             if (day.owner != DayOwner.THIS_MONTH) {
                 setIndicator(0)
@@ -82,19 +101,14 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
                 binding.calendarDayBgV.background = null
             }
 
-            setIndicator(day.date.dayOfMonth % 3)
+            setIndicator(day.date.dayOfMonth % 3 + 1)
 
             binding.root.setOnClickListener {
                 if (day.owner == DayOwner.THIS_MONTH) {
-                    val tmpSelectedDate = selectedDate
+                    val oldSelection = selectedDate
 
-                    if (tmpSelectedDate != day.date) {
-                        selectedDate = day.date
-                        mOnDayClickListener.onDayClick(selectedDate!!)
-
-                        if (tmpSelectedDate != null) {
-                            mOnDayClickListener.notifyDate(tmpSelectedDate)
-                        }
+                    if (oldSelection != day.date) {
+                        mOnDayClickListener.onDayClick(oldSelection, day.date)
                     }
                 }
             }

@@ -9,9 +9,13 @@ import kotlin.math.roundToInt
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-fun getDeiviceWidth(): Int {
+fun getDeviceWidth(): Int {
     // px 반환
     return Resources.getSystem().displayMetrics.widthPixels
+}
+
+fun getDeviceHeight(): Int {
+    return Resources.getSystem().displayMetrics.heightPixels
 }
 
 fun convertDpToPx(context: Context, dp: Int): Int {
