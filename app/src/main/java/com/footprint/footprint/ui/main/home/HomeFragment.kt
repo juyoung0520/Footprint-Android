@@ -36,6 +36,8 @@ import android.R.id.text1
 import android.content.Context
 import android.R.id.text1
 import android.os.Bundle
+import android.text.TextUtils
+import com.footprint.footprint.ui.register.RegisterActivity
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
@@ -47,6 +49,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeStartbtnTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
+        }
+
+        binding.homeSettingIv.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(RegisterActivity::class.java)
         }
 
         //상단바 크기 -> Top 띄워주기
@@ -61,6 +68,20 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //onStart
         requestLocation()
+
+//        val density = resources.displayMetrics.density
+//        if(binding.homeTopUsernameTv.length() >  7){
+//            binding.homeTopUsernameTv.maxWidth = dp2px(density, 140)
+//            binding.homeTopUsernameTv.isSingleLine = true; //한줄로 나오게 하기.
+//            binding.homeTopUsernameTv.ellipsize = TextUtils.TruncateAt.MARQUEE;//Ellipsize의 MARQUEE 속성 주기
+//            binding.homeTopUsernameTv.isSelected = true;
+//        }
+
+    }
+
+    //dp to px 변환 함수 (params)
+    private fun dp2px(density:Float, dp: Int): Int {
+        return Math.round(dp.toFloat() * density)
     }
 
     /*Function*/

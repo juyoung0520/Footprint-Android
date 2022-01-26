@@ -12,9 +12,49 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/primary"
-        android:layout_weight="0.2"
+        android:layout_weight="0.25"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <!--발자국-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/home_top_footprint_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-7dp"
+            android:layout_marginEnd="35dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <ImageView
+                android:id="@+id/top_footprint1_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="47dp"
+                android:src="@drawable/ic_tfootprint1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/top_footprint2_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="30dp"
+                android:src="@drawable/ic_tfootprint2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/top_footprint1_iv" />
+
+            <ImageView
+                android:id="@+id/top_footprint3_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_tfootprint3"
+                android:layout_marginStart="-24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/top_footprint1_iv"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--날짜와 날씨-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -119,10 +159,11 @@
             app:layout_constraintStart_toStartOf="@id/home_top_layout">
             <TextView
                 android:id="@+id/home_top_hello_tv"
-                style="@style/tv_headline_eb_24"
+                style="@style/tv_subtitle_b_18"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:text="@string/msg_home_hello"
+                android:gravity="center_vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -131,16 +172,16 @@
                 style="@style/tv_headline_eb_24"
                 android:layout_width="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
-                android:text="00"
+                android:layout_height="30dp"
+                android:text="최대여덟글자까지"
                 app:layout_constraintStart_toEndOf="@id/home_top_hello_tv"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/home_top_userunit_tv"
-                style="@style/tv_headline_eb_24"
+                style="@style/tv_title_b_24"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:text="@string/msg_home_userunit"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/home_top_username_tv"/>
@@ -159,45 +200,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <!--발자국-->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/home_top_footprint_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-7dp"
-            android:layout_marginEnd="35dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <ImageView
-                android:id="@+id/top_footprint1_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
 
-                android:layout_marginBottom="47dp"
-                android:src="@drawable/ic_tfootprint1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <ImageView
-                android:id="@+id/top_footprint2_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="30dp"
-                android:src="@drawable/ic_tfootprint2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/top_footprint1_iv" />
-
-            <ImageView
-                android:id="@+id/top_footprint3_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_tfootprint3"
-                android:layout_marginStart="-24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/top_footprint1_iv"
-                 />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -208,7 +211,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="0.55"
+        android:layout_weight="0.5"
         app:layout_constraintTop_toBottomOf="@id/home_top_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -218,7 +221,7 @@
             android:layout_height="47dp"
             android:elevation="3dp"
             android:textAlignment="center"
-            app:tabRippleColor="#00ff0000"
+            app:tabRippleColor="@color/transparent"
 
             app:tabIndicatorColor="@color/primary_dark"
             app:tabIndicatorHeight="4dp"
@@ -547,7 +550,7 @@
             android:id="@+id/home_startbtn_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_start"
+            android:background="@drawable/btn_blueround"
 
             android:text="@string/action_startwalk"
             style="@style/tv_headline_eb_18"

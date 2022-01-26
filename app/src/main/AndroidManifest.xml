@@ -63,6 +63,11 @@
             </intent-filter>
         </activity>
 
+        <!-- onboarding & register -->
+        <activity
+            android:name=".ui.register.RegisterActivity"
+            android:exported="false" />
+
         <!-- main & walk & walkafter -->
         <activity
             android:name=".ui.main.MainActivity"

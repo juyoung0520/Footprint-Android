@@ -31,6 +31,11 @@
     <string name="msg_pace_unit">걸음/분</string>
     <string name="msg_min_eng_unit">min</string>
     <string name="msg_min_ko_unit">분</string>
+    <string name="msg_height_unit">cm</string>
+    <string name="msg_weight_unit">kg</string>
+    <string name="msg_year_unit">년</string>
+    <string name="msg_month_unit">월</string>
+    <string name="msg_day_unit">일</string>
 
     <!--에러-->
 
@@ -56,8 +61,22 @@
     <string name="msg_copyright">© 2021. 발자국 all right reserved.</string>
 
     <!--정보 등록-->
-    <string name="title_signup_info">정보를 입력해 주세요</string>
-    <string name="msg_signup_info">정보를 입력하면 더 정확한 서비스를 제공받을 수 있어요</string>
+    <string name="title_register_info">정보를 입력해 주세요</string>
+    <string name="msg_register_info">정보를 입력하면 더 정확한 서비스를 제공받을 수 있어요</string>
+    <string name="msg_asterisk">*</string>
+    <string name="title_register_info_nickname">닉네임</string>
+    <string name="title_register_info_nickname_hint">닉네임을 입력해 주세요 (최대 8자)</string>
+    <string name="title_register_info_gender">성별</string>
+    <string name="title_register_info_gender_f">여</string>
+    <string name="title_register_info_gender_m">남</string>
+    <string name="title_register_info_gender_n">선택안함</string>
+    <string name="title_register_info_birth">생년월일</string>
+    <string name="title_register_info_birth_year_hint">1999</string>
+    <string name="title_register_info_birth_month_hint">12</string>
+    <string name="title_register_info_birth_day_hint">31</string>
+    <string name="title_register_info_wheight">키/몸무게</string>
+    <string name="title_register_info_height_hint">170</string>
+    <string name="title_register_info_weight_hint">50</string>
 
     <!--홈-->
     <string name="msg_home_hello">안녕하세요, </string>

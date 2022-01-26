@@ -61,7 +61,7 @@ class HomeMonthFragment :
 
         //Background heigh와 padding 구하기
         val height = VPArea - (14 + margin * 2)
-        val pxHeight = dp2px(density!!, height.toInt())
+        val pxHeight = dp2px(density, height.toInt())
         binding.homeMonthBackgroundLayout.setHeight(pxHeight)
         binding.homeMonthBackgroundLayout.setPadding(0, margin.toInt(), 0, margin.toInt())
 
