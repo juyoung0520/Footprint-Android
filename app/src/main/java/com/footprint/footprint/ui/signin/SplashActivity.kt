@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.kakao.sdk.common.util.Utility
 
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
@@ -25,6 +26,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private var isKakaoLogin = false
 
     override fun initAfterBinding() {
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)
         checkKakaoLogin()
         checkGoogleLogin()
     }
@@ -32,7 +35,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private fun checkGoogleLogin() {
         Log.d("AUTO-LOGIN/FLAG", "FLAG GOOGLE")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_login_client_id))
+            .requestIdToken(getString(R.string.google_login_server_id))
             .requestEmail() // email addresses도 요청함
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this@SplashActivity, gso)

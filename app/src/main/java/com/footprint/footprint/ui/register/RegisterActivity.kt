@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -13,6 +14,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.model.User
 import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.register.info.RegisterInfoFragment
 import com.footprint.footprint.utils.KeyboardVisibilityUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.skydoves.balloon.BalloonAnimation
@@ -30,12 +32,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         //SignIn Activity -> User 받아오기
         if (intent.hasExtra("user")) {
             newUser = intent.getSerializableExtra("user") as User
+
+            val infoFragment = RegisterInfoFragment()
+            var bundle = Bundle()
+            bundle.putSerializable("user", newUser)
+            infoFragment.arguments = bundle
+
             Log.d("REGISTER", newUser.toString())
         }
 
-        //Register Info Fragment -> 입력 다 받았으면
-        //1. 버튼 색 변경
-        //2. 버튼 누르면 -> 갤럭시 액티비티로
 
     }
 
