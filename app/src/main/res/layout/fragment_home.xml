@@ -250,7 +250,6 @@
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_bg_grayline_375x1"
-        app:layout_constraintBottom_toBottomOf="@id/home_daymonth_vp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/home_middle_layout" />
 

@@ -12,13 +12,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.footprint.footprint.classes.NonNullMutableLiveData
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.LocationSource
+import kotlinx.coroutines.*
 
 typealias Path = MutableList<LatLng>
 typealias PathGroup = MutableList<Path>
@@ -27,6 +26,8 @@ class WalkService : LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private lateinit var lastLocation: Location
+    private var totalTimeMillis = 0L
+    private var stopCount = 0
 
     companion object {
         val isWalking = NonNullMutableLiveData<Boolean>(false)
@@ -67,9 +68,10 @@ class WalkService : LifecycleService() {
         isWalking.observe(this, Observer { state ->
             if (state) {
                 addEmptyPath()
-                activate()
+                locationActivate()
+                startTimer()
             } else {
-                deactivate()
+                locationDeactivate()
             }
         })
     }
@@ -77,13 +79,13 @@ class WalkService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             when (intent.action) {
-                "start_or_resume" -> {
+                TRACKING_START_OR_RESUME -> {
                     isWalking.postValue(true)
                 }
-                "pause" -> {
+                TRACKING_PAUSE -> {
                     isWalking.postValue(false)
                 }
-                "destroy" -> {
+                TRACKING_STOP -> {
                     isWalking.postValue(false)
                     stopSelf()
                 }
@@ -97,18 +99,34 @@ class WalkService : LifecycleService() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             super.onLocationResult(result)
+            if (!isWalking.value) {
+                return
+            }
 
-            if (isWalking.value) {
-                result.lastLocation.let {
-                    currentLocation.postValue(it)
-                    addLocation(it)
-                    updateDistance(it)
+            result.lastLocation.let {
+                Log.d("speed", it.speed.toString())
+                if (it.speed <= 0.2f) {
+                    stopCount++
+
+                    if (stopCount == 10) {
+                        isWalking.postValue(false)
+                    }
+
+                    return
                 }
+
+                if (stopCount != 0) {
+                    stopCount = 0
+                }
+
+                currentLocation.postValue(it)
+                addLocation(it)
+                updateDistance(it)
             }
         }
     }
 
-    private fun activate() {
+    private fun locationActivate() {
         // Permission Check 여기 안넣으면 에러
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             if (ContextCompat.checkSelfPermission(
@@ -154,8 +172,29 @@ class WalkService : LifecycleService() {
         )
     }
 
-    private fun deactivate() {
+    private fun locationDeactivate() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    private fun startTimer() {
+        val startTime= System.currentTimeMillis()
+        var lapTime = 0L
+        var lastSecondTimeMillis = currentTime.value * 1000L
+
+        CoroutineScope(Dispatchers.Main).launch {
+            while (isWalking.value) {
+                lapTime = System.currentTimeMillis() - startTime
+
+                if (totalTimeMillis + lapTime >= lastSecondTimeMillis + 1000L) {
+                    currentTime.postValue(currentTime.value + 1)
+                    lastSecondTimeMillis += 1000L
+                }
+
+                delay(500L)
+            }
+
+            totalTimeMillis += lapTime
+        }
     }
 
     private fun addEmptyPath() {
@@ -182,31 +221,5 @@ class WalkService : LifecycleService() {
         totalDistance.postValue(totalDistance.value + location.distanceTo(lastLocation))
 
         lastLocation = location
-    }
-
-    private fun hasLocationPermissions(): Boolean {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED)
-        } else {
-            (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-                    && ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED)
-        }
     }
 }
