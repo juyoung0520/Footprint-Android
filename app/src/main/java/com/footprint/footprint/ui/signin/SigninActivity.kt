@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import android.R.id.text1
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.footprint.footprint.R
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 import gun0912.tedimagepicker.util.ToastUtil.context
@@ -131,17 +132,13 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             } else if (user != null) {
                 Log.i("KAKAO/USER-SUCCESS", "사용자 정보 요청 성공" + user.toString())
                 val userIdx = user.id
-                val nickname = user.kakaoAccount?.profile?.nickname
-                val email = user.kakaoAccount?.email
-                val gender = user.kakaoAccount?.gender
-                val birthday = user.kakaoAccount?.birthday
+                val username = user.kakaoAccount!!.profile!!.nickname
+                val useremail = user.kakaoAccount!!.email
 
                 newUser = User(
                     userIdx.toString(),
-                    nickname.toString(),
-                    email.toString(),
-                    gender.toString(),
-                    birthday.toString()
+                    username.toString(),
+                    useremail.toString(),
                 )
 
                 saveSpf("kakao")
@@ -156,7 +153,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val intent = Intent(this, RegisterActivity::class.java)
         intent.putExtra("user", newUser)
         startActivity(intent)
-        //this.startNextActivity(RegisterActivity::class.java)
         finish()
     }
 
@@ -164,6 +160,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     /*Funtion - Google*/
     private fun googleClient(): ActivityResultLauncher<Intent> {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_login_server_id))
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -185,17 +182,16 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         try {
             //1. user 정보 저장
             val account = completedTask.getResult(ApiException::class.java)
-            val email = account?.email.toString()
-            val displayName = account?.displayName.toString()
-            val id = account?.id.toString()
+            val userid = account?.id.toString()
+            val username = account?.displayName.toString()
+            val useremail = account?.email.toString()
             val token = account.idToken.toString()
-            val scope = account?.grantedScopes.toString()
 
-            newUser = User(id, displayName, email)
+
+            newUser = User(userid, username, useremail)
 
             Log.d("GOOGLE/USER", newUser.toString())
             Log.d("GOOGLE/USER-TOKEN", token)
-            Log.d("GOOGLE/USER-SCOPE", scope)
 
             //2. spf & 회원가입 api 호출
             saveSpf("google")
@@ -209,22 +205,22 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     private fun getUser() {
-        val acct = GoogleSignIn.getLastSignedInAccount(this@SigninActivity)
-        if (acct != null) {
-            val personName = acct.displayName
-            val personEmail = acct.email
-            val personId = acct.id
-            newUser = User(personId, personName, personEmail)
-            Log.d(
-                "GOOGLE/GETUSER",
-                "personName: ${personName} personEmail: ${personEmail} personId: ${personId}"
-            )
-            Log.d("GOOGLE/USER", newUser.toString())
-        }
+//        val acct = GoogleSignIn.getLastSignedInAccount(this@SigninActivity)
+//        if (acct != null) {
+//            val personName = acct.displayName
+//            val personEmail = acct.email
+//            val personId = acct.id
+//            newUser = User(personId, personName, personEmail)
+//            Log.d(
+//                "GOOGLE/GETUSER",
+//                "personName: ${personName} personEmail: ${personEmail} personId: ${personId}"
+//            )
+//            Log.d("GOOGLE/USER", newUser.toString())
+//        }
     }
 
     private fun saveSpf(status: String){
-        saveUserIdx(this, newUser.userIdx!!)
+        saveUserIdx(this, newUser.userIdx)
         saveLoginStatus(this, status)
         val userId = getUserIdx(this)
         val loginStatus = getLoginStatus(this)

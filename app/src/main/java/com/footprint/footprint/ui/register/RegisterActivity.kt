@@ -19,6 +19,10 @@ import com.footprint.footprint.utils.KeyboardVisibilityUtils
 import com.google.android.material.tabs.TabLayoutMediator
 import com.skydoves.balloon.BalloonAnimation
 import com.skydoves.balloon.createBalloon
+import androidx.viewpager.widget.ViewPager
+
+
+
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
     //private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
@@ -32,15 +36,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         //SignIn Activity -> User 받아오기
         if (intent.hasExtra("user")) {
             newUser = intent.getSerializableExtra("user") as User
-
-            val infoFragment = RegisterInfoFragment()
-            var bundle = Bundle()
-            bundle.putSerializable("user", newUser)
-            infoFragment.arguments = bundle
-
-            Log.d("REGISTER", newUser.toString())
+            Log.d("REGISTER/USER", newUser.toString())
         }
-
 
     }
 
@@ -60,15 +57,34 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         )
     }
 
+    /*뷰페이저*/
     private fun initVP() {
         //VP & TB 세팅
         val registerVPAdapter = RegisterViewpagerAdapter(this)
         binding.registerVp.adapter = registerVPAdapter
-        //binding.registerVp.isUserInputEnabled = false
-
+        binding.registerVp.isUserInputEnabled = false
         TabLayoutMediator(binding.registerTb, binding.registerVp) { tab, position ->
             tab.text = (position + 1).toString()
+            tab.view.isClickable = false
         }.attach()
+
+
+    }
+    fun changeNextFragment(user: User){
+        Log.d("CHANGE", "OK")
+        val current = binding.registerVp.currentItem
+        if (current == 0){
+            //Info 프래그먼트: 1. Goal 프래그먼트로 넘기기 2. user 정보 업데이트
+            binding.registerVp.setCurrentItem(1, true)
+
+            newUser.nickname = user.nickname
+            newUser.gender = user.gender
+            newUser.birth = user.birth
+            newUser.height = user.height
+            newUser.weight = user.weight
+
+            Log.d("ACTIVITY", newUser.toString())
+        }
     }
 
     //상단바 높이 구하기
@@ -93,4 +109,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         Log.d("KEYBOARD", "Height = ${keyboardHeight}")
     })*/
     }
+
+
+
 }

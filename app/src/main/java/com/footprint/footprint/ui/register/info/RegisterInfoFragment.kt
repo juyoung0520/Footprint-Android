@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.register.info
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.Editable
@@ -28,34 +29,28 @@ import android.widget.RadioButton
 
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
+import com.footprint.footprint.ui.register.RegisterActivity
+import com.footprint.footprint.ui.main.MainActivity
+
+
+
 
 
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+
     private lateinit var tmpUser: User
     private var newUser: User = User()
-    private var tmpYear: Int = 0
-    private var tmpMonth: Int = 0
-    private var tmpDay: Int = 0
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
     private val THIS_YEAR = 2022
+
     private lateinit var animation: Animation
-    private var date = arrayOf(0, 0, 0)
-    // 0: 입력 안됨, 1: 입력됨 4: 틀림
+
 
     override fun initAfterBinding() {
         animation = AnimationUtils.loadAnimation(activity, R.anim.shake)
-
-        //Activity에서 newUser 받아오기
-        if (arguments != null) {
-            tmpUser = arguments?.getSerializable("user") as User
-            Log.d("USER", tmpUser.toString())
-        } else {
-            tmpUser = User()
-            Log.d("USER", tmpUser.toString())
-        }
 
         /*각 EditText에 입력 받기 */
         nicknameEt()
@@ -68,7 +63,6 @@ class RegisterInfoFragment() :
 
         /*버튼 활성화 & 눌렀을 때*/
         binding.registerInfoActionBtn.setOnClickListener {
-
 
             //Nickname Validation
             //val validatedNinckname = nicknameValidation()
@@ -86,8 +80,8 @@ class RegisterInfoFragment() :
 
             //ok -> 목표 프래그먼트 데이터 전달
             if (validatedBirth) {
-                Toast.makeText(activity, "정보 등록됨", Toast.LENGTH_SHORT).show()
-                Log.d("VALIDATION", newUser.toString())
+                Log.d("INFO-FRAGMENT", newUser.toString())
+                (activity as RegisterActivity).changeNextFragment(newUser)
             }
         }
 
@@ -118,7 +112,6 @@ class RegisterInfoFragment() :
 
         if (isNicknameCorrect && isGenderCorrect) {
             //버튼 색 바뀌게
-            Log.d("TOACTIVITY", tmpUser.toString())
             binding.registerInfoActionBtn.setBackgroundDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -505,7 +498,7 @@ class RegisterInfoFragment() :
 
 
         if (results[0] == 1 && results[1] == 1 && results[2] == 1) {
-            newUser.birthday = String.format("%04d.%02d.%02d", year, month, day)
+            newUser.birth = String.format("%04d.%02d.%02d", year, month, day)
 
             yearEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
@@ -515,7 +508,7 @@ class RegisterInfoFragment() :
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
             return true
         } else if (results[0] == 0 && results[1] == 0 && results[2] == 0) {
-            newUser.birthday = null
+            newUser.birth = null
             return true
         }
 
