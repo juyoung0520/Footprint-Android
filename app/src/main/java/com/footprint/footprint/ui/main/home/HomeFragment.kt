@@ -57,27 +57,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             mainActivity.startNextActivity(RegisterActivity::class.java)
         }
 
-        //상단바 크기 -> Top 띄워주기
-        val height = getStatusBarHeightDP(requireContext())
-        Log.d("Height", height.toString())
-        binding.homeTopLayout.setPadding(0, height, 0,0)
-
         initTB()
         initDate()
 
         setPermission()
-
-        //onStart
         requestLocation()
-
-//        val density = resources.displayMetrics.density
-//        if(binding.homeTopUsernameTv.length() >  7){
-//            binding.homeTopUsernameTv.maxWidth = dp2px(density, 140)
-//            binding.homeTopUsernameTv.isSingleLine = true; //한줄로 나오게 하기.
-//            binding.homeTopUsernameTv.ellipsize = TextUtils.TruncateAt.MARQUEE;//Ellipsize의 MARQUEE 속성 주기
-//            binding.homeTopUsernameTv.isSelected = true;
-//        }
-
     }
 
     //dp to px 변환 함수 (params)
@@ -136,16 +120,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             nowDate.dayOfMonth,
             dayOfWeek
         )
-    }
-
-    //상단바 높이 구하기
-    fun getStatusBarHeightDP(context: Context): Int {
-        var result = 0
-        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimension(resourceId).toInt()
-        }
-        return result
     }
 
     /*상단 날씨 받아오기*/

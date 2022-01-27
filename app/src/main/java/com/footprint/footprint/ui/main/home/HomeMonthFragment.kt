@@ -24,6 +24,8 @@ import android.view.ViewGroup
 
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import java.lang.Math.floor
+import kotlin.math.ceil
 
 
 class HomeMonthFragment :
@@ -33,7 +35,6 @@ class HomeMonthFragment :
         //현재 날짜 받아오기
         var localNowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
         var nowDate: Date = java.sql.Date.valueOf(localNowDate.toString());
-
         initMonthFragment(nowDate)
     }
 
@@ -59,11 +60,11 @@ class HomeMonthFragment :
         val margin = MarginArea / (weeks - 1)
         val pxMargin = dp2px(density!!, margin.toInt())
 
-        //Background heigh와 padding 구하기
+        //Background height와 padding 구하기
         val height = VPArea - (14 + margin * 2)
         val pxHeight = dp2px(density, height.toInt())
         binding.homeMonthBackgroundLayout.setHeight(pxHeight)
-        binding.homeMonthBackgroundLayout.setPadding(0, margin.toInt(), 0, margin.toInt())
+        binding.homeMonthBackgroundLayout.setPadding(0, pxMargin/2, 0, pxMargin/2)
 
         //리사이클러뷰 어댑터 연결
         var calRVAdapter =

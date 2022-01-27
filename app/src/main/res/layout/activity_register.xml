@@ -5,35 +5,28 @@
     android:layout_height="match_parent">
 
     <!--TabLayout-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/register_top_layout"
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/register_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:tabBackground="@drawable/selector_tablayout_indicator"
+        app:tabGravity="center"
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/register_tb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabBackground="@drawable/selector_tablayout_indicator"
-            app:tabGravity="center"
+        app:tabIndicator="@null"
+        app:tabPaddingEnd="5dp"
+        app:tabPaddingStart="5dp"
+        app:tabRippleColor="@color/transparent"
 
-            app:tabIndicator="@null"
-            app:tabPaddingEnd="5dp"
-            app:tabPaddingStart="5dp"
-            app:tabRippleColor="@color/transparent"
-
-            app:tabSelectedTextColor="@color/white_light"
-            app:tabTextAppearance="@style/tv_body_b_11"
-            app:tabTextColor="@color/transparent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:tabSelectedTextColor="@color/white_light"
+        app:tabTextAppearance="@style/tv_body_b_11"
+        app:tabTextColor="@color/transparent" />
 
 
     <androidx.core.widget.NestedScrollView
@@ -42,11 +35,8 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/register_top_layout">
+        app:layout_constraintTop_toBottomOf="@id/register_tb">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
             <!--Viewpager: 1. 정보 입력 2. 목표 설정-->
 
             <androidx.viewpager2.widget.ViewPager2
@@ -57,9 +47,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

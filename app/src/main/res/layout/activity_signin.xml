@@ -1,226 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!--상단-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/signin_top_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1">
-        <ImageView
-            android:id="@+id/signin_back_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+    <ImageView
+        android:id="@+id/signin_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
 
-            android:src="@drawable/ic_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@id/signin_login_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/signin_login_title_tv" />
 
-        <TextView
-            android:id="@+id/signin_login_title_tv"
-            style="@style/tv_headline_eb_16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_login"
-            app:layout_constraintBottom_toBottomOf="@id/signin_back_iv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/signin_back_iv" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/signin_login_title_tv"
+        style="@style/tv_headline_eb_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_login"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.07" />
 
 
     <!--중간-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/signin_middle_layout"
+    <ImageView
+        android:id="@+id/signin_background_road_iv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_blueroad_signin"
 
-            <ImageView
-                android:id="@+id/signin_background_road_iv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg_blueroad_signin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/signin_footprint_catch_tv"
-                app:layout_constraintBottom_toTopOf="@id/signin_description_tv"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
 
-            <TextView
-                android:id="@+id/signin_footprint_catch_tv"
-                style="@style/tv_headline_eb_18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/msg_catchphrase"
-                android:textColor="@color/primary"
-                app:layout_constraintBottom_toTopOf="@id/signin_background_road_iv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/signin_footprint_catch_tv"
+        style="@style/tv_headline_eb_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_catchphrase"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toTopOf="@id/signin_background_road_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-            <ImageView
-                android:id="@+id/signin_footprint_union_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="135dp"
-                android:scaleType="center"
-                android:layout_marginTop="61dp"
-                android:src="@drawable/ic_footprint_big"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/signin_background_road_iv" />
+    <ImageView
+        android:id="@+id/signin_footprint_union_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="135dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_footprint_big"
+        app:layout_constraintBottom_toBottomOf="@id/signin_background_road_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/signin_background_road_iv"
+        app:layout_constraintVertical_bias="0.3" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="37dp"
-                android:src="@drawable/ic_footprint_logo_blue"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/signin_footprint_union_iv" />
+    <ImageView
+        android:id="@+id/signin_logo_title_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:src="@drawable/ic_footprint_logo_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signin_footprint_union_iv" />
 
-            <TextView
-                android:id="@+id/signin_description_tv"
-                style="@style/tv_caption_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/msg_login_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/signin_background_road_iv"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/signin_description_tv"
+        style="@style/tv_caption_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_login_description"
+        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <!-- 버튼 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/singin_bottom_layout"
+ <!--   <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/signin_btn_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2">
-
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="0.4"
+       app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">-->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/signin_kakaologin_btn_layout"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_signin_kakao_btn"
+            android:layout_marginHorizontal="36dp"
+            app:layout_constraintVertical_bias="0.7"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/signin_kakaologin_btn_layout"
-                android:layout_width="301dp"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_yellowround"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/signin_googlelogin_btn_layout">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-                <ImageView
-                    android:id="@+id/signin_kakao_logo_iv"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="59dp"
-                    android:src="@drawable/ic_kakao"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/signin_kakao_logo_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_kakao"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/signin_kakao_text_tv"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/signin_kakao_text_tv"
-                    style="@style/tv_subtitle_b_16"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_kakaologin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/signin_kakao_logo_iv"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout> //카카오 로그인
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/signin_googlelogin_btn_layout"
-                android:layout_width="301dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bg_whitebluelineround"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/signin_kakaologin_btn_layout"
-                app:layout_constraintBottom_toTopOf="@id/signin_nologin_tv">
-
-                <ImageView
-                    android:id="@+id/signin_google_logo_iv"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="59dp"
-                    android:src="@drawable/ic_google"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/signin_google_text_tv"
-                    style="@style/tv_subtitle_b_16"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_googlelogin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/signin_google_logo_iv"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout> //구글 로그인
             <TextView
-                android:id="@+id/signin_nologin_tv"
-                android:layout_width="194dp"
+                android:id="@+id/signin_kakao_text_tv"
+                style="@style/tv_subtitle_b_16"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/msg_nologin"
-                android:gravity="center"
-                style="@style/tv_caption_12"
-                android:textColor="@color/black"
-                android:layout_marginTop="10dp"
-                app:layout_constraintTop_toBottomOf="@id/signin_googlelogin_btn_layout"
+                android:layout_marginEnd="-32dp"
+                android:text="@string/title_kakaologin"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" /> //no 로그인
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/signin_googlelogin_btn_layout"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_signin_google_btn"
+            android:layout_marginHorizontal="36dp"
+
+            app:layout_constraintVertical_bias="0.79"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/signin_google_logo_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="59dp"
+                android:src="@drawable/ic_google"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/signin_google_text_tv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/signin_google_text_tv"
+                style="@style/tv_subtitle_b_16"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/title_googlelogin"
+                android:layout_marginEnd="-32dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+     <TextView
+        android:id="@+id/signin_nologin_tv"
+        style="@style/tv_caption_12"
+        android:layout_width="194dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/msg_nologin"
+        android:textColor="@color/black"
+         app:layout_constraintVertical_bias="0.85"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <!--하단-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1">
-        <TextView
-            android:id="@+id/signin_copyright_tv"
-            android:layout_width="194dp"
-            android:layout_height="wrap_content"
-            android:text="@string/msg_copyright"
-            android:gravity="center"
-            style="@style/tv_overline_10"
-            android:textColor="@color/black"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/signin_copyright_tv"
+        style="@style/tv_overline_10"
+        android:layout_width="194dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/msg_copyright"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.95" />
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

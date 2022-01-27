@@ -39,8 +39,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var newUser: User
     override fun initAfterBinding() {
-        initXML()
-
         //카카오 로그인
         binding.signinKakaologinBtnLayout.setOnClickListener {
             setKakaoLogin()
@@ -57,32 +55,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
-    }
-
-    /*XML 동적 Layout*/
-    private fun initXML() {
-        val density = context.resources?.displayMetrics?.density
-        val statusbarHeight = getStatusBarHeightDP(this) + dp2px(density!!, 10)
-        val params = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, statusbarHeight, 0, 0) // 왼쪽, 위, 오른쪽, 아래 순서입니다.
-        binding.signinTopLayout.layoutParams = params
-    }
-
-    //dp to px 변환 함수 (params)
-    private fun dp2px(density:Float, dp: Int): Int {
-        return Math.round(dp.toFloat() * density)
-    }
-
-    fun getStatusBarHeightDP(context: Context): Int {
-        var result = 0
-        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimension(resourceId).toInt()
-        }
-        return result
     }
 
     /*Funtion-Kakao*/

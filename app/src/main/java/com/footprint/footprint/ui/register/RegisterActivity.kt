@@ -26,7 +26,7 @@ import androidx.viewpager.widget.ViewPager
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
     //private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
-    private lateinit var newUser: User
+    private var newUser: User = User()
 
     override fun initAfterBinding() {
         initVP()
@@ -45,12 +45,12 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
     private fun initMarginTop() {
         //상단바 높이
         val statusbarHeight = getStatusBarHeightDP(this)
-        binding.registerTopLayout.setPadding(
+        /*binding.registerTopLayout.setPadding(
             0,
             statusbarHeight - (statusbarHeight / 4),
             0,
             statusbarHeight / 4
-        )
+        )*/
         Log.d(
             "STATUSBAR",
             "상단바 높이: ${statusbarHeight} margintop: ${statusbarHeight - (statusbarHeight / 4)} marginBottom: ${statusbarHeight / 4}"

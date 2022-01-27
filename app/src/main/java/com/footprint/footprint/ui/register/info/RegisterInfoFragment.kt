@@ -31,27 +31,22 @@ import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.main.MainActivity
-
-
-
+import java.time.LocalDate
+import java.time.ZoneId
 
 
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
-    private lateinit var tmpUser: User
     private var newUser: User = User()
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
-    private val THIS_YEAR = 2022
 
     private lateinit var animation: Animation
 
 
     override fun initAfterBinding() {
-        animation = AnimationUtils.loadAnimation(activity, R.anim.shake)
-
         /*각 EditText에 입력 받기 */
         nicknameEt()
         genderInput()
@@ -64,10 +59,8 @@ class RegisterInfoFragment() :
         /*버튼 활성화 & 눌렀을 때*/
         binding.registerInfoActionBtn.setOnClickListener {
 
-            //Nickname Validation
-            //val validatedNinckname = nicknameValidation()
-
-            //Gender Validation
+            //Nickname Validation => O
+            //Gender Validation   => O
 
             //Birth Validation
             val validatedBirth = birthValidation()
@@ -131,7 +124,7 @@ class RegisterInfoFragment() :
         }
     }
 
-    /*Nickname*/
+    /*Nickname: Focus, Watcher*/
     private fun nicknameEt() {
         val nicknameEt = binding.registerInfoNicknameEt
         nicknameEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
@@ -157,9 +150,6 @@ class RegisterInfoFragment() :
             override fun afterTextChanged(p0: Editable) {
 
                 if (nicknameEt.text.length > 8) {
-                    //if(nicknameEt.text.length == 9){
-                    //nicknameEt.startAnimation(animation)
-                    //nicknameEt.requestFocus()
                     nicknameEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.secondary))
                     binding.registerInfoNicknameErrorTv.visibility = View.VISIBLE
@@ -172,7 +162,7 @@ class RegisterInfoFragment() :
                         Log.d("WATCHER/NICKNAME", newUser.toString())
                         nicknameEt.backgroundTintList =
                             ColorStateList.valueOf(resources.getColor(R.color.primary))
-                        binding.registerInfoNicknameErrorTv.visibility = View.INVISIBLE
+                        binding.registerInfoNicknameErrorTv.visibility = View.GONE
                         isNicknameCorrect = true
                     }
                 }
@@ -204,7 +194,6 @@ class RegisterInfoFragment() :
     private fun birthEt() {
         //year
         val yearEt = binding.registerInfoBirthYearEt
-        //var year: Int? = null
         yearEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // Focus
@@ -218,7 +207,6 @@ class RegisterInfoFragment() :
                     yearEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary_light))
-                    //date[0] = 0
                 }
 
             }
@@ -226,7 +214,6 @@ class RegisterInfoFragment() :
 
         //month
         val monthEt = binding.registerInfoBirthMonthEt
-        //var month: Int? = null
         monthEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // Focus
@@ -240,14 +227,12 @@ class RegisterInfoFragment() :
                     monthEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary_light))
-                    //date[1] = 0
                 }
             }
         }
 
         //day
         val dayEt = binding.registerInfoBirthDayEt
-        //var day: Int? = null
         dayEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 // Focus
@@ -261,7 +246,6 @@ class RegisterInfoFragment() :
                     dayEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary_light))
-                    //date[2] = 0
                 }
             }
         }
@@ -274,25 +258,9 @@ class RegisterInfoFragment() :
         yearEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable) {
                 if (yearEt.text.isNotEmpty()) {
-                    /* //안 비었는데? -> validation 1900~작년(2021)
-                     val year = parseInt(yearEt.text.toString())
-                     if (year in 1900 until THIS_YEAR) {
-                         //잘 입력됨 -> year ON*/
                     yearEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.primary))
                     binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
-                    /*     date[0] = 1
-                     } else {
-                         //잘못 입력됨 -> year OFF
-                         date[0] = 4
-                         //떨고 & 색 바뀌고
-                         yearEt.startAnimation(animation)
-                         yearEt.backgroundTintList =
-                             ColorStateList.valueOf(resources.getColor(R.color.secondary))
-                         binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.secondary))
-                     }
-
-                     checkBtnState()*/
                 }
             }
 
@@ -306,24 +274,9 @@ class RegisterInfoFragment() :
         monthEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable) {
                 if (monthEt.text.isNotEmpty()) {
-/*
-                    // No Focus & Not Empty -> month Validation: 1~12
-                    val month = parseInt(monthEt.text.toString())
-                    if (month in 1..12) {
-                        // 통과*/
                     monthEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.primary))
                     binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
-                    /*      date[1] = 1
-                      } else {
-                          // 실패
-                          date[1] = 4
-                          monthEt.startAnimation(animation)
-                          monthEt.backgroundTintList =
-                              ColorStateList.valueOf(resources.getColor(R.color.secondary))
-                          binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.secondary))
-                      }
-                      checkBtnState()*/
                 }
             }
 
@@ -337,22 +290,9 @@ class RegisterInfoFragment() :
         dayEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable) {
                 if (dayEt.text.isNotEmpty()) {
-/*
-                    val day = parseInt(dayEt.text.toString())
-                    // Day validation: 1~31
-                    if(day in 1 .. 31){*/
                     dayEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.primary))
                     binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
-                    /*     date[2] = 1
-                     }else{
-                         date[2] = 4
-                         dayEt.startAnimation(animation)
-                         dayEt.backgroundTintList =
-                             ColorStateList.valueOf(resources.getColor(R.color.secondary))
-                         binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.secondary))
-                     }
-                     checkBtnState()*/
                 }
             }
 
@@ -361,102 +301,16 @@ class RegisterInfoFragment() :
         })
     }
 
-    /*Height*/
-    private fun heightEt() {
-        val heightEt = binding.registerInfoHeightEt
-        val heightUnit = binding.registerInfoHeightUnitTv
-        heightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                heightEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
-                heightUnit.setTextColor(resources.getColor(R.color.primary))
-                //heightTextWatcher()
-            } else {
-                if (heightEt.text.isEmpty()) {
-                    heightEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
-                    binding.registerInfoHeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
-                }
-            }
-        }
-    }
-
-    private fun heightTextWatcher() {
-        val heightEt = binding.registerInfoHeightEt
-        heightEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable) {
-                newUser.height = heightEt.text.toString().toInt()
-                Log.d("WATCHER/HEIGHT", newUser.toString())
-
-            }
-
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
-
-    /*Weight*/
-    private fun weightEt() {
-        val weightEt = binding.registerInfoWeightEt
-        val weightUnit = binding.registerInfoWeightUnitTv
-        weightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                weightEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
-                weightUnit.setTextColor(resources.getColor(R.color.primary))
-                //weightTextWatcher()
-            } else {
-                if (weightEt.text.isEmpty()) {
-                    weightEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
-                    binding.registerInfoWeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
-
-                }
-            }
-        }
-    }
-
-    private fun weightTextWatcher() {
-        val weightEt = binding.registerInfoWeightEt
-        weightEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable) {
-                newUser.weight = weightEt.text.toString().toInt()
-                Log.d("WATCHER/WEIGHT", newUser.toString())
-
-            }
-
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
-
-
-    /*Validation- Nickname, Birth*/
-    private fun nicknameValidation(): Boolean {
-        val nicknameEt = binding.registerInfoNicknameEt
-        if (nicknameEt.text.length > 8) {
-            nicknameEt.startAnimation(animation)
-            nicknameEt.requestFocus()
-            nicknameEt.backgroundTintList =
-                ColorStateList.valueOf(resources.getColor(R.color.secondary))
-            binding.registerInfoNicknameErrorTv.visibility = View.VISIBLE
-            return false
-        } else {
-            newUser.nickname = nicknameEt.text.toString()
-            binding.registerInfoNicknameErrorTv.visibility = View.GONE
-            nicknameEt.backgroundTintList =
-                ColorStateList.valueOf(resources.getColor(R.color.primary))
-            return true
-        }
-    }
-
+    /*Validation- Birth*/
     private fun birthValidation(): Boolean {
+        animation = AnimationUtils.loadAnimation(activity, R.anim.shake)
+        val nowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
+        val THIS_YEAR = nowDate.year
+
         val yearEt = binding.registerInfoBirthYearEt
         var year: Int? = null
         var results = arrayOf(0, 0, 0)
-        if (yearEt.text.toString() != "") {
+        if (yearEt.text.isNotEmpty()) {
             year = parseInt(yearEt.text.toString())
             if (year !in 1900 until THIS_YEAR) {
                 yearEt.startAnimation(animation)
@@ -470,7 +324,7 @@ class RegisterInfoFragment() :
 
         val monthEt = binding.registerInfoBirthMonthEt
         var month: Int? = null
-        if (monthEt.text.toString() != "") {
+        if (monthEt.text.isNotEmpty()) {
             month = parseInt(monthEt.text.toString())
             if (month !in 1..12) {
                 monthEt.startAnimation(animation)
@@ -484,7 +338,7 @@ class RegisterInfoFragment() :
 
         val dayEt = binding.registerInfoBirthDayEt
         var day: Int? = null
-        if (dayEt.text.toString() != "") {
+        if (dayEt.text.isNotEmpty()) {
             day = parseInt(dayEt.text.toString())
             if (day !in 1..31) {
                 dayEt.startAnimation(animation)
@@ -537,6 +391,50 @@ class RegisterInfoFragment() :
         return false
     }
 
+
+    /*Height*/
+    private fun heightEt() {
+        val heightEt = binding.registerInfoHeightEt
+        val heightUnit = binding.registerInfoHeightUnitTv
+        heightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Focus
+                heightEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+                heightUnit.setTextColor(resources.getColor(R.color.primary))
+            } else {
+                if (heightEt.text.isEmpty()) {
+                    heightEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoHeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                }
+            }
+        }
+    }
+
+    /*Weight*/
+    private fun weightEt() {
+        val weightEt = binding.registerInfoWeightEt
+        val weightUnit = binding.registerInfoWeightUnitTv
+        weightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // Focus
+                weightEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+                weightUnit.setTextColor(resources.getColor(R.color.primary))
+                //weightTextWatcher()
+            } else {
+                if (weightEt.text.isEmpty()) {
+                    weightEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
+                    binding.registerInfoWeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+
+                }
+            }
+        }
+    }
+
+
     /*Tooltip*/
     private fun setHelpBallon() {
         val textSizeinSp = dpToSp(12F, requireContext()).toFloat()
@@ -556,7 +454,6 @@ class RegisterInfoFragment() :
             .setBalloonAnimation(BalloonAnimation.ELASTIC)
             .setAutoDismissDuration(3000)
             .build()
-
 
         val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
         binding.registerInfoWeightHelpIv.setOnClickListener {
@@ -582,8 +479,6 @@ class RegisterInfoFragment() :
                 Log.d("KEYBOARD", "Height = ${keyboardHeight}")
             })
     }
-
-
 }
 
 
