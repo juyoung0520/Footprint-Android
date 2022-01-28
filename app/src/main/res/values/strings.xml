@@ -15,6 +15,7 @@
     <string name="action_confirm">확인</string>
     <string name="action_next">다음</string>
     <string name="action_complete">완료</string>
+    <string name="action_set">설정</string>
 
     <!--메뉴-->
     <string name="menu_home">홈</string>
@@ -103,6 +104,7 @@
     <string name="msg_stop_realtime_record">실시간 기록을 중지할까요?</string>
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
+    <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
 
@@ -170,4 +172,8 @@
     <string name="title_night">밤(21-0)</string>
     <string name="title_dawn">새벽(1-4)</string>
     <string name="title_different_every_time">매번 다름</string>
+
+    <!--뱃지-->
+    <string name="title_achievement_badge">달성 뱃지</string>
+    <string name="title_representative_badge">대표 뱃지</string>
 </resources>
