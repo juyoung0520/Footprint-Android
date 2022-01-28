@@ -2,6 +2,8 @@ package com.footprint.footprint.ui.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -22,16 +24,17 @@ import com.skydoves.balloon.createBalloon
 import androidx.viewpager.widget.ViewPager
 
 
-
-
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
     //private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
     private var newUser: User = User()
 
     override fun initAfterBinding() {
         initVP()
-        initMarginTop()
-        softKeyboard()
+
+        //soft Keyboard Up
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+
 
         //SignIn Activity -> User 받아오기
         if (intent.hasExtra("user")) {
@@ -41,21 +44,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
     }
 
-
-    private fun initMarginTop() {
-        //상단바 높이
-        val statusbarHeight = getStatusBarHeightDP(this)
-        /*binding.registerTopLayout.setPadding(
-            0,
-            statusbarHeight - (statusbarHeight / 4),
-            0,
-            statusbarHeight / 4
-        )*/
-        Log.d(
-            "STATUSBAR",
-            "상단바 높이: ${statusbarHeight} margintop: ${statusbarHeight - (statusbarHeight / 4)} marginBottom: ${statusbarHeight / 4}"
-        )
-    }
 
     /*뷰페이저*/
     private fun initVP() {
@@ -70,10 +58,12 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
 
     }
-    fun changeNextFragment(user: User){
+
+    /*뷰페이저 이동*/
+    fun changeNextFragment(user: User) {
         Log.d("CHANGE", "OK")
         val current = binding.registerVp.currentItem
-        if (current == 0){
+        if (current == 0) {
             //Info 프래그먼트: 1. Goal 프래그먼트로 넘기기 2. user 정보 업데이트
             binding.registerVp.setCurrentItem(1, true)
 
@@ -86,30 +76,4 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
             Log.d("ACTIVITY", newUser.toString())
         }
     }
-
-    //상단바 높이 구하기
-    fun getStatusBarHeightDP(context: Context): Int {
-        var result = 0
-        val resourceId: Int =
-            context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimension(resourceId).toInt()
-        }
-        return result
-    }
-
-    //키보드 up
-    private fun softKeyboard() {
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        /*keyboardVisibilityUtils = KeyboardVisibilityUtils(window,
-    onShowKeyboard = { keyboardHeight ->
-        binding.registerScrollLayout.run {
-            smoothScrollTo(scrollX, scrollY + keyboardHeight)
-        }
-        Log.d("KEYBOARD", "Height = ${keyboardHeight}")
-    })*/
-    }
-
-
-
 }

@@ -3,30 +3,30 @@ package com.footprint.footprint.utils
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 
-/*userIdx - 유저별 고유 숫자 id*/
-fun saveUserIdx(context: Context, userIdx: String){
+
+/*Token - Google, Kakao 로그인 시 받는 Access Token*/
+fun saveToken(context: Context, token: String){
     val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
     val editor = spf.edit()
 
-    editor.putString("userIdx", userIdx)
+    editor.putString("token", token)
     editor.apply()
 }
 
-fun getUserIdx(context: Context): String{
+fun getToken(context: Context): String{
     val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
 
-    return spf.getString("userIdx", "")!!
+    return spf.getString("token", "")!!
 }
 
-fun removeUserIdx(context: Context){
+fun removeToken(context: Context){
     val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
     val editor = spf!!.edit()
 
-    editor.remove("userIdx")
+    editor.remove("token")
     editor.apply()
 }
 
-/*JWT-token*/
 
 /*Login Status - kakao, google, null*/
 fun saveLoginStatus(context: Context, loginStatus: String){

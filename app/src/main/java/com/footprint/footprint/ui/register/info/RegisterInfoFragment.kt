@@ -1,9 +1,7 @@
 package com.footprint.footprint.ui.register.info
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -11,26 +9,21 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.KeyboardVisibilityUtils
-
 import android.view.View.OnFocusChangeListener
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
 import com.footprint.footprint.data.model.User
 import com.skydoves.balloon.*
 import java.lang.Integer.parseInt
-import com.google.android.material.internal.ViewUtils.dpToPx
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.TranslateAnimation
 import com.skydoves.balloon.OnBalloonClickListener
-import android.widget.Toast
-
-import android.widget.RadioButton
-
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.ui.register.RegisterActivity
-import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.utils.getLoginStatus
+import com.footprint.footprint.utils.getToken
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -44,7 +37,6 @@ class RegisterInfoFragment() :
     private var isGenderCorrect = false
 
     private lateinit var animation: Animation
-
 
     override fun initAfterBinding() {
         /*각 EditText에 입력 받기 */
@@ -79,7 +71,7 @@ class RegisterInfoFragment() :
         }
 
 
-        //keyboardUp(balloon)
+        //keyboardUp()
     }
 
 
@@ -99,9 +91,6 @@ class RegisterInfoFragment() :
 
     /*Button*/
     private fun checkBtnState() {
-        /*var isBirthCorrect = false
-        //셋 다 잘 입력(1)거나, 셋다 아예 입력x(0) 여야만 true 나머지는 false
-        if((date[0] == 1 && date[1] == 1 && date[2] == 1 ) || (date[0] == 0 && date[1] == 0 && date[2] == 0)) isBirthCorrect = true*/
 
         if (isNicknameCorrect && isGenderCorrect) {
             //버튼 색 바뀌게
@@ -112,7 +101,6 @@ class RegisterInfoFragment() :
                 )
             )
             binding.registerInfoActionBtn.isEnabled = true
-
         } else {
             binding.registerInfoActionBtn.setBackgroundDrawable(
                 ContextCompat.getDrawable(
@@ -148,13 +136,11 @@ class RegisterInfoFragment() :
         val nicknameEt = binding.registerInfoNicknameEt
         nicknameEt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable) {
-
                 if (nicknameEt.text.length > 8) {
                     nicknameEt.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.secondary))
                     binding.registerInfoNicknameErrorTv.visibility = View.VISIBLE
                     isNicknameCorrect = false
-
                 } else {
                     if (nicknameEt.text.isNotEmpty()) {
                         //닉네임에 반영
@@ -468,17 +454,69 @@ class RegisterInfoFragment() :
     }
 
     /*Soft Keyboard*/
-    private fun keyboardUp(balloon: Balloon) {
+    private fun keyboardUp() {
+//        val middle1H = binding.registerInfoMiddle1Layout.height
+//        val middle2H = binding.registerInfoMiddle2Layout.height
+/*
+        val animUp = TranslateAnimation(0f, 0f, middle2H.toFloat(), middle1H.toFloat())
+        val animDown = TranslateAnimation(0f, 0f, middle1H.toFloat(), middle2H.toFloat())*/
+
         //requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
-            onShowKeyboard = { keyboardHeight ->
-                binding.registerInfoScrollLayout.run {
-                    smoothScrollTo(scrollX, scrollY + keyboardHeight)
-                }
+            onShowKeyboard = {
+ /*               if (!binding.registerInfoNicknameEt.isFocused) {
+                    val isYearFocused = binding.registerInfoBirthYearEt.isFocused
+                    val isMonthFocused = binding.registerInfoBirthMonthEt.isFocused
+                    val isDayFocused = binding.registerInfoBirthDayEt.isFocused
+                    val isHeightFocused = binding.registerInfoHeightEt.isFocused
+                    val isWeightFocused = binding.registerInfoWeightEt.isFocused
+                    Log.d(
+                        "FOCUSE",
+                        "year: ${isYearFocused} month: ${isMonthFocused} day: ${isDayFocused}\n" + "height: ${isHeightFocused} weight: ${isWeightFocused}"
+                    )
 
-                Log.d("KEYBOARD", "Height = ${keyboardHeight}")
-            })
+                    val activity = activity as RegisterActivity?
+                    var view = activity!!.currentFocus
+                    Log.d("FOCUS", "현재 focus는 ${view}")
+
+                    if (isYearFocused) binding.registerInfoBirthYearEt.requestFocus()
+                    if (isMonthFocused) binding.registerInfoBirthMonthEt.requestFocus()
+                    if (isDayFocused) binding.registerInfoBirthDayEt.requestFocus()
+                    if (isHeightFocused) binding.registerInfoHeightEt.requestFocus()
+                    if (isWeightFocused) binding.registerInfoWeightEt.requestFocus()
+
+
+                    animUp.duration = 2000
+                    animUp.fillAfter = true
+                    //binding.registerInfoMiddle2Layout.startAnimation(animUp)
+                    binding.registerInfoMiddle1Layout.visibility = View.GONE
+                    binding.registerInfoMiddle3Layout.visibility = View.VISIBLE
+                    view = activity.currentFocus
+                    Log.d("FOCUS", "다음 focus는 ${view}")
+
+                }*/
+            },
+            onHideKeyboard = {
+                /*animDown.duration = 2000
+                animDown.fillAfter = true
+                binding.registerInfoMiddle3Layout.visibility = View.GONE
+                binding.registerInfoMiddle1Layout.visibility = View.VISIBLE
+                binding.registerInfoMiddle2Layout.startAnimation(animDown)*/
+            }
+        )
     }
+
+    /*회원가입 API*/
+    private fun callSignUpAPI(){
+        //1. 로그인 상태, 토큰
+        val loginStatus = getLoginStatus(requireContext())
+        val IdToken = getToken(requireContext())
+
+        //2. 회원 정보(닉네임/성별/생년월일/키/몸무게), 목표 정보(목표 요일/목표 시간/목표 시간대)
+        //newUser
+        //3. 서버에 요청
+    }
+
 }
 
 
