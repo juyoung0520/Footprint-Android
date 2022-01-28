@@ -20,6 +20,7 @@ import com.skydoves.balloon.OnBalloonClickListener
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.ui.register.RegisterActivity
+import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.getLoginStatus
 import com.footprint.footprint.utils.getToken
 import java.time.LocalDate
@@ -69,21 +70,6 @@ class RegisterInfoFragment() :
             }
         }
 
-    }
-
-
-    /*Tool*/
-    fun dpToSp(dp: Float, context: Context): Int {
-        return (dpToPx(dp, context) / context.resources.displayMetrics.scaledDensity).toInt()
-    }
-
-    fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            context.resources.displayMetrics
-        )
-            .toInt()
     }
 
     /*Button*/
@@ -420,7 +406,7 @@ class RegisterInfoFragment() :
 
     /*Tooltip*/
     private fun setHelpBallon() {
-        val textSizeinSp = dpToSp(12F, requireContext()).toFloat()
+        val textSizeinSp = convertDpToSp(requireContext(),12).toFloat()
         val balloon = Balloon.Builder(requireContext())
             .setWidth(200)
             .setHeight(60)
