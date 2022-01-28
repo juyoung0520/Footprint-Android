@@ -158,16 +158,16 @@ class WalkConfirmFragment :
         actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun finish(isFinished: Boolean) {
-                if (isFinished)
+
+            //‘OO번째 산책’ 작성을 취소할까요?
+            override fun action1(isAction: Boolean) {
+                if (isAction)
                     requireActivity().finish()
             }
 
-            override fun save(isSaved: Boolean) {
-            }
-
-            override fun delete(isDelete: Boolean) {
-                if (isDelete)
+            //해당 발자국을 삭제할까요?
+            override fun action2(isAction: Boolean) {
+                if (isAction)
                     footprintRVAdapter.removeData(this@WalkConfirmFragment.position)
             }
         })

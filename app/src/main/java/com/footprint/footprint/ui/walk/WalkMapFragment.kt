@@ -353,8 +353,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         actionDialogFragment.show(requireActivity().supportFragmentManager, null)
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun finish(isFinished: Boolean) {
-                if (isFinished) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
+
+            override fun action1(isAction: Boolean) {
+                if (isAction) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
                     val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
 
                     if (footprints.footprints.size != 0)
@@ -369,10 +370,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     setWalkState(true)  //다시 타이머가 실행되도록
             }
 
-            override fun save(isSaved: Boolean) {
-            }
-
-            override fun delete(isDelete: Boolean) {
+            override fun action2(isAction: Boolean) {
             }
         })
     }
