@@ -45,23 +45,23 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             setKakaoLogin()
         }
 
-        //다음에 로그인 할래요
-        binding.signinNologinTv.setOnClickListener {
-            this.startNextActivity(MainActivity::class.java)
-            finish()
-        }
-
         //구글 로그인
         val getResult = googleClient()
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
+        }
+
+        //다음에 로그인 할래요
+        binding.signinNologinTv.setOnClickListener {
+            this.startNextActivity(MainActivity::class.java)
+            finish()
         }
     }
 
     /*Funtion-Kakao*/
     //로그인
     private fun setKakaoLogin() {
-        //카카오 계정으로 로그인(콜백)
+        //카카오 계정으로 로그인
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
@@ -100,7 +100,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     private fun signupKakao(token: String) {
-        //1. User 정보 저장
+        //1. User 정보 저장: token
         newUser = User(token)
 
         //2. SPF에 로그인 상태 저장

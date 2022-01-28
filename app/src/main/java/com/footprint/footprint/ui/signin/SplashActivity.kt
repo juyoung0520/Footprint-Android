@@ -1,23 +1,15 @@
 package com.footprint.footprint.ui.signin
 
-import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.utils.removeLoginStatus
 import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.kakao.sdk.common.util.Utility
 
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
@@ -26,12 +18,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private var isKakaoLogin = false
 
     override fun initAfterBinding() {
-        val keyHash = Utility.getKeyHash(this)
-        Log.d("Hash", keyHash)
         checkKakaoLogin()
         checkGoogleLogin()
     }
 
+    /*Google 로그인 체크: 1. 로그인 체크 2. 정보 Log(기능 완성되면 지울 것)*/
     private fun checkGoogleLogin() {
         Log.d("AUTO-LOGIN/FLAG", "FLAG GOOGLE")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -56,6 +47,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         }
     }
 
+    /*Kakao 로그인 체크: 1. 로그인 체크 2. Log 확인(후에 지울 예정)*/
     private fun checkKakaoLogin() {
         // 로그인 정보 확인
         Log.d("AUTO-LOGIN/FLAG", "FLAG KAKAO")
@@ -75,9 +67,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             autoLogin()
         }
     }
-
+    //Log 확인 위해 회원정보 받아오는 함수
     private fun getKakaoUser() {
-
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Log.e("KAKAO/USER-FAIL", "사용자 정보 요청 실패", error)
@@ -88,6 +79,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         }
     }
 
+    /*자동 로그인
+    * 1. google:t, kakao:f =>  구글 로그인  & Main
+    * 2. google:f, kakao:t => 카카오 로그인 & Main
+    * 3. google:f, kakao:f => 로그인 X     & SignIn
+    * 4. google:t, kakao:t => 말도 안 되는 경우... 혹시 몰라 로그 띄우기
+    * */
     private fun autoLogin(){
         if (!isGoogleLogin && isKakaoLogin) {
             //Main Activity (Kakao)

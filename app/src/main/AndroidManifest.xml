@@ -66,8 +66,7 @@
         <!-- onboarding & register -->
         <activity
             android:name=".ui.register.RegisterActivity"
-            android:exported="false"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
+            android:exported="false" />
 
         <!-- main & walk & walkafter -->
         <activity

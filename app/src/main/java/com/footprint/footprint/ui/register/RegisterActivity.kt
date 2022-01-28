@@ -1,34 +1,19 @@
 package com.footprint.footprint.ui.register
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
-import android.os.Build
-import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.WindowManager
-import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.adapters.ViewBindingAdapter
-import com.footprint.footprint.R
 import com.footprint.footprint.data.model.User
 import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
-import com.footprint.footprint.ui.register.info.RegisterInfoFragment
-import com.footprint.footprint.utils.KeyboardVisibilityUtils
 import com.google.android.material.tabs.TabLayoutMediator
-import com.skydoves.balloon.BalloonAnimation
-import com.skydoves.balloon.createBalloon
-import androidx.viewpager.widget.ViewPager
 
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
-    //private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
     private var newUser: User = User()
 
     override fun initAfterBinding() {
+        //TB, VP 세팅
         initVP()
 
         //soft Keyboard Up
@@ -45,9 +30,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
     }
 
 
-    /*뷰페이저*/
+    /*TabLayout & ViewPager 세팅*/
     private fun initVP() {
-        //VP & TB 세팅
         val registerVPAdapter = RegisterViewpagerAdapter(this)
         binding.registerVp.adapter = registerVPAdapter
         binding.registerVp.isUserInputEnabled = false
@@ -55,8 +39,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
             tab.text = (position + 1).toString()
             tab.view.isClickable = false
         }.attach()
-
-
     }
 
     /*뷰페이저 이동*/
@@ -73,7 +55,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
             newUser.height = user.height
             newUser.weight = user.weight
 
-            Log.d("ACTIVITY", newUser.toString())
+            Log.d("REGISTER/USER", newUser.toString())
         }
     }
 }

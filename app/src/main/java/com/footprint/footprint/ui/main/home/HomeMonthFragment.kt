@@ -1,31 +1,18 @@
 package com.footprint.footprint.ui.main.home
 
-import android.R.id
-import android.R.id.home
-import android.content.Context
-import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Display
-import android.view.WindowManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
-import android.R.id.text1
 import android.view.View
 
-import android.view.ViewGroup
-
-import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import java.lang.Math.floor
-import kotlin.math.ceil
 
 
 class HomeMonthFragment :

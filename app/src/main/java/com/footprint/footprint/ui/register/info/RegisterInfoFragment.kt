@@ -8,7 +8,6 @@ import android.util.Log
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.utils.KeyboardVisibilityUtils
 import android.view.View.OnFocusChangeListener
 import com.footprint.footprint.data.model.User
 import com.skydoves.balloon.*
@@ -17,7 +16,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.TranslateAnimation
 import com.skydoves.balloon.OnBalloonClickListener
 import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
@@ -30,7 +28,6 @@ import java.time.ZoneId
 
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
-    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
     private var newUser: User = User()
     private var isNicknameCorrect = false
@@ -39,6 +36,7 @@ class RegisterInfoFragment() :
     private lateinit var animation: Animation
 
     override fun initAfterBinding() {
+
         /*각 EditText에 입력 받기 */
         nicknameEt()
         genderInput()
@@ -46,6 +44,7 @@ class RegisterInfoFragment() :
         weightEt()
         heightEt()
 
+        /*툴팁*/
         setHelpBallon()
 
         /*버튼 활성화 & 눌렀을 때*/
@@ -57,7 +56,7 @@ class RegisterInfoFragment() :
             //Birth Validation
             val validatedBirth = birthValidation()
 
-            //Height & Weight Validation
+            //Height & Weight
             if (binding.registerInfoHeightEt.text.toString() != "") newUser.height =
                 binding.registerInfoHeightEt.text.toString().toInt()
             if (binding.registerInfoWeightEt.text.toString() != "") newUser.weight =
@@ -65,13 +64,11 @@ class RegisterInfoFragment() :
 
             //ok -> 목표 프래그먼트 데이터 전달
             if (validatedBirth) {
-                Log.d("INFO-FRAGMENT", newUser.toString())
+                Log.d("REGISTER-INFO/USER", newUser.toString())
                 (activity as RegisterActivity).changeNextFragment(newUser)
             }
         }
 
-
-        //keyboardUp()
     }
 
 
@@ -92,8 +89,8 @@ class RegisterInfoFragment() :
     /*Button*/
     private fun checkBtnState() {
 
+        // 닉네임 OK & 성별 OK => 버튼 활성화
         if (isNicknameCorrect && isGenderCorrect) {
-            //버튼 색 바뀌게
             binding.registerInfoActionBtn.setBackgroundDrawable(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -145,7 +142,7 @@ class RegisterInfoFragment() :
                     if (nicknameEt.text.isNotEmpty()) {
                         //닉네임에 반영
                         newUser.nickname = nicknameEt.text.toString()
-                        Log.d("WATCHER/NICKNAME", newUser.toString())
+                        Log.d("REGISTER-INFO/NICKNAME-WATCHER", newUser.toString())
                         nicknameEt.backgroundTintList =
                             ColorStateList.valueOf(resources.getColor(R.color.primary))
                         binding.registerInfoNicknameErrorTv.visibility = View.GONE
@@ -169,14 +166,14 @@ class RegisterInfoFragment() :
                 R.id.register_info_gender_male_btn -> newUser.gender = "male"
                 R.id.register_info_gender_none_btn -> newUser.gender = "null"
             }
-            Log.d("WATCHER/GENDER", newUser.toString())
+            Log.d("REGISTER-INFO/GENDER", newUser.toString())
             isGenderCorrect = true
             checkBtnState()
         })
     }
 
 
-    /*Birth*/
+    /*Birth: Focus, Watcher*/
     private fun birthEt() {
         //year
         val yearEt = binding.registerInfoBirthYearEt
@@ -378,7 +375,7 @@ class RegisterInfoFragment() :
     }
 
 
-    /*Height*/
+    /*Height: Focus*/
     private fun heightEt() {
         val heightEt = binding.registerInfoHeightEt
         val heightUnit = binding.registerInfoHeightUnitTv
@@ -398,7 +395,7 @@ class RegisterInfoFragment() :
         }
     }
 
-    /*Weight*/
+    /*Weight: Focus*/
     private fun weightEt() {
         val weightEt = binding.registerInfoWeightEt
         val weightUnit = binding.registerInfoWeightUnitTv
@@ -441,11 +438,13 @@ class RegisterInfoFragment() :
             .setAutoDismissDuration(3000)
             .build()
 
+        //Help 버튼 누르면 => 해당 위치에 뜸
         val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
         binding.registerInfoWeightHelpIv.setOnClickListener {
             binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
         }
 
+        //말풍선 클릭 시 => 사라짐
         balloon.onBalloonClickListener = object : OnBalloonClickListener {
             override fun onBalloonClick(view: View) {
                 balloon.dismiss()
@@ -453,58 +452,6 @@ class RegisterInfoFragment() :
         }
     }
 
-    /*Soft Keyboard*/
-    private fun keyboardUp() {
-//        val middle1H = binding.registerInfoMiddle1Layout.height
-//        val middle2H = binding.registerInfoMiddle2Layout.height
-/*
-        val animUp = TranslateAnimation(0f, 0f, middle2H.toFloat(), middle1H.toFloat())
-        val animDown = TranslateAnimation(0f, 0f, middle1H.toFloat(), middle2H.toFloat())*/
-
-        //requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
-            onShowKeyboard = {
- /*               if (!binding.registerInfoNicknameEt.isFocused) {
-                    val isYearFocused = binding.registerInfoBirthYearEt.isFocused
-                    val isMonthFocused = binding.registerInfoBirthMonthEt.isFocused
-                    val isDayFocused = binding.registerInfoBirthDayEt.isFocused
-                    val isHeightFocused = binding.registerInfoHeightEt.isFocused
-                    val isWeightFocused = binding.registerInfoWeightEt.isFocused
-                    Log.d(
-                        "FOCUSE",
-                        "year: ${isYearFocused} month: ${isMonthFocused} day: ${isDayFocused}\n" + "height: ${isHeightFocused} weight: ${isWeightFocused}"
-                    )
-
-                    val activity = activity as RegisterActivity?
-                    var view = activity!!.currentFocus
-                    Log.d("FOCUS", "현재 focus는 ${view}")
-
-                    if (isYearFocused) binding.registerInfoBirthYearEt.requestFocus()
-                    if (isMonthFocused) binding.registerInfoBirthMonthEt.requestFocus()
-                    if (isDayFocused) binding.registerInfoBirthDayEt.requestFocus()
-                    if (isHeightFocused) binding.registerInfoHeightEt.requestFocus()
-                    if (isWeightFocused) binding.registerInfoWeightEt.requestFocus()
-
-
-                    animUp.duration = 2000
-                    animUp.fillAfter = true
-                    //binding.registerInfoMiddle2Layout.startAnimation(animUp)
-                    binding.registerInfoMiddle1Layout.visibility = View.GONE
-                    binding.registerInfoMiddle3Layout.visibility = View.VISIBLE
-                    view = activity.currentFocus
-                    Log.d("FOCUS", "다음 focus는 ${view}")
-
-                }*/
-            },
-            onHideKeyboard = {
-                /*animDown.duration = 2000
-                animDown.fillAfter = true
-                binding.registerInfoMiddle3Layout.visibility = View.GONE
-                binding.registerInfoMiddle1Layout.visibility = View.VISIBLE
-                binding.registerInfoMiddle2Layout.startAnimation(animDown)*/
-            }
-        )
-    }
 
     /*회원가입 API*/
     private fun callSignUpAPI(){

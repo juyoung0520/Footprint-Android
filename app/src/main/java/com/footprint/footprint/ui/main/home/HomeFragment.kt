@@ -2,7 +2,6 @@ package com.footprint.footprint.ui.main.home
 
 import android.content.Intent
 import android.Manifest
-import android.R.id
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.net.Uri
@@ -10,8 +9,6 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import androidx.core.view.marginTop
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.google.android.gms.location.*
@@ -25,19 +22,11 @@ import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import com.kakao.sdk.user.UserApiClient
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
-import android.R.id.text1
 
-import android.view.ViewGroup
-import android.R.id.text1
-import android.content.Context
-import android.R.id.text1
-import android.os.Bundle
-import android.text.TextUtils
 import com.footprint.footprint.ui.register.RegisterActivity
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
@@ -46,27 +35,25 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     lateinit var weatherService: WeatherService
 
     override fun initAfterBinding() {
-        //WalkActivity로 가는 곳 
+        //산책 시작 버튼 => Walk Activity
         binding.homeStartbtnTv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
+        //(임시) 설정 버튼 => Register Activity
         binding.homeSettingIv.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(RegisterActivity::class.java)
         }
 
+        /*init: 1. TB&VP 2. 날짜*/
         initTB()
         initDate()
 
-        setPermission()
-        requestLocation()
-    }
-
-    //dp to px 변환 함수 (params)
-    private fun dp2px(density:Float, dp: Int): Int {
-        return Math.round(dp.toFloat() * density)
+        /*init: 3. 날씨 */
+        setPermission()   //위치 정보 사용 요청
+        requestLocation() //날씨 API
     }
 
     /*Function*/
