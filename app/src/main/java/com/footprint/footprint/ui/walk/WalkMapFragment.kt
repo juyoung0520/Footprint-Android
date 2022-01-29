@@ -9,7 +9,9 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
@@ -24,11 +26,9 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
-import com.naver.maps.map.overlay.LocationOverlay
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.OverlayImage
-import com.naver.maps.map.overlay.PathOverlay
+import com.naver.maps.map.overlay.*
 import kotlin.math.roundToInt
 
 class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBinding::inflate),
@@ -45,9 +45,21 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private val footprints: FootprintsModel = FootprintsModel() //지금까지 사용자가 기록한 총 데이터
 
+    private var isInit = false
+
     override fun initAfterBinding() {
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
+            .compassEnabled(false)
 
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.walkmap_map_fragment) as MapFragment?
@@ -65,26 +77,118 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 setWalkState(true)  //화면에서 다시 돌아오면 산책 시간을 다시 측정한다.
 
-                if (it != null)
-                    footprints.footprints.add(  //전역 변수인 posts 에 현재 기록한 post 데이터를 추가한다.
-                        Gson().fromJson(
-                            it,
-                            FootprintModel::class.java
-                        )
-                    )
+                if (it != null) {
+                    footprints.footprints.add(Gson().fromJson(it, FootprintModel::class.java))
+
+                    if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
+                        putMarker(paths.last().last(), footprints.footprints.size)
+                    }
+                }
             }
+
+        sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
+
+        return binding.root
     }
 
-    // map 설정 전
+    @UiThread
+    override fun onMapReady(naverMap: NaverMap) {
+        map = naverMap
+        setMap()
+
+        setObserver()
+    }
+
+    private fun setMap() {
+        Log.d("Walk/WalkMap", "setMap")
+        map.moveCamera(CameraUpdate.zoomTo(17.0))
+        map.uiSettings.isZoomControlEnabled = false
+
+        locationOverlay = map.locationOverlay
+        locationOverlay.apply {
+            icon = OverlayImage.fromResource(R.drawable.ic_location_overlay_png)
+            anchor = PointF(0.5f, 0.5f)
+            subIcon = null
+        }
+    }
+
+    private fun setObserver() {
+        Log.d("Walk/WalkMap", "setObserver")
+        // argument 가져오기
+
+        val startMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_start)
+        val midMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_middle_end)
+        val endMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_end)
+
+        WalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
+            Log.d("Walk/WalkMap", "setObserver/isWalking - ${state.toString()}")
+            isWalking = state
+            if (isWalking) {
+                binding.walkmapMiddleIv.isEnabled = true
+                initPath()
+            } else {
+                binding.walkmapMiddleIv.isEnabled = false
+                locationOverlay.isVisible = false
+
+                if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
+                    if (paths.size == 1) {
+                        putMarker(paths.last()[0], startMarkerImage)
+                    } else {
+                        putMarker(paths.last()[0], midMarkerImage)
+                    }
+
+                    putMarker(paths.last().last(), endMarkerImage)
+                }
+            }
+        })
+
+        WalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
+            Log.d("Walk/WalkMap", "setObserver/paths - ${paths.toString()}")
+            this.paths = paths
+
+            if (paths.isNotEmpty() && paths.last().size >= 2) {
+                currentPathOverlay.coords = paths.last()
+                currentPathOverlay.map = map
+            }
+        })
+
+        WalkService.totalDistance.observe(viewLifecycleOwner, Observer { distance ->
+            Log.d("Walk/WalkMap", "setObserver/totalDistance - ${distance.toString()}")
+            binding.walkmapDistanceNumberTv.text =
+                String.format("%.1f", distance / 1000)
+        })
+
+        WalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
+            if (location != null) {
+                if (!isInit) {
+                    setBinding()
+                }
+
+                Log.d("Walk/WalkMap", "setObserver/currentLocation - ${location.toString()}")
+                if (!locationOverlay.isVisible) {
+                    locationOverlay.isVisible = true
+                }
+
+                updateLocation(location)
+            } else {
+                Log.d("Walk/WalkMap", "setObserver/currentLocation - null")
+            }
+        })
+
+        WalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
+            this.currentTime = currentTime
+
+            updateTime(1800)
+        })
+    }
+
     private fun setBinding() {
+        Log.d("Walk/WalkMap", "setBinding")
+        binding.walkLoadingPb.visibility = View.GONE
         binding.walkmapProgressBar.isEnabled = false
 
         binding.walkmapPlusIv.setOnClickListener {
             setWalkState(false)
-
-            if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
-                putMarker(paths.last().last(), R.drawable.ic_pin_stroke)
-            }
 
             if (footprints.footprints.size >= 9) {  //기록이 이미 9개가 됐으면
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
@@ -103,155 +207,48 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         }
 
         binding.walkmapStopIv.setOnClickListener {
-            stopWalk()
             showStopWalkDialog()    //실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         }
     }
 
-    private fun putMarker(locationPosition: LatLng, resourceId: Int) {
-        Marker().apply {
-            position = locationPosition
-            icon = OverlayImage.fromResource(resourceId)
-            anchor = PointF(0.5f, 0.5f)
-            map = map
-        }
+    private fun putMarker(locationPosition: LatLng, image: OverlayImage) {
+        val marker = Marker()
+        marker.position = locationPosition
+        marker.anchor = PointF(0.5f, 0.5f)
+        marker.icon = image
+        marker.map = map
     }
 
-    private fun putPath() {
-        if (!::map.isInitialized) {
-            return
+    private fun putMarker(locationPosition: LatLng, footprintCount: Int) {
+        val marker = Marker()
+        marker.position = locationPosition
+        marker.anchor = PointF(0.5f, 0.5f)
+        marker.width = 100
+        marker.height = 100
+        marker.zIndex = 100
+
+        marker.icon = when (footprintCount) {
+            1 -> OverlayImage.fromResource(R.drawable.ic_foot_print1)
+            2 -> OverlayImage.fromResource(R.drawable.ic_foot_print2)
+            3 -> OverlayImage.fromResource(R.drawable.ic_foot_print3)
+            4 -> OverlayImage.fromResource(R.drawable.ic_foot_print4)
+            5 -> OverlayImage.fromResource(R.drawable.ic_foot_print5)
+            6 -> OverlayImage.fromResource(R.drawable.ic_foot_print6)
+            7 -> OverlayImage.fromResource(R.drawable.ic_foot_print7)
+            8 -> OverlayImage.fromResource(R.drawable.ic_foot_print8)
+            9 -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
+            else -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
         }
 
-        if (paths[paths.lastIndex - 1].size < 2) {
-            return
-        }
-
-        val pathOverlay = PathOverlay()
-        pathOverlay.apply {
-            width = 20
-            color = getColor(requireContext(), R.color.primary_62)
-            outlineWidth = 0
-        }
-
-        pathOverlay.coords = paths[paths.lastIndex - 1]
-        pathOverlay.map = map
+        marker.map = map
     }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<String>,
-//        grantResults: IntArray
-//    ) {
-//        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-//            if (!locationSource.isActivated) {
-//                map.locationTrackingMode = LocationTrackingMode.None
-//            }
-//            return
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
-
-    @UiThread
-    override fun onMapReady(naverMap: NaverMap) {
-        map = naverMap
-        setMap()
-
-        sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
-
-        setObserver()
-
-        setBinding()
-
-        binding.walkLoadingPb.visibility = View.GONE
-    }
-
-    private fun setObserver() {
-        // argument 가져오기
-
-        WalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
-            isWalking = state
-            if (isWalking) {
-                binding.walkmapMiddleIv.setImageResource(R.drawable.btn_pause)
-
-                // 일시 정지 후 다시 시작
-                if (paths.size > 1) {
-                    locationOverlay.isVisible = true
-
-                    putPath()
-                }
-            } else {
-                binding.walkmapMiddleIv.setImageResource(R.drawable.btn_play)
-
-                locationOverlay.isVisible = false
-            }
-        })
-
-        WalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
-            this.paths = paths
-
-            if (paths.isNotEmpty() && paths.last().size >= 2) {
-                currentPathOverlay.coords = paths.last()
-                currentPathOverlay.map = map
-            }
-        })
-
-        WalkService.totalDistance.observe(viewLifecycleOwner, Observer { distance ->
-            binding.walkmapDistanceNumberTv.text =
-                String.format("%.1f", distance / 1000)
-        })
-
-        WalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
-            if (location != null) {
-                updateLocation(location)
-            }
-        })
-
-        WalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
-            this.currentTime = currentTime
-
-            updateTime(1800)
-        })
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 100
-    }
-
-    private fun setMap() {
-        map.moveCamera(CameraUpdate.zoomTo(17.0))
-        map.uiSettings.isZoomControlEnabled = false
-
-        locationOverlay = map.locationOverlay
-        locationOverlay.apply {
-            icon = OverlayImage.fromResource(R.drawable.ic_location_overlay_png)
-            anchor = PointF(0.5f, 0.5f)
-            subIcon = null
-        }
-
+    private fun initPath() {
         currentPathOverlay = PathOverlay()
         currentPathOverlay.apply {
-            width = 20
+            width = 30
             color = getColor(requireContext(), R.color.primary)
             outlineWidth = 0
-        }
-    }
-
-    private fun stopWalk() {
-        if (!::map.isInitialized) {
-            return
-        }
-
-        if (isWalking) {
-            // 바로 서비스 종료?
-            setWalkState(false)
-        }
-
-        if (paths.isNotEmpty() && paths[0].size >= 2) {
-            putMarker(paths[0][0], R.drawable.ic_marker_start)
-            putMarker(paths.last().last(), R.drawable.ic_marker_end)
-        }
-
-        map.takeSnapshot { bitmap ->
         }
     }
 
@@ -260,6 +257,21 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
         } else {
             sendCommandToService(WalkService.TRACKING_PAUSE)
+        }
+    }
+
+    private fun stopWalk() {
+        if (paths.isNotEmpty()) {
+            var latLngBounds = LatLngBounds.from(paths[0])
+            if (paths.size > 1) {
+                for (index in 1 until paths.size) {
+                    latLngBounds = latLngBounds.union(LatLngBounds.from(paths[index]))
+                }
+            }
+            map.moveCamera(CameraUpdate.fitBounds(latLngBounds))
+        }
+
+        map.takeSnapshot { bitmap ->
         }
     }
 
@@ -278,10 +290,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun updateCalorie(weight: Int) {
-        val calroieConstant = 0.0525 * weight // 칼로리 상수 * 몸무게
+        val calConstant = 0.0525 * weight // 칼로리 상수 * 몸무게
 
         binding.walkmapCalorieNumberTv.text =
-            (calroieConstant * (currentTime / 60)).roundToInt().toString()
+            (calConstant * (currentTime / 60)).roundToInt().toString()
     }
 
     private fun updatePace(speed: Float) {
@@ -355,10 +367,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                             Gson().toJson(footprints)
                         )  //우선 임의로 저장한 기록만 넘겨줌
 
-                    startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-                    (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-                } else    //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
-                    setWalkState(true)  //다시 타이머가 실행되도록
+                    //startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+                    //(requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
+                } else { //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
+//                    setWalkState(true)  //다시 타이머가 실행되도록
+                }
             }
 
             override fun action2(isAction: Boolean) {
@@ -368,6 +381,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     // service
     private fun sendCommandToService(action: String) {
+        Log.d("Walk/2WalkMap", "sendCommandToService")
         val intent = Intent(context, WalkService::class.java)
         intent.action = action
 

@@ -30,11 +30,11 @@ class WalkService : LifecycleService() {
     private var stopCount = 0
 
     companion object {
-        val isWalking = NonNullMutableLiveData<Boolean>(false)
-        val currentTime = NonNullMutableLiveData<Int>(0)
+        val isWalking = NonNullMutableLiveData(false)
+        val currentTime = NonNullMutableLiveData(0)
         val currentLocation = MutableLiveData<Location>(null)
         val paths = NonNullMutableLiveData<PathGroup>(mutableListOf())
-        val totalDistance = NonNullMutableLiveData<Float>(0.0f)
+        val totalDistance = NonNullMutableLiveData(0.0f)
 
         const val NOTIFICATION_ID = 10
         const val NOTIFICATION_CHANNEL_ID = "primary_notification_channel"
@@ -43,10 +43,14 @@ class WalkService : LifecycleService() {
         const val TRACKING_START_OR_RESUME = "start_or_resume"
         const val TRACKING_PAUSE = "pause"
         const val TRACKING_STOP = "stop"
+
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 100
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        Log.d("Walk/WalkService", "onCreate")
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -66,6 +70,7 @@ class WalkService : LifecycleService() {
         }
 
         isWalking.observe(this, Observer { state ->
+            Log.d("Walk/WalkService", "onCreate/isWalking - ${state.toString()}")
             if (state) {
                 addEmptyPath()
                 locationActivate()
@@ -87,7 +92,13 @@ class WalkService : LifecycleService() {
                 }
                 TRACKING_STOP -> {
                     isWalking.postValue(false)
+                    Log.d("Walk/WalkService", "서비스 종료")
                     stopSelf()
+                    isWalking.postValue(false)
+                    currentTime.postValue(0)
+                    currentLocation.postValue(null)
+                    paths.postValue(mutableListOf())
+                    totalDistance.postValue(0.0f)
                 }
                 else -> null
             }
@@ -104,11 +115,10 @@ class WalkService : LifecycleService() {
             }
 
             result.lastLocation.let {
-                Log.d("speed", it.speed.toString())
                 if (it.speed <= 0.2f) {
                     stopCount++
 
-                    if (stopCount == 10) {
+                    if (stopCount == 20) {
                         isWalking.postValue(false)
                     }
 

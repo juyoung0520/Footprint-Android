@@ -203,7 +203,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="61dp"
-        android:src="@drawable/btn_pause"
+        android:src="@drawable/selector_walk_start_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/walkmap_plus_iv"
         app:layout_constraintStart_toEndOf="@+id/walkmap_stop_iv" />
