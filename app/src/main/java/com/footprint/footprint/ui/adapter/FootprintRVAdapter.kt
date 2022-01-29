@@ -20,7 +20,8 @@ import me.relex.circleindicator.CircleIndicator3
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class FootprintRVAdapter(private val activityClass: String) : RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
+class FootprintRVAdapter(private val activityClass: String) :
+    RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
         fun showDeleteDialog(position: Int)
         fun addFootprint(position: Int)
@@ -96,9 +97,10 @@ class FootprintRVAdapter(private val activityClass: String) : RecyclerView.Adapt
         //발자국 내용 해시태그 폰트 색상 바꾸기
         var hashTagCnt = 0
         val hashtagInContent = SpannableString(footprints[position].content)
-        val matcher: Matcher = Pattern.compile("#([A-Za-z0-9_-]+)").matcher(hashtagInContent)
+        val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
         while (matcher.find() && hashTagCnt < 5) {
             hashTagCnt++    //5개까지만
+            Log.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
 
             hashtagInContent.setSpan(
                 ForegroundColorSpan(ContextCompat.getColor(binding.root.context, R.color.primary)),
@@ -139,7 +141,7 @@ class FootprintRVAdapter(private val activityClass: String) : RecyclerView.Adapt
             }
         }
 
-        if (activityClass=="WalkAfterActivity") {  //산책 종료 후 산책 정보 확인 화면일 때 -> 발자국 추가 가능
+        if (activityClass == "WalkAfterActivity") {  //산책 종료 후 산책 정보 확인 화면일 때 -> 발자국 추가 가능
             holder.plusTv.visibility = View.VISIBLE
             holder.plusLine.visibility = View.VISIBLE
 
@@ -187,7 +189,8 @@ class FootprintRVAdapter(private val activityClass: String) : RecyclerView.Adapt
         this.myItemClickListener = myItemClickListener
     }
 
-    inner class PostViewHolder(itemView: ItemFootprintBinding) : RecyclerView.ViewHolder(itemView.root) {
+    inner class PostViewHolder(itemView: ItemFootprintBinding) :
+        RecyclerView.ViewHolder(itemView.root) {
         val postStartIv: ImageView = itemView.itemFootprintPostStartIv
         val postTimeTv: TextView = itemView.itemFootprintPostTimeTv
         val photoVp: ViewPager2 = itemView.itemFootprintPhotoVp
