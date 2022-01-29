@@ -14,24 +14,21 @@ import java.lang.Integer.parseInt
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.skydoves.balloon.OnBalloonClickListener
 import android.widget.RadioGroup
 import com.footprint.footprint.ui.register.RegisterActivity
-import com.footprint.footprint.utils.convertDpToSp
-import com.footprint.footprint.utils.getLoginStatus
-import com.footprint.footprint.utils.getToken
+import com.footprint.footprint.utils.*
 import java.time.LocalDate
 import java.time.ZoneId
 
 
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
+    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+    private lateinit var animation: Animation
 
     private var newUser: UserModel = UserModel()
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
-
-    private lateinit var animation: Animation
 
     override fun initAfterBinding() {
 
@@ -398,17 +395,38 @@ class RegisterInfoFragment() :
             .setIsVisibleArrow(true)
             .setArrowSize(10)
             .setArrowOrientation(ArrowOrientation.BOTTOM)
+            .setArrowColorMatchBalloon(true)
             .setArrowPosition(0.2f)
             .setCornerRadius(40F)
             .setBackgroundColorResource(R.color.black_80)
             .setBalloonAnimation(BalloonAnimation.ELASTIC)
+            .setDismissWhenClicked(true)
             .setAutoDismissDuration(3000)
+            .setFocusable(false)
             .build()
 
-        //Help 버튼 누르면 => 해당 위치에 뜸
+
         val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
+        //width = 200/2 중간 => 에서 0.3만큼 오른쪽으로 치우치게
+
+        var keyboardStatus = false
+        keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
+            onShowKeyboard = {
+                Log.d("KEYBOARD", "UP")
+               keyboardStatus = true
+                if(balloon.isShowing) balloon.dismiss()
+            },
+            onHideKeyboard = {
+                Log.d("KEYBOARD", "DOWN")
+                keyboardStatus = false
+                if(balloon.isShowing) balloon.dismiss()
+            }
+        )
+
+        //키보드 올라갔을 때만 툴팁 띄우기 (임시)
         binding.registerInfoWeightHelpIv.setOnClickListener {
-            binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
+            if(!keyboardStatus)
+                binding.registerInfoWeightHelpIv.showAlignTop(balloon,xoff, -5)
         }
 
         //말풍선 클릭 시 => 사라짐

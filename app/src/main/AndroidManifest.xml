@@ -66,11 +66,16 @@
 
         <!-- onboarding & register -->
         <activity
+            android:name=".ui.onboarding.OnBoardingActivity"
+            android:screenOrientation="portrait"
+            android:exported="true" />
+
+        <activity
             android:name=".ui.register.RegisterActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
 
-        <!-- main & walk & walkafter -->
+        <!-- main & walk & walkAfter & walkDetail -->
         <activity
             android:name=".ui.main.MainActivity"
             android:screenOrientation="portrait"
@@ -82,16 +87,10 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.onboarding.OnBoardingActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
-
-        <activity
             android:name=".ui.walk.WalkActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
-        <!--walkDetail-->
         <activity
             android:name=".ui.main.calendar.WalkDetailActivity"
             android:screenOrientation="portrait"

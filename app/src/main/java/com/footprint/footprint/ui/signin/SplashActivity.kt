@@ -1,10 +1,14 @@
 package com.footprint.footprint.ui.signin
 
+import android.content.Intent
+import android.os.Handler
 import android.util.Log
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.onboarding.OnBoardingActivity
+import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,8 +22,22 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     private var isKakaoLogin = false
 
     override fun initAfterBinding() {
-        checkKakaoLogin()
-        checkGoogleLogin()
+        //온보딩 화면 O/X => 3초 후 실행
+         val handler = Handler()
+                handler.postDelayed({
+                    //1. 온보딩 실행 여부 spf에서 받아오기
+                    val onboardingStatus = getOnboarding(this)
+
+                    if(!onboardingStatus){
+                        //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
+                        startNextActivity(OnBoardingActivity::class.java)
+                        finish()
+                    }else{
+                        //3. true -> 로그인 상태 확인
+                        checkGoogleLogin()
+                        checkKakaoLogin()
+                    }
+                }, 3000)
     }
 
     /*Google 로그인 체크: 1. 로그인 체크 2. 정보 Log(기능 완성되면 지울 것)*/
@@ -27,7 +45,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         Log.d("AUTO-LOGIN/FLAG", "FLAG GOOGLE")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.google_login_server_id))
-            .requestEmail() // email addresses도 요청함
+            .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this@SplashActivity, gso)
 

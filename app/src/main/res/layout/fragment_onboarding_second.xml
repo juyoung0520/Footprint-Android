@@ -1,17 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/onboarding_second_parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/obSecond_content_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="두번째 프레그먼트"
-        app:layout_constraintTop_toTopOf="parent"
+    <!--Image-->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/onboarding_second_scrollview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_first_description_tv">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/onboarding_first_image_iv"
+                android:layout_width="314dp"
+                android:layout_height="680dp"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="100dp"
+                android:src="@drawable/bg_onboarding2_goal" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!--Gradient-->
+    <ImageView
+        android:id="@+id/onboarding_gradient_top_tv"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:src="@drawable/bg_white_gradient_top"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/onboarding_gradient_bottom_tv"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:src="@drawable/bg_white_gradient_bottom"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <!--Top-->
+    <TextView
+        android:id="@+id/onboarding_second_title_tv"
+        style="@style/tv_title_b_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_onboarding2"
+        android:textColor="@color/black_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05" />
+    <TextView
+        android:id="@+id/onboarding_first_description_tv"
+        style="@style/tv_caption_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:lineHeight="22dp"
+        android:text="@string/msg_onboarding2"
+        android:textColor="@color/black_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_second_title_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

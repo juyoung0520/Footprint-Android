@@ -25,6 +25,9 @@
     <string name="menu_course">코스추천</string>
     <string name="menu_mypage">마이페이지</string>
 
+    <!--액션-->
+    <string name="action_startwalk">산책 시작</string>
+
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>
     <string name="msg_calroie_unit">kcal</string>
@@ -50,6 +53,21 @@
     <string name="title_sum_walktime">누적 산책시간</string>
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
+
+    //화면 별
+    <!--온보딩-->
+    <string name="msg_skip">skip ></string>
+    <string name="action_start">시작하기</string>
+
+    <string name="title_onboarding1">반가워요 👋</string>
+    <string name="msg_onboarding1">산책하러 오셨군요! 발자국에 오신걸 환영합니다</string>
+    <string name="msg_img_onboarding1">산책은 가벼운 운동으로 제격인 동시에\n생각을 정리하거나 기분 전환에 좋은 활동이에요</string>
+    <string name="title_onboarding2">산책 목표 설정하기</string>
+    <string name="msg_onboarding2">산책할 요일과 목표 산책 시간을 선택해\n나만의 산책 목표를 세워 산책을 습관화할 수 있어요</string>
+    <string name="title_onboarding3">산책 기록하기</string>
+    <string name="msg_onboarding3">실시간 산책 동선을 기록하면서\n자유롭게 사진을 찍고 떠오른 생각을 남겨보아요</string>
+    <string name="title_onboarding4">산책 일기 확인하기</string>
+    <string name="msg_onboarding4">그동안의 산책과 생각들을 추억할 수 있어요</string>
 
     <!--실시간 기록-->
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
@@ -95,8 +113,6 @@
     <string name="title_fri">Fri</string>
     <string name="title_sat">Sat</string>
     <string name="title_sun">Sun</string>
-    <string name="action_startwalk">산책 시작</string>
-
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
@@ -160,6 +176,13 @@
     <string name="msg_set_goal">목표를 설정해 주세요</string>
     <string name="msg_set_gaol_desc">월 기준으로 목표를 설정할 수 있어요</string>
     <string name="title_goal_day">목표 요일</string>
+    <string name="title_mon_kr">월</string>
+    <string name="title_tue_kr">화</string>
+    <string name="title_wed_kr">수</string>
+    <string name="title_thu_kr">목</string>
+    <string name="title_fri_kr">금</string>
+    <string name="title_sat_kr">토</string>
+    <string name="title_sun_kr">일</string>
     <string name="title_goal_walk_time">목표 산책 시간</string>
     <string name="msg_set_goal_time">목표시간을 선택해 주세요</string>
     <string name="title_goal_walk_slot">산책 시간대</string>
@@ -203,4 +226,5 @@
     <!--다음달 목표-->
     <string name="title_goal_next_month">다음달 목표</string>
     <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
+
 </resources>

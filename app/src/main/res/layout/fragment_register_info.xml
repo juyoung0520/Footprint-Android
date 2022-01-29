@@ -16,7 +16,6 @@
         android:text="@string/title_register_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/register_info_description_tv"
         style="@style/tv_body_b_12"
@@ -80,7 +79,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/register_info_nickname_title_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
     <TextView
         android:id="@+id/register_info_nickname_error_tv"
         style="@style/tv_button_b_10"

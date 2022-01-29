@@ -1,17 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--Top-->
     <TextView
-        android:id="@+id/obFirst_content_tv"
+        android:id="@+id/onboarding_first_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="첫번째 프레그먼트"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/title_onboarding1"
+        style="@style/tv_title_b_24"
+        android:textColor="@color/black_dark"
+        app:layout_constraintVertical_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/onboarding_first_description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_onboarding1"
+        style="@style/tv_caption_14"
+        android:textColor="@color/black_light"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_first_title_tv"/>
+
+
+    <!--Image-->
+    <ImageView
+        android:id="@+id/onboarding_first_image_iv"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/bg_onboarding1_walk"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_first_description_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/onboarding_first_img_description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:text="@string/msg_img_onboarding1"
+        style="@style/tv_body_b_14"
+        android:textColor="@color/black_dark"
+        android:gravity="center"
+        android:lineHeight="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_first_image_iv" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

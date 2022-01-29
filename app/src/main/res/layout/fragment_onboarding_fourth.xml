@@ -4,14 +4,69 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--Image-->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/onboarding_fourth_scrollview_layour"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_first_description_tv"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/onboarding_fourth_image_iv"
+                android:layout_width="314dp"
+                android:layout_height="680dp"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="100dp"
+                android:src="@drawable/bg_onboarding4_diary" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!--Gradient-->
+    <ImageView
+        android:id="@+id/onboarding_gradient_top_tv"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:src="@drawable/bg_white_gradient_top"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/onboarding_gradient_bottom_tv"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:src="@drawable/bg_white_gradient_bottom"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <!--Top-->
     <TextView
-        android:id="@+id/obFourth_content_tv"
+        android:id="@+id/onboarding_second_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="네번째 프레그먼트"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/title_onboarding4"
+        style="@style/tv_title_b_24"
+        android:textColor="@color/black_dark"
+        app:layout_constraintVertical_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+        android:id="@+id/onboarding_first_description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_onboarding4"
+        style="@style/tv_caption_14"
+        android:textColor="@color/black_light"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/onboarding_second_title_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
