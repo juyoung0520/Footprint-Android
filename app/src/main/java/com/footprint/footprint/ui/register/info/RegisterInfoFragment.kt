@@ -1,6 +1,5 @@
 package com.footprint.footprint.ui.register.info
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,16 +8,14 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import android.view.View.OnFocusChangeListener
-import com.footprint.footprint.data.model.User
+import com.footprint.footprint.data.model.UserModel
 import com.skydoves.balloon.*
 import java.lang.Integer.parseInt
-import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.skydoves.balloon.OnBalloonClickListener
 import android.widget.RadioGroup
-import androidx.core.content.ContextCompat
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.getLoginStatus
@@ -30,7 +27,7 @@ import java.time.ZoneId
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
 
-    private var newUser: User = User()
+    private var newUser: UserModel = UserModel()
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
 
@@ -74,25 +71,8 @@ class RegisterInfoFragment() :
 
     /*Button*/
     private fun checkBtnState() {
-
         // 닉네임 OK & 성별 OK => 버튼 활성화
-        if (isNicknameCorrect && isGenderCorrect) {
-            binding.registerInfoActionBtn.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.bg_register_action_btn
-                )
-            )
-            binding.registerInfoActionBtn.isEnabled = true
-        } else {
-            binding.registerInfoActionBtn.setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.bg_register_action_btn_disabled
-                )
-            )
-            binding.registerInfoActionBtn.isEnabled = false
-        }
+        binding.registerInfoActionBtn.isEnabled = isNicknameCorrect && isGenderCorrect
     }
 
     /*Nickname: Focus, Watcher*/
@@ -133,7 +113,8 @@ class RegisterInfoFragment() :
                             ColorStateList.valueOf(resources.getColor(R.color.primary))
                         binding.registerInfoNicknameErrorTv.visibility = View.GONE
                         isNicknameCorrect = true
-                    }
+                    } else //닉네임 입력창이 비어있을 때
+                        isNicknameCorrect = false
                 }
                 checkBtnState()
             }
@@ -406,7 +387,7 @@ class RegisterInfoFragment() :
 
     /*Tooltip*/
     private fun setHelpBallon() {
-        val textSizeinSp = convertDpToSp(requireContext(),12).toFloat()
+        val textSizeinSp = convertDpToSp(requireContext(), 12).toFloat()
         val balloon = Balloon.Builder(requireContext())
             .setWidth(200)
             .setHeight(60)
@@ -440,7 +421,7 @@ class RegisterInfoFragment() :
 
 
     /*회원가입 API*/
-    private fun callSignUpAPI(){
+    private fun callSignUpAPI() {
         //1. 로그인 상태, 토큰
         val loginStatus = getLoginStatus(requireContext())
         val IdToken = getToken(requireContext())
@@ -451,5 +432,3 @@ class RegisterInfoFragment() :
     }
 
 }
-
-
