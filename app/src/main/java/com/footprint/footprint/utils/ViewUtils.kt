@@ -1,5 +1,7 @@
 package com.footprint.footprint.utils
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -40,4 +42,27 @@ fun View.setHeight(value: Int) {
         lp.height = value
         layoutParams = lp
     }
+}
+
+fun fadeIn(view: View) {
+    view.apply {
+        alpha = 0f
+        visibility = View.VISIBLE
+
+        animate()
+            .alpha(1f)
+            .setDuration(300)
+            .setListener(null)
+    }
+}
+
+fun fadeOut(view: View) {
+    view.animate()
+        .alpha(0f)
+        .setDuration(200)
+        .setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                view.visibility = View.GONE
+            }
+        })
 }

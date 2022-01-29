@@ -14,6 +14,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.main.calendar.WalkDetailActivity
+import com.footprint.footprint.utils.getDeviceHeight
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
@@ -73,8 +74,7 @@ class WalkConfirmFragment :
             binding.walkConfirmNoFootprintTv.visibility = View.INVISIBLE
             binding.walkConfirmSlidedLayout.visibility = View.VISIBLE
 
-            val heightPixels = resources.displayMetrics.heightPixels
-            binding.walkConfirmSlidingUpPanelLayout.panelHeight = (heightPixels * 0.5).toInt()
+            binding.walkConfirmSlidingUpPanelLayout.panelHeight = (getDeviceHeight() * 0.5).toInt()
         }
     }
 
