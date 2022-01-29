@@ -39,7 +39,7 @@
 
     <!--에러-->
 
-    //화면 별
+    <!--화면 별-->
     <!--실시간 기록-->
     <string name="title_realtime_record">실시간 기록</string>
     <string name="title_walktime">산책시간</string>
@@ -110,6 +110,10 @@
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
     <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
+    <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
+    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
+    <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
+    <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
 
     <!--산책중지-->
