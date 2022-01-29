@@ -8,7 +8,7 @@ import com.footprint.footprint.ui.BaseFragment
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate) {
     override fun initAfterBinding() {
         binding.mypageTmpBadgeTv.setOnClickListener {
-            findNavController().navigate(R.id.badgeActivity)
+            findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
     }
 }
