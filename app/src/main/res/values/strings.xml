@@ -2,7 +2,7 @@
     <string name="app_name">발자국</string>
 
     <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
-    <string name="google_login_client_id" translatable="false">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</string>
+    <string name="google_login_server_id" translatable="false">275484626544-npc9k2gt2qmh36o90slhb73bmdgatrnk.apps.googleusercontent.com</string>
     <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
     <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
 
@@ -76,6 +76,7 @@
     <string name="title_register_info_wheight">키/몸무게</string>
     <string name="title_register_info_height_hint">170</string>
     <string name="title_register_info_weight_hint">50</string>
+    <string name="error_register_info_nickname">닉네임은 최대 8자까지 가능해요</string>
 
     <!--홈-->
     <string name="msg_home_hello">안녕하세요, </string>

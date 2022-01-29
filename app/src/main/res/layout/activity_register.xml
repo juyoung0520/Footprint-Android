@@ -5,81 +5,48 @@
     android:layout_height="match_parent">
 
     <!--TabLayout-->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/register_top_layout"
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/register_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:tabBackground="@drawable/selector_tablayout_indicator"
+        app:tabGravity="center"
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/register_tb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabBackground="@drawable/selector_tablayout_indicator"
-            app:tabGravity="center"
+        app:tabIndicator="@null"
+        app:tabPaddingEnd="5dp"
+        app:tabPaddingStart="5dp"
+        app:tabRippleColor="@color/transparent"
 
-            app:tabIndicator="@null"
-            app:tabPaddingEnd="5dp"
-            app:tabPaddingStart="5dp"
-            app:tabRippleColor="@color/transparent"
-
-            app:tabSelectedTextColor="@color/white_light"
-            app:tabTextAppearance="@style/tv_body_b_11"
-            app:tabTextColor="@color/transparent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:tabSelectedTextColor="@color/white_light"
+        app:tabTextAppearance="@style/tv_body_b_11"
+        app:tabTextColor="@color/transparent" />
 
 
-<!--    <androidx.core.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/register_scroll_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/register_top_layout"
-        app:layout_constraintBottom_toBottomOf="parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">-->
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_tb">
+
             <!--Viewpager: 1. 정보 입력 2. 목표 설정-->
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/register_vp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@id/register_btn_tv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/register_top_layout"/>
-
-            <!--Btn-->
-            <TextView
-                android:id="@+id/register_btn_tv"
-                style="@style/tv_headline_eb_18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:paddingBottom="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/btn_blueround_inactive"
-                android:elevation="100dp"
-
-                android:gravity="center"
-                android:text="@string/action_next"
-
-                android:textColor="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/register_vp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
- <!--       </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>-->
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

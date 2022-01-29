@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.ViewTreeObserver
 import android.view.Window
 
+/*키보드 Up & Down 확인해 주는 도구: Register_Info에서 사용할 수도 있어서 냅둠*/
 class KeyboardVisibilityUtils(
     private val window: Window,
     private val onShowKeyboard: ((keyboardHeight: Int) -> Unit)? = null,

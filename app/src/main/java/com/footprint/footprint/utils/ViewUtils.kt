@@ -2,8 +2,8 @@ package com.footprint.footprint.utils
 
 import android.content.Context
 import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import kotlin.math.roundToInt
 
@@ -26,4 +26,18 @@ fun convertDpToPx(context: Context, dp: Int): Int {
 fun convertPxToDp(context: Context, px: Int): Int {
     val density = context.resources.displayMetrics.density
     return (px / density).roundToInt()
+}
+
+fun convertDpToSp(context: Context, dp: Int): Int {
+
+    return (convertDpToPx(context, dp) / context.resources.displayMetrics.scaledDensity).toInt()
+}
+
+//뷰의 params.height 지정
+fun View.setHeight(value: Int) {
+    val lp = layoutParams
+    lp?.let {
+        lp.height = value
+        layoutParams = lp
+    }
 }

@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import android.R.id.text1
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.footprint.footprint.R
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 import gun0912.tedimagepicker.util.ToastUtil.context
@@ -34,21 +35,14 @@ import gun0912.tedimagepicker.util.ToastUtil.context
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate) {
 
-    val RC_SIGN_IN = -1
     lateinit var mGoogleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = -1
     private lateinit var newUser: User
-    override fun initAfterBinding() {
-        initXML()
 
+    override fun initAfterBinding() {
         //카카오 로그인
         binding.signinKakaologinBtnLayout.setOnClickListener {
             setKakaoLogin()
-        }
-
-        //다음에 로그인 할래요
-        binding.signinNologinTv.setOnClickListener {
-            this.startNextActivity(MainActivity::class.java)
-            finish()
         }
 
         //구글 로그인
@@ -56,44 +50,24 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
-    }
 
-    /*XML 동적 Layout*/
-    private fun initXML() {
-        val density = context.resources?.displayMetrics?.density
-        val statusbarHeight = getStatusBarHeightDP(this) + dp2px(density!!, 10)
-        val params = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, statusbarHeight, 0, 0) // 왼쪽, 위, 오른쪽, 아래 순서입니다.
-        binding.signinTopLayout.layoutParams = params
-    }
-
-    //dp to px 변환 함수 (params)
-    private fun dp2px(density:Float, dp: Int): Int {
-        return Math.round(dp.toFloat() * density)
-    }
-
-    fun getStatusBarHeightDP(context: Context): Int {
-        var result = 0
-        val resourceId: Int = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimension(resourceId).toInt()
+        //다음에 로그인 할래요
+        binding.signinNologinTv.setOnClickListener {
+            this.startNextActivity(MainActivity::class.java)
+            finish()
         }
-        return result
     }
 
     /*Funtion-Kakao*/
     //로그인
     private fun setKakaoLogin() {
-        //카카오 계정으로 로그인(콜백)
+        //카카오 계정으로 로그인
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i("KAKAO/API-SUCCESS", "카카오계정으로 로그인 성공 ${token.accessToken}")
-                getKakaoUser()
+                signupKakao(token.accessToken)
             }
         }
 
@@ -116,7 +90,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 } else if (token != null) {
                     Toast.makeText(this, "카카오톡 로그인 완료", Toast.LENGTH_SHORT).show()
                     Log.i("KAKAO/API-SUCCESS", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                    getKakaoUser()
+
+                    signupKakao(token.accessToken)
                 }
             }
         } else {
@@ -124,46 +99,23 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         }
     }
 
-    private fun getKakaoUser() {
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e("KAKAO/USER-FAIL", "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                Log.i("KAKAO/USER-SUCCESS", "사용자 정보 요청 성공" + user.toString())
-                val userIdx = user.id
-                val nickname = user.kakaoAccount?.profile?.nickname
-                val email = user.kakaoAccount?.email
-                val gender = user.kakaoAccount?.gender
-                val birthday = user.kakaoAccount?.birthday
+    private fun signupKakao(token: String) {
+        //1. User 정보 저장: token
+        newUser = User(token)
 
-                newUser = User(
-                    userIdx.toString(),
-                    nickname.toString(),
-                    email.toString(),
-                    gender.toString(),
-                    birthday.toString()
-                )
+        //2. SPF에 로그인 상태 저장
+        saveSpf("kakao")
+        Log.d("KAKAO/USER", newUser.toString())
 
-                saveSpf("kakao")
-                Log.d("KAKAO/USER", newUser.toString())
-
-                startRegisterActivity()
-            }
-        }
-    }
-
-    private fun startRegisterActivity() {
-        val intent = Intent(this, RegisterActivity::class.java)
-        intent.putExtra("user", newUser)
-        startActivity(intent)
-        //this.startNextActivity(RegisterActivity::class.java)
-        finish()
+        //3. 존재하는 User인지 확인
+        isExistUser()
     }
 
 
     /*Funtion - Google*/
     private fun googleClient(): ActivityResultLauncher<Intent> {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_login_server_id))
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -185,49 +137,57 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         try {
             //1. user 정보 저장
             val account = completedTask.getResult(ApiException::class.java)
-            val email = account?.email.toString()
-            val displayName = account?.displayName.toString()
-            val id = account?.id.toString()
-            val token = account.idToken.toString()
-            val scope = account?.grantedScopes.toString()
+            val username = account?.displayName.toString()
+            val useremail = account?.email.toString()
+            val idToken = account.idToken.toString()
 
-            newUser = User(id, displayName, email)
+            newUser = User(idToken)
 
+            Log.d("GOOGLE/ACCOUNT", "username: ${username} useremail: ${useremail}")
             Log.d("GOOGLE/USER", newUser.toString())
-            Log.d("GOOGLE/USER-TOKEN", token)
-            Log.d("GOOGLE/USER-SCOPE", scope)
+            Log.d("GOOGLE/USER-TOKEN", idToken)
 
-            //2. spf & 회원가입 api 호출
+            //2. spf
             saveSpf("google")
 
-            //3. Register 액티비티로 이동
-            startRegisterActivity()
-            finish()
+            //3. 존재하는 회원인지 확인
+            isExistUser()
         } catch (e: ApiException) {
             Log.w("GOOGLE/SIGNUP-FAILURE", "signInResult:failed code=" + e.statusCode)
         }
     }
 
-    private fun getUser() {
-        val acct = GoogleSignIn.getLastSignedInAccount(this@SigninActivity)
-        if (acct != null) {
-            val personName = acct.displayName
-            val personEmail = acct.email
-            val personId = acct.id
-            newUser = User(personId, personName, personEmail)
-            Log.d(
-                "GOOGLE/GETUSER",
-                "personName: ${personName} personEmail: ${personEmail} personId: ${personId}"
-            )
-            Log.d("GOOGLE/USER", newUser.toString())
-        }
+    /*Tools*/
+    //SPF에 token, loginstatus 저장
+    private fun saveSpf(status: String) {
+        saveToken(this, newUser.idToken)
+        saveLoginStatus(this, status)
+        val token = getToken(this)
+        val loginStatus = getLoginStatus(this)
+        Log.d("SIGNUP/SPF-SUCCESS", "Token: ${token} LoginStatus: ${loginStatus}")
+    }
+    //회원 확인 요청 API
+    private fun isExistUser(){
+        /*서버에 존재하는 회원인지?*/
+
+        //O-> MainActivity
+        //startMainActivity()
+
+        //X-> RegisterActivity
+        startRegisterActivity()
+    }
+    //Register Activity
+    private fun startRegisterActivity() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        intent.putExtra("user", newUser)
+        startActivity(intent)
+        finish()
     }
 
-    private fun saveSpf(status: String){
-        saveUserIdx(this, newUser.userIdx!!)
-        saveLoginStatus(this, status)
-        val userId = getUserIdx(this)
-        val loginStatus = getLoginStatus(this)
-        Log.d("SIGNUP/SPF-SUCCESS", "User Idx: ${userId} LoginStatus: ${loginStatus}")
+    //Main Activity
+    private fun startMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
+
 }
