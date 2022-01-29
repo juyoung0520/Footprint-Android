@@ -2,14 +2,15 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import com.footprint.footprint.R
-import com.footprint.footprint.databinding.ActivityBadgeBinding
-import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.databinding.FragmentBadgeBinding
+import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 
-class BadgeActivity : BaseActivity<ActivityBadgeBinding>(ActivityBadgeBinding::inflate) {
+class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate) {
+
     private lateinit var badgeRVAdapter: BadgeRVAdapter
     private lateinit var actionDialogFragment: ActionDialogFragment
 
@@ -30,7 +31,7 @@ class BadgeActivity : BaseActivity<ActivityBadgeBinding>(ActivityBadgeBinding::i
 
     private fun initAdapter() {
         //디바이스 크기에 맞춰 뱃지 아이템의 크기 조정하기
-        val size = (getDeviceWidth() - convertDpToPx(this@BadgeActivity, 74)) / 3
+        val size = (getDeviceWidth() - convertDpToPx(requireContext(), 74)) / 3
 
         badgeRVAdapter = BadgeRVAdapter(7, size)
         //뱃지 데이터(임시)
@@ -66,7 +67,7 @@ class BadgeActivity : BaseActivity<ActivityBadgeBinding>(ActivityBadgeBinding::i
                 bundle.putSerializable("msg", getString(R.string.msg_change_representative_badge))
                 actionDialogFragment.arguments = bundle
 
-                actionDialogFragment.show(supportFragmentManager, null)
+                actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             }
 
         })
@@ -92,10 +93,9 @@ class BadgeActivity : BaseActivity<ActivityBadgeBinding>(ActivityBadgeBinding::i
     }
 
     private fun setMyClickListener() {
-        //뒤로가기 버튼 클릭 리스너 -> 액티비티 종료
+        //뒤로가기 버튼 클릭 리스너 ->프래그먼트 종료
         binding.badgeBackIv.setOnClickListener {
-            finish()
+            requireActivity().onBackPressed()
         }
     }
-
 }

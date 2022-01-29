@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.mypage.BadgeActivity">
+    tools:context=".ui.main.mypage.BadgeFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/badge_tb"
@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:background="@color/primary"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.14"
+        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -41,7 +41,7 @@
         android:id="@+id/badge_representative_badge_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/primary_light"
+        android:background="@color/primary_light_30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.35"
