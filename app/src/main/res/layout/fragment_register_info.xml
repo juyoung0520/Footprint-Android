@@ -325,6 +325,7 @@
             app:layout_constraintEnd_toEndOf="@id/register_info_birth_day_et" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/register_info_wheight_layout"
         android:layout_width="match_parent"
@@ -444,8 +445,9 @@
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginHorizontal="24dp"
-        android:background="@drawable/bg_register_action_btn_disabled"
+        android:background="@drawable/selector_register_action_btn"
         android:backgroundTint="@null"
+        android:enabled="false"
         android:gravity="center"
         android:includeFontPadding="false"
         android:stateListAnimator="@null"
@@ -458,4 +460,3 @@
         app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
