@@ -7,7 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mypage_top_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:background="@color/primary"
         android:paddingHorizontal="24dp"
         app:layout_constraintTop_toTopOf="parent">
@@ -16,19 +16,19 @@
             android:id="@+id/mypage_back_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            style="@style/tv_subtitle_b_16"
             android:src="@drawable/ic_back"
+            app:layout_constraintTop_toTopOf="@+id/mypage_title_tv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="@+id/mypage_title_tv"/>
 
         <TextView
             android:id="@+id/mypage_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20.23dp"
-            android:text="00님의 발자국"
+            android:text="@string/title_mypage"
             style="@style/tv_headline_eb_16"
+            app:layout_constraintVertical_bias="0.72"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/mypage_back_iv"
             app:layout_constraintEnd_toStartOf="@id/mypage_search_iv"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -37,10 +37,9 @@
             android:id="@+id/mypage_search_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:src="@drawable/ic_search_24"
+            app:layout_constraintTop_toTopOf="@id/mypage_title_tv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="@+id/mypage_title_tv"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

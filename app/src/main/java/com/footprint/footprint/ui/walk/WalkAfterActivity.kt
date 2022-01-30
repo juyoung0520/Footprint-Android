@@ -29,9 +29,6 @@ class WalkAfterActivity :
         else
             bundle.putString("footprints", footprints)
         navController.setGraph(R.navigation.navigation_walk_confirm, bundle)
-
-        val heightPixels = resources.displayMetrics.heightPixels.toFloat()
-        binding.walkAfterTb.layoutParams.height = (heightPixels * 0.14).toInt()
     }
 
     override fun onBackPressed() {
