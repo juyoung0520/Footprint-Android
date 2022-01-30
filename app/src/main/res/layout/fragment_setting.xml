@@ -9,28 +9,32 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/setting_tb"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="90dp"
         android:background="@color/primary"
-        android:gravity="bottom"
-        android:paddingBottom="16dp"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.15"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/title_setting"
-        app:titleCentered="true"
-        app:titleTextAppearance="@style/tv_headline_eb_16"
-        app:titleTextColor="@color/black_dark" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/setting_back_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="18dp"
-        android:scaleType="fitXY"
         android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/setting_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/setting_title_tv" />
+
+    <TextView
+        android:id="@+id/setting_title_tv"
+        style="@style/tv_headline_eb_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_setting"
         app:layout_constraintBottom_toBottomOf="@+id/setting_tb"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/setting_tb"
+        app:layout_constraintStart_toStartOf="@+id/setting_tb"
+        app:layout_constraintTop_toTopOf="@+id/setting_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
 
     <ImageView
         android:id="@+id/setting_update_my_info_iv"
