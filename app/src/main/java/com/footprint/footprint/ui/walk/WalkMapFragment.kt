@@ -41,6 +41,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private var paths = mutableListOf<Path>()
     private var currentTime: Int = 0
     private var isInit = false
+    private var isFootprint = false
 
     private lateinit var spannable: SpannableString
 
@@ -75,7 +76,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             ?.observe(viewLifecycleOwner) {
                 Log.d("WalkMapFragment", "post observe -> $it")
 
-                setWalkState(true)  //화면에서 다시 돌아오면 산책 시간을 다시 측정한다.
+                sendCommandToService(WalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
                 if (it != null) {
                     footprints.footprints.add(Gson().fromJson(it, FootprintModel::class.java))
@@ -100,7 +101,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun setMap() {
-        Log.d("Walk/WalkMap", "setMap")
         map.moveCamera(CameraUpdate.zoomTo(17.0))
         map.uiSettings.isZoomControlEnabled = false
 
@@ -113,7 +113,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun setObserver() {
-        Log.d("Walk/WalkMap", "setObserver")
         // argument 가져오기
 
         val startMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_start)
@@ -121,11 +120,15 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         val endMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_end)
 
         WalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
-            Log.d("Walk/WalkMap", "setObserver/isWalking - ${state.toString()}")
             isWalking = state
             if (isWalking) {
                 binding.walkmapMiddleIv.isSelected = true
-                initPath()
+
+                if (isFootprint) {
+                    isFootprint = false
+                } else {
+                    initPath()
+                }
             } else {
                 binding.walkmapMiddleIv.isSelected = false
                 locationOverlay.isVisible = false
@@ -143,7 +146,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         })
 
         WalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
-            Log.d("Walk/WalkMap", "setObserver/paths - ${paths.toString()}")
             this.paths = paths
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
@@ -153,7 +155,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         })
 
         WalkService.totalDistance.observe(viewLifecycleOwner, Observer { distance ->
-            Log.d("Walk/WalkMap", "setObserver/totalDistance - ${distance.toString()}")
             binding.walkmapDistanceNumberTv.text =
                 String.format("%.1f", distance / 1000)
         })
@@ -165,14 +166,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     setBinding()
                 }
 
-                Log.d("Walk/WalkMap", "setObserver/currentLocation - ${location.toString()}")
                 if (!locationOverlay.isVisible) {
                     locationOverlay.isVisible = true
                 }
 
                 updateLocation(location)
-            } else {
-                Log.d("Walk/WalkMap", "setObserver/currentLocation - null")
             }
         })
 
@@ -190,12 +188,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun setBinding() {
-        Log.d("Walk/WalkMap", "setBinding")
         binding.walkLoadingPb.visibility = View.GONE
         binding.walkmapProgressBar.isEnabled = false
 
         binding.walkmapPlusIv.setOnClickListener {
             setWalkState(false)
+            isFootprint = true
 
             if (footprints.footprints.size >= 9) {  //기록이 이미 9개가 됐으면
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
@@ -376,9 +374,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                     startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
                     (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-                } else { //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
-//                    setWalkState(true)  //다시 타이머가 실행되도록
-                }
+                } 
             }
 
             override fun action2(isAction: Boolean) {

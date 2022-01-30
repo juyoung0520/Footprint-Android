@@ -32,8 +32,10 @@ class WalkService : LifecycleService() {
 
     private lateinit var lastLocation: Location
     private var totalTimeMillis = 0L
+
     private var stopCountJob: Job? = null
     private var isInit = false
+    private var isFootprint = false
 
     companion object {
         val isWalking = NonNullMutableLiveData(false)
@@ -48,8 +50,8 @@ class WalkService : LifecycleService() {
         const val NOTIFICATION_NAME = "Footprint Notification"
 
         const val TRACKING_START_OR_RESUME = "start_or_resume"
+        const val TRACKING_RESUME_BY_FOOTPRINT = "resume_footprint"
         const val TRACKING_PAUSE = "pause"
-        const val TRACKING_TIMER_START = "timer_start"
         const val TRACKING_STOP = "stop"
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 100
@@ -57,8 +59,6 @@ class WalkService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-
-        Log.d("Walk/WalkService", "onCreate")
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -78,9 +78,13 @@ class WalkService : LifecycleService() {
         }
 
         isWalking.observe(this, Observer { state ->
-            Log.d("Walk/WalkService", "onCreate/isWalking - ${state.toString()}")
             if (state) {
-                addEmptyPath()
+                if (isFootprint) {
+                    isFootprint = false
+                } else {
+                    addEmptyPath()
+                }
+
                 locationActivate()
 
                 if (isInit) {
@@ -98,17 +102,17 @@ class WalkService : LifecycleService() {
                 TRACKING_START_OR_RESUME -> {
                     isWalking.postValue(true)
                 }
-//                TRACKING_TIMER_START -> {
-//                    isInit = true
-//                    startTimer()
-//                }
+                TRACKING_RESUME_BY_FOOTPRINT-> {
+                    isFootprint = true
+                    isWalking.postValue(true)
+                }
                 TRACKING_PAUSE -> {
                     isWalking.postValue(false)
                 }
                 TRACKING_STOP -> {
                     isWalking.postValue(false)
-                    Log.d("Walk/WalkService", "서비스 종료")
                     stopSelf()
+
                     isWalking.postValue(false)
                     currentTime.postValue(0)
                     currentLocation.postValue(null)
@@ -131,6 +135,7 @@ class WalkService : LifecycleService() {
             }
 
             result.lastLocation.let {
+                // 멈춰있는지 확인
                 pauseWalkCheck(it)
 
                 currentLocation.postValue(it)
@@ -244,6 +249,7 @@ class WalkService : LifecycleService() {
 
     private fun addLocation(location: Location) {
         val pos = LatLng(location.latitude, location.longitude)
+
         paths.value.apply {
             last().add(pos)
             paths.postValue(this)
