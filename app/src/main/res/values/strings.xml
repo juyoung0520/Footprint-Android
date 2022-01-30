@@ -115,6 +115,7 @@
     <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
     <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
+    <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
