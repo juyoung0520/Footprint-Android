@@ -1,9 +1,8 @@
 package com.footprint.footprint.ui.onboarding
 
-import android.animation.ObjectAnimator
-import android.util.Log
 import com.footprint.footprint.databinding.FragmentOnboardingThirdBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.utils.autoScrollToBottom
 
 class OnBoardingThirdFragment :
     BaseFragment<FragmentOnboardingThirdBinding>(FragmentOnboardingThirdBinding::inflate) {
@@ -13,14 +12,6 @@ class OnBoardingThirdFragment :
 
     override fun onResume() {
         super.onResume()
-        binding.onboardingThirdScrollviewLayout.post {
-            run {
-                ObjectAnimator.ofInt(
-                    binding.onboardingThirdScrollviewLayout,
-                    "scrollY",
-                    binding.onboardingThirdImageIv.bottom
-                ).setDuration(1000).start();
-            }
-        }
+        autoScrollToBottom(binding.onboardingThirdScrollviewLayout, binding.onboardingThirdImageIv)
     }
 }

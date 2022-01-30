@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/onboarding_third_parent_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,13 +32,13 @@
 
     <!--Gradient-->
     <ImageView
-        android:id="@+id/onboarding_gradient_top_tv"
+        android:id="@+id/onboarding_gradient_top_iv"
         android:layout_width="match_parent"
         android:layout_height="230dp"
         android:src="@drawable/bg_white_gradient_top"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
-        android:id="@+id/onboarding_gradient_bottom_tv"
+        android:id="@+id/onboarding_gradient_bottom_iv"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:src="@drawable/bg_white_gradient_bottom"

@@ -2,11 +2,13 @@ package com.footprint.footprint.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import kotlin.math.roundToInt
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
@@ -31,11 +33,10 @@ fun convertPxToDp(context: Context, px: Int): Int {
 }
 
 fun convertDpToSp(context: Context, dp: Int): Int {
-
     return (convertDpToPx(context, dp) / context.resources.displayMetrics.scaledDensity).toInt()
 }
 
-//뷰의 params.height 지정
+/*Set Height*/
 fun View.setHeight(value: Int) {
     val lp = layoutParams
     lp?.let {
@@ -44,6 +45,7 @@ fun View.setHeight(value: Int) {
     }
 }
 
+/*Animation*/
 fun fadeIn(view: View) {
     view.apply {
         alpha = 0f
@@ -65,4 +67,17 @@ fun fadeOut(view: View) {
                 view.visibility = View.GONE
             }
         })
+}
+
+fun autoScrollToBottom(View: NestedScrollView, imgView: View){
+    View.scrollTo(0, 0)
+    View.post {
+        run {
+            ObjectAnimator.ofInt(
+                View,
+                "scrollY",
+                imgView.bottom
+            ).setDuration(1000).start();
+        }
+    }
 }
