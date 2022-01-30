@@ -40,12 +40,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private var isWalking: Boolean = false
     private var paths = mutableListOf<Path>()
     private var currentTime: Int = 0
+    private var isInit = false
 
     private lateinit var spannable: SpannableString
 
     private val footprints: FootprintsModel = FootprintsModel() //지금까지 사용자가 기록한 총 데이터
-
-    private var isInit = false
 
     override fun initAfterBinding() {
 
@@ -57,6 +56,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
             .compassEnabled(false)
@@ -86,8 +86,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 }
             }
 
-        sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
-
         return binding.root
     }
 
@@ -95,6 +93,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     override fun onMapReady(naverMap: NaverMap) {
         map = naverMap
         setMap()
+
+        sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
 
         setObserver()
     }
@@ -124,10 +124,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             Log.d("Walk/WalkMap", "setObserver/isWalking - ${state.toString()}")
             isWalking = state
             if (isWalking) {
-                binding.walkmapMiddleIv.isEnabled = true
+                binding.walkmapMiddleIv.isSelected = true
                 initPath()
             } else {
-                binding.walkmapMiddleIv.isEnabled = false
+                binding.walkmapMiddleIv.isSelected = false
                 locationOverlay.isVisible = false
 
                 if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
@@ -161,6 +161,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         WalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
             if (location != null) {
                 if (!isInit) {
+                    isInit = true
                     setBinding()
                 }
 
@@ -179,6 +180,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             this.currentTime = currentTime
 
             updateTime(1800)
+        })
+
+        WalkService.pauseWalk.observe(viewLifecycleOwner, Observer { state ->
+            if (state) {
+                showStopWalkDialog()
+            }
         })
     }
 
@@ -367,8 +374,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                             Gson().toJson(footprints)
                         )  //우선 임의로 저장한 기록만 넘겨줌
 
-                    //startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-                    //(requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
+                    startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+                    (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
                 } else { //사용자가 다이얼로그 화면에서 취소 버튼을 누른 경우
 //                    setWalkState(true)  //다시 타이머가 실행되도록
                 }
@@ -381,7 +388,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     // service
     private fun sendCommandToService(action: String) {
-        Log.d("Walk/2WalkMap", "sendCommandToService")
+        Log.d("Walk/WalkMap", "sendCommandToService")
         val intent = Intent(context, WalkService::class.java)
         intent.action = action
 

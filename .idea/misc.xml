@@ -133,20 +133,22 @@
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_whiteround.xml" value="0.17039473684210527" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_off.xml" value="0.22424242424242424" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_on.xml" value="0.22424242424242424" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location.xml" value="0.21359649122807017" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location_overlay.xml" value="0.536" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_course.xml" value="0.21082251082251083" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.22424242424242424" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_note.xml" value="0.21082251082251083" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_user.xml" value="0.21082251082251083" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_tablayout_indicator.xml" value="0.1763157894736842" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_walk_start_btn.xml" value="0.1763157894736842" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_walk_start_btn.xml" value="0.18596491228070175" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.10432733504712939" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_after.xml" value="0.264" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_register.xml" value="0.20043859649122808" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.16" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_after.xml" value="0.2596491228070175" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_detail.xml" value="0.21359649122807017" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_calendar.xml" value="0.2" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_course.xml" value="0.264" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.17980072463768115" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.1" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.10432733504712939" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_goal.xml" value="0.20043859649122808" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_info.xml" value="0.20043859649122808" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walk_confirm.xml" value="0.13114754098360656" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walkmap.xml" value="0.1503623188405797" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_calendar_day.xml" value="0.264" />
@@ -225,7 +227,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

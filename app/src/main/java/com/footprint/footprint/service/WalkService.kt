@@ -9,12 +9,17 @@ import android.location.Location
 import android.os.Build
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.NonNull
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.R
 import com.footprint.footprint.classes.NonNullMutableLiveData
+import com.footprint.footprint.ui.walk.WalkMapFragmentDirections
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.*
@@ -27,14 +32,16 @@ class WalkService : LifecycleService() {
 
     private lateinit var lastLocation: Location
     private var totalTimeMillis = 0L
-    private var stopCount = 0
+    private var stopCountJob: Job? = null
+    private var isInit = false
 
     companion object {
         val isWalking = NonNullMutableLiveData(false)
         val currentTime = NonNullMutableLiveData(0)
-        val currentLocation = MutableLiveData<Location>(null)
+        val currentLocation = MutableLiveData<Location?>(null)
         val paths = NonNullMutableLiveData<PathGroup>(mutableListOf())
         val totalDistance = NonNullMutableLiveData(0.0f)
+        val pauseWalk = NonNullMutableLiveData(false)
 
         const val NOTIFICATION_ID = 10
         const val NOTIFICATION_CHANNEL_ID = "primary_notification_channel"
@@ -42,6 +49,7 @@ class WalkService : LifecycleService() {
 
         const val TRACKING_START_OR_RESUME = "start_or_resume"
         const val TRACKING_PAUSE = "pause"
+        const val TRACKING_TIMER_START = "timer_start"
         const val TRACKING_STOP = "stop"
 
         private const val LOCATION_PERMISSION_REQUEST_CODE = 100
@@ -74,7 +82,10 @@ class WalkService : LifecycleService() {
             if (state) {
                 addEmptyPath()
                 locationActivate()
-                startTimer()
+
+                if (isInit) {
+                    startTimer()
+                }
             } else {
                 locationDeactivate()
             }
@@ -87,6 +98,10 @@ class WalkService : LifecycleService() {
                 TRACKING_START_OR_RESUME -> {
                     isWalking.postValue(true)
                 }
+//                TRACKING_TIMER_START -> {
+//                    isInit = true
+//                    startTimer()
+//                }
                 TRACKING_PAUSE -> {
                     isWalking.postValue(false)
                 }
@@ -99,6 +114,7 @@ class WalkService : LifecycleService() {
                     currentLocation.postValue(null)
                     paths.postValue(mutableListOf())
                     totalDistance.postValue(0.0f)
+                    pauseWalk.postValue(false)
                 }
                 else -> null
             }
@@ -115,24 +131,35 @@ class WalkService : LifecycleService() {
             }
 
             result.lastLocation.let {
-                if (it.speed <= 0.2f) {
-                    stopCount++
-
-                    if (stopCount == 20) {
-                        isWalking.postValue(false)
-                    }
-
-                    return
-                }
-
-                if (stopCount != 0) {
-                    stopCount = 0
-                }
+                pauseWalkCheck(it)
 
                 currentLocation.postValue(it)
+                if (!isInit) {
+                    isInit = true
+                    startTimer()
+                }
+
                 addLocation(it)
                 updateDistance(it)
             }
+        }
+    }
+
+    private fun pauseWalkCheck(location: Location) {
+        if (location.speed < 0.2f) {
+            if (stopCountJob == null) {
+                stopCountJob = lifecycleScope.launch {
+                    try {
+                        delay(300000L)
+                        isWalking.postValue(false)
+                        pauseWalk.postValue(true)
+                    } finally {
+                        stopCountJob = null
+                    }
+                }
+            }
+        } else {
+            stopCountJob?.cancel()
         }
     }
 
@@ -191,19 +218,20 @@ class WalkService : LifecycleService() {
         var lapTime = 0L
         var lastSecondTimeMillis = currentTime.value * 1000L
 
-        CoroutineScope(Dispatchers.Main).launch {
-            while (isWalking.value) {
-                lapTime = System.currentTimeMillis() - startTime
+        lifecycleScope.launch {
+            try {
+                while (isWalking.value) {
+                    lapTime = System.currentTimeMillis() - startTime
 
-                if (totalTimeMillis + lapTime >= lastSecondTimeMillis + 1000L) {
-                    currentTime.postValue(currentTime.value + 1)
-                    lastSecondTimeMillis += 1000L
+                    if (totalTimeMillis + lapTime >= lastSecondTimeMillis + 1000L) {
+                        currentTime.postValue(currentTime.value + 1)
+                        lastSecondTimeMillis += 1000L
+                    }
+                    delay(500L)
                 }
-
-                delay(500L)
+            } finally {
+                totalTimeMillis += lapTime
             }
-
-            totalTimeMillis += lapTime
         }
     }
 
