@@ -22,9 +22,6 @@
     <string name="menu_course">코스추천</string>
     <string name="menu_mypage">마이페이지</string>
 
-    <!--액션-->
-    <string name="action_startwalk">산책 시작</string>
-
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>
     <string name="msg_calroie_unit">kcal</string>
@@ -40,7 +37,8 @@
 
     <!--에러-->
 
-    <!--제목-->
+    //화면 별
+    <!--실시간 기록-->
     <string name="title_realtime_record">실시간 기록</string>
     <string name="title_walktime">산책시간</string>
     <string name="title_distance">거리</string>
@@ -50,7 +48,6 @@
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
 
-    //화면 별
     <!--로그인-->
     <string name="title_login">로그인</string>
     <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>
@@ -92,6 +89,8 @@
     <string name="title_fri">Fri</string>
     <string name="title_sat">Sat</string>
     <string name="title_sun">Sun</string>
+    <string name="action_startwalk">산책 시작</string>
+
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
@@ -137,6 +136,12 @@
     <!--개별 산책 화면-->
     <string name="msg_no_footprint">산책기록이 없어요!</string>
     <string name="action_all_delete">전체삭제</string>
+
+    <!--마이페이지-->
+    <string name="title_mypage">마이페이지</string>
+
+    <!--코스추천-->
+    <string name="title_course">코스추천</string>
 
     <!--목표 설정 화면-->
     <string name="msg_set_goal">목표를 설정해 주세요</string>

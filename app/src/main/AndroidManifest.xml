@@ -24,9 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Footprint"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".ui.main.calendar.WalkDetailActivity"
-            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -35,6 +32,7 @@
         <!--splash-->
         <activity
             android:name=".ui.signin.SplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +44,11 @@
         <!--signin-->
         <activity
             android:name=".ui.signin.SigninActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -66,21 +66,35 @@
         <!-- onboarding & register -->
         <activity
             android:name=".ui.register.RegisterActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <!-- main & walk & walkafter -->
         <activity
             android:name=".ui.main.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
+
         <activity
             android:name=".ui.walk.WalkAfterActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
+
         <activity
             android:name=".ui.onboarding.OnBoardingActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
+
         <activity
             android:name=".ui.walk.WalkActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
+
+        <!--walkDetail-->
+        <activity
+            android:name=".ui.main.calendar.WalkDetailActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
 
     </application>
 

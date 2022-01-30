@@ -8,10 +8,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/calendar_top_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="90dp"
         android:background="@color/primary"
         android:paddingHorizontal="24dp"
-        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
