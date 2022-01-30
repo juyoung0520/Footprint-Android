@@ -36,7 +36,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun initAfterBinding() {
         //산책 시작 버튼 => Walk Activity
-        binding.homeStartbtnTv.setOnClickListener {
+        binding.homeStartBtn.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }

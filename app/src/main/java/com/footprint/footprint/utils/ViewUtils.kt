@@ -36,11 +36,19 @@ fun convertDpToSp(context: Context, dp: Int): Int {
     return (convertDpToPx(context, dp) / context.resources.displayMetrics.scaledDensity).toInt()
 }
 
-/*Set Height*/
+/*Set Height, Width*/
 fun View.setHeight(value: Int) {
     val lp = layoutParams
     lp?.let {
         lp.height = value
+        layoutParams = lp
+    }
+}
+
+fun View.setWidth(value: Int) {
+    val lp = layoutParams
+    lp?.let {
+        lp.width = value
         layoutParams = lp
     }
 }
@@ -57,6 +65,7 @@ fun fadeIn(view: View) {
             .setListener(null)
     }
 }
+
 
 fun fadeOut(view: View) {
     view.animate()
