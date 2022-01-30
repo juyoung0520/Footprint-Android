@@ -1,6 +1,349 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.register.goal.RegisterGoalFragment">
+
+    <TextView
+        android:id="@+id/goal_setting_set_goal_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/msg_set_goal"
+        android:textAppearance="@style/tv_title_b_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/goal_setting_set_goal_desc_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="14dp"
+        android:text="@string/msg_set_gaol_desc"
+        android:textAppearance="@style/tv_body_b_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_set_goal_tv" />
+
+    <TextView
+        android:id="@+id/goal_setting_goal_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginBottom="92dp"
+        android:text="@string/title_goal_day"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_setting_goal_day_line_view"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/goal_setting_goal_day_rv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/goal_setting_goal_day_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_day_tv"
+        app:layout_constraintVertical_bias="0.4"
+        tools:itemCount="7"
+        tools:listitem="@layout/item_day" />
+
+    <View
+        android:id="@+id/goal_setting_goal_day_line_view"
+        android:layout_width="wrap_content"
+        android:layout_height="7dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <TextView
+        android:id="@+id/goal_setting_goal_walk_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="34dp"
+        android:text="@string/title_goal_walk_time"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_day_line_view" />
+
+    <Button
+        android:id="@+id/goal_setting_goal_walk_time_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/selector_goal_setting_btn"
+        android:drawableRight="@drawable/ic_down_arrow"
+        android:stateListAnimator="@null"
+        android:text="@string/msg_set_goal_time"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@drawable/selector_goal_setting_btn_text"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/goal_setting_goal_walk_time_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_walk_time_tv"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <View
+        android:id="@+id/goal_setting_goal_walk_time_line_view"
+        android:layout_width="wrap_content"
+        android:layout_height="7dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
+
+    <TextView
+        android:id="@+id/goal_setting_walk_time_slot_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="34dp"
+        android:text="@string/title_goal_walk_slot"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_walk_time_line_view" />
+
+    <Button
+        android:id="@+id/goal_setting_walk_slot_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/selector_goal_setting_btn"
+        android:drawableRight="@drawable/ic_down_arrow"
+        android:stateListAnimator="@null"
+        android:text="@string/msg_set_slot"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@drawable/selector_goal_setting_btn_text"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/register_goal_action_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_walk_time_slot_tv"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_goal_action_btn"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/selector_register_action_btn"
+        android:backgroundTint="@null"
+        android:enabled="false"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:stateListAnimator="@null"
+        android:text="@string/action_complete"
+        android:textAppearance="@style/tv_headline_eb_18"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/goal_setting_goal_walk_time_sv"
+        android:layout_width="0dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="4dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_goal_setting_sv_view"
+        android:overScrollMode="never"
+        android:scrollbarSize="4dp"
+        android:scrollbarThumbVertical="@color/white_dark"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/goal_setting_goal_walk_time_btn"
+        app:layout_constraintStart_toStartOf="@+id/goal_setting_goal_walk_time_btn"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_walk_time_btn">
+
+        <RadioGroup
+            android:id="@+id/goal_setting_goal_walk_time_rg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <RadioButton
+                android:id="@+id/goal_setting_15min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_15_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_30min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_30_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_60min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_60_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_90min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_90_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_direct_setting_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_direct_setting"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+        </RadioGroup>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/goal_setting_walk_slot_sv"
+        android:layout_width="0dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="4dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_goal_setting_sv_view"
+        android:overScrollMode="never"
+        android:scrollbarSize="4dp"
+        android:scrollbarThumbVertical="@color/white_dark"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/goal_setting_walk_slot_btn"
+        app:layout_constraintStart_toStartOf="@+id/goal_setting_walk_slot_btn"
+        app:layout_constraintTop_toBottomOf="@+id/goal_setting_walk_slot_btn">
+
+        <RadioGroup
+            android:id="@+id/goal_setting_walk_slot_rg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <RadioButton
+                android:id="@+id/goal_setting_early_morning_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_early_morning"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_late_morning_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_late_morning"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_early_afternoon_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_early_afternoon"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_late_afternoon_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_late_afternoon"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_night_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_night"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_dawn_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_dawn"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_setting_different_every_time_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_different_every_time"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+        </RadioGroup>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

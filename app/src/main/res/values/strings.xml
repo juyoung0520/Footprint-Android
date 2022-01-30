@@ -14,6 +14,7 @@
     <string name="action_delete">삭제</string>
     <string name="action_confirm">확인</string>
     <string name="action_next">다음</string>
+    <string name="action_complete">완료</string>
 
     <!--메뉴-->
     <string name="menu_home">홈</string>
@@ -93,6 +94,9 @@
     <string name="title_sun">Sun</string>
 
     <!--다이얼로그 프래그먼트-->
+    <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
+    <string name="title_hour">시간</string>
+    <string name="title_minute">분</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -101,6 +105,7 @@
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
+    <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
@@ -132,4 +137,32 @@
     <!--개별 산책 화면-->
     <string name="msg_no_footprint">산책기록이 없어요!</string>
     <string name="action_all_delete">전체삭제</string>
+
+    <!--목표 설정 화면-->
+    <string name="msg_set_goal">목표를 설정해 주세요</string>
+    <string name="msg_set_gaol_desc">월 기준으로 목표를 설정할 수 있어요</string>
+    <string name="title_goal_day">목표 요일</string>
+    <string name="title_mon_kr">월</string>
+    <string name="title_tue_kr">화</string>
+    <string name="title_wed_kr">수</string>
+    <string name="title_thu_kr">목</string>
+    <string name="title_fri_kr">금</string>
+    <string name="title_sat_kr">토</string>
+    <string name="title_sun_kr">일</string>
+    <string name="title_goal_walk_time">목표 산책 시간</string>
+    <string name="msg_set_goal_time">목표시간을 선택해 주세요</string>
+    <string name="title_goal_walk_slot">산책 시간대</string>
+    <string name="msg_set_slot">시간대를 선택해 주세요</string>
+    <string name="title_15_min">15분</string>
+    <string name="title_30_min">30분</string>
+    <string name="title_60_min">1시간</string>
+    <string name="title_90_min">1시간반</string>
+    <string name="title_direct_setting">직접설정</string>
+    <string name="title_early_morning">이른 오전(5-8)</string>
+    <string name="title_late_morning">늦은 오전(9-12)</string>
+    <string name="title_early_afternoon">이른 오후(13-16)</string>
+    <string name="title_late_afternoon">늦은 오후(17-20)</string>
+    <string name="title_night">밤(21-0)</string>
+    <string name="title_dawn">새벽(1-4)</string>
+    <string name="title_different_every_time">매번 다름</string>
 </resources>

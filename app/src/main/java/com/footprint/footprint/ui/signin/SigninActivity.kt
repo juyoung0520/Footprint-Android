@@ -1,11 +1,7 @@
 package com.footprint.footprint.ui.signin
 
-import android.R.id
-import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.footprint.footprint.databinding.ActivitySigninBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -19,25 +15,22 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.footprint.footprint.data.model.User
+import com.footprint.footprint.data.model.UserModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import android.R.id.text1
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.footprint.footprint.R
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
-import gun0912.tedimagepicker.util.ToastUtil.context
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate) {
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = -1
-    private lateinit var newUser: User
+    private lateinit var newUser: UserModel
 
     override fun initAfterBinding() {
         //카카오 로그인
@@ -51,9 +44,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
 
-        //다음에 로그인 할래요
+        //다음에 로그인 할래요 -> RegisterActivity 로 이동
         binding.signinNologinTv.setOnClickListener {
-            this.startNextActivity(MainActivity::class.java)
+            this.startNextActivity(RegisterActivity::class.java)
             finish()
         }
     }
@@ -101,7 +94,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     private fun signupKakao(token: String) {
         //1. User 정보 저장: token
-        newUser = User(token)
+        newUser = UserModel(token)
 
         //2. SPF에 로그인 상태 저장
         saveSpf("kakao")
@@ -141,7 +134,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             val useremail = account?.email.toString()
             val idToken = account.idToken.toString()
 
-            newUser = User(idToken)
+            newUser = UserModel(idToken)
 
             Log.d("GOOGLE/ACCOUNT", "username: ${username} useremail: ${useremail}")
             Log.d("GOOGLE/USER", newUser.toString())
@@ -166,8 +159,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val loginStatus = getLoginStatus(this)
         Log.d("SIGNUP/SPF-SUCCESS", "Token: ${token} LoginStatus: ${loginStatus}")
     }
+
     //회원 확인 요청 API
-    private fun isExistUser(){
+    private fun isExistUser() {
         /*서버에 존재하는 회원인지?*/
 
         //O-> MainActivity
@@ -176,6 +170,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //X-> RegisterActivity
         startRegisterActivity()
     }
+
     //Register Activity
     private fun startRegisterActivity() {
         val intent = Intent(this, RegisterActivity::class.java)
