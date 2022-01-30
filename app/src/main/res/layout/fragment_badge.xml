@@ -9,10 +9,8 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/badge_tb"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="90dp"
         android:background="@color/primary"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -30,12 +28,13 @@
         android:id="@+id/badge_achievement_badge_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:text="@string/title_achievement_badge"
         android:textAppearance="@style/tv_headline_eb_16"
         app:layout_constraintBottom_toBottomOf="@+id/badge_tb"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/badge_tb"
+        app:layout_constraintStart_toStartOf="@+id/badge_tb"
+        app:layout_constraintTop_toTopOf="@+id/badge_tb"
+        app:layout_constraintVertical_bias="0.72" />
 
     <View
         android:id="@+id/badge_representative_badge_view"
