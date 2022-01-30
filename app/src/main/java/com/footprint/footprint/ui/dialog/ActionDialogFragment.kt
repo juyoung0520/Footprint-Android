@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentActionDialogBinding
@@ -70,13 +71,42 @@ class ActionDialogFragment() : DialogFragment() {
                 "저장"
             getString(R.string.msg_change_representative_badge) -> binding.walkDialogActionTv.text =
                 getString(R.string.action_set)
+            getString(R.string.msg_logout) -> binding.walkDialogActionTv.text =
+                getString(R.string.title_logout)
+            getString(R.string.msg_withdrawal) -> binding.walkDialogActionTv.text =
+                getString(R.string.action_withdrawal)
         }
 
-        if (msg.contains("산책' 을 삭제하시겠어요?")) {
-            binding.walkDialogDescTv.visibility = View.VISIBLE
-            binding.walkDialogDescTv.text = "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요"
-        } else
-            binding.walkDialogDescTv.visibility = View.GONE
+        when {
+            msg.contains("산책' 을 삭제하시겠어요?") -> {
+                binding.walkDialogDescTv.text = "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요"
+                binding.walkDialogDescTv.visibility = View.VISIBLE
+            }
+            msg == getString(R.string.msg_logout) -> {
+                binding.walkDialogDescTv.text = getString(R.string.msg_logout_desc)
+                binding.walkDialogDescTv.visibility = View.VISIBLE
+            }
+            msg == getString(R.string.msg_withdrawal) -> {
+                binding.walkDialogDescTv.text = getString(R.string.msg_withdrawal_desc)
+                binding.walkDialogDescTv.visibility = View.VISIBLE
+
+                binding.walkDialogCancelTv.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.primary
+                    )
+                )
+                binding.walkDialogActionTv.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.black_dark
+                    )
+                )
+            }
+            else -> {
+                binding.walkDialogDescTv.visibility = View.GONE
+            }
+        }
     }
 
     private fun setMyClickListener() {
