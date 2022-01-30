@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.mypage.BadgeFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/badge_tb"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/badge_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_achievement_badge_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/badge_achievement_badge_tv" />
+
+    <TextView
+        android:id="@+id/badge_achievement_badge_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_achievement_badge"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_tb"
+        app:layout_constraintEnd_toEndOf="@+id/badge_tb"
+        app:layout_constraintStart_toStartOf="@+id/badge_tb"
+        app:layout_constraintTop_toTopOf="@+id/badge_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <View
+        android:id="@+id/badge_representative_badge_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/primary_light_30"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/badge_tb" />
+
+    <ImageView
+        android:id="@+id/badge_representative_badge_bg_iv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_trapezoid_gradation"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_representative_badge_view"
+        app:layout_constraintEnd_toEndOf="@+id/badge_representative_badge_view"
+        app:layout_constraintStart_toStartOf="@+id/badge_representative_badge_view"
+        app:layout_constraintTop_toTopOf="@+id/badge_representative_badge_view" />
+
+    <View
+        android:id="@+id/badge_representative_badge_tv_view"
+        android:layout_width="100dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/bg_badge_representative_badge_round_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/badge_representative_badge_view" />
+
+    <ImageView
+        android:id="@+id/badge_medal_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_medal"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_representative_badge_tv_view"
+        app:layout_constraintEnd_toStartOf="@+id/badge_representative_badge_tv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/badge_representative_badge_tv_view"
+        app:layout_constraintTop_toTopOf="@+id/badge_representative_badge_tv_view" />
+
+    <TextView
+        android:id="@+id/badge_representative_badge_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_representative_badge"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        android:textColor="@color/white_light"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_representative_badge_tv_view"
+        app:layout_constraintEnd_toEndOf="@+id/badge_representative_badge_tv_view"
+        app:layout_constraintStart_toEndOf="@+id/badge_medal_iv"
+        app:layout_constraintTop_toTopOf="@+id/badge_representative_badge_tv_view" />
+
+    <ImageView
+        android:id="@+id/badge_representative_badge_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="13dp"
+        android:src="@drawable/ic_badge_202201_pro"
+        app:layout_constraintBottom_toTopOf="@+id/badge_representative_badge_name_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/badge_representative_badge_tv_view" />
+
+    <TextView
+        android:id="@+id/badge_representative_badge_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:text="발자국 스타터"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_representative_badge_view"
+        app:layout_constraintEnd_toEndOf="@+id/badge_representative_badge_view"
+        app:layout_constraintStart_toStartOf="@+id/badge_representative_badge_view" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/badge_badge_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="15dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/badge_representative_badge_view"
+        app:spanCount="3"
+        tools:itemCount="19"
+        tools:listitem="@layout/item_badge" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

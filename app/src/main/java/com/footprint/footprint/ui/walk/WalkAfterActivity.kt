@@ -62,17 +62,13 @@ class WalkAfterActivity :
         actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun finish(isFinished: Boolean) {
-                if (isFinished)
+
+            override fun action1(isAction: Boolean) {
+                if (isAction)
                     finish()
             }
 
-            override fun save(isSaved: Boolean) {
-                if (isSaved)
-                    finish()
-            }
-
-            override fun delete(isDelete: Boolean) {
+            override fun action2(isAction: Boolean) {
             }
         })
     }

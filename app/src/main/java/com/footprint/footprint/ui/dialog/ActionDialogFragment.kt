@@ -20,9 +20,8 @@ class ActionDialogFragment() : DialogFragment() {
 
     //다이얼로그 콜백 인터페이스
     interface MyDialogCallback {
-        fun finish(isFinished: Boolean)
-        fun save(isSaved: Boolean)
-        fun delete(isDelete: Boolean)
+        fun action1(isAction: Boolean)
+        fun action2(isAction: Boolean)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +68,8 @@ class ActionDialogFragment() : DialogFragment() {
                 "삭제"
             getString(R.string.msg_save_post), getString(R.string.msg_save_walk) -> binding.walkDialogActionTv.text =
                 "저장"
+            getString(R.string.msg_change_representative_badge) -> binding.walkDialogActionTv.text =
+                getString(R.string.action_set)
         }
 
         if (msg.contains("산책' 을 삭제하시겠어요?")) {
@@ -82,16 +83,8 @@ class ActionDialogFragment() : DialogFragment() {
         //취소 텍스트뷰 클릭 리스너
         binding.walkDialogCancelTv.setOnClickListener {
             when (msg) {
-                //실시간 기록을 중지할까요? or ‘OO번째 산책’ 작성을 취소할까요? 일 경우 -> 중단하지 않는다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_stop_realtime_record), getString(R.string.msg_stop_walk) -> myDialogCallback.finish(
-                    false
-                )
-                //‘OO번째 발자국’을 저장할까요? 일 경우 -> 저장하지 않는다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_save_walk) -> myDialogCallback.save(false)
-                //해당 발자국을 삭제할까요? 일 경우 -> 삭제하지 않는다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> myDialogCallback.delete(
-                    false
-                )
+                getString(R.string.msg_delete_footprint) -> myDialogCallback.action2(false)
+                else -> myDialogCallback.action1(false)
             }
 
             dismiss()
@@ -100,16 +93,8 @@ class ActionDialogFragment() : DialogFragment() {
         //액션 텍스트뷰(중지, 저장, 삭제 등) 클릭 리스너
         binding.walkDialogActionTv.setOnClickListener {
             when (msg) {
-                //실시간 기록을 중지할까요? or ‘OO번째 산책’ 작성을 취소할까요? 일 경우 -> 중단한다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_stop_realtime_record), getString(R.string.msg_stop_walk) -> myDialogCallback.finish(
-                    true
-                )
-                //‘OO번째 발자국’을 저장할까요? 일 경우 -> 저장한다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_save_walk) -> myDialogCallback.save(true)
-                //해당 발자국을 삭제할까요? 일 경우 -> 삭제한다는 데이터를 이전 화면에 전달
-                getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> myDialogCallback.delete(
-                    true
-                )
+                getString(R.string.msg_delete_footprint) -> myDialogCallback.action2(true)
+                else -> myDialogCallback.action1(true)
             }
 
             dismiss()

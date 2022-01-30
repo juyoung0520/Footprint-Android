@@ -18,17 +18,16 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
 
             actionDialogFragment.show(supportFragmentManager, null)
 
-            actionDialogFragment.setMyDialogCallback(object: ActionDialogFragment.MyDialogCallback {
+            actionDialogFragment.setMyDialogCallback(object :
+                ActionDialogFragment.MyDialogCallback {
+
                 //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
-                override fun finish(isFinished: Boolean) {
-                    if (isFinished)
+                override fun action1(isAction: Boolean) {
+                    if (isAction)
                         finish()
                 }
 
-                override fun save(isSaved: Boolean) {
-                }
-
-                override fun delete(isDelete: Boolean) {
+                override fun action2(isAction: Boolean) {
                 }
             })
         }

@@ -76,17 +76,15 @@ class WalkDetailActivity :
     private fun setActionDialog() {
         actionDialogFragment = ActionDialogFragment()
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun finish(isFinished: Boolean) {
-            }
 
-            override fun save(isSaved: Boolean) {
-            }
-
-            override fun delete(isDelete: Boolean) {
-                if (isDelete) {
+            override fun action1(isAction: Boolean) {
+                if (isAction) {
                     showToast("전체 삭제 완료")
                     finish()
                 }
+            }
+
+            override fun action2(isAction: Boolean) {
             }
 
         })
