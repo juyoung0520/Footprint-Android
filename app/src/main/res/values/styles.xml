@@ -11,10 +11,14 @@
         <item name="android:textSize">40dp</item>
     </style>
 
+    <style name="tv_headline_eb_28" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">28dp</item>
+    </style>
+
     <style name="tv_headline_eb_24" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_extra_bold</item>
         <item name="android:textSize">24dp</item>
-        <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <style name="tv_headline_eb_20" parent="TextAppearance.AppCompat">
@@ -51,7 +55,6 @@
     <style name="tv_title_b_24" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround_bold</item>
         <item name="android:textSize">24dp</item>
-        <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <style name="tv_subtitle_b_18" parent="TextAppearance.AppCompat">
@@ -99,13 +102,11 @@
     <style name="tv_caption_12" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">12dp</item>
-        <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <style name="tv_overline_10" parent="TextAppearance.AppCompat">
         <item name="fontFamily">@font/namusquareround</item>
         <item name="android:textSize">10dp</item>
-        <item name="android:textColor">@color/black_dark</item>
     </style>
 
     <!--목표 설정 NumberPicker style-->

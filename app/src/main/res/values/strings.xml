@@ -188,6 +188,15 @@
     <string name="title_night">밤(21-0)</string>
     <string name="title_dawn">새벽(1-4)</string>
     <string name="title_different_every_time">매번 다름</string>
+    
+    <!--마이페이지-->
+    <string name="msg_nick_name_unit">님</string>
+    <string name="msg_today">오늘</string>
+    <string name="msg_this_month">이번달</string>
+    <string name="title_this_month_goal">이번달 목표</string>
+    <string name="msg_walk_count">삭책 횟수</string>
+    <string name="title_statistics">통계</string>
+    <string name="msg_last_three_month">*이전 3달 기준</string>
 
     <!--뱃지-->
     <string name="title_achievement_badge">달성 뱃지</string>
