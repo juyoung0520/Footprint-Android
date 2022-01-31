@@ -9,6 +9,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
@@ -64,8 +65,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun initTB() {
         val tbTitle = arrayListOf("일별", "월별")
         val homeVPAdapter = HomeViewpagerAdapter(this)
+        binding.homeDaymonthVp.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.homeDaymonthVp.adapter = homeVPAdapter
-
         TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
             tab.text = tbTitle[position]
         }.attach()

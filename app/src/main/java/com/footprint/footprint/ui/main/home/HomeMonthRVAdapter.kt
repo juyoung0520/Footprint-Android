@@ -9,8 +9,20 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import java.util.*
 
-class HomeMonthRVAdapter(private val dataList: ArrayList<Int>, private val today: Int, private val firstDateIdx: Int, private val lastDateIdx: Int, private val margin:Int) :
+class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, private val vpAreaPx: Int) :
     RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
+
+    private var dataList: ArrayList<Int> = arrayListOf()
+    private var weeks: Int = 0
+
+    //커스텀 캘린더 클래스를 이용하여 날짜 세팅
+    private var homemonthCalendar: HomeMonthCalendar = HomeMonthCalendar(date)
+    init{
+        homemonthCalendar.initBaseCalendar() //init 후
+        dataList = homemonthCalendar.dateList //datelist -> datalist에 전달
+        weeks = homemonthCalendar.weeks
+    }
+
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
@@ -25,11 +37,11 @@ class HomeMonthRVAdapter(private val dataList: ArrayList<Int>, private val today
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
 
-        if(position < 7){
-            params.topMargin = margin/6
-        }else{
-            params.topMargin = margin/4
-        }
+        val itemWidthPx = widthPx / 7 // Device Width(dp) - 양 옆 마진(30*2) / 7(일~토)
+        val itemHeightPx = vpAreaPx / weeks
+
+        params.width = itemWidthPx
+        params.height = itemHeightPx
 
         holder.itemView.layoutParams = params
         holder.itemView.requestApplyInsets()
@@ -42,11 +54,15 @@ class HomeMonthRVAdapter(private val dataList: ArrayList<Int>, private val today
     inner class ViewHolder(val binding: ItemHomeMonthBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Int, position: Int) {
+            //첫날, 마지막날 세팅
+            val firstDateIndex = homemonthCalendar.prevTail
+            val lastDateIndex = dataList.size - homemonthCalendar.nextHead - 1
+
             binding.itemHomeMonthDayTv.text = data.toString()
 
             /*스타일*/
             // 오늘 날짜 bold체로
-            var dateInt = today
+            val  dateInt = date.date
             if (dataList[position] == dateInt) {
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
             }
@@ -58,7 +74,7 @@ class HomeMonthRVAdapter(private val dataList: ArrayList<Int>, private val today
             }
 
             // 현재 월의 1일 이전, 현재 월의 마지막일 이후 값의 텍스트를 회색처리
-            if (position < firstDateIdx || position > lastDateIdx) {
+            if (position < firstDateIndex || position > lastDateIndex) {
                 binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#E1E2E1"))
                 binding.itemHomeMonthDayTv.background = null
                 binding.itemHomeMonthDayPb.visibility = View.GONE

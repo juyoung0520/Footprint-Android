@@ -9,8 +9,6 @@ import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import android.view.View.OnFocusChangeListener
 import com.footprint.footprint.data.model.UserModel
-import com.skydoves.balloon.*
-import com.footprint.footprint.data.model.User
 import java.lang.Integer.parseInt
 import android.view.View
 import android.view.animation.Animation
