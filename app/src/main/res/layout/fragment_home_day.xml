@@ -4,23 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
         <com.dinuscxj.progressbar.CircleProgressBar
             android:id="@+id/home_day_pb"
             android:layout_width="200dp"
             android:layout_height="200dp"
 
+            android:layout_marginTop="-24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
 
             app:progress_end_color="@color/secondary"
             app:progress_start_color="@color/secondary"
@@ -29,7 +22,6 @@
             app:progress_stroke_width="17dp"
             app:progress_text_color="#ffffff"
             app:style="solid_line" />
-
         <ImageView
             android:layout_width="166dp"
             android:layout_height="166dp"
@@ -43,7 +35,6 @@
             app:layout_constraintStart_toStartOf="@id/home_day_pb"
             app:layout_constraintTop_toTopOf="@id/home_day_pb"
             app:layout_constraintVertical_bias="0.47" />
-
         <TextView
             android:id="@+id/home_day_progress_title_tv"
             style="@style/tv_body_b_12"
@@ -54,7 +45,6 @@
             app:layout_constraintBottom_toTopOf="@id/home_day_progress_tv"
             app:layout_constraintEnd_toEndOf="@id/home_day_progress_tv"
             app:layout_constraintStart_toStartOf="@id/home_day_progress_tv" />
-
         <TextView
             android:id="@+id/home_day_progress_tv"
             style="@style/tv_headline_eb_40"
@@ -69,16 +59,16 @@
             app:layout_constraintStart_toStartOf="@id/home_day_pb"
             app:layout_constraintTop_toTopOf="@id/home_day_pb" />
 
-        //오늘 목표
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/home_day_goal_layout"
             android:layout_width="105dp"
             android:layout_height="24dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/bg_grayround"
+            app:layout_constraintVertical_bias="0.4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_day_pb">
+            app:layout_constraintTop_toBottomOf="@id/home_day_pb"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/home_day_goal_title_tv"
@@ -114,8 +104,5 @@
                 app:layout_constraintStart_toEndOf="@id/home_day_goal_tv"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

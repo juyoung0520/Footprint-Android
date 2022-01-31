@@ -22,10 +22,11 @@ class HomeMonthFragment :
         val widthPx = getDeviceWidth() - convertDpToPx(requireContext(), 60) //넓이 - 양 옆 마진(30*2)
         val heightPx = getDeviceHeight()
         val vpAreaPx = heightPx * 0.5 - convertDpToPx(requireContext(), 47 + 14 + 60 + 5) //VP 넓이 - (TB 높이 + 요일 title 높이 + topMargin)
+        val itemMaxPx = convertDpToPx(requireContext(), 32)
 
         //리사이클러뷰 어댑터 연결
         var calRVAdapter =
-            HomeMonthRVAdapter(nowDate, widthPx, vpAreaPx.toInt())
+            HomeMonthRVAdapter(nowDate, widthPx, vpAreaPx.toInt(), itemMaxPx)
         binding.homeMonthCalRv.adapter = calRVAdapter
         binding.homeMonthCalRv.layoutManager =
             GridLayoutManager(context, 7, LinearLayoutManager.VERTICAL, false)

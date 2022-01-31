@@ -47,21 +47,15 @@ class RegisterInfoFragment() :
 
         /*버튼 활성화 & 눌렀을 때*/
         binding.registerInfoActionBtn.setOnClickListener {
-
-            //Nickname Validation => O
-            //Gender Validation   => O
-
             //Birth Validation
             val validatedBirth = birthValidation()
 
             //Height & Weight
-            if (binding.registerInfoHeightEt.text.toString() != "") newUser.height =
-                binding.registerInfoHeightEt.text.toString().toInt()
-            if (binding.registerInfoWeightEt.text.toString() != "") newUser.weight =
-                binding.registerInfoWeightEt.text.toString().toInt()
+            val validateHeight = heightValidation()
+            val validateWeight = weightValidation()
 
             //ok -> 목표 프래그먼트 데이터 전달
-            if (validatedBirth) {
+            if (validatedBirth && validateHeight && validateWeight) {
                 Log.d("REGISTER-INFO/USER", newUser.toString())
                 (activity as RegisterActivity).changeNextFragment(newUser)
             }
@@ -255,14 +249,14 @@ class RegisterInfoFragment() :
     private fun birthValidation(): Boolean {
         animation = AnimationUtils.loadAnimation(activity, R.anim.shake)
         val nowDate = LocalDate.now(ZoneId.of("Asia/Seoul"))
-        val THIS_YEAR = nowDate.year
+        val thisYear = nowDate.year
+        val results = arrayOf(0, 0, 0)
 
         val yearEt = binding.registerInfoBirthYearEt
         var year: Int? = null
-        var results = arrayOf(0, 0, 0)
         if (yearEt.text.isNotEmpty()) {
             year = parseInt(yearEt.text.toString())
-            if (year !in 1900 until THIS_YEAR) {
+            if (year !in 1900 until thisYear) {
                 yearEt.startAnimation(animation)
                 yearEt.requestFocus()
                 yearEt.backgroundTintList =
@@ -319,21 +313,21 @@ class RegisterInfoFragment() :
         //하나라도 입력이 안됨!
         if (year == null) {
             yearEt.startAnimation(animation)
-            yearEt.requestFocus()
+            //yearEt.requestFocus()
             yearEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.secondary))
         }
         if (month == null) {
             monthEt.startAnimation(animation)
-            monthEt.requestFocus()
+            //monthEt.requestFocus()
             monthEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.secondary))
         }
         if (day == null) {
             dayEt.startAnimation(animation)
-            monthEt.requestFocus()
+            //dayEt.requestFocus()
             dayEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.secondary))
@@ -362,6 +356,27 @@ class RegisterInfoFragment() :
         }
     }
 
+    private fun heightValidation(): Boolean {
+        if (binding.registerInfoHeightEt.text.isNotEmpty()) {
+            //값 O
+            val height = binding.registerInfoHeightEt.text.toString().toInt()
+            if (height !in 100..250) {
+                binding.registerInfoHeightEt.startAnimation(animation)
+                binding.registerInfoHeightEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.secondary))
+                binding.registerInfoHeightUnitTv.setTextColor(resources.getColor(R.color.secondary))
+                return false
+            } else {
+                newUser.height = height
+                return true
+            }
+        } else {
+            //값 X
+            newUser.height = null
+            return true
+        }
+    }
+
     /*Weight: Focus*/
     private fun weightEt() {
         val weightEt = binding.registerInfoWeightEt
@@ -384,6 +399,24 @@ class RegisterInfoFragment() :
         }
     }
 
+    private fun weightValidation(): Boolean {
+        if (binding.registerInfoWeightEt.text.isNotEmpty()) {
+            val weight = binding.registerInfoWeightEt.text.toString().toInt()
+            if (weight !in 30..200) {
+                binding.registerInfoWeightEt.startAnimation(animation)
+                binding.registerInfoWeightEt.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.secondary))
+                binding.registerInfoWeightUnitTv.setTextColor(resources.getColor(R.color.secondary))
+                return false
+            } else {
+                newUser.weight = weight
+                return true
+            }
+        } else {
+            newUser.weight = null
+            return true
+        }
+    }
 
     /*Tooltip*/
     private fun setHelpBallon() {
@@ -416,20 +449,20 @@ class RegisterInfoFragment() :
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
             onShowKeyboard = {
                 Log.d("KEYBOARD", "UP")
-               keyboardStatus = true
-                if(balloon.isShowing) balloon.dismiss()
+                keyboardStatus = true
+                if (balloon.isShowing) balloon.dismiss()
             },
             onHideKeyboard = {
                 Log.d("KEYBOARD", "DOWN")
                 keyboardStatus = false
-                if(balloon.isShowing) balloon.dismiss()
+                if (balloon.isShowing) balloon.dismiss()
             }
         )
 
         //키보드 올라갔을 때만 툴팁 띄우기 (임시)
         binding.registerInfoWeightHelpIv.setOnClickListener {
-            if(!keyboardStatus)
-                binding.registerInfoWeightHelpIv.showAlignTop(balloon,xoff, -5)
+            if (!keyboardStatus)
+                binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
         }
 
         //말풍선 클릭 시 => 사라짐

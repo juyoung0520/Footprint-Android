@@ -9,7 +9,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import java.util.*
 
-class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, private val vpAreaPx: Int) :
+class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, private val vpAreaPx: Int, private val itemMaxPx: Int) :
     RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
 
     private var dataList: ArrayList<Int> = arrayListOf()
@@ -37,8 +37,10 @@ class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, priva
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
 
-        val itemWidthPx = widthPx / 7 // Device Width(dp) - 양 옆 마진(30*2) / 7(일~토)
-        val itemHeightPx = vpAreaPx / weeks
+        var itemWidthPx = widthPx / 7 // Device Width(dp) - 양 옆 마진(30*2) / 7(일~토)
+        var itemHeightPx = vpAreaPx / weeks
+        if(itemWidthPx <= itemMaxPx) itemWidthPx = itemMaxPx + 2
+        if(itemHeightPx <= itemMaxPx) itemHeightPx = itemMaxPx + 2
 
         params.width = itemWidthPx
         params.height = itemHeightPx
@@ -63,7 +65,7 @@ class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, priva
             /*스타일*/
             // 오늘 날짜 bold체로
             val  dateInt = date.date
-            if (dataList[position] == dateInt) {
+            if ((position in firstDateIndex .. lastDateIndex) && dataList[position] == dateInt) {
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
             }
 
