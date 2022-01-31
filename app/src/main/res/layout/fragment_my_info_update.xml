@@ -7,56 +7,56 @@
     tools:context=".ui.setting.MyInfoFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/my_info_tb"
+        android:id="@+id/my_info_update_tb"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@color/primary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/my_info_back_iv"
+        android:id="@+id/my_info_update_back_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:src="@drawable/ic_back"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_title_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_title_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/my_info_title_tv" />
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_title_tv" />
 
     <TextView
-        android:id="@+id/my_info_title_tv"
+        android:id="@+id/my_info_update_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_my_info"
         android:textAppearance="@style/tv_headline_eb_16"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_tb"
-        app:layout_constraintEnd_toEndOf="@+id/my_info_tb"
-        app:layout_constraintStart_toStartOf="@+id/my_info_tb"
-        app:layout_constraintTop_toTopOf="@+id/my_info_tb"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_tb"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_tb"
+        app:layout_constraintStart_toStartOf="@+id/my_info_update_tb"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_tb"
         app:layout_constraintVertical_bias="0.72" />
 
     <TextView
-        android:id="@+id/my_info_update_tv"
+        android:id="@+id/my_info_update_save_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:text="@string/action_update"
+        android:text="@string/action_save"
         android:textAppearance="@style/tv_headline_eb_16"
         android:textColor="@color/white_light"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_title_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_title_tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/my_info_title_tv" />
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_title_tv" />
 
     <TextView
-        android:id="@+id/my_info_nickname_title_tv"
+        android:id="@+id/my_info_update_nickname_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
         android:text="@string/title_register_info_nickname"
         android:textAppearance="@style/tv_headline_eb_16"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_line_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_tb"
         app:layout_constraintVertical_bias="0.15" />
 
     <TextView
@@ -65,32 +65,50 @@
         android:text="@string/msg_asterisk"
         android:textAppearance="@style/tv_subtitle_b_16"
         android:textColor="@color/primary"
-        app:layout_constraintStart_toEndOf="@+id/my_info_nickname_title_tv"
-        app:layout_constraintTop_toTopOf="@+id/my_info_nickname_title_tv" />
+        app:layout_constraintStart_toEndOf="@+id/my_info_update_nickname_title_tv"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_nickname_title_tv" />
 
     <EditText
-        android:id="@+id/my_info_nickname_et"
+        android:id="@+id/my_info_update_nickname_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="37dp"
         android:layout_marginTop="27dp"
-        android:background="@drawable/bg_my_info_et_primary"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_nickname_hint"
+        android:includeFontPadding="true"
+        android:inputType="textPersonName"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/my_info_nickname_title_tv" />
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintTop_toBottomOf="@id/my_info_update_nickname_title_tv" />
 
     <TextView
-        android:id="@+id/my_info_gender_title_tv"
+        android:id="@+id/my_info_update_nickname_error_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/error_register_info_nickname"
+        android:textAppearance="@style/tv_button_b_10"
+        android:textColor="@color/secondary"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_nickname_et"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_nickname_et" />
+
+    <TextView
+        android:id="@+id/my_info_update_gender_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
         android:text="@string/title_register_info_gender"
         android:textAppearance="@style/tv_headline_eb_16"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_line_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_tb"
         app:layout_constraintVertical_bias="0.62" />
 
     <TextView
@@ -99,24 +117,24 @@
         android:text="@string/msg_asterisk"
         android:textAppearance="@style/tv_subtitle_b_16"
         android:textColor="@color/primary"
-        app:layout_constraintStart_toEndOf="@+id/my_info_gender_title_tv"
-        app:layout_constraintTop_toTopOf="@+id/my_info_gender_title_tv" />
+        app:layout_constraintStart_toEndOf="@+id/my_info_update_gender_title_tv"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_gender_title_tv" />
 
     <RadioGroup
-        android:id="@+id/my_info_gender_rg"
+        android:id="@+id/my_info_update_gender_rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="44dp"
         android:layout_marginStart="22dp"
         android:layout_marginTop="22dp"
-        android:layout_marginEnd="44dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_gender_title_tv">
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_gender_title_tv">
 
         <RadioButton
-            android:id="@+id/my_info_gender_female_rb"
+            android:id="@+id/my_info_update_gender_female_rb"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_weight="0.5"
@@ -124,14 +142,13 @@
             android:button="@null"
             android:drawableEnd="@drawable/btn_radiobtn"
             android:drawablePadding="4dp"
-            android:enabled="false"
             android:text="@string/title_register_info_gender_f"
             android:textAlignment="textEnd"
             android:textAppearance="@style/tv_body_b_14"
             android:textColor="@color/black" />
 
         <RadioButton
-            android:id="@+id/my_info_gender_male_rb"
+            android:id="@+id/my_info_update_gender_male_rb"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_weight="2"
@@ -139,14 +156,13 @@
             android:button="@null"
             android:drawableEnd="@drawable/btn_radiobtn"
             android:drawablePadding="4dp"
-            android:enabled="false"
             android:text="@string/title_register_info_gender_m"
             android:textAlignment="textEnd"
             android:textAppearance="@style/tv_body_b_14"
             android:textColor="@color/black" />
 
         <RadioButton
-            android:id="@+id/my_info_gender_none_rb"
+            android:id="@+id/my_info_update_gender_none_rb"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_weight="3"
@@ -154,7 +170,6 @@
             android:button="@null"
             android:drawableEnd="@drawable/btn_radiobtn"
             android:drawablePadding="4dp"
-            android:enabled="false"
             android:text="@string/title_register_info_gender_n"
             android:textAlignment="textEnd"
             android:textAppearance="@style/tv_body_b_14"
@@ -162,16 +177,16 @@
     </RadioGroup>
 
     <View
-        android:id="@+id/my_info_line_view"
+        android:id="@+id/my_info_update_line_view"
         android:layout_width="match_parent"
         android:layout_height="7dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_tb"
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
-        android:id="@+id/my_info_birth_title_tv"
+        android:id="@+id/my_info_update_birth_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
@@ -179,88 +194,106 @@
         android:textAppearance="@style/tv_headline_eb_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_line_view"
         app:layout_constraintVertical_bias="0.1" />
 
     <EditText
-        android:id="@+id/my_info_birth_year_et"
+        android:id="@+id/my_info_update_birth_year_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
         android:layout_marginTop="27dp"
         android:layout_marginEnd="9dp"
-        android:background="@drawable/selector_my_info_et"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et_null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_birth_year_hint"
+        android:inputType="number"
+        android:maxLength="4"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/my_info_birth_month_et"
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_update_birth_month_et"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_birth_title_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_birth_title_tv" />
 
     <TextView
-        android:id="@+id/my_info_birth_year_unit_tv"
+        android:id="@+id/my_info_update_birth_year_unit_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_year_unit"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="@+id/my_info_birth_year_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_birth_year_et" />
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_birth_year_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_birth_year_et" />
 
     <EditText
-        android:id="@+id/my_info_birth_month_et"
+        android:id="@+id/my_info_update_birth_month_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="9dp"
-        android:background="@drawable/selector_my_info_et"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et_null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_birth_month_hint"
+        android:inputType="number"
+        android:maxLength="2"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_birth_year_et"
-        app:layout_constraintEnd_toStartOf="@+id/my_info_birth_day_et"
-        app:layout_constraintStart_toEndOf="@+id/my_info_birth_year_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_birth_year_et" />
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_birth_year_et"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_update_birth_day_et"
+        app:layout_constraintStart_toEndOf="@+id/my_info_update_birth_year_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_birth_year_et" />
 
     <TextView
-        android:id="@+id/my_info_birth_month_unit_tv"
+        android:id="@+id/my_info_birth_update_month_unit_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_month_unit"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="@id/my_info_birth_month_et"
-        app:layout_constraintTop_toTopOf="@id/my_info_birth_month_et" />
+        app:layout_constraintEnd_toEndOf="@id/my_info_update_birth_month_et"
+        app:layout_constraintTop_toTopOf="@id/my_info_update_birth_month_et" />
 
     <EditText
-        android:id="@+id/my_info_birth_day_et"
+        android:id="@+id/my_info_update_birth_day_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="9dp"
         android:layout_marginEnd="37dp"
-        android:background="@drawable/selector_my_info_et"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et_null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_birth_day_hint"
+        android:inputType="number"
+        android:maxLength="2"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_birth_month_et"
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_birth_month_et"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/my_info_birth_month_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_birth_month_et" />
+        app:layout_constraintStart_toEndOf="@+id/my_info_update_birth_month_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_birth_month_et" />
 
     <TextView
-        android:id="@+id/my_info_birth_day_unit_tv"
+        android:id="@+id/my_info_update_birth_day_unit_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_day_unit"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="@+id/my_info_birth_day_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_birth_day_et" />
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_birth_day_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_birth_day_et" />
 
     <TextView
-        android:id="@+id/my_info_weight_title_tv"
+        android:id="@+id/my_info_update_weight_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="34dp"
@@ -268,69 +301,81 @@
         android:textAppearance="@style/tv_headline_eb_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_line_view"
         app:layout_constraintVertical_bias="0.4" />
 
     <ImageView
-        android:id="@+id/my_info_weight_help_iv"
+        android:id="@+id/my_info_update_weight_help_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6.5dp"
         android:src="@drawable/ic_hint"
-        app:layout_constraintBottom_toBottomOf="@id/my_info_weight_title_tv"
-        app:layout_constraintStart_toEndOf="@id/my_info_weight_title_tv"
-        app:layout_constraintTop_toTopOf="@id/my_info_weight_title_tv" />
+        app:layout_constraintBottom_toBottomOf="@id/my_info_update_weight_title_tv"
+        app:layout_constraintStart_toEndOf="@id/my_info_update_weight_title_tv"
+        app:layout_constraintTop_toTopOf="@id/my_info_update_weight_title_tv" />
 
     <EditText
-        android:id="@+id/my_info_height_et"
+        android:id="@+id/my_info_update_height_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
         android:layout_marginTop="27dp"
         android:layout_marginEnd="41dp"
-        android:background="@drawable/selector_my_info_et"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et_null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_height_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/my_info_weight_et"
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_update_weight_et"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_info_weight_title_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/my_info_update_weight_title_tv" />
 
     <TextView
-        android:id="@+id/my_info_height_unit_tv"
+        android:id="@+id/my_info_update_height_unit_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_height_unit"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="@+id/my_info_height_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_height_et" />
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_height_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_height_et" />
 
     <EditText
-        android:id="@+id/my_info_weight_et"
+        android:id="@+id/my_info_update_weight_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="41dp"
         android:layout_marginEnd="37dp"
-        android:background="@drawable/selector_my_info_et"
-        android:enabled="false"
+        android:background="@drawable/selector_my_info_et_null"
+        android:focusableInTouchMode="true"
+        android:hint="@string/title_register_info_weight_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        android:maxLines="1"
         android:paddingBottom="8dp"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/my_info_height_et"
+        android:textColorHint="@color/white_dark"
+        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_update_height_et"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/my_info_height_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_height_et" />
+        app:layout_constraintStart_toEndOf="@+id/my_info_update_height_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_height_et" />
 
     <TextView
-        android:id="@+id/my_info_weight_unit_tv"
+        android:id="@+id/my_info_update_weight_unit_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_weight_unit"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="@+id/my_info_weight_et"
-        app:layout_constraintTop_toTopOf="@+id/my_info_weight_et" />
+        app:layout_constraintEnd_toEndOf="@+id/my_info_update_weight_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_update_weight_et" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
