@@ -201,6 +201,8 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         if (binding.myInfoUpdateWeightEt.text.isNotBlank() && binding.myInfoUpdateWeightEt.text.toString().toInt() !in 30..200) {   //몸무게 데이터가 입력돼 있고, 30~200 사이 숫자가 아니면
             binding.myInfoUpdateWeightEt.startAnimation(animation)
             binding.myInfoUpdateWeightEt.isSelected = true
+
+            result = false
         } else  //몸무게 데이터 유효성 검사 통과
             binding.myInfoUpdateWeightEt.isSelected = false
 
