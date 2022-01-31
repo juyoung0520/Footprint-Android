@@ -61,6 +61,9 @@
             <action
                 android:id="@+id/action_settingFragment_to_myInfoFragment"
                 app:destination="@id/myInfoFragment" />
+            <action
+                android:id="@+id/action_settingFragment_to_signinActivity"
+                app:destination="@id/signinActivity" />
         </fragment>
         <fragment
             android:id="@+id/myInfoFragment"
@@ -80,5 +83,9 @@
                 android:name="user"
                 app:argType="string" />
         </fragment>
+        <activity
+            android:id="@+id/signinActivity"
+            android:name="com.footprint.footprint.ui.signin.SigninActivity"
+            android:label="SigninActivity" />
     </navigation>
 </navigation>

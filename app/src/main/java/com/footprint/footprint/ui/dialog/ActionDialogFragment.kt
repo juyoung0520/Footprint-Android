@@ -113,7 +113,7 @@ class ActionDialogFragment() : DialogFragment() {
         //취소 텍스트뷰 클릭 리스너
         binding.walkDialogCancelTv.setOnClickListener {
             when (msg) {
-                getString(R.string.msg_delete_footprint) -> myDialogCallback.action2(false)
+                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(false)
                 else -> myDialogCallback.action1(false)
             }
 
@@ -123,7 +123,7 @@ class ActionDialogFragment() : DialogFragment() {
         //액션 텍스트뷰(중지, 저장, 삭제 등) 클릭 리스너
         binding.walkDialogActionTv.setOnClickListener {
             when (msg) {
-                getString(R.string.msg_delete_footprint) -> myDialogCallback.action2(true)
+                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(true)
                 else -> myDialogCallback.action1(true)
             }
 

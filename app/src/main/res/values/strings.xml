@@ -17,6 +17,7 @@
     <string name="action_update">수정</string>
     <string name="action_complete">완료</string>
     <string name="action_set">설정</string>
+    <string name="action_withdrawal">회원탈퇴</string>
 
     <!--메뉴-->
     <string name="menu_home">홈</string>

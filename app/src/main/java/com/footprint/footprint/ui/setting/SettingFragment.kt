@@ -21,6 +21,22 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun initActionDialog() {
         actionDialogFragment = ActionDialogFragment()
 
+        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
+            override fun action1(isAction: Boolean) {   //로그아웃
+                if (isAction) { //1. 로그아웃 요청    2. SignInActivity 로 이동  3. 현재 액티비티(MainActivity) 종료
+                    findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
+                    (requireActivity()).finish()
+                }
+            }
+
+            override fun action2(isAction: Boolean) {   //회원탈퇴
+                if (isAction) { //1. 회원탈퇴 요청    2. SignInActivity 로 이동  3. 현재 액티비티(MainActivity) 종료
+                    findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
+                    (requireActivity()).finish()
+                }
+            }
+
+        })
     }
 
     private fun setMyEventListener() {
