@@ -49,6 +49,10 @@
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
 
+    //화면 별
+    <!--실시간 기록-->
+    <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
+
     <!--로그인-->
     <string name="title_login">로그인</string>
     <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>
