@@ -243,7 +243,7 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             .setTextColorResource(R.color.white)
             .setTextSize(textSize)
             .setTextTypeface(R.font.namusquareround)
-            .setArrowVisible(true)
+            .setIsVisibleArrow(true)
             .setArrowSize(10)
             .setArrowOrientation(ArrowOrientation.BOTTOM)
             .setArrowPosition(0.2f)
@@ -260,10 +260,8 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         }
 
         //말풍선 클릭 시 => 사라짐
-        balloon.onBalloonClickListener = object : OnBalloonClickListener {
-            override fun onBalloonClick(view: View) {
-                balloon.dismiss()
-            }
-        }
+        balloon.setOnBalloonClickListener(OnBalloonClickListener {
+            balloon.dismiss()
+        })
     }
 }

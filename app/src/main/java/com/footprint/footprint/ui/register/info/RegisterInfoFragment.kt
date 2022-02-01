@@ -395,7 +395,7 @@ class RegisterInfoFragment() :
             .setTextColorResource(R.color.white)
             .setTextSize(textSizeinSp)
             .setTextTypeface(R.font.namusquareround)
-            .setArrowVisible(true)
+            .setIsVisibleArrow(true)
             .setArrowSize(10)
             .setArrowOrientation(ArrowOrientation.BOTTOM)
             .setArrowPosition(0.2f)
@@ -412,11 +412,9 @@ class RegisterInfoFragment() :
         }
 
         //말풍선 클릭 시 => 사라짐
-        balloon.onBalloonClickListener = object : OnBalloonClickListener {
-            override fun onBalloonClick(view: View) {
-                balloon.dismiss()
-            }
-        }
+        balloon.setOnBalloonClickListener(OnBalloonClickListener {
+            balloon.dismiss()
+        })
     }
 
 
