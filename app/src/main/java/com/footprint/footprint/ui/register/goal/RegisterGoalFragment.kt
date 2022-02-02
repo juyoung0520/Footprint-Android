@@ -32,12 +32,12 @@ class RegisterGoalFragment() :
         dayRVAdapter = DayRVAdapter((deviceWidth - convertDpToPx(requireContext(), 88)) / 7)
         dayRVAdapter.setMyItemClickListener(object : DayRVAdapter.MyItemClickListener {
             override fun saveDay(day: Int) {
-                userModel.goalDay.add(getString(day))
+                userModel.goalDay.add(day)
                 validate()
             }
 
             override fun removeDay(day: Int) {
-                userModel.goalDay.remove(getString(day))
+                userModel.goalDay.remove(day)
                 validate()
             }
         })
@@ -50,13 +50,13 @@ class RegisterGoalFragment() :
 
         walkTimeDialogFragment.setMyDialogCallback(object :
             WalkTimeDialogFragment.MyDialogCallback {
-            override fun complete(time: String) {
-                binding.goalSettingGoalWalkTimeBtn.text = time
+            override fun complete(timeStr: String, minute: Int) {
+                binding.goalSettingGoalWalkTimeBtn.text = timeStr
                 binding.goalSettingGoalWalkTimeBtn.isSelected = true
 
                 binding.goalSettingGoalWalkTimeRg.check(R.id.goal_setting_direct_setting_rb)
 
-                userModel.goalWalkTime = time
+                userModel.goalWalkTime = minute
 
                 validate()
             }
@@ -128,24 +128,24 @@ class RegisterGoalFragment() :
                 when (i) {
                     binding.goalSetting15minRb.id -> {
                         text = binding.goalSetting15minRb.text.toString()
-                        userModel.goalWalkTime = binding.goalSetting15minRb.text.toString()
+                        userModel.goalWalkTime = 15
                     }
                     binding.goalSetting30minRb.id -> {
                         text = binding.goalSetting30minRb.text.toString()
-                        userModel.goalWalkTime = binding.goalSetting30minRb.text.toString()
+                        userModel.goalWalkTime = 30
                     }
                     binding.goalSetting60minRb.id -> {
                         text = binding.goalSetting60minRb.text.toString()
-                        userModel.goalWalkTime = binding.goalSetting60minRb.text.toString()
+                        userModel.goalWalkTime = 60
                     }
                     binding.goalSetting90minRb.id -> {
                         text = binding.goalSetting90minRb.text.toString()
-                        userModel.goalWalkTime = binding.goalSetting90minRb.text.toString()
+                        userModel.goalWalkTime = 90
                     }
                     binding.goalSettingDirectSettingRb.id -> {
                         //우선 초기 상태로 돌려놨다가 목표 산책 시간 다이얼로그 화면에서 설정하면 그때 UI 업데이트
                         if (!walkTimeDialogFragment.isAdded) {
-                            userModel.goalWalkTime = null
+                            userModel.goalWalkTime = 0
 
                             radioGroup.clearCheck()
 
@@ -182,31 +182,31 @@ class RegisterGoalFragment() :
                 when (i) {
                     binding.goalSettingEarlyMorningRb.id -> {
                         text = binding.goalSettingEarlyMorningRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingEarlyMorningRb.text.toString()
+                        userModel.walkTimeSlot = 1
                     }
                     binding.goalSettingLateMorningRb.id -> {
                         text = binding.goalSettingLateMorningRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingLateMorningRb.text.toString()
+                        userModel.walkTimeSlot = 2
                     }
                     binding.goalSettingEarlyAfternoonRb.id -> {
                         text = binding.goalSettingEarlyAfternoonRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingEarlyAfternoonRb.text.toString()
+                        userModel.walkTimeSlot = 3
                     }
                     binding.goalSettingLateAfternoonRb.id -> {
                         text = binding.goalSettingLateAfternoonRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingLateAfternoonRb.text.toString()
+                        userModel.walkTimeSlot = 4
                     }
                     binding.goalSettingNightRb.id -> {
                         text = binding.goalSettingNightRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingNightRb.text.toString()
+                        userModel.walkTimeSlot = 5
                     }
                     binding.goalSettingDawnRb.id -> {
                         text = binding.goalSettingDawnRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingDawnRb.text.toString()
+                        userModel.walkTimeSlot = 6
                     }
                     binding.goalSettingDifferentEveryTimeRb.id -> {
                         text = binding.goalSettingDifferentEveryTimeRb.text.toString()
-                        userModel.walkTimeSlot = binding.goalSettingDifferentEveryTimeRb.text.toString()
+                        userModel.walkTimeSlot = 7
                     }
                 }
             }
