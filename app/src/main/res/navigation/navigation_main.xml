@@ -8,7 +8,11 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.footprint.footprint.ui.main.home.HomeFragment"
-        android:label="homeFragment" />
+        android:label="homeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/navigation" />
+    </fragment>
 
     <fragment
         android:id="@+id/calendarFragment"
@@ -31,16 +35,57 @@
         <action
             android:id="@+id/action_mypageFragment_to_badgeFragment"
             app:destination="@id/badgeFragment" />
+        <action
+            android:id="@+id/action_mypageFragment_to_navigation"
+            app:destination="@id/navigation" />
     </fragment>
+    <fragment
+        android:id="@+id/badgeFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
+        android:label="fragment_badge"
+        tools:layout="@layout/fragment_badge" />
 
     <activity
         android:id="@+id/walkDetailActivity"
         android:name="com.footprint.footprint.ui.main.calendar.WalkDetailActivity"
         android:label="activity_walk_detail"
         tools:layout="@layout/activity_walk_detail" />
-    <fragment
-        android:id="@+id/badgeFragment"
-        android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
-        android:label="fragment_badge"
-        tools:layout="@layout/fragment_badge" />
+
+    <navigation android:id="@+id/navigation"
+        app:startDestination="@id/settingFragment">
+        <fragment
+            android:id="@+id/settingFragment"
+            android:name="com.footprint.footprint.ui.setting.SettingFragment"
+            android:label="fragment_setting"
+            tools:layout="@layout/fragment_setting">
+            <action
+                android:id="@+id/action_settingFragment_to_myInfoFragment"
+                app:destination="@id/myInfoFragment" />
+            <action
+                android:id="@+id/action_settingFragment_to_signinActivity"
+                app:destination="@id/signinActivity" />
+        </fragment>
+        <fragment
+            android:id="@+id/myInfoFragment"
+            android:name="com.footprint.footprint.ui.setting.MyInfoFragment"
+            android:label="fragment_my_info"
+            tools:layout="@layout/fragment_my_info">
+            <action
+                android:id="@+id/action_myInfoFragment_to_myInfoUpdateFragment"
+                app:destination="@id/myInfoUpdateFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/myInfoUpdateFragment"
+            android:name="com.footprint.footprint.ui.setting.MyInfoUpdateFragment"
+            android:label="fragment_my_info_update"
+            tools:layout="@layout/fragment_my_info_update">
+            <argument
+                android:name="user"
+                app:argType="string" />
+        </fragment>
+        <activity
+            android:id="@+id/signinActivity"
+            android:name="com.footprint.footprint.ui.signin.SigninActivity"
+            android:label="SigninActivity" />
+    </navigation>
 </navigation>

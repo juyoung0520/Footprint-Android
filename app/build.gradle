@@ -110,4 +110,7 @@ dependencies {
     //툴팁
     implementation "com.github.skydoves:balloon:1.4.1"
 
+    //Switch Button
+    implementation 'com.kyleduo.switchbutton:library:2.1.0'
+
 }

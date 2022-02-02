@@ -14,8 +14,10 @@
     <string name="action_delete">삭제</string>
     <string name="action_confirm">확인</string>
     <string name="action_next">다음</string>
+    <string name="action_update">수정</string>
     <string name="action_complete">완료</string>
     <string name="action_set">설정</string>
+    <string name="action_withdrawal">회원탈퇴</string>
 
     <!--메뉴-->
     <string name="menu_home">홈</string>
@@ -38,7 +40,7 @@
 
     <!--에러-->
 
-    //화면 별
+    <!--화면 별-->
     <!--실시간 기록-->
     <string name="title_realtime_record">실시간 기록</string>
     <string name="title_walktime">산책시간</string>
@@ -109,6 +111,10 @@
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
     <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
+    <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
+    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
+    <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
+    <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
 
@@ -180,4 +186,17 @@
     <!--뱃지-->
     <string name="title_achievement_badge">달성 뱃지</string>
     <string name="title_representative_badge">대표 뱃지</string>
+
+    <!--설정-->
+    <string name="title_setting">설정</string>
+    <string name="title_update_my_info">내 정보 수정</string>
+    <string name="title_notification">알림</string>
+    <string name="title_lock_footprint">산책기록 잠금</string>
+    <string name="title_password_setting">암호 설정 및 변경</string>
+    <string name="title_logout">로그아웃</string>
+    <string name="title_withdrawal">회원 탈퇴</string>
+    <string name="title_version_copyright">버전 0.00.0\nⓒ 2021. 발자국 all rights reserved.</string>
+
+    <!--내 정보-->
+    <string name="title_my_info">내 정보</string>
 </resources>

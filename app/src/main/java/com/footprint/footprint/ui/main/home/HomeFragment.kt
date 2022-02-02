@@ -9,6 +9,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.google.android.gms.location.*
@@ -27,8 +28,6 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
-import com.footprint.footprint.ui.register.RegisterActivity
-
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView {
 
@@ -41,10 +40,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
-        //(임시) 설정 버튼 => Register Activity
         binding.homeSettingIv.setOnClickListener {
-            val mainActivity = activity as MainActivity
-            mainActivity.startNextActivity(RegisterActivity::class.java)
+            findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
 
         /*init: 1. TB&VP 2. 날짜*/
