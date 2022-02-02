@@ -14,9 +14,9 @@
     <string name="action_delete">삭제</string>
     <string name="action_confirm">확인</string>
     <string name="action_next">다음</string>
-    <string name="action_update">수정</string>
     <string name="action_complete">완료</string>
     <string name="action_set">설정</string>
+    <string name="action_update">수정</string>
     <string name="action_withdrawal">회원탈퇴</string>
 
     <!--메뉴-->
@@ -51,7 +51,6 @@
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
 
-    //화면 별
     <!--실시간 기록-->
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
 
@@ -115,8 +114,10 @@
     <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
     <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
     <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
+    <string name="msg_success_update_goal">다음달 목표를 변경했어요</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
+    <string name="error_no_updating_goal">변경된 목표가 없어요</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
@@ -159,13 +160,6 @@
     <string name="msg_set_goal">목표를 설정해 주세요</string>
     <string name="msg_set_gaol_desc">월 기준으로 목표를 설정할 수 있어요</string>
     <string name="title_goal_day">목표 요일</string>
-    <string name="title_mon_kr">월</string>
-    <string name="title_tue_kr">화</string>
-    <string name="title_wed_kr">수</string>
-    <string name="title_thu_kr">목</string>
-    <string name="title_fri_kr">금</string>
-    <string name="title_sat_kr">토</string>
-    <string name="title_sun_kr">일</string>
     <string name="title_goal_walk_time">목표 산책 시간</string>
     <string name="msg_set_goal_time">목표시간을 선택해 주세요</string>
     <string name="title_goal_walk_slot">산책 시간대</string>
@@ -199,4 +193,14 @@
 
     <!--내 정보-->
     <string name="title_my_info">내 정보</string>
+
+    <!--이번달 목표-->
+    <string name="title_goal_this_month">이번달 목표</string>
+    <string name="msg_not_edit_goal_this_month">이번달 목표는 수정할 수 없어요</string>
+    <string name="msg_change_goal_next_month">다음달부터 목표를 변경할래요 ></string>
+    <string name="msg_see_goal_next_month">다음달 목표 보기 ></string>
+
+    <!--다음달 목표-->
+    <string name="title_goal_next_month">다음달 목표</string>
+    <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
 </resources>
