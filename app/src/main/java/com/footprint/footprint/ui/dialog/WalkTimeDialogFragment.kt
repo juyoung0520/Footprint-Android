@@ -17,7 +17,7 @@ import com.footprint.footprint.utils.DialogFragmentUtils
 class WalkTimeDialogFragment() : DialogFragment() {
 
     interface MyDialogCallback {
-        fun complete(time: String)
+        fun complete(timeStr: String, minute: Int)
     }
 
     private lateinit var binding: FragmentWalkTimeDialogBinding
@@ -80,23 +80,23 @@ class WalkTimeDialogFragment() : DialogFragment() {
 
         //완료 텍스트뷰 클릭 리스너
         binding.walkTimeDialogCompleteTv.setOnClickListener {
-            val hour = hourNumList[binding.walkTimeHourNp.value]
-            val minute = minNumList[binding.walkTimeMinuteNp.value]
+            val hour = hourNumList[binding.walkTimeHourNp.value].toInt()
+            val minute = minNumList[binding.walkTimeMinuteNp.value].toInt()
 
-            if (hour == "0" && minute == "0")
+            if (hour == 0 && minute == 0)
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.error_set_goal_walk_time),
                     Toast.LENGTH_SHORT
                 ).show()
-            else if (hour == "0") {
-                myDialogCallback.complete("${minute}분")
+            else if (hour == 0) {
+                myDialogCallback.complete("${minute}분", hour*60+minute)
                 dismiss()
-            } else if (minute == "0") {
-                myDialogCallback.complete("${hour}시간")
+            } else if (minute == 0) {
+                myDialogCallback.complete("${hour}시간", hour*60+minute)
                 dismiss()
             } else {
-                myDialogCallback.complete("${hour}시간 ${minute}분")
+                myDialogCallback.complete("${hour}시간 ${minute}분", hour*60+minute)
                 dismiss()
             }
         }
