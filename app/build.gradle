@@ -119,4 +119,7 @@ dependencies {
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:3.0.7'
 
+    //그래프
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }
