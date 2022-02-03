@@ -10,8 +10,8 @@ data class UserModel(
     var birth: String? = null,     //생년월일: 0000.00.00
     var height: Int? = null,       //키
     var weight: Int? = null,        //몸무게
-    var goalDay: ArrayList<String> = arrayListOf(), //목표 산책 요일
-    var goalWalkTime: String? = null,   //목표 산책 시간
-    var walkTimeSlot: String? = null    //산책 시간대
+    var goalDay: ArrayList<Int> = arrayListOf(), //목표 산책 요일
+    var goalWalkTime: Int = 0,   //목표 산책 시간(분)
+    var walkTimeSlot: Int = 0    //산책 시간대(1:이른오전/2:늦은오전/.../6:새벽/7:매번다름)
 ): Serializable
 

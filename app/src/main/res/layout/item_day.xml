@@ -11,7 +11,7 @@
         android:layout_marginHorizontal="2.5dp"
         android:background="@drawable/selector_item_day"
         android:gravity="center"
-        android:text="@string/title_mon_kr"
+        android:text="월"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@drawable/selector_item_day_text"
         app:layout_constraintBottom_toBottomOf="parent"

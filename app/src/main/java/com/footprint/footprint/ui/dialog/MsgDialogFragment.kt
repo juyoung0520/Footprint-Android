@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMsgDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils
 
 class MsgDialogFragment : DialogFragment() {
     private lateinit var binding: FragmentMsgDialogBinding
+
     private val args: MsgDialogFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -51,6 +54,10 @@ class MsgDialogFragment : DialogFragment() {
     private fun setMyClickListener() {
         binding.msgDialogConfirmTv.setOnClickListener {
             dismiss()
+
+            //GoalNextMonthUpdateFragment(다음달 목표 수정 화면) -> GoalNextMonthFragment(다음달 목표 화면)로 이동
+            if (args.msg==getString(R.string.msg_success_update_goal))
+                findNavController().navigate(R.id.action_msgDialogFragment2_to_goalNextMonthFragment)
         }
     }
 }
