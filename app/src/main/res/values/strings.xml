@@ -42,7 +42,6 @@
 
     <!--에러-->
 
-
     <!--화면 별-->
     <!--온보딩-->
     <string name="msg_skip">skip ></string>
@@ -188,7 +187,7 @@
     <string name="title_night">밤(21-0)</string>
     <string name="title_dawn">새벽(1-4)</string>
     <string name="title_different_every_time">매번 다름</string>
-    
+
     <!--마이페이지-->
     <string name="msg_nick_name_unit">님</string>
     <string name="msg_today">오늘</string>
@@ -240,6 +239,10 @@
     <!--다음달 목표-->
     <string name="title_goal_next_month">다음달 목표</string>
     <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
+
+    <!--코스 추천-->
+    <string name="title_comming_soon">~ Coming Soon ~</string>
+    <string name="msg_prepare_service">서비스를 준비중이에요.\n조금만 기다려주세요!</string>
 
     <!--암호-->
     <string name="title_lock_setting">암호 설정</string>
