@@ -40,9 +40,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_search_24"
-            app:layout_constraintTop_toTopOf="@+id/calendar_back_iv"
+            app:layout_constraintTop_toTopOf="@+id/calendar_title_tv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/calendar_back_iv"/>
+            app:layout_constraintBottom_toBottomOf="@+id/calendar_title_tv"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

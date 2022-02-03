@@ -53,4 +53,8 @@ abstract class BaseActivity<T: ViewBinding>(private val inflate: (LayoutInflater
     fun hideKeyboard(v: View){
         imm?.hideSoftInputFromWindow(v.windowToken, 0)
     }
+
+    fun showKeyboardUp(v: View) {
+        imm?.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
+    }
 }
