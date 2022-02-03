@@ -59,7 +59,7 @@
     <string name="msg_skip">skip ></string>
     <string name="action_start">시작하기</string>
 
-    <string name="title_onboarding1">반가워요 👋</string>
+    <string name="title_onboarding1">반가워요</string>
     <string name="msg_onboarding1">산책하러 오셨군요! 발자국에 오신걸 환영합니다</string>
     <string name="msg_img_onboarding1">산책은 가벼운 운동으로 제격인 동시에\n생각을 정리하거나 기분 전환에 좋은 활동이에요</string>
     <string name="title_onboarding2">산책 목표 설정하기</string>

@@ -5,10 +5,12 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
+import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import kotlin.math.roundToInt
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
@@ -79,14 +81,15 @@ fun fadeOut(view: View) {
 }
 
 fun autoScrollToBottom(View: NestedScrollView, imgView: View){
-    View.scrollTo(0, 0)
-    View.post {
+    View.smoothScrollTo(0, 0)
+    val handler = Handler()
+    handler.postDelayed({
         run {
             ObjectAnimator.ofInt(
                 View,
                 "scrollY",
                 imgView.bottom
-            ).setDuration(1000).start();
+            ).setDuration(1200).start()
         }
-    }
+    }, 300)
 }

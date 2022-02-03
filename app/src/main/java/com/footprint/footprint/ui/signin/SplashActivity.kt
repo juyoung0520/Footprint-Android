@@ -26,8 +26,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
          val handler = Handler()
                 handler.postDelayed({
                     //1. 온보딩 실행 여부 spf에서 받아오기
-                    val onboardingStatus = getOnboarding(this)
-
+                    var onboardingStatus = getOnboarding(this)
+                    Log.d("ONBOARDING", onboardingStatus.toString())
                     if(!onboardingStatus){
                         //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
                         startNextActivity(OnBoardingActivity::class.java)

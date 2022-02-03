@@ -18,6 +18,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_onboarding1_hand"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="5dp"
+        app:layout_constraintStart_toEndOf="@id/onboarding_first_title_tv"
+        app:layout_constraintTop_toTopOf="@id/onboarding_first_title_tv"
+        app:layout_constraintBottom_toBottomOf="@id/onboarding_first_title_tv" />
     <TextView
         android:id="@+id/onboarding_first_description_tv"
         android:layout_width="wrap_content"
@@ -32,11 +41,13 @@
 
 
     <!--Image-->
-    <ImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/onboarding_first_image_iv"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:src="@drawable/bg_onboarding1_walk"
+        app:lottie_rawRes="@raw/walkingman"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintTop_toBottomOf="@id/onboarding_first_description_tv"
         app:layout_constraintBottom_toBottomOf="parent"
