@@ -6,7 +6,6 @@
     <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
     <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
 
-    //공통
     <!--공통-->
     <string name="action_cancel">취소</string>
     <string name="action_edit">편집</string>
@@ -44,17 +43,7 @@
     <!--에러-->
 
     <!--화면 별-->
-    <!--실시간 기록-->
-    <string name="title_realtime_record">실시간 기록</string>
-    <string name="title_walktime">산책시간</string>
-    <string name="title_distance">거리</string>
-    <string name="title_calorie">칼로리</string>
-    <string name="title_pace">페이스</string>
-    <string name="title_sum_walktime">누적 산책시간</string>
-    <string name="title_sum_distance">누적 거리</string>
-    <string name="title_avr_calorie">평균 칼로리</string>
 
-    //화면 별
     <!--온보딩-->
     <string name="msg_skip">skip ></string>
     <string name="action_start">시작하기</string>
@@ -69,13 +58,10 @@
     <string name="title_onboarding4">산책 일기 확인하기</string>
     <string name="msg_onboarding4">그동안의 산책과 생각들을 추억할 수 있어요</string>
 
-    <!--실시간 기록-->
-    <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
-
     <!--로그인-->
     <string name="title_login">로그인</string>
     <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>
-    <string name="msg_login_description">정보입력 없이 간편하게 로그인할 수 있어요</string>
+    <string name="msg_login_description">소셜 계정으로 간편하게 로그인할 수 있어요</string>
     <string name="title_kakaologin">카카오계정으로 로그인</string>
     <string name="title_googlelogin">구글계정으로 로그인</string>
     <string name="msg_nologin"><u>나중에 로그인할래요</u></string>
@@ -113,6 +99,17 @@
     <string name="title_fri">Fri</string>
     <string name="title_sat">Sat</string>
     <string name="title_sun">Sun</string>
+
+    <!--실시간 기록-->
+    <string name="title_realtime_record">실시간 기록</string>
+    <string name="title_walktime">산책시간</string>
+    <string name="title_distance">거리</string>
+    <string name="title_calorie">칼로리</string>
+    <string name="title_pace">페이스</string>
+    <string name="title_sum_walktime">누적 산책시간</string>
+    <string name="title_sum_distance">누적 거리</string>
+    <string name="title_avr_calorie">평균 칼로리</string>
+    <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>

@@ -464,11 +464,6 @@ class RegisterInfoFragment() :
             if (!keyboardStatus)
                 binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
         }
-
-        //말풍선 클릭 시 => 사라짐
-        balloon.setOnBalloonClickListener(OnBalloonClickListener {
-            balloon.dismiss()
-        })
     }
 
 
