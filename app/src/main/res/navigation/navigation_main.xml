@@ -19,8 +19,8 @@
         android:name="com.footprint.footprint.ui.main.calendar.CalendarFragment"
         android:label="calendarFragment">
         <action
-            android:id="@+id/action_calendarFragment_to_walkDetailActivity"
-            app:destination="@id/walkDetailActivity" />
+            android:id="@+id/action_calendarFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment
@@ -91,6 +91,24 @@
         android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
         android:label="fragment_badge"
         tools:layout="@layout/fragment_badge" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.SearchResultFragment"
+        android:label="SearchResultFragment" >
+        <argument
+            android:name="tag"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/goalThisMonthFragment"
         android:name="com.footprint.footprint.ui.main.mypage.GoalThisMonthFragment"

@@ -1,9 +1,8 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentCalendarBinding
@@ -11,8 +10,6 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.convertPxToDp
-import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.utils.getDeviceWidth
 import com.kizitonwose.calendarview.Completion
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -32,9 +29,34 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private lateinit var calendarDayBinder: CalendarDayBinder
 
     override fun initAfterBinding() {
+        setBinding()
+
         initCalendar()
 
         initWalkAdapter()
+    }
+
+    private fun setBinding() {
+        val localDate = LocalDate.now()
+        binding.calendarMonthTitleTv.text =
+            String.format("%d.%d", localDate.year, localDate.monthValue)
+        binding.calendarSelectedDayTv.text =
+            String.format(
+                "%d.%d.%d %s",
+                localDate.year,
+                localDate.monthValue,
+                localDate.dayOfMonth,
+                changeDayOfWeek(localDate.dayOfWeek.toString())
+            )
+
+        binding.calendarBackIv.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.calendarSearchIv.setOnClickListener {
+            val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun initCalendar() {
@@ -54,18 +76,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         })
 
         binding.calendarWalkCv.dayBinder = calendarDayBinder
-
-        val localDate = LocalDate.now()
-        binding.calendarMonthTitleTv.text =
-            String.format("%d.%d", localDate.year, localDate.monthValue)
-        binding.calendarSelectedDayTv.text =
-            String.format(
-                "%d.%d.%d %s",
-                localDate.year,
-                localDate.monthValue,
-                localDate.dayOfMonth,
-                changeDayOfWeek(localDate.dayOfWeek.toString())
-            )
 
         currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(120)
@@ -133,8 +143,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                Toast.makeText(context, "${position}번 째 산책", Toast.LENGTH_SHORT).show()
+            override fun onItemClick(walk: WalkModel) {
+                Toast.makeText(context, "${walk.walkIdx}번 째 산책", Toast.LENGTH_SHORT).show()
             }
         })
 

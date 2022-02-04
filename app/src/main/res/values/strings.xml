@@ -201,6 +201,13 @@
     <string name="title_achievement_badge">달성 뱃지</string>
     <string name="title_representative_badge">대표 뱃지</string>
 
+    <!--태그 검색-->
+    <string name="msg_search_hint">원하는 #태그를 검색해 보세요</string>
+    <string name="title_recent_search">최근 검색</string>
+
+    <!--태그 검색 결과-->
+    <string name="msg_no_search_result">검색 결과가 없어요!</string>
+
     <!--설정-->
     <string name="title_setting">설정</string>
     <string name="title_update_my_info">내 정보 수정</string>

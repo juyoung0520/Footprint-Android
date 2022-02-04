@@ -2,6 +2,7 @@ package com.footprint.footprint.utils
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.reflect.TypeToken
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
 fun saveOnboarding(context: Context, onboardingStatus: Boolean){
@@ -63,4 +64,21 @@ fun removeLoginStatus(context: Context){
 
     editor.remove("loginStatus")
     editor.apply()
+}
+
+fun saveTags(context: Context,tags: ArrayList<String>) {
+    val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
+    val editor = spf.edit()
+    val json = gson.toJson(tags)
+
+    editor.putString("tags", json)
+    editor.apply()
+}
+
+fun getTags(context: Context): ArrayList<String>? {
+    val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
+    val json = spf.getString("tags", null)
+    val type = object : TypeToken<ArrayList<String>>() {}.type
+
+    return gson.fromJson(json, type)
 }
