@@ -296,7 +296,7 @@ class RegisterInfoFragment() :
 
 
         if (results[0] == 1 && results[1] == 1 && results[2] == 1) {
-            newUser.birth = String.format("%04d.%02d.%02d", year, month, day)
+            newUser.birth = String.format("%04d-%02d-%02d", year, month, day)
 
             yearEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
@@ -306,7 +306,7 @@ class RegisterInfoFragment() :
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
             return true
         } else if (results[0] == 0 && results[1] == 0 && results[2] == 0) {
-            newUser.birth = null
+            newUser.birth = "0000-00-00"
             return true
         }
 
@@ -372,7 +372,7 @@ class RegisterInfoFragment() :
             }
         } else {
             //값 X
-            newUser.height = null
+            newUser.height = 0
             return true
         }
     }
@@ -413,7 +413,7 @@ class RegisterInfoFragment() :
                 return true
             }
         } else {
-            newUser.weight = null
+            newUser.weight = 0
             return true
         }
     }

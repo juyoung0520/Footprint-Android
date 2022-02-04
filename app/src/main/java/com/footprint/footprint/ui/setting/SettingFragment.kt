@@ -7,8 +7,6 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.utils.getRefreshToken
-import com.footprint.footprint.utils.removeRefreshToken
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
 

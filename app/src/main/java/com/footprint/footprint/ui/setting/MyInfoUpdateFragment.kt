@@ -218,7 +218,7 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         user.gender = when (binding.myInfoUpdateGenderRg.checkedRadioButtonId) {  //성별(필수)
             R.id.my_info_gender_female_rb -> "female"
             R.id.my_info_gender_male_rb -> "male"
-            else -> null
+            else -> "null"
         }
 
         if (binding.myInfoUpdateBirthYearEt.text.isNotBlank())    //생년월일

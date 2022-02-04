@@ -2,8 +2,6 @@ package com.footprint.footprint.utils
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
 import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
 import com.google.gson.reflect.TypeToken
@@ -47,57 +45,8 @@ fun removeLoginStatus(context: Context){
     editor.apply()
 }
 
-/*암호화*/
-fun saveRefreshToken(context: Context, rToken: String){
-    val masterkey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
 
-    val spf = EncryptedSharedPreferences
-        .create(context,
-            "auth2",
-            masterkey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
-
-    val editor = spf.edit()
-    editor.putString("refreshToken", rToken)
-    editor.commit()
-}
-
-fun getRefreshToken(context: Context): String?{
-    val masterkey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-
-    val spf = EncryptedSharedPreferences
-        .create(context,
-            "auth2",
-            masterkey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
-
-    return spf.getString("refreshToken", null)
-}
-
-fun removeRefreshToken(context: Context){
-    val masterkey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
-
-    val spf = EncryptedSharedPreferences
-        .create(context,
-            "auth2",
-            masterkey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
-
-    val editor = spf.edit()
-    editor.remove("refreshToken")
-    editor.commit()
-}
-
-/*JwtId*/
+/*JwtId - 로그인 API 호출 후, 서버에서 받아오는 JwtId & API 요청 시 사용하는 X-ACCESS-TOKEN*/
 fun saveJwt(jwtToken: String) {
     val editor = mSharedPreferences.edit()
     editor.putString(X_ACCESS_TOKEN, jwtToken)
@@ -107,6 +56,14 @@ fun saveJwt(jwtToken: String) {
 
 fun getJwt(): String? = mSharedPreferences.getString(X_ACCESS_TOKEN, null)
 
+fun removeJwt(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove(X_ACCESS_TOKEN)
+    editor.apply()
+}
+
+/*Tag: 태그 검색 기록 확인에서 활용*/
 fun saveTags(context: Context,tags: ArrayList<String>) {
     val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
     val editor = spf.edit()

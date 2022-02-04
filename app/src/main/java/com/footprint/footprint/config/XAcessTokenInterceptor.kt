@@ -4,7 +4,7 @@ import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import okio.ByteString.Companion.encode
+
 
 class XAccessTokenInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

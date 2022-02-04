@@ -7,6 +7,7 @@ import com.footprint.footprint.databinding.FragmentCourseBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.signin.SplashActivity
 import com.footprint.footprint.utils.getLoginStatus
+import com.footprint.footprint.utils.removeJwt
 import com.footprint.footprint.utils.removeLoginStatus
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -19,7 +20,7 @@ class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBindin
 
     override fun initAfterBinding() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail() // email addresses도 요청함
+            .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
@@ -47,6 +48,7 @@ class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBindin
                 googleLogout()
             }
             removeLoginStatus(requireContext())
+            removeJwt()
             Log.d("Login Status/MYPAGE", getLoginStatus(requireContext()))
         }
 
@@ -62,6 +64,7 @@ class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBindin
                 googleUnlink()
             }
             removeLoginStatus(requireContext())
+            removeJwt()
             Log.d("Login Status/MYPAGE", getLoginStatus(requireContext()))
         }
     }

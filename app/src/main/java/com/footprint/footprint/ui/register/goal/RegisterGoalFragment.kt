@@ -7,15 +7,17 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.remote.infos.InfoService
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.*
 
 class RegisterGoalFragment() :
-    BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate) {
+    BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate), RegisterView {
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
     private lateinit var userModel: UserModel
@@ -218,10 +220,8 @@ class RegisterGoalFragment() :
         binding.registerGoalActionBtn.setOnClickListener {
             Log.d("RegisterGoalFragment", "완료! -> $userModel")
 
-            //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(Intent(intent))
+            //정보 등록 API 호출
+            InfoService.registerInfos(this, userModel)
         }
     }
 
@@ -236,10 +236,20 @@ class RegisterGoalFragment() :
         this.userModel = userModel
     }
 
-    //정보 등록 API
-    private fun callSignUpInfosAPI(){
-        //1. jwt 준비
-        //2. userModel 준비
-        //3. 부르기
+
+    /*정보 등록 API -> Response*/
+    override fun onRegisterLoading() {}
+
+    override fun onRegisterSuccess(result: String?) {
+        Log.d("REGISTER/API-SUCCESS", "성공" + result.toString())
+        //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
+            val intent = Intent(requireActivity(), MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(Intent(intent))
     }
+
+    override fun onRegisterFailure(code: Int, message: String) {
+        Log.d("REGISTER/API-FAILURE", "code: $code message: $message")
+    }
+
 }

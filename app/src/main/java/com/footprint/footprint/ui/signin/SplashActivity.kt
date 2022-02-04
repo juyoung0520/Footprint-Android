@@ -10,7 +10,6 @@ import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
-import com.footprint.footprint.utils.getRefreshToken
 import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -110,30 +109,29 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     * 4. google:t, kakao:t => 말도 안 되는 경우... 혹시 몰라 로그 띄우기
     * */
     private fun autoLogin() {
-        if (getJwt() != null) {
-            if (!isGoogleLogin && isKakaoLogin) {
-                //Main Activity (Kakao)
-                Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-                Log.d("AUTO-LOGIN/KAKAO", "Kakao 계정으로 로그인하였습니다.")
-                saveLoginStatus(this, "kakao")
-                startNextActivity(MainActivity::class.java)
-                finish()
-            } else if (isGoogleLogin && !isKakaoLogin) {
-                //Main Activity(Google)
-                Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-                Log.d("AUTO-LOGIN/GOOGLE", "Google 계정으로 로그인하였습니다.")
-                saveLoginStatus(this, "google")
-                startNextActivity(MainActivity::class.java)
-                finish()
-            } else if (!isGoogleLogin && !isKakaoLogin) {
-                //SignUp Activity
-                Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-                Log.d("AUTO-LOGIN/NONE", "로그인 정보가 존재하지 않습니다.")
-                startNextActivity(SigninActivity::class.java)
-                finish()
-            } else if (isGoogleLogin && isKakaoLogin) {
-                Log.d("AUTO-LOGIN/ERROR", "둘 다 로그인")
-            }
-        }else Log.d("AUTO-LOGIN/ERROR", "jwt가 존재하지 않습니다")
+        if (!isGoogleLogin && isKakaoLogin) {
+            //Main Activity (Kakao)
+            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
+            Log.d("AUTO-LOGIN/KAKAO", "Kakao 계정으로 로그인하였습니다.")
+            saveLoginStatus(this, "kakao")
+            startNextActivity(MainActivity::class.java)
+            finish()
+        } else if (isGoogleLogin && !isKakaoLogin) {
+            //Main Activity(Google)
+            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
+            Log.d("AUTO-LOGIN/GOOGLE", "Google 계정으로 로그인하였습니다.")
+            saveLoginStatus(this, "google")
+            startNextActivity(MainActivity::class.java)
+            finish()
+        } else if (!isGoogleLogin && !isKakaoLogin) {
+            //SignUp Activity
+            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
+            Log.d("AUTO-LOGIN/NONE", "로그인 정보가 존재하지 않습니다.")
+            startNextActivity(SigninActivity::class.java)
+            finish()
+        } else if (isGoogleLogin && isKakaoLogin) {
+            Log.d("AUTO-LOGIN/ERROR", "둘 다 로그인")
+        }
+        Log.d("AUTO-LOGIN/JWT", getJwt().toString())
     }
 }

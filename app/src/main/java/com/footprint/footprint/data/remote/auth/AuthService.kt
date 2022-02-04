@@ -8,21 +8,23 @@ import retrofit2.Callback
 import retrofit2.Response
 
 object AuthService {
-    fun login(signinView: SignInView, userId: String, username: String, email: String, providerType: String){
+
+    /*로그인 API*/
+    fun login(signinView: SignInView, socialUserData: SocialUserModel){
         val authService = retrofit.create(LoginRetrofitInterface::class.java)
 
         signinView.onSignInLoading()
-        authService.login(userId, username, email, providerType).enqueue(object : Callback<LoginResponse>{
+        authService.login(socialUserData).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
 
                 Log.d("LOGIN/API-SUCCESS", body.toString())
                 when(body!!.code){
-                    0 -> {
-                        val result = body!!.result
+                    1000 -> {
+                        val result = body.result
                         signinView.onSignInSuccess(result!!)
                     }
-                    else -> signinView.onSignInFailure(body!!.code, body!!.message)
+                    else -> signinView.onSignInFailure(body.code, body.message)
                 }
             }
 

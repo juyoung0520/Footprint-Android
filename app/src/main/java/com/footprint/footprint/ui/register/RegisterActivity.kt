@@ -9,6 +9,8 @@ import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 import com.footprint.footprint.ui.register.info.RegisterInfoFragment
+import com.footprint.footprint.utils.getJwt
+import com.footprint.footprint.utils.saveJwt
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -27,11 +29,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 
 
-        //SignIn Activity -> User 받아오기
-        if (intent.hasExtra("user")) {
-            newUser = intent.getSerializableExtra("user") as UserModel
-            Log.d("REGISTER/USER", newUser.toString())
-        }
+        //Register 넘어옴
+        val jwt = getJwt()
+        Log.d("REGISTER", "TOKEN: $jwt")
 
     }
 

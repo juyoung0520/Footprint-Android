@@ -5,7 +5,10 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginRetrofitInterface {
-    @POST("/users/auth/login")
-    //fun login(@Body userId: String, username: String, email: String, providerType: String): Call<LoginResponse>
-    fun login(@Body socialUserData: SocialUserData): Call<LoginResponse>
+
+    //로그인 API
+    @POST("users/auth/login")
+    fun login(@Body socialUserData: SocialUserModel): Call<LoginResponse>
+
+    //회원 탈퇴 API
 }

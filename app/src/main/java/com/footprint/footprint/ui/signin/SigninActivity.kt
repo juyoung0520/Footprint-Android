@@ -14,16 +14,15 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.footprint.footprint.data.model.UserModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
+import com.footprint.footprint.data.remote.auth.SocialUserModel
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
@@ -33,7 +32,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private val RC_SIGN_IN = -1
-    private lateinit var newUser: SocialUserModel
+    private lateinit var socialUserModel: SocialUserModel
 
     override fun initAfterBinding() {
         //카카오 로그인
@@ -113,11 +112,12 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 val email: String? = user.kakaoAccount?.email
 
                 //1. User 정보 등록
-                newUser = SocialUserModel(userId, nickname, email)
-                Log.d("KAKAO/USER", newUser.toString())
+                socialUserModel = SocialUserModel(userId, nickname!!, email!!, "kakao")
+                Log.d("KAKAO/USER", socialUserModel.toString())
+                saveLoginStatus(this, "kakao")
 
                 //2. 로그인 API
-                callSignInAPI("kakao")
+                callSignInAPI()
             }
 
         }
@@ -151,13 +151,14 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             val account = completedTask.getResult(ApiException::class.java)
             val username = account?.displayName.toString()
             val useremail = account?.email.toString()
-            val idToken = account.idToken.toString()
+            val userid = account.id.toString()
 
-            newUser = SocialUserModel(idToken, username, useremail)
-            Log.d("GOOGLE/USER", newUser.toString())
+            socialUserModel = SocialUserModel(userid, username, useremail, "google")
+            Log.d("GOOGLE/USER", socialUserModel.toString())
+            saveLoginStatus(this, "google")
 
             //2. 로그인 API
-            callSignInAPI("google")
+            callSignInAPI()
 
         } catch (e: ApiException) {
             Log.w("GOOGLE/SIGNUP-FAILURE", "signInResult:failed code=" + e.statusCode)
@@ -165,15 +166,15 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     /*로그인 API*/
-    private fun callSignInAPI(provideType: String){
-        AuthService.login(this, newUser.userId!!, newUser.username!!, newUser.email!!, provideType)
+    private fun callSignInAPI(){
+        Log.d("SIGNIN/API", socialUserModel.toString())
+        AuthService.login(this, socialUserModel)
     }
 
-    /*-> Response */
+    //-> Response
     override fun onSignInLoading() {}
 
     override fun onSignInSuccess(result: Login) {
-        Log.d("SIGNIN/API-SUCCESS", "status: ${result.status}")
 
         val jwtId = result.jwtId
         val status = result.status
@@ -181,10 +182,14 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //1. spf에 jwtId 저장
         saveJwt(jwtId)
 
-        //3. STATUS에 따른 처리 (0) 존재하는 회원 -> MainActivity (1) 존재하지 않는 회원 -> RegisterActivity (2) 에러 -> RegisterActivity
+        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId")
+
+        //2. STATUS에 따른 처리
+        // DONE: 가입된 회원, MainActivity로
+        // NONE, ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
         when (status) {
-            "exist" -> startMainActivity()
-            "non-exist" -> startRegisterActivity()
+            "DONE" -> startMainActivity()
+            "ONGOING" -> startRegisterActivity()
         }
     }
 

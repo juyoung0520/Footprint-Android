@@ -15,7 +15,7 @@ class GlobalApplication: Application() {
     companion object{
         const val X_ACCESS_TOKEN: String = "X-ACCESS-TOKEN"  // JWT Token Key
         const val TAG: String = "FOOTPRINT-APP"              // SharedPreference
-        const val BASE_URL: String = "http://prod.mysteps.shop:3000/"
+        const val BASE_URL: String = "http://dev.mysteps.shop:3000/"
 
         lateinit var retrofit: Retrofit
         lateinit var mSharedPreferences: SharedPreferences
@@ -25,8 +25,6 @@ class GlobalApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         KakaoSdk.init(this, getString(R.string.kakao_login_native_key))
-
-        val gson = GsonBuilder().setLenient().create()
 
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(30000, TimeUnit.MILLISECONDS)
