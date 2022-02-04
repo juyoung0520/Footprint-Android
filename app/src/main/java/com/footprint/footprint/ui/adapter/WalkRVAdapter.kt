@@ -1,24 +1,25 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.classes.NonNullMutableLiveData
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.ItemWalkBinding
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
 
-class WalkRVAdapter : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
+class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<WalkModel>()
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
+    private lateinit var fragmentManager: FragmentManager
 
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(walk: WalkModel)
     }
 
     interface OnItemRemoveClickListener {
@@ -41,18 +42,39 @@ class WalkRVAdapter : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         mOnItemRemoveClickListener = listener
     }
 
-    fun addWalk(walk: WalkModel) {
-        walks.add(walk)
-        notifyDataSetChanged()
+    fun setFragmentManager(fragmentManager: FragmentManager) {
+        this.fragmentManager = fragmentManager
     }
 
-    fun removeWalk(position: Int) {
+    private fun removeWalk(position: Int) {
         if (walks.isEmpty() || position !in 0..walks.size) {
             return
         }
 
         walks.removeAt(position)
         notifyDataSetChanged()
+    }
+
+    private fun showRemoveDialog(position: Int) {
+        val actionDialogFragment = ActionDialogFragment()
+
+        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
+            override fun action1(isAction: Boolean) {
+                if (isAction) {
+                    removeWalk(position)
+                    mOnItemRemoveClickListener.onItemRemoveClick()
+                }
+            }
+
+            override fun action2(isAction: Boolean) {
+            }
+        })
+
+        val bundle = Bundle()
+        bundle.putString("msg", "'OO번째 산책' 을 삭제하시겠어요?")
+
+        actionDialogFragment.arguments = bundle
+        actionDialogFragment.show(fragmentManager, null)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalkViewHolder {
@@ -71,15 +93,14 @@ class WalkRVAdapter : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     inner class WalkViewHolder(val binding: ItemWalkBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.walkNthRecordTv.text = walks[position].walkIndex.toString()
+            binding.walkNthRecordTv.text = walks[position].walkIdx.toString()
 
             binding.root.setOnClickListener {
-                mOnItemClickListener.onItemClick(position)
+                mOnItemClickListener.onItemClick(walks[position])
             }
 
             binding.walkRemoveTv.setOnClickListener {
-                removeWalk(position)
-                mOnItemRemoveClickListener.onItemRemoveClick()
+                showRemoveDialog(position)
             }
         }
     }

@@ -1,8 +1,6 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,8 +10,6 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.convertPxToDp
-import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.utils.getDeviceWidth
 import com.kizitonwose.calendarview.Completion
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -147,8 +143,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                Toast.makeText(context, "${position}번 째 산책", Toast.LENGTH_SHORT).show()
+            override fun onItemClick(walk: WalkModel) {
+                Toast.makeText(context, "${walk.walkIdx}번 째 산책", Toast.LENGTH_SHORT).show()
             }
         })
 

@@ -49,10 +49,18 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
             if (!isChanged) {
                 isChanged = true
             }
+
+            binding.searchSearchBarEt.setText("")
+
+            actionToSearchResultFragment(result)
         }
 
-        binding.searchSearchBarEt.setText("")
         (activity as MainActivity).hideKeyboard(binding.searchSearchBarEt)
+    }
+
+    private fun actionToSearchResultFragment(tag: String) {
+        val action = SearchFragmentDirections.actionSearchFragmentToSearchResultFragment(tag)
+        findNavController().navigate(action)
     }
 
     private fun initTagAdapter() {
@@ -61,7 +69,7 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
 
         adapter.setOnItemClickListener(object : TagRVAdapter.OnItemClickListener {
             override fun onItemClick(tag: String) {
-               Toast.makeText(requireContext(), tag, Toast.LENGTH_SHORT).show()
+               actionToSearchResultFragment(tag)
             }
         })
 
@@ -76,7 +84,8 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
     }
 
     private fun replaceText(text: String): String {
-        return text.replace(Regex("[^0-9a-zA-Z가-힣]"), "")
+        // 공백, #으로 시작 제거
+        return text.replace(" ", "").replace(Regex("^#"),"")
     }
 
     override fun onDestroyView() {

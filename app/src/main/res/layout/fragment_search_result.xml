@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_result_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/search_result_back_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            app:layout_constraintTop_toTopOf="@+id/search_result_search_bar_bg_v"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/search_result_search_bar_bg_v"/>
+
+        <View
+            android:id="@+id/search_result_search_bar_bg_v"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="13dp"
+            android:clickable="true"
+            android:background="@drawable/bg_white_round_rectangle_search"
+            app:layout_constraintVertical_bias="0.8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/search_result_back_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/search_result_search_bar_tv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="20dp"
+            android:textAppearance="@style/tv_body_b_14"
+            app:layout_constraintTop_toTopOf="@+id/search_result_search_bar_bg_v"
+            app:layout_constraintStart_toStartOf="@+id/search_result_search_bar_bg_v"
+            app:layout_constraintEnd_toStartOf="@+id/search_result_search_iv"
+            app:layout_constraintBottom_toBottomOf="@+id/search_result_search_bar_bg_v" />
+
+        <ImageView
+            android:id="@+id/search_result_search_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search_18"
+            android:layout_marginEnd="14dp"
+            app:layout_constraintTop_toTopOf="@+id/search_result_search_bar_bg_v"
+            app:layout_constraintEnd_toEndOf="@+id/search_result_search_bar_bg_v"
+            app:layout_constraintBottom_toBottomOf="@+id/search_result_search_bar_bg_v"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/search_result_background_v"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/search_result_top_layout"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/search_result_hint_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_no_search_result"
+        android:textColor="@color/gray"
+        android:textAppearance="@style/tv_body_b_14"
+        app:layout_constraintTop_toTopOf="@id/search_result_background_v"
+        app:layout_constraintStart_toStartOf="@id/search_result_background_v"
+        app:layout_constraintEnd_toEndOf="@id/search_result_background_v"
+        app:layout_constraintBottom_toBottomOf="@id/search_result_background_v"
+        android:visibility="gone"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@+id/search_result_background_v"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_result_walk_dates_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_walk_date"/>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

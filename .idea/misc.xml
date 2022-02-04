@@ -73,24 +73,31 @@
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.16" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_after.xml" value="0.2596491228070175" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_detail.xml" value="0.21359649122807017" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.1394736842105263" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_badge.xml" value="0.4" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_calendar.xml" value="0.2" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_course.xml" value="0.264" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.17980072463768115" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.2100877192982456" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.10261353898886033" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_msg_dialog.xml" value="0.1394736842105263" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.35167464114832536" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_goal.xml" value="0.20043859649122808" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_info.xml" value="0.20043859649122808" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_search.xml" value="0.176" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_search_result.xml" value="0.1" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walk_confirm.xml" value="0.13114754098360656" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walkmap.xml" value="0.1503623188405797" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_calendar_day.xml" value="0.264" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_day.xml" value="0.2100877192982456" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_day_walk.xml" value="0.17850877192982456" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="0.10261353898886033" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_one_day_walk.xml" value="0.10261353898886033" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_post.xml" value="0.22192028985507245" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.2100877192982456" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_today_walk.xml" value="0.17850877192982456" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_walk.xml" value="0.24682971014492755" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_walk_date.xml" value="0.20923913043478262" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1974025974025974" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/ic_course_off.xml" value="0.17314814814814813" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_33_user_off.xml" value="0.26205128205128203" />
