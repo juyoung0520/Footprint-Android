@@ -466,16 +466,4 @@ class RegisterInfoFragment() :
         }
     }
 
-
-    /*회원가입 API*/
-    private fun callSignUpAPI() {
-        //1. 로그인 상태, 토큰
-        val loginStatus = getLoginStatus(requireContext())
-        val IdToken = getToken(requireContext())
-
-        //2. 회원 정보(닉네임/성별/생년월일/키/몸무게), 목표 정보(목표 요일/목표 시간/목표 시간대)
-        //newUser
-        //3. 서버에 요청
-    }
-
 }

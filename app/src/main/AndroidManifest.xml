@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.footprint.footprint">
 
-    <!--날씨 API 연결을 위한 인터넷, 네트워크 permission-->
+    <!--인터넷, 네트워크 permission-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 카메라, 저장소 -->

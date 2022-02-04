@@ -235,4 +235,11 @@ class RegisterGoalFragment() :
     fun deliverUser(userModel: UserModel) {
         this.userModel = userModel
     }
+
+    //정보 등록 API
+    private fun callSignUpInfosAPI(){
+        //1. jwt 준비
+        //2. userModel 준비
+        //3. 부르기
+    }
 }

@@ -42,12 +42,11 @@
 
     <!--에러-->
 
-    <!--화면 별-->
 
+    <!--화면 별-->
     <!--온보딩-->
     <string name="msg_skip">skip ></string>
     <string name="action_start">시작하기</string>
-
     <string name="title_onboarding1">반가워요</string>
     <string name="msg_onboarding1">산책하러 오셨군요! 발자국에 오신걸 환영합니다</string>
     <string name="msg_img_onboarding1">산책은 가벼운 운동으로 제격인 동시에\n생각을 정리하거나 기분 전환에 좋은 활동이에요</string>
@@ -173,13 +172,6 @@
     <string name="msg_set_goal">목표를 설정해 주세요</string>
     <string name="msg_set_gaol_desc">월 기준으로 목표를 설정할 수 있어요</string>
     <string name="title_goal_day">목표 요일</string>
-    <string name="title_mon_kr">월</string>
-    <string name="title_tue_kr">화</string>
-    <string name="title_wed_kr">수</string>
-    <string name="title_thu_kr">목</string>
-    <string name="title_fri_kr">금</string>
-    <string name="title_sat_kr">토</string>
-    <string name="title_sun_kr">일</string>
     <string name="title_goal_walk_time">목표 산책 시간</string>
     <string name="msg_set_goal_time">목표시간을 선택해 주세요</string>
     <string name="title_goal_walk_slot">산책 시간대</string>
