@@ -3,6 +3,20 @@ package com.footprint.footprint.utils
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 
+/*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
+fun saveOnboarding(context: Context, onboardingStatus: Boolean){
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+    val editor = spf.edit()
+
+    editor.putBoolean("onboarding", onboardingStatus)
+    editor.apply()
+}
+
+fun getOnboarding(context: Context): Boolean{
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+
+    return spf.getBoolean("onboarding", false)
+}
 
 /*Token - Google, Kakao 로그인 시 받는 Access Token*/
 fun saveToken(context: Context, token: String){

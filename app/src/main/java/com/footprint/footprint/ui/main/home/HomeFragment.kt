@@ -9,6 +9,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
@@ -19,6 +20,7 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
@@ -35,13 +37,18 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun initAfterBinding() {
         //산책 시작 버튼 => Walk Activity
-        binding.homeStartbtnTv.setOnClickListener {
+        binding.homeStartBtn.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
+        }
+
+        binding.homeDayGoalLayout.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(OnBoardingActivity::class.java)
         }
 
         /*init: 1. TB&VP 2. 날짜*/
@@ -58,8 +65,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun initTB() {
         val tbTitle = arrayListOf("일별", "월별")
         val homeVPAdapter = HomeViewpagerAdapter(this)
+        binding.homeDaymonthVp.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.homeDaymonthVp.adapter = homeVPAdapter
-
         TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
             tab.text = tbTitle[position]
         }.attach()

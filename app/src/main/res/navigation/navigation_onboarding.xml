@@ -2,8 +2,9 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_onboarding"
-    app:startDestination="@id/obFirstFragment">
+    >
 
+ <!--   //app:startDestination="@id/obFirstFragment"
     <fragment
         android:id="@+id/obFirstFragment"
         android:name="com.footprint.footprint.ui.onboarding.OnBoardingFirstFragment"
@@ -37,6 +38,6 @@
     <fragment
         android:id="@+id/obFourthFragment"
         android:name="com.footprint.footprint.ui.onboarding.OnBoardingFourthFragment"
-        android:label="obFourthFragment" />
+        android:label="obFourthFragment" />-->
 
 </navigation>

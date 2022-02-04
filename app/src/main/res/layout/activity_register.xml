@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.1"
-        app:tabBackground="@drawable/selector_tablayout_indicator"
+        app:tabBackground="@drawable/selector_register_tablayout"
         app:tabGravity="center"
 
         app:tabIndicator="@null"

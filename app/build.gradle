@@ -105,12 +105,15 @@ dependencies {
     
     //카카오 로그인 & 구글 로그인 
     implementation "com.kakao.sdk:v2-user:2.8.4"
-    implementation 'com.google.android.gms:play-services-auth:20.0.1'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     //툴팁
     implementation "com.github.skydoves:balloon:1.4.1"
 
     //Switch Button
     implementation 'com.kyleduo.switchbutton:library:2.1.0'
+
+    //Lottie Animation
+    implementation 'com.airbnb.android:lottie:3.0.7'
 
 }

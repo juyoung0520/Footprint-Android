@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.register
 import android.graphics.Color
 import android.util.Log
 import android.view.WindowManager
+import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -46,9 +47,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
     private fun initVP() {
         registerVPAdapter = RegisterViewpagerAdapter(this)
         registerVPAdapter.setFragments(arrayListOf(RegisterInfoFragment(), RegisterGoalFragment()))
-
         binding.registerVp.adapter = registerVPAdapter
         binding.registerVp.isUserInputEnabled = false
+        binding.registerVp.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         TabLayoutMediator(binding.registerTb, binding.registerVp) { tab, position ->
             tab.text = (position + 1).toString()
             tab.view.isClickable = false
