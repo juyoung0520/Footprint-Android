@@ -8,8 +8,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.databinding.FragmentWalkConfirmBinding
 import com.footprint.footprint.data.model.FootprintsModel
+import com.footprint.footprint.databinding.FragmentWalkConfirmBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -60,6 +60,7 @@ class WalkConfirmFragment :
 
         setWalkDialog()
         setFootprintView()
+        setMyClickListener()
         observe()
 
         requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)  //뒤로가기 콜백 리스너 등록
@@ -75,26 +76,61 @@ class WalkConfirmFragment :
             binding.walkConfirmSlidedLayout.visibility = View.VISIBLE
 
             binding.walkConfirmSlidingUpPanelLayout.panelHeight = (getDeviceHeight() * 0.5).toInt()
+
+            if (!::footprints.isInitialized) {  //산책 도중 기록을 남기지 않았을 때
+                binding.walkConfirmPostRv.visibility = View.INVISIBLE
+                binding.walkConfirmPlusLineView.visibility = View.VISIBLE
+                binding.walkConfirmPlusTv.visibility = View.VISIBLE
+            } else {    //산책 도중 기록을 남겼을 때
+                binding.walkConfirmPostRv.visibility = View.VISIBLE
+                binding.walkConfirmPlusLineView.visibility = View.INVISIBLE
+                binding.walkConfirmPlusTv.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun setMyClickListener() {
+        binding.walkConfirmPlusTv.setOnClickListener {
+            val action = WalkConfirmFragmentDirections.actionWalkConfirmFragment2ToFootprintDialogFragment3("")
+            findNavController().navigate(action)
         }
     }
 
     private fun observe() {
-        //실시간 글 작성하기 화면으로부터 전달 받는 post 데이터
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("post")
+        //실시간 글 작성하기 화면으로부터 추가된 footprint 데이터
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("footprint")
             ?.observe(viewLifecycleOwner) {
-                Log.d("WalkConfirmFragment", "post observe -> $it")
+                Log.d("WalkConfirmFragment", "footprint observe -> $it")
+
+                if (it != null) {
+                    //string -> FootprintModel
+                    val footprint = Gson().fromJson<FootprintModel>(it, FootprintModel::class.java)
+                    footprint.isMarked = false  //산책 종료 후 추가된 발자국에는 발자국 아이콘 안 붙이기
+
+                    if (!::footprints.isInitialized) {  //산책 중에 남긴 발자국이 없다가 종료 후 처음 발자국을 남긴 경우
+                        footprints = FootprintsModel(arrayListOf(footprint))
+                        footprintRVAdapter.setData(footprints.footprints)
+
+                        binding.walkConfirmPlusTv.visibility = View.INVISIBLE
+                        binding.walkConfirmPlusLineView.visibility = View.INVISIBLE
+                        binding.walkConfirmPostRv.visibility = View.VISIBLE
+                    } else {    //어댑터에 데이터 추가하고 UI 업데이트
+                        footprintRVAdapter.addData(footprint, position + 1)
+                    }
+                }
+            }
+
+        //실시간 글 작성하기 화면으로부터 수정된 footprint 데이터
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("updatedFootprint")
+            ?.observe(viewLifecycleOwner) {
+                Log.d("WalkConfirmFragment", "updatedFootprint observe -> $it")
 
                 if (it != null) {
                     //string -> FootprintModel
                     val footprint = Gson().fromJson<FootprintModel>(it, FootprintModel::class.java)
 
-                    if (footprint.isUpdate) {
-                        //어댑터에 데이터 수정하고 UI 업데이트
-                        footprintRVAdapter.updateData(footprint, position)
-                    } else {
-                        //어댑터에 데이터 추가하고 UI 업데이트
-                        footprintRVAdapter.addData(footprint, position + 1)
-                    }
+                    //어댑터에 데이터 수정하고 UI 업데이트
+                    footprintRVAdapter.updateData(footprint, position)
                 }
             }
     }
@@ -136,7 +172,6 @@ class WalkConfirmFragment :
             override fun updateFootprint(position: Int, footprint: FootprintModel) {
                 this@WalkConfirmFragment.position = position
 
-                footprint.isUpdate = true   //수정하는 데이터임을 알리기
                 //발자국 작성하기 다이얼로그 화면 띄우기(수정)
                 val action =
                     WalkConfirmFragmentDirections.actionWalkConfirmFragment2ToFootprintDialogFragment3(
@@ -148,7 +183,7 @@ class WalkConfirmFragment :
 
         //어댑터에 데이터 저장
         if (::footprints.isInitialized) {
-            footprintRVAdapter.setData(footprints)
+            footprintRVAdapter.setData(footprints.footprints)
         }
         binding.walkConfirmPostRv.adapter = footprintRVAdapter
     }

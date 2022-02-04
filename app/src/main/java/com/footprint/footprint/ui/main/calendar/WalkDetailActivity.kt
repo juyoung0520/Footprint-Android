@@ -19,7 +19,7 @@ class WalkDetailActivity :
 
     //발자국 임시 데이터
     private val footprintList = arrayListOf<FootprintModel>(
-        FootprintModel(
+        /*FootprintModel(
             content = "발자국1 #발자국1",
             time = "00:00",
             hashTags = arrayListOf("#발자국1")
@@ -38,7 +38,7 @@ class WalkDetailActivity :
             content = "발자국4 #발자국4",
             time = "00:00",
             hashTags = arrayListOf("#발자국4")
-        )
+        )*/
     )
 
     override fun initAfterBinding() {

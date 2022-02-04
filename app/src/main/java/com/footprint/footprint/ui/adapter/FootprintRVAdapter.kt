@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.model.FootprintsModel
 import com.footprint.footprint.databinding.ItemFootprintBinding
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
@@ -28,7 +27,6 @@ class FootprintRVAdapter(private val activityClass: String) :
         fun updateFootprint(position: Int, footprint: FootprintModel)
     }
 
-    private val footprints: ArrayList<FootprintModel> = arrayListOf()
     private val footprintIcList: ArrayList<Int> = arrayListOf(
         R.drawable.ic_foot_print1,
         R.drawable.ic_foot_print2,
@@ -40,6 +38,9 @@ class FootprintRVAdapter(private val activityClass: String) :
         R.drawable.ic_foot_print8,
         R.drawable.ic_foot_print9
     )
+
+    private var footprintIcIdx: Int = 0
+    private var footprints: ArrayList<FootprintModel> = arrayListOf()
 
     private lateinit var binding: ItemFootprintBinding
     private lateinit var myItemClickListener: MyItemClickListener
@@ -66,27 +67,28 @@ class FootprintRVAdapter(private val activityClass: String) :
             holder.postStartIv.visibility = View.INVISIBLE
 
         //기록 시간
-        holder.postTimeTv.text = footprints[position].time
-
-        //기록 삭제 버튼 클릭 리스너 -> 다이얼로그 띄우기
-        holder.deleteTv.setOnClickListener {
-            myItemClickListener.showDeleteDialog(position)
-        }
+        footprints[position]
+        holder.postTimeTv.text = footprints[position].recordAt
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
             myItemClickListener.updateFootprint(position, footprints[position])
         }
 
-        holder.footPrintIv.setImageResource(footprintIcList[position])
+        //발자국 아이콘
+        if (footprints[position].isMarked) {    //발자국 표시가 있는 발자국일 때
+            holder.footPrintIv.visibility = View.VISIBLE
+            holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
+        } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
+            holder.footPrintIv.visibility = View.INVISIBLE
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
-        if (footprints[position].photos.size == 0) {
+        if (footprints[position].photos.isEmpty()) {
             holder.photoVp.visibility = View.GONE
             holder.photoIndicator.visibility = View.GONE
         } else {
             val photoRVAdapter = PhotoRVAdapter(1)
-            photoRVAdapter.addImgList(footprints[position].photos)
+            photoRVAdapter.addImgList(footprints[position].photos as ArrayList<String>)
             holder.photoVp.adapter = photoRVAdapter
             holder.photoVp.visibility = View.VISIBLE
 
@@ -115,10 +117,10 @@ class FootprintRVAdapter(private val activityClass: String) :
         holder.contentTv.post(Runnable {
             val lineCnt: Int = holder.contentTv.lineCount
 
-            if (footprints[position].photos.size == 0 && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
+            if (footprints[position].photos.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
                 holder.contentTv.maxLines = 3
                 holder.viewMoreTv.visibility = View.VISIBLE
-            } else if (footprints[position].photos.size > 0 && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
+            } else if (footprints[position].photos.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
                 holder.contentTv.maxLines = 2
                 holder.viewMoreTv.visibility = View.VISIBLE
             } else {    //이외 상황
@@ -134,7 +136,7 @@ class FootprintRVAdapter(private val activityClass: String) :
             } else {
                 holder.viewMoreTv.text = "더보기"
 
-                if (footprints[position].photos.size == 0)
+                if (footprints[position].photos.isEmpty())
                     holder.contentTv.maxLines = 3
                 else
                     holder.contentTv.maxLines = 2
@@ -157,9 +159,10 @@ class FootprintRVAdapter(private val activityClass: String) :
 
     override fun getItemCount(): Int = footprints.size
 
-    fun setData(footprints: FootprintsModel) {
-        this.footprints.clear()
-        this.footprints.addAll(footprints.footprints)
+    fun setData(footprints: ArrayList<FootprintModel>) {
+        this.footprints = footprints
+
+        footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
@@ -169,19 +172,19 @@ class FootprintRVAdapter(private val activityClass: String) :
     }
 
     fun addData(footprint: FootprintModel, position: Int) {
-        Log.d("PostRVAdapter", "addData before -> ${this.footprints}")
         if (this.footprints.size == position)
             this.footprints.add(footprint)
         else
             this.footprints.add(position, footprint)
 
+        footprintIcIdx = 0
         notifyDataSetChanged()
-        Log.d("PostRVAdapter", "addData after -> ${this.footprints}")
     }
 
     fun updateData(footprint: FootprintModel, position: Int) {
-        footprint.isUpdate = false
         footprints[position] = footprint
+
+        footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
@@ -196,7 +199,6 @@ class FootprintRVAdapter(private val activityClass: String) :
         val photoVp: ViewPager2 = itemView.itemFootprintPhotoVp
         val photoIndicator: CircleIndicator3 = itemView.itemFootprintPhotoIndicator
         val contentTv: TextView = itemView.itemFootprintContentTv
-        val deleteTv: TextView = itemView.itemFootprintDeleteTv
         val viewMoreTv: TextView = itemView.itemFootprintViewMoreTv
         val footPrintIv: ImageView = itemView.itemFootprintFootprintIv
         val plusTv: TextView = itemView.itemFootprintPlusTv

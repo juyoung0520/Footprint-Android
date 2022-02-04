@@ -246,6 +246,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/walk_confirm_up_iv" />
 
+        <View
+            android:id="@+id/walk_confirm_plus_line_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="27dp"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/walk_confirm_time_desc_tv" />
+
+        <TextView
+            android:id="@+id/walk_confirm_plus_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_item_post_plus_tv"
+            android:gravity="center"
+            android:text="+"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            android:textColor="@color/white_light"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_confirm_plus_line_view"
+            app:layout_constraintEnd_toEndOf="@+id/walk_confirm_plus_line_view"
+            app:layout_constraintStart_toStartOf="@+id/walk_confirm_plus_line_view"
+            app:layout_constraintTop_toBottomOf="@+id/walk_confirm_plus_line_view" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/walk_confirm_post_rv"
             android:layout_width="match_parent"

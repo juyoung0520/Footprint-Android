@@ -3,7 +3,6 @@ package com.footprint.footprint.ui.dialog
 import android.Manifest
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +11,7 @@ import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +25,9 @@ import gun0912.tedimagepicker.builder.TedImagePicker
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.santalu.textmatcher.rule.HashtagRule
-import com.santalu.textmatcher.style.MentionStyle
+import com.santalu.textmatcher.style.HashtagStyle
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -35,6 +37,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var footprint: FootprintModel
 
     private var textMatcherFlag: Int = 1
+    private var isUpdate: Boolean = false
 
     private val imgList: ArrayList<String> = arrayListOf<String>()  //선택한 사진을 저장하는 변수
     private val args: FootprintDialogFragmentArgs by navArgs()
@@ -67,11 +70,11 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         //클릭 리스너 설정
         setMyClickListener()
 
-        if (args.footprint!!.isNotBlank()) {
+        if (args.footprint!!.isNotBlank()) {    //발자국 수정
             footprint = Gson().fromJson(args.footprint, FootprintModel::class.java)
+            isUpdate = true
             setUI(footprint)
-        } else
-            footprint = FootprintModel()
+        }
 
         return binding.root
     }
@@ -155,11 +158,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                     binding.postDialogPhotoIndicator.visibility = View.VISIBLE
                     binding.postDialogAddPhotoTv.text = getString(R.string.action_delete_photo)
                 }
-                /*
-                //추후에 사용될 듯
-                for (uri in uriList) {
-                    imgList.add(getAbsolutePathByBitmap(uriToBitmap(uri)))
-                }*/
             }
     }
 
@@ -175,11 +173,11 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
     private fun setHashTag() {
         //해시태그 관련 설정
-        var mentionStyle = MentionStyle(
-            textColor = R.color.primary,
+        val hashtagStyle = HashtagStyle(
+            textColor = ContextCompat.getColor(requireActivity(), R.color.primary),
             isBold = false
         )
-        var hashtagRule = HashtagRule(allowedCharacters = "-", style = mentionStyle)
+        var hashtagRule = HashtagRule("-", hashtagStyle)
         binding.postDialogContentEt.addRule(hashtagRule)
 
         binding.postDialogContentEt.setOnMatchListener { rule, s ->
@@ -195,6 +193,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                         getString(R.string.error_hashtag_exceed_cnt),
                         Toast.LENGTH_SHORT
                     ).show()
+
 
                     textMatcherFlag = 0
                     binding.postDialogContentEt.addTextChangedListener(this)
@@ -256,11 +255,17 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             } else {
                 dismiss()   //프래그먼트 종료
 
-                //지금까지 입력한 기록 데이터를 이전 화면(WalkMapFragment)으로 전달
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    "post",
-                    Gson().toJson(setPostData())    //setPostData(): 지금까지 입력한 내용을 PostModel 에 바인딩
-                )
+                if (isUpdate) { //발자국 추가하기 -> 지금까지 입력한 발자국 데이터를 이전 화면(WalkMapFragment)으로 전달
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        "updatedFootprint",
+                        Gson().toJson(setFootprintData())
+                    )
+                } else {    //발자국 수정하기 -> 수정된 발자국 데이터를 이전 화면(WalkMapFragment)으로 전달
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        "footprint",
+                        Gson().toJson(setFootprintData())
+                    )
+                }
 
                 //"발자국을 남겼어요." 다이얼로그 화면 띄우기
                 val action =
@@ -272,22 +277,25 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
     }
 
-    private fun setPostData(): FootprintModel {
-        Log.d("FooprintDialogFragment", "setPostData")
+    private fun setFootprintData(): FootprintModel {
         var hashtags = findHashTag()
         if (hashtags.isNotEmpty() && hashtags.size > 5)
             hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
 
+        if (!::footprint.isInitialized) {
+            footprint = FootprintModel()
+
+            val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
+            footprint.recordAt = current.format(DateTimeFormatter.ISO_DATE_TIME)
+        }
         footprint.content = binding.postDialogContentEt.text.toString()
+        footprint.hashtagList = hashtags
         footprint.photos = imgList
-        footprint.time = SimpleDateFormat("HH:mm").format(System.currentTimeMillis())
-        footprint.hashTags = hashtags
 
         return footprint
     }
 
     private fun setDeletePhotoUI() {
-        Log.d("FooprintDialogFragment", "setDeletePhotoUI")
         binding.postDialogPhotoVp.visibility = View.GONE
         binding.postDialogPhotoIndicator.visibility = View.GONE
         binding.postDialogAddPhotoTv.text = getString(R.string.action_add_photo)
@@ -296,7 +304,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     private fun setUI(footprint: FootprintModel) {
-        Log.d("FooprintDialogFragment", "setUI")
         binding.postDialogContentEt.setText(footprint.content)
 
         if (footprint.photos.isEmpty()) {
@@ -306,7 +313,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             imgList.addAll(footprint.photos)
 
             binding.postDialogPhotoVp.visibility = View.VISIBLE
-            photoRVAdapter.addImgList(footprint.photos)
+            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
 
             binding.postDialogPhotoIndicator.visibility = View.VISIBLE
             binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
@@ -314,36 +321,4 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             binding.postDialogAddPhotoTv.setText(R.string.action_delete_photo)
         }
     }
-
-    /*//추후에 사용될 듯
-    private fun uriToBitmap(uri: Uri): Bitmap {
-        val bitmap = if (Build.VERSION.SDK_INT < 28) {
-            MediaStore.Images.Media.getBitmap(
-                requireActivity().contentResolver,
-                uri
-            )
-        } else {
-            val source = ImageDecoder.createSource(requireActivity().contentResolver, uri)
-            ImageDecoder.decodeBitmap(source)
-        }
-
-        return bitmap
-    }
-
-    private fun getAbsolutePathByBitmap(bitmap: Bitmap): String {
-        val path =
-            (requireContext().applicationInfo.dataDir + File.separator + System.currentTimeMillis())
-        val file = File(path)
-        var out: OutputStream? = null
-
-        try {
-            file.createNewFile()
-            out = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out)
-        } finally {
-            out?.close()
-        }
-
-        return file.absolutePath
-    }*/
 }

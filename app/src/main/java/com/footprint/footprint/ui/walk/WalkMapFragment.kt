@@ -72,9 +72,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         mapFragment.getMapAsync(this)
 
         //실시간 글 작성하기 화면으로부터 전달 받는 post 데이터
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("post")
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("footprint")
             ?.observe(viewLifecycleOwner) {
-                Log.d("WalkMapFragment", "post observe -> $it")
+                Log.d("WalkMapFragment", "footprint observe -> $it")
 
                 sendCommandToService(WalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
@@ -361,16 +361,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         actionDialogFragment.show(requireActivity().supportFragmentManager, null)
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-
             override fun action1(isAction: Boolean) {
                 if (isAction) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
                     val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
 
                     if (footprints.footprints.size != 0)
-                        intent.putExtra(
-                            "footprints",
-                            Gson().toJson(footprints)
-                        )  //우선 임의로 저장한 기록만 넘겨줌
+                        intent.putExtra("footprints", Gson().toJson(footprints))  //우선 임의로 저장한 기록만 넘겨줌
 
                     startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
                     (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
