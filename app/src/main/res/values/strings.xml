@@ -199,6 +199,7 @@
     <string name="msg_last_three_month">*이전 3달 기준</string>
     <string name="msg_statistics_res_prefix">주로</string>
     <string name="msg_statistics_res_suffix">에 산책을 가장 많이 나가요</string>
+    <string name="msg_percent_unit">(%)</string>
 
     <!--뱃지-->
     <string name="title_achievement_badge">달성 뱃지</string>

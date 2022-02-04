@@ -357,11 +357,12 @@
             <View
                 android:id="@+id/mypage_statistics_bg_v"
                 android:layout_width="match_parent"
-                android:layout_height="206dp"
+                android:layout_height="0dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="13dp"
-                android:layout_marginBottom="21dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_white_round_square"
+                app:layout_constraintHeight_percent="0.27"
                 app:layout_constraintTop_toBottomOf="@id/mypage_statistics_result_1_tv"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -381,10 +382,21 @@
                 android:id="@+id/mypage_bar_chart_bc"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="@+id/mypage_statistics_bg_v"
+                app:layout_constraintTop_toBottomOf="@+id/mypage_caption_tv"
                 app:layout_constraintStart_toStartOf="@+id/mypage_statistics_bg_v"
                 app:layout_constraintEnd_toEndOf="@+id/mypage_statistics_bg_v"
                 app:layout_constraintBottom_toBottomOf="@+id/mypage_statistics_bg_v" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/msg_percent_unit"
+                android:textColor="@color/white_caption"
+                android:textAppearance="@style/tv_headline_eb_10"
+                app:layout_constraintStart_toStartOf="@id/mypage_statistics_bg_v"
+                app:layout_constraintBottom_toBottomOf="@id/mypage_statistics_bg_v" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
