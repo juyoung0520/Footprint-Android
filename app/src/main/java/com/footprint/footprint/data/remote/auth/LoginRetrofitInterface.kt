@@ -1,5 +1,6 @@
 package com.footprint.footprint.data.remote.auth
 
+import com.footprint.footprint.data.model.SocialUserModel
 import retrofit2.*
 import retrofit2.http.Body
 import retrofit2.http.POST

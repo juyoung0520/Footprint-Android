@@ -3,11 +3,11 @@ package com.footprint.footprint.data.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-//User 데이터 클래스 (API 연결 시 수정)
+/*User Model*/
 data class UserModel(
     @SerializedName("nickname") var nickname: String = "",                  //닉네임(*)
     @SerializedName("sex") var gender: String = "null",                     //성별(*): female, male, null
-    @SerializedName("birth") var birth: String = "",                        //생년월일: yyyy-MM-dd
+    @SerializedName("birth") var birth: String = "0000-00-00",              //생년월일: yyyy-MM-dd
     @SerializedName("height") var height: Int = 0,                          //키: 0
     @SerializedName("weight") var weight: Int = 0,                          //몸무게: 0
     @SerializedName("dayIdx") var goalDay: ArrayList<Int> = arrayListOf(),  //목표 산책 요일

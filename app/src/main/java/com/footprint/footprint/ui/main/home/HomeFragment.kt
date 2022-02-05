@@ -19,6 +19,7 @@ import com.footprint.footprint.data.remote.weather.ITEM
 import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.lock.LockActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.ui.walk.WalkActivity
@@ -49,6 +50,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeDayGoalLayout.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(OnBoardingActivity::class.java)
+        }
+
+        binding.homeMonthGoalLayout.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(LockActivity::class.java)
         }
 
         /*init: 1. TB&VP 2. 날짜*/

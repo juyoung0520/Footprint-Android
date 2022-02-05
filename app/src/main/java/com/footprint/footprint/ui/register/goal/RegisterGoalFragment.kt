@@ -242,7 +242,8 @@ class RegisterGoalFragment() :
 
     override fun onRegisterSuccess(result: String?) {
         Log.d("REGISTER/API-SUCCESS", "성공" + result.toString())
-        //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
+
+            //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
             val intent = Intent(requireActivity(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(Intent(intent))

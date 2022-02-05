@@ -96,6 +96,12 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.lock.LockActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+
         <service
             android:name=".service.WalkService"
             android:exported="false"
