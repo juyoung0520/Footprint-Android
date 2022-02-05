@@ -2,19 +2,16 @@ package com.footprint.footprint.ui.lock
 
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityLockBinding
 import com.footprint.footprint.ui.BaseActivity
-import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.adapter.LockRVAdapter
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import okhttp3.internal.wait
 
 class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::inflate) {
     private lateinit var lockRVAdapter: LockRVAdapter

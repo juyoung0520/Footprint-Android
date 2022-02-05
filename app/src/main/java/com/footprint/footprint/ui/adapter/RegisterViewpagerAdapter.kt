@@ -1,8 +1,9 @@
-package com.footprint.footprint.ui.register
+package com.footprint.footprint.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 
 class RegisterViewpagerAdapter(fragment: RegisterActivity) : FragmentStateAdapter(fragment) {

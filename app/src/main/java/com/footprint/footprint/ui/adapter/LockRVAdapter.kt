@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.lock
+package com.footprint.footprint.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +21,7 @@ class LockRVAdapter(private val itemWidthPx: Int) : RecyclerView.Adapter<LockRVA
     private lateinit var itemClickListener : OnItemClickListener
 
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): LockRVAdapter.ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemLockNumberBinding =
             ItemLockNumberBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
 
