@@ -1,8 +1,15 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.graphics.Typeface
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
+import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -30,32 +37,60 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageMonthPb.progress = 80
 
         val spanColorPrimary =
-            ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.primary))
+            ForegroundColorSpan(requireContext().getColor(R.color.primary))
+        val spanColorSecondary =
+            ForegroundColorSpan(requireContext().getColor(R.color.secondary))
 
-        val spannableWeek = SpannableString(binding.mypageGoalWeekTv.text)
-        spannableWeek.setSpan(
-            spanColorPrimary,
-            2,
-            spannableWeek.length - 1,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+
+        val week = "3"
+        binding.mypageGoalWeekTv.text =
+            getSpannableString(binding.mypageGoalWeekTv.text, week, 2, spanColorPrimary)
+
+        val minute = "20"
+        binding.mypageGoalDayTv.text =
+            getSpannableString(binding.mypageGoalDayTv.text, minute, 3, spanColorPrimary)
+
+        val res1 = "월요일"
+        binding.mypageStatisticsWeekResultTv.text = getSpannableString(
+            binding.mypageStatisticsWeekResultTv.text, res1, 3, spanColorSecondary
         )
-        binding.mypageGoalWeekTv.text = spannableWeek
 
-
-        val spannableDay = SpannableString(binding.mypageGoalDayTv.text)
-        spannableDay.setSpan(
-            spanColorPrimary,
-            3,
-            spannableDay.length - 1,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.mypageGoalDayTv.text = spannableDay
-
-        binding.mypageStatisticsResult2Tv.text = " 월요일"
-
-        binding.mypageGoalLeftIv.setOnClickListener {
+        binding.mypageGoalRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
+
+        binding.mypageBackIv.setOnClickListener {
+
+        }
+    }
+
+    private fun getSpannableString(
+        originText: CharSequence,
+        insertText: String,
+        startIdx: Int,
+        color: ForegroundColorSpan
+    ): SpannableStringBuilder {
+        val spannableText = SpannableStringBuilder(originText)
+        spannableText.apply {
+            insert(startIdx, insertText)
+            setSpan(
+                color,
+                startIdx,
+                startIdx + insertText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            spannableText.setSpan(
+                TypefaceSpan(resources.getFont(R.font.namusquareround_extra_bold)),
+                startIdx,
+                startIdx + insertText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        return spannableText
     }
 
     private fun initWeekGraph() {

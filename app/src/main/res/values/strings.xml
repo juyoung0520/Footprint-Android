@@ -194,11 +194,14 @@
     <string name="msg_today">오늘</string>
     <string name="msg_this_month">이번달</string>
     <string name="title_this_month_goal">이번달 목표</string>
-    <string name="msg_walk_count">삭책 횟수</string>
+    <string name="msg_this_month_goal_week">주 회</string>
+    <string name="msg_this_month_goal_day">하루 분</string>
+    <string name="msg_walk_count">산책 횟수</string>
     <string name="title_statistics">통계</string>
     <string name="msg_last_three_month">*이전 3달 기준</string>
-    <string name="msg_statistics_res_prefix">주로</string>
-    <string name="msg_statistics_res_suffix">에 산책을 가장 많이 나가요</string>
+    <string name="msg_statistics_week_res">주로 에 산책을 가장 많이 나가요</string>
+    <string name="msg_statistics_month_count_res">이번달엔 회 기록했어요</string>
+    <string name="msg_statistics_month_rate_res">이번달엔 %달성했어요</string>
     <string name="msg_percent_unit">(%)</string>
 
     <!--뱃지-->

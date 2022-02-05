@@ -84,7 +84,7 @@
                 app:layout_constraintTop_toTopOf="@id/mypage_rep_badge_iv" />
 
             <ImageView
-                android:id="@+id/mypage_info_left_iv"
+                android:id="@+id/mypage_info_right_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
@@ -112,7 +112,7 @@
                     app:progress_end_color="@color/primary"
                     app:progress_start_color="@color/primary"
                     app:progress_stroke_cap="round"
-                    app:progress_stroke_width="10dp"
+                    app:progress_stroke_width="9dp"
                     app:progress_text_color="@color/white_light"
                     app:style="solid_line" />
 
@@ -132,7 +132,7 @@
                     android:id="@+id/mypage_today_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="9dp"
                     android:text="@string/msg_today"
                     android:textAppearance="@style/tv_headline_eb_14"
                     android:textColor="@color/black_light"
@@ -222,7 +222,7 @@
                 app:layout_constraintTop_toBottomOf="@id/mypage_divider_1_v" />
 
             <ImageView
-                android:id="@+id/mypage_goal_left_iv"
+                android:id="@+id/mypage_goal_right_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
@@ -247,7 +247,7 @@
                 android:id="@+id/mypage_goal_week_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="주 3회"
+                android:text="주 회"
                 android:textAppearance="@style/tv_headline_eb_16"
                 app:layout_constraintBottom_toBottomOf="@id/mypage_goal_bg_1_v"
                 app:layout_constraintEnd_toEndOf="@id/mypage_goal_bg_1_v"
@@ -270,7 +270,7 @@
                 android:id="@+id/mypage_goal_day_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="하루 1440분"
+                android:text="하루 분"
                 android:textAppearance="@style/tv_headline_eb_16"
                 app:layout_constraintBottom_toBottomOf="@id/mypage_goal_bg_2_v"
                 app:layout_constraintEnd_toEndOf="@id/mypage_goal_bg_2_v"
@@ -321,50 +321,26 @@
                 app:layout_constraintTop_toBottomOf="@id/mypage_divider_2_v" />
 
             <TextView
-                android:id="@+id/mypage_statistics_result_1_tv"
+                android:id="@+id/mypage_statistics_week_result_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/msg_statistics_res_prefix"
-                android:textAppearance="@style/tv_overline_16"
-                android:textColor="@color/black_light"
-                app:layout_constraintEnd_toStartOf="@id/mypage_statistics_result_2_tv"
-                app:layout_constraintTop_toTopOf="@id/mypage_statistics_result_2_tv"
-                app:layout_constraintBottom_toBottomOf="@id/mypage_statistics_result_2_tv"/>
-
-            <TextView
-                android:id="@+id/mypage_statistics_result_2_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text=""
-                android:textAppearance="@style/tv_headline_eb_16"
-                android:textColor="@color/secondary"
-                app:layout_constraintEnd_toStartOf="@id/mypage_statistics_result_3_tv"
-                app:layout_constraintTop_toBottomOf="@id/mypage_statistics_tv" />
-
-            <TextView
-                android:id="@+id/mypage_statistics_result_3_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
                 android:layout_marginEnd="24dp"
-                android:text="@string/msg_statistics_res_suffix"
+                android:text="@string/msg_statistics_week_res"
                 android:textAppearance="@style/tv_overline_16"
                 android:textColor="@color/black_light"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/mypage_statistics_result_2_tv"
-                app:layout_constraintBottom_toBottomOf="@id/mypage_statistics_result_2_tv"/>
+                app:layout_constraintTop_toBottomOf="@id/mypage_statistics_tv" />
 
             <View
-                android:id="@+id/mypage_statistics_bg_v"
+                android:id="@+id/mypage_statistics_bg_1_v"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="13dp"
-                android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_white_round_square"
-                app:layout_constraintHeight_percent="0.27"
-                app:layout_constraintTop_toBottomOf="@id/mypage_statistics_result_1_tv"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintHeight_percent="0.18"
+                app:layout_constraintTop_toBottomOf="@id/mypage_statistics_week_result_tv" />
 
             <TextView
                 android:id="@+id/mypage_caption_tv"
@@ -375,17 +351,17 @@
                 android:text="@string/msg_last_three_month"
                 android:textAppearance="@style/tv_headline_eb_10"
                 android:textColor="@color/white_caption"
-                app:layout_constraintEnd_toEndOf="@+id/mypage_statistics_bg_v"
-                app:layout_constraintTop_toTopOf="@id/mypage_statistics_bg_v" />
+                app:layout_constraintEnd_toEndOf="@+id/mypage_statistics_bg_1_v"
+                app:layout_constraintTop_toTopOf="@id/mypage_statistics_bg_1_v" />
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/mypage_bar_chart_bc"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintTop_toBottomOf="@+id/mypage_caption_tv"
-                app:layout_constraintStart_toStartOf="@+id/mypage_statistics_bg_v"
-                app:layout_constraintEnd_toEndOf="@+id/mypage_statistics_bg_v"
-                app:layout_constraintBottom_toBottomOf="@+id/mypage_statistics_bg_v" />
+                app:layout_constraintStart_toStartOf="@+id/mypage_statistics_bg_1_v"
+                app:layout_constraintEnd_toEndOf="@+id/mypage_statistics_bg_1_v"
+                app:layout_constraintBottom_toBottomOf="@+id/mypage_statistics_bg_1_v" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -395,8 +371,31 @@
                 android:text="@string/msg_percent_unit"
                 android:textColor="@color/white_caption"
                 android:textAppearance="@style/tv_headline_eb_10"
-                app:layout_constraintStart_toStartOf="@id/mypage_statistics_bg_v"
-                app:layout_constraintBottom_toBottomOf="@id/mypage_statistics_bg_v" />
+                app:layout_constraintStart_toStartOf="@id/mypage_statistics_bg_1_v"
+                app:layout_constraintBottom_toBottomOf="@id/mypage_statistics_bg_1_v" />
+
+            <TextView
+                android:id="@+id/mypage_statistics_month_count_result_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/msg_statistics_week_res"
+                android:textAppearance="@style/tv_overline_16"
+                android:textColor="@color/black_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mypage_statistics_bg_1_v" />
+
+            <View
+                android:id="@+id/mypage_statistics_bg_2_v"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/bg_white_round_square"
+                app:layout_constraintHeight_percent="0.18"
+                app:layout_constraintTop_toBottomOf="@+id/mypage_statistics_month_count_result_tv"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
