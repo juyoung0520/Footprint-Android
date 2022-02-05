@@ -223,4 +223,15 @@
     <string name="title_goal_next_month">다음달 목표</string>
     <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
 
+    <!--암호-->
+    <string name="title_lock_setting">암호 설정</string>
+    <string name="msg_lock_setting">암호를 입력해 주세요</string>
+    <string name="title_lock_checking">암호 확인</string>
+    <string name="msg_lock_checking">암호를 다시한번 입력해 주세요</string>
+    <string name="msg_lock_resetting">암호가 일치하지 않습니다\n처음부터 다시 시도해 주세요</string>
+    <string name="title_lock_change">암호 변경</string>
+    <string name="msg_lock_change">새로운 암호를 입력해 주세요</string>
+    <string name="title_lock_unlock">잠금 해제</string>
+    <string name="msg_lock_unlock">기존의 암호를 입력해 주세요</string>
+    <string name="msg_lock_unlock_wrong">잘못된 암호를 입력하였습니다</string>
 </resources>
