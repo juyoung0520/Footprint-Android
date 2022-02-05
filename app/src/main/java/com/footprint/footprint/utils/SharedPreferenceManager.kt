@@ -95,3 +95,18 @@ fun getPWD(context: Context): String?{
 
     return spf.getString("password", null)
 }
+
+/*PWDstatus: 산책 일기 암호 상태 - DEFAULT(암호 X), SET(암호 설정 O), ON(암호 ON), OFF(암호 OFF)*/
+fun savePWDstatus(context: Context, status: String){
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+    val editor = spf.edit()
+
+    editor.putString("pwdStatus", status)
+    editor.apply()
+}
+
+fun getPWDstatus(context: Context): String? {
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+
+    return spf.getString("pwdStatus", "DEFAULT")
+}

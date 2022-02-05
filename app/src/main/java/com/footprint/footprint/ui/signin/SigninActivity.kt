@@ -48,7 +48,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //다음에 로그인 할래요 -> RegisterActivity 로 이동
         binding.signinNologinTv.setOnClickListener {
-            this.startNextActivity(RegisterActivity::class.java)
+            //this.startNextActivity(RegisterActivity::class.java)
+            this.startNextActivity(MainActivity::class.java)
             finish()
         }
     }

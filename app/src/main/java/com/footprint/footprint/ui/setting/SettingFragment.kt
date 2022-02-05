@@ -1,12 +1,17 @@
 package com.footprint.footprint.ui.setting
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.lock.LockActivity
+import com.footprint.footprint.utils.getPWDstatus
+import com.footprint.footprint.utils.savePWDstatus
+
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
 
@@ -16,6 +21,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
 
+        //산책기록 잠금 스위치버튼 <- ON/OFF 상태
+        if(getPWDstatus(requireContext()) == "ON") binding.settingLockFootprintSb.isChecked = true
         setMyEventListener()
     }
 
@@ -57,10 +64,28 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
         }
 
-        //회워탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
+        //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
         binding.settingWithdrawalTv.setOnClickListener {
             setActionDialogBundle(getString(R.string.msg_withdrawal))
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
+        }
+
+        //산책기록 잠금 스위치버튼 클릭 리스너
+        binding.settingLockFootprintSb.setOnClickListener {
+            val pwdStatus = getPWDstatus(requireContext())
+            if (pwdStatus == "DEFAULT") {
+                //DEFAULT: 암호 X, 암호 설정 액티비티(LockActivity)로 이동/SETTING 암호 설정
+                startLockActivity("SETTING")
+                binding.settingLockFootprintSb.isChecked = false
+            } else {
+                //SET, ON, OFF: 암호 변경 visibility 변경
+                setPwdSettingVisibility()
+            }
+        }
+
+        //암호 설정 및 변경 클릭 리스너 -> 암호 변경(LockActivity)로 이동/CHANGE 암호 변경
+        binding.settingPasswordSettingNextIv.setOnClickListener {
+            startLockActivity("CHANGE")
         }
     }
 
@@ -69,4 +94,31 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         bundle.putString("msg", msg)
         actionDialogFragment.arguments = bundle
     }
+
+    /*Function- 암호 */
+    //암호 변경 visibility 변경
+    private fun setPwdSettingVisibility() {
+        lateinit var pwdStatus: String
+        if (binding.settingLockFootprintSb.isChecked) {
+            binding.settingPasswordSettingIv.visibility = View.VISIBLE
+            binding.settingPasswordSettingTv.visibility = View.VISIBLE
+            binding.settingPasswordSettingNextIv.visibility = View.VISIBLE
+            pwdStatus = "ON"
+        } else {
+            binding.settingPasswordSettingIv.visibility = View.GONE
+            binding.settingPasswordSettingTv.visibility = View.GONE
+            binding.settingPasswordSettingNextIv.visibility = View.GONE
+            pwdStatus = "OFF"
+        }
+        savePWDstatus(requireContext(), pwdStatus)
+    }
+
+    //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)
+    private fun startLockActivity(mode: String) {
+        val intent = Intent(requireContext(), LockActivity::class.java)
+        intent.putExtra("mode", mode)
+        startActivity(intent)
+    }
+
+    /*Function - 로그아웃/탈퇴*/
 }
