@@ -31,7 +31,6 @@
         android:id="@+id/walk_after_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00번째 산책"
         android:textAppearance="@style/tv_headline_eb_16"
         app:layout_constraintTop_toTopOf="@+id/walk_after_tb"
         app:layout_constraintStart_toStartOf="@+id/walk_after_tb"

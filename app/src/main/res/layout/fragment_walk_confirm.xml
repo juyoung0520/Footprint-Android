@@ -21,8 +21,7 @@
             android:id="@+id/walk_confirm_map_iv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_temp_map"
+            android:scaleType="center"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.3"
             app:layout_constraintTop_toTopOf="parent" />
@@ -240,7 +239,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="11dp"
-            android:text="2021.12.23  13:40~14:01"
             android:textAppearance="@style/tv_body_b_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
