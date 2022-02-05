@@ -2,6 +2,8 @@ package com.footprint.footprint.utils
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
+import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
 import com.google.gson.reflect.TypeToken
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
@@ -17,29 +19,6 @@ fun getOnboarding(context: Context): Boolean{
     val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
 
     return spf.getBoolean("onboarding", false)
-}
-
-/*Token - Google, Kakao 로그인 시 받는 Access Token*/
-fun saveToken(context: Context, token: String){
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
-
-    editor.putString("token", token)
-    editor.apply()
-}
-
-fun getToken(context: Context): String{
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
-
-    return spf.getString("token", "")!!
-}
-
-fun removeToken(context: Context){
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf!!.edit()
-
-    editor.remove("token")
-    editor.apply()
 }
 
 
@@ -66,6 +45,25 @@ fun removeLoginStatus(context: Context){
     editor.apply()
 }
 
+
+/*JwtId - 로그인 API 호출 후, 서버에서 받아오는 JwtId & API 요청 시 사용하는 X-ACCESS-TOKEN*/
+fun saveJwt(jwtToken: String) {
+    val editor = mSharedPreferences.edit()
+    editor.putString(X_ACCESS_TOKEN, jwtToken)
+
+    editor.apply()
+}
+
+fun getJwt(): String? = mSharedPreferences.getString(X_ACCESS_TOKEN, null)
+
+fun removeJwt(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove(X_ACCESS_TOKEN)
+    editor.apply()
+}
+
+/*Tag: 태그 검색 기록 확인에서 활용*/
 fun saveTags(context: Context,tags: ArrayList<String>) {
     val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
     val editor = spf.edit()

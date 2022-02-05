@@ -296,7 +296,7 @@ class RegisterInfoFragment() :
 
 
         if (results[0] == 1 && results[1] == 1 && results[2] == 1) {
-            newUser.birth = String.format("%04d.%02d.%02d", year, month, day)
+            newUser.birth = String.format("%04d-%02d-%02d", year, month, day)
 
             yearEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
@@ -306,7 +306,7 @@ class RegisterInfoFragment() :
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
             return true
         } else if (results[0] == 0 && results[1] == 0 && results[2] == 0) {
-            newUser.birth = null
+            newUser.birth = "0000-00-00"
             return true
         }
 
@@ -372,7 +372,7 @@ class RegisterInfoFragment() :
             }
         } else {
             //값 X
-            newUser.height = null
+            newUser.height = 0
             return true
         }
     }
@@ -413,7 +413,7 @@ class RegisterInfoFragment() :
                 return true
             }
         } else {
-            newUser.weight = null
+            newUser.weight = 0
             return true
         }
     }
@@ -464,18 +464,6 @@ class RegisterInfoFragment() :
             if (!keyboardStatus)
                 binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
         }
-    }
-
-
-    /*회원가입 API*/
-    private fun callSignUpAPI() {
-        //1. 로그인 상태, 토큰
-        val loginStatus = getLoginStatus(requireContext())
-        val IdToken = getToken(requireContext())
-
-        //2. 회원 정보(닉네임/성별/생년월일/키/몸무게), 목표 정보(목표 요일/목표 시간/목표 시간대)
-        //newUser
-        //3. 서버에 요청
     }
 
 }

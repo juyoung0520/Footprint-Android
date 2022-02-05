@@ -8,6 +8,7 @@ import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
+import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
@@ -23,22 +24,24 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     override fun initAfterBinding() {
         //온보딩 화면 O/X => 3초 후 실행
-         val handler = Handler()
-                handler.postDelayed({
-                    //1. 온보딩 실행 여부 spf에서 받아오기
-                    var onboardingStatus = getOnboarding(this)
-                    Log.d("ONBOARDING", onboardingStatus.toString())
-                    if(!onboardingStatus){
-                        //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
-                        startNextActivity(OnBoardingActivity::class.java)
-                        finish()
-                    }else{
-                        //3. true -> 로그인 상태 확인
-                        checkGoogleLogin()
-                        checkKakaoLogin()
-                    }
-                }, 3000)
+        val handler = Handler()
+        handler.postDelayed({
+            //1. 온보딩 실행 여부 spf에서 받아오기
+            var onboardingStatus = getOnboarding(this)
+            Log.d("ONBOARDING", onboardingStatus.toString())
+
+            if (!onboardingStatus) {
+                //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
+                startNextActivity(OnBoardingActivity::class.java)
+                finish()
+            } else {
+                //3. true -> 로그인 상태 확인
+                checkGoogleLogin()
+                checkKakaoLogin()
+            }
+        }, 3000)
     }
+
 
     /*Google 로그인 체크: 1. 로그인 체크 2. 정보 Log(기능 완성되면 지울 것)*/
     private fun checkGoogleLogin() {
@@ -85,6 +88,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             autoLogin()
         }
     }
+
     //Log 확인 위해 회원정보 받아오는 함수
     private fun getKakaoUser() {
         UserApiClient.instance.me { user, error ->
@@ -98,12 +102,13 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     /*자동 로그인
+    * 0. jwt 있는지 확인
     * 1. google:t, kakao:f =>  구글 로그인  & Main
     * 2. google:f, kakao:t => 카카오 로그인 & Main
     * 3. google:f, kakao:f => 로그인 X     & SignIn
     * 4. google:t, kakao:t => 말도 안 되는 경우... 혹시 몰라 로그 띄우기
     * */
-    private fun autoLogin(){
+    private fun autoLogin() {
         if (!isGoogleLogin && isKakaoLogin) {
             //Main Activity (Kakao)
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
@@ -127,5 +132,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         } else if (isGoogleLogin && isKakaoLogin) {
             Log.d("AUTO-LOGIN/ERROR", "둘 다 로그인")
         }
+        Log.d("AUTO-LOGIN/JWT", getJwt().toString())
     }
 }

@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.setting
 
 import android.os.Bundle
+import android.util.Log
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
