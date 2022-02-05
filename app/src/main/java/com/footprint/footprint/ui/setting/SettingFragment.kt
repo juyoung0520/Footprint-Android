@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.setting
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -9,21 +10,49 @@ import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.lock.LockActivity
-import com.footprint.footprint.utils.getPWDstatus
-import com.footprint.footprint.utils.savePWDstatus
+import com.footprint.footprint.ui.signin.SplashActivity
+import com.footprint.footprint.utils.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.OnCompleteListener
+import com.kakao.sdk.user.UserApiClient
 
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
-
     private lateinit var actionDialogFragment: ActionDialogFragment
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var loginStatus: String
 
     override fun initAfterBinding() {
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
 
+
         //산책기록 잠금 스위치버튼 <- ON/OFF 상태
-        if(getPWDstatus(requireContext()) == "ON") binding.settingLockFootprintSb.isChecked = true
+        if (getPWDstatus(requireContext()) == "ON") {
+            binding.settingLockFootprintSb.isChecked = true
+            setPwdSettingVisibility()
+        }
+        initLoginStatus()
         setMyEventListener()
+    }
+
+    private fun initLoginStatus() {
+        //구글 로그인 준비
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+        //spf에서 로그인 상태 불러오기(kakao, google, null)
+        loginStatus = getLoginStatus(requireContext())
+        if (loginStatus == "kakao" || loginStatus == "google") {
+            Log.d("AUTO-UNLINK/VALUE", "카카오/구글 로그인되었습니다\n" + "LoginStatus: ${loginStatus}")
+        } else if (loginStatus == "null") {
+            Log.d("AUTO-UNLINK/NULL", "LoginStatus: ${loginStatus}")
+        }
+
     }
 
     private fun initActionDialog() {
@@ -62,12 +91,54 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         binding.settingLogoutTv.setOnClickListener {
             setActionDialogBundle(getString(R.string.msg_logout))
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
+            actionDialogFragment.setMyDialogCallback(object :
+                ActionDialogFragment.MyDialogCallback {
+                //로그아웃
+                override fun action1(isAction: Boolean) {
+                    if (isAction) {
+                        if (loginStatus == "kakao") {
+                            //Kakao Logout
+                            Log.d("AUTO-LOGOUT/KAKAO", "Kakao 계정에서 로그아웃 하셨습니다.")
+                            kakaoLogout()
+                        } else if (loginStatus == "google") {
+                            //Google Logout
+                            Log.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
+                            googleLogout()
+                        }
+                        removeLoginStatus(requireContext())
+                        removeJwt()
+                    }
+                }
+                override fun action2(isAction: Boolean) {}
+            })
         }
 
         //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
         binding.settingWithdrawalTv.setOnClickListener {
             setActionDialogBundle(getString(R.string.msg_withdrawal))
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
+            actionDialogFragment.setMyDialogCallback(object :
+                ActionDialogFragment.MyDialogCallback {
+                override fun action1(isAction: Boolean) {}
+
+                //탈퇴
+                override fun action2(isAction: Boolean) {
+                    if (isAction) {
+                        if (loginStatus == "kakao") {
+                            //Kakao Unlink
+                            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
+                            kakaoUnlink()
+                        } else if (loginStatus == "google") {
+                            //Google Unlink
+                            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
+                            googleUnlink()
+                        }
+                        removeLoginStatus(requireContext())
+                        removeJwt()
+                    }
+                }
+
+            })
         }
 
         //산책기록 잠금 스위치버튼 클릭 리스너
@@ -120,5 +191,42 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         startActivity(intent)
     }
 
-    /*Function - 로그아웃/탈퇴*/
+    /*Function - 로그아웃, 탈퇴*/
+    private fun googleUnlink() {
+        mGoogleSignInClient.revokeAccess()
+            .addOnCompleteListener(OnCompleteListener<Void?> {
+                Log.i("GOOGLE/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
+                startActivity(Intent(requireContext(), SplashActivity::class.java))
+            })
+    }
+
+    private fun googleLogout() {
+        mGoogleSignInClient.signOut()
+            .addOnCompleteListener(OnCompleteListener<Void?> {
+                Log.i("GOOGLE/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                startActivity(Intent(requireContext(), SplashActivity::class.java))
+            })
+    }
+
+    private fun kakaoUnlink() {
+        UserApiClient.instance.unlink { error ->
+            if (error != null)
+                Log.e("KAKAO/UNLINK-FAILURE", "탈퇴 실패. SDK에서 토큰 삭제됨", error)
+            else
+                Log.i("KAKAO/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
+            startActivity(Intent(requireContext(), SplashActivity::class.java))
+
+        }
+    }
+
+    private fun kakaoLogout() {
+        UserApiClient.instance.logout { error ->
+            if (error != null)
+                Log.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+            else
+                Log.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+            startActivity(Intent(requireContext(), SplashActivity::class.java))
+
+        }
+    }
 }

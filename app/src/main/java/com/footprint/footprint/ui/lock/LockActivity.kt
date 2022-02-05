@@ -19,12 +19,13 @@ import okhttp3.internal.wait
 class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::inflate) {
     private lateinit var lockRVAdapter: LockRVAdapter
 
-    private val numbers: ArrayList<Int> = arrayListOf()
-    private var password: String? = null
-    private var tmpPassword: String? = null
+    private val numbers: ArrayList<Int> = arrayListOf() //실시간으로 입력받는 숫자
+    private var password: String? = null                //4개 입력되면 numbers -> string
+    private var tmpPassword: String? = null             //암호 설정,변경,재설정에서 확인 위해 임시로 담아두는 passwored
 
-    private var mode: String? = "SETTING"
-    private var type: String? = null
+    private var mode: String? = "SETTING"               //mode: SETTING, CHANGE, UNLOCK (기능별)
+    private var type: String? = null                    //type: SETTING, CHANGE, CHECKING, UNLOCK (함수별)
+
     override fun initAfterBinding() {
         if (intent.hasExtra("mode")) {
             mode = intent.getStringExtra("mode")
@@ -36,26 +37,31 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                     type = "SETTING"
                 }
 
-                "CHANGE", "UNLOCK" -> { //2. 암호 변경 //3. 잠금 해제
+                "CHANGE" -> { //2. 암호 변경
+                    pwdUnlockUI("CHECK")
+                    type = "UNLOCK"
+                }
+
+                "UNLOCK" -> { //3. 잠금 해제
                     pwdUnlockUI("DEFAULT")
                     type = "UNLOCK"
                 }
             }
 
-            /*화면 init*/
             initRV()
             initBackBtn()
         }
     }
 
-    /*Back 버튼*/
+    /*화면 init*/
+    //Back 버튼
     private fun initBackBtn() {
         binding.lockBackBtnIv.setOnClickListener {
             finish()
         }
     }
 
-    /*Number 리사이클러뷰*/
+    //Number 리사이클러뷰
     private fun initRV() {
         //item Width
         val widthPx = getDeviceWidth() - convertDpToPx(this, 24 * 2) //디바이스 넓이 - 양 옆 마진(24*2)
@@ -128,7 +134,6 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
         }
 
     }
-
     private fun setFootprint(index: Int, status: Boolean) {
         when (index) {
             //Footprint 1
@@ -301,7 +306,8 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
     //잠금 해제 UI
     private fun pwdUnlockUI(type: String) {
         when (type) {
-            "DEFAULT" -> binding.lockDescriptionTv.setText(R.string.msg_lock_unlock)
+            "DEFAULT" -> binding.lockDescriptionTv.setText(R.string.msg_lock_setting)
+            "CHECK" -> binding.lockDescriptionTv.setText(R.string.msg_lock_unlock)
             "WRONG" -> binding.lockDescriptionTv.setText(R.string.msg_lock_unlock_wrong)
         }
         binding.lockTitleTv.setText(R.string.title_lock_unlock)

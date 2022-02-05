@@ -1,6 +1,5 @@
 package com.footprint.footprint.ui.lock
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,14 +35,14 @@ class LockRVAdapter(private val itemWidthPx: Int) : RecyclerView.Adapter<LockRVA
         holder.itemView.layoutParams = params
         holder.itemView.requestApplyInsets()
 
-        holder.bind(dataList[position], position)
+        holder.bind(dataList[position])
     }
 
     override fun getItemCount(): Int = dataList.size
 
     inner class ViewHolder(val binding: ItemLockNumberBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Int, position: Int) {
+        fun bind(data: Int) {
             when (data) {
                 100 -> {
                     //왼쪽 blank
@@ -64,12 +63,10 @@ class LockRVAdapter(private val itemWidthPx: Int) : RecyclerView.Adapter<LockRVA
             }
 
 
-            //클릭 시 (100, 빈칸 제외) -> Lock Activity로 숫자 전달
+            //클릭 시 (100, 빈칸 제외) -> LockActivity 숫자 전달
             itemView.setOnClickListener {
-                Log.d("LOCK/RECY", data.toString())
-                if(data != 100){
+                if(data != 100)
                     itemClickListener.onClick(data)
-                }
             }
 
         }
