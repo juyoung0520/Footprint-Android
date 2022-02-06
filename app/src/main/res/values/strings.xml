@@ -25,6 +25,9 @@
     <string name="action_update">수정</string>
     <string name="action_stop">중지</string>
     <string name="action_withdrawal">회원탈퇴</string>
+    <string name="error_api_fail">오류가 발생했습니다. 다시 시도해 주세요.</string>
+
+    <!--액션-->
     <string name="action_startwalk">산책 시작</string>
 
     <!--설명-->
@@ -158,7 +161,6 @@
     <string name="title_record_unit">회</string>
     <string name="title_view_more">더보기</string>
     <string name="title_view_short">간략히 보기</string>
-
 
     <!--글 작성하기-->
     <string name="title_leave_footprint">발자국 남기기</string>
