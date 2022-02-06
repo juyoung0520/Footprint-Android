@@ -1,13 +1,14 @@
 package com.footprint.footprint.ui.lock
 
+import android.content.Intent
 import android.util.Log
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityLockBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.LockRVAdapter
+import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -18,7 +19,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
 
     private val numbers: ArrayList<Int> = arrayListOf() //실시간으로 입력받는 숫자
     private var password: String? = null                //4개 입력되면 numbers -> string
-    private var tmpPassword: String? = null             //암호 설정,변경,재설정에서 확인 위해 임시로 담아두는 passwored
+    private var tmpPassword: String? = null             //암호 설정,변경,재설정에서 확인 위해 임시로 담아두는 password
 
     private var mode: String? = "SETTING"               //mode: SETTING, CHANGE, UNLOCK (기능별)
     private var type: String? = null                    //type: SETTING, CHANGE, CHECKING, UNLOCK (함수별)
@@ -104,77 +105,61 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                 setFootprint(2, false)
                 setFootprint(3, false)
                 setFootprint(4, false)
-                binding.lockFootprint1Tv.text = num.toString()
             }
 
             2 -> {
                 setFootprint(2, true)
                 setFootprint(3, false)
                 setFootprint(4, false)
-                binding.lockFootprint2Tv.text = num.toString()
             }
 
             3 -> {
                 setFootprint(3, true)
                 setFootprint(4, false)
-                binding.lockFootprint3Tv.text = num.toString()
             }
 
             4 -> {
                 setFootprint(4, true)
-                binding.lockFootprint4Tv.text = num.toString()
 
                 password = numbers.joinToString("")
-
                 function(type!!)
             }
         }
 
     }
+
     private fun setFootprint(index: Int, status: Boolean) {
         when (index) {
             //Footprint 1
             1 -> {
-                if (status) {
+                if (status)
                     binding.lockFootprint1Iv.setImageResource(R.drawable.ic_lock_footprint_on)
-                    binding.lockFootprint1Tv.visibility = View.VISIBLE
-                } else {
+                else
                     binding.lockFootprint1Iv.setImageResource(R.drawable.ic_lock_footprint_off)
-                    binding.lockFootprint1Tv.visibility = View.GONE
-                }
             }
 
             //Footprint 2
             2 -> {
-                if (status) {
+                if (status)
                     binding.lockFootprint2Iv.setImageResource(R.drawable.ic_lock_footprint_on)
-                    binding.lockFootprint2Tv.visibility = View.VISIBLE
-                } else {
+                else
                     binding.lockFootprint2Iv.setImageResource(R.drawable.ic_lock_footprint_off)
-                    binding.lockFootprint2Tv.visibility = View.GONE
-                }
             }
 
             //Footprint 3
             3 -> {
-                if (status) {
+                if (status)
                     binding.lockFootprint3Iv.setImageResource(R.drawable.ic_lock_footprint_on)
-                    binding.lockFootprint3Tv.visibility = View.VISIBLE
-                } else {
+                else
                     binding.lockFootprint3Iv.setImageResource(R.drawable.ic_lock_footprint_off)
-                    binding.lockFootprint3Tv.visibility = View.GONE
-                }
             }
 
             //Footprint 4
             4 -> {
-                if (status) {
+                if (status)
                     binding.lockFootprint4Iv.setImageResource(R.drawable.ic_lock_footprint_on)
-                    binding.lockFootprint4Tv.visibility = View.VISIBLE
-                } else {
+                else
                     binding.lockFootprint4Iv.setImageResource(R.drawable.ic_lock_footprint_off)
-                    binding.lockFootprint4Tv.visibility = View.GONE
-                }
             }
         }
     }
@@ -202,8 +187,9 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                 if (pwdCheckingFunction(tmpPassword!!)) {
                     //true -> spf에 저장
                     savePWD(this@LockActivity, tmpPassword!!)
-                    savePWDstatus(this@LockActivity, "SET")
-                    //액티비티 종료
+                    savePWDstatus(this@LockActivity, "ON")
+
+                    //변경 or 설정 완료 -> 액티비티 종료
                     finish()
 
                     Log.d("LOCK/CHECK-SUCCESS", "암호 등록에 성공하셨습니다.")
@@ -220,12 +206,15 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                 if (pwdUnlockFunction()) {
                     //잠금 해제 성공
                     Log.d("LOCK/UNLOCK-SUCCESS", "잠금 해제에 성공하셨습니다.")
+
                     if (mode == "CHANGE") {
-                        //암호 변경을 위한 잠금 해제
+                        //암호 변경을 위한 잠금 해제 -> 암호 변경
                         pwdChangeUI()
                         type = "CHANGE"
                     } else {
-                        //그냥 잠금 해제
+                        //그냥 잠금 해제 -> 요청 보낸 액티비티로 RESULT_OK(결과값) 보내기
+                        val intent = Intent(this, MainActivity::class.java)
+                        setResult(RESULT_OK, intent)
                         finish()
                     }
                 } else {
@@ -239,7 +228,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
     }
 
     //password 초기화 함수
-    private fun resetPassword(){
+    private fun resetPassword() {
         GlobalScope.launch {
             delay(500)
             runOnUiThread {

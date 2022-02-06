@@ -63,19 +63,6 @@
             app:layout_constraintEnd_toStartOf="@id/lock_footprint_2_iv"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-        <TextView
-            android:id="@+id/lock_footprint_1_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            style="@style/tv_headline_eb_16"
-            android:textColor="@color/white_light"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintTop_toTopOf="@id/lock_footprint_1_iv"
-            app:layout_constraintBottom_toBottomOf="@id/lock_footprint_1_iv"
-            app:layout_constraintStart_toStartOf="@id/lock_footprint_1_iv"
-            app:layout_constraintEnd_toEndOf="@id/lock_footprint_1_iv"
-            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/lock_footprint_2_iv"
@@ -86,19 +73,6 @@
             app:layout_constraintEnd_toStartOf="@id/lock_footprint_3_iv"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-        <TextView
-            android:id="@+id/lock_footprint_2_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            style="@style/tv_headline_eb_16"
-            android:textColor="@color/white_light"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintTop_toTopOf="@id/lock_footprint_2_iv"
-            app:layout_constraintBottom_toBottomOf="@id/lock_footprint_2_iv"
-            app:layout_constraintStart_toStartOf="@id/lock_footprint_2_iv"
-            app:layout_constraintEnd_toEndOf="@id/lock_footprint_2_iv"
-            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/lock_footprint_3_iv"
@@ -109,19 +83,6 @@
             app:layout_constraintEnd_toStartOf="@id/lock_footprint_4_iv"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-        <TextView
-            android:id="@+id/lock_footprint_3_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            style="@style/tv_headline_eb_16"
-            android:textColor="@color/white_light"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintTop_toTopOf="@id/lock_footprint_3_iv"
-            app:layout_constraintBottom_toBottomOf="@id/lock_footprint_3_iv"
-            app:layout_constraintStart_toStartOf="@id/lock_footprint_3_iv"
-            app:layout_constraintEnd_toEndOf="@id/lock_footprint_3_iv"
-            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/lock_footprint_4_iv"
@@ -132,19 +93,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-        <TextView
-            android:id="@+id/lock_footprint_4_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            style="@style/tv_headline_eb_16"
-            android:textColor="@color/white_light"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintTop_toTopOf="@id/lock_footprint_4_iv"
-            app:layout_constraintBottom_toBottomOf="@id/lock_footprint_4_iv"
-            app:layout_constraintStart_toStartOf="@id/lock_footprint_4_iv"
-            app:layout_constraintEnd_toEndOf="@id/lock_footprint_4_iv"
-            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -29,13 +29,17 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             initActionDialog()
 
 
+        initLoginStatus()
+        setMyEventListener()
+    }
+
+    override fun onStart() {
+        super.onStart()
         //산책기록 잠금 스위치버튼 <- ON/OFF 상태
         if (getPWDstatus(requireContext()) == "ON") {
             binding.settingLockFootprintSb.isChecked = true
             setPwdSettingVisibility()
         }
-        initLoginStatus()
-        setMyEventListener()
     }
 
     private fun initLoginStatus() {
