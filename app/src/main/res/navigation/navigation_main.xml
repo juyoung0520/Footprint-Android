@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_calendarFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_walkDetailActivity2"
+            app:destination="@id/walkDetailActivity" />
     </fragment>
 
     <fragment
@@ -45,9 +48,13 @@
 
     <activity
         android:id="@+id/walkDetailActivity"
-        android:name="com.footprint.footprint.ui.main.calendar.WalkDetailActivity"
+        android:name="com.footprint.footprint.ui.walk.WalkDetailActivity"
         android:label="activity_walk_detail"
-        tools:layout="@layout/activity_walk_detail" />
+        tools:layout="@layout/activity_walk_detail" >
+        <argument
+            android:name="walkIdx"
+            app:argType="integer" />
+    </activity>
 
     <navigation android:id="@+id/navigation"
         app:startDestination="@id/settingFragment">

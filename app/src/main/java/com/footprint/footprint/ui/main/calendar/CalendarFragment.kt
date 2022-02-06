@@ -178,6 +178,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
             override fun onItemClick(walk: UserDateWalk) {
                 lockUnlock(walk.walkIdx)
+
+                //클릭한 아이템의 walkIdx 를 walkDetailActivity 에 전달
+                val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(63)
+                findNavController().navigate(action)
             }
         })
 
