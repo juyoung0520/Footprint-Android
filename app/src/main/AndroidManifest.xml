@@ -97,7 +97,7 @@
             android:exported="true"/>
 
         <activity
-            android:name=".ui.main.calendar.WalkDetailActivity"
+            android:name=".ui.walk.WalkDetailActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
 
