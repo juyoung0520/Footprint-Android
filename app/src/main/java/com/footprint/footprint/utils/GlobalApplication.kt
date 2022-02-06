@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.footprint.footprint.R
-import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -26,6 +25,7 @@ class GlobalApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        
         KakaoSdk.init(this, getString(R.string.kakao_login_native_key))
 
         val client: OkHttpClient = OkHttpClient.Builder()
