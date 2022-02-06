@@ -1,4 +1,4 @@
-package com.footprint.footprint.ui.main.home
+package com.footprint.footprint.ui.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
+import com.footprint.footprint.ui.main.home.HomeMonthCalendar
 import java.util.*
 
 class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, private val vpAreaPx: Int, private val itemMaxPx: Int) :
@@ -27,7 +28,7 @@ class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, priva
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
         viewType: Int
-    ): HomeMonthRVAdapter.ViewHolder {
+    ): ViewHolder {
         val binding: ItemHomeMonthBinding =
             ItemHomeMonthBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
 

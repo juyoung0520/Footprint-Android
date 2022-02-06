@@ -1,7 +1,13 @@
 package com.footprint.footprint.ui.main.calendar
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
@@ -9,8 +15,10 @@ import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
+import com.footprint.footprint.ui.lock.LockActivity
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.getPWDstatus
 import com.kizitonwose.calendarview.Completion
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthScrollListener
@@ -27,6 +35,7 @@ import kotlin.math.roundToInt
 class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     override fun initAfterBinding() {
         setBinding()
@@ -34,6 +43,23 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         initCalendar()
 
         initWalkAdapter()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //잠금 해제 성공
+        resultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                //1. 잠금 해제 로그 & 토스트
+                Log.d("CALENDAR/LOCK", "잠금 해제 성공")
+                Toast.makeText(context, "잠금 해제 성공", Toast.LENGTH_SHORT).show()
+
+                //2. 산책 기록 프래그먼트로 이동
+            }
+        }
     }
 
     private fun setBinding() {
@@ -144,7 +170,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
             override fun onItemClick(walk: WalkModel) {
-                Toast.makeText(context, "${walk.walkIdx}번 째 산책", Toast.LENGTH_SHORT).show()
+                lockUnlock(walk.walkIdx)
             }
         })
 
@@ -196,6 +222,24 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             "SATURDAY" -> "토"
             "SUNDAY" -> "일"
             else -> ""
+        }
+    }
+
+    /*암호 확인*/
+    private fun lockUnlock(walkIdx: Int) {
+        val pwdStatus = getPWDstatus(requireContext())
+        if (pwdStatus == "ON") {
+            //잠금 해제 액티비티(LockActivity)로 이동, UNLOCK: 잠금 해제 모드
+            val intent = Intent(requireContext(), LockActivity::class.java)
+            intent.putExtra("mode", "UNLOCK")
+            resultLauncher.launch(intent)
+        }else{
+            // 잠금 없음
+            //1. 잠금 없음 로그 & 토스트
+            Log.d("CALENDAR/LOCK", "잠금 없음")
+            Toast.makeText(context, "${walkIdx}번째 산책", Toast.LENGTH_SHORT).show()
+
+            //2. 산책 기록 프래그먼트로 이동
         }
     }
 }

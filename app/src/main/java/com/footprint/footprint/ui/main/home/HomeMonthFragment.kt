@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
 import com.footprint.footprint.utils.*
 import java.time.LocalDate
 import java.time.ZoneId

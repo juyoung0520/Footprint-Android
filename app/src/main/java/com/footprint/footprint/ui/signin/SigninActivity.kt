@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
-import com.footprint.footprint.data.remote.auth.SocialUserModel
+import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
@@ -31,7 +31,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     SignInView {
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = -1
     private lateinit var socialUserModel: SocialUserModel
 
     override fun initAfterBinding() {
@@ -48,7 +47,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //다음에 로그인 할래요 -> RegisterActivity 로 이동
         binding.signinNologinTv.setOnClickListener {
-            this.startNextActivity(RegisterActivity::class.java)
+            //this.startNextActivity(RegisterActivity::class.java) //로그인 되면 지워줘
+            this.startNextActivity(MainActivity::class.java)
             finish()
         }
     }
@@ -114,7 +114,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 //1. User 정보 등록
                 socialUserModel = SocialUserModel(userId, nickname!!, email!!, "kakao")
                 Log.d("KAKAO/USER", socialUserModel.toString())
-                saveLoginStatus(this, "kakao")
 
                 //2. 로그인 API
                 callSignInAPI()
@@ -133,7 +132,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val getResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
-            if (result.resultCode == RC_SIGN_IN) {
+            if (result.resultCode == RESULT_OK) {
                 //구글 로그인 성공
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -155,7 +154,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
             socialUserModel = SocialUserModel(userid, username, useremail, "google")
             Log.d("GOOGLE/USER", socialUserModel.toString())
-            saveLoginStatus(this, "google")
 
             //2. 로그인 API
             callSignInAPI()
@@ -179,10 +177,10 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val jwtId = result.jwtId
         val status = result.status
 
-        //1. spf에 jwtId 저장
+        //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
-
-        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId")
+        saveLoginStatus(this, socialUserModel.providerType)
+        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel.providerType")
 
         //2. STATUS에 따른 처리
         // DONE: 가입된 회원, MainActivity로

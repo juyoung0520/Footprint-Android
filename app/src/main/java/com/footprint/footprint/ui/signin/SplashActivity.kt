@@ -1,6 +1,5 @@
 package com.footprint.footprint.ui.signin
 
-import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import com.footprint.footprint.R
@@ -9,8 +8,8 @@ import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.utils.getJwt
+import com.footprint.footprint.utils.getLoginStatus
 import com.footprint.footprint.utils.getOnboarding
-import com.footprint.footprint.utils.saveLoginStatus
 import com.kakao.sdk.user.UserApiClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -45,7 +44,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     /*Google 로그인 체크: 1. 로그인 체크 2. 정보 Log(기능 완성되면 지울 것)*/
     private fun checkGoogleLogin() {
-        Log.d("AUTO-LOGIN/FLAG", "FLAG GOOGLE")
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.google_login_server_id))
             .requestEmail()
@@ -71,7 +69,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     /*Kakao 로그인 체크: 1. 로그인 체크 2. Log 확인(후에 지울 예정)*/
     private fun checkKakaoLogin() {
         // 로그인 정보 확인
-        Log.d("AUTO-LOGIN/FLAG", "FLAG KAKAO")
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
                 //카카오 로그인 x
@@ -79,12 +76,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             } else if (tokenInfo != null) {
                 //카카오 로그인 O
                 isKakaoLogin = true
-                Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-                Log.d("KAKAO/AUTO-LOGIN", tokenInfo.toString())
+
                 getKakaoUser()
             }
 
-            Log.d("AUTO-LOGIN/FLAG", "FLAG AUTO")
             autoLogin()
         }
     }
@@ -102,35 +97,30 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     /*자동 로그인
-    * 0. jwt 있는지 확인
-    * 1. google:t, kakao:f =>  구글 로그인  & Main
-    * 2. google:f, kakao:t => 카카오 로그인 & Main
-    * 3. google:f, kakao:f => 로그인 X     & SignIn
-    * 4. google:t, kakao:t => 말도 안 되는 경우... 혹시 몰라 로그 띄우기
+    * 1. google:t, kakao:f, login status: google =>  구글 로그인  & Main
+    * 2. google:f, kakao:t, login status: kakao  => 카카오 로그인 & Main
+    * 3. google:f, kakao:f    ...  나머지         => 로그인 X     & SignIn
     * */
     private fun autoLogin() {
-        if (!isGoogleLogin && isKakaoLogin) {
+        val loginStatus = getLoginStatus(this)
+        if (!isGoogleLogin && isKakaoLogin && loginStatus == "kakao") {
             //Main Activity (Kakao)
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
             Log.d("AUTO-LOGIN/KAKAO", "Kakao 계정으로 로그인하였습니다.")
-            saveLoginStatus(this, "kakao")
             startNextActivity(MainActivity::class.java)
             finish()
-        } else if (isGoogleLogin && !isKakaoLogin) {
+        } else if (isGoogleLogin && !isKakaoLogin && loginStatus == "google") {
             //Main Activity(Google)
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
             Log.d("AUTO-LOGIN/GOOGLE", "Google 계정으로 로그인하였습니다.")
-            saveLoginStatus(this, "google")
             startNextActivity(MainActivity::class.java)
             finish()
-        } else if (!isGoogleLogin && !isKakaoLogin) {
+        } else {
             //SignUp Activity
             Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
             Log.d("AUTO-LOGIN/NONE", "로그인 정보가 존재하지 않습니다.")
             startNextActivity(SigninActivity::class.java)
             finish()
-        } else if (isGoogleLogin && isKakaoLogin) {
-            Log.d("AUTO-LOGIN/ERROR", "둘 다 로그인")
         }
         Log.d("AUTO-LOGIN/JWT", getJwt().toString())
     }

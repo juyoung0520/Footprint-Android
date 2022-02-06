@@ -19,6 +19,8 @@ import com.footprint.footprint.data.remote.weather.ITEM
 import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
+import com.footprint.footprint.ui.lock.LockActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.ui.walk.WalkActivity
@@ -44,11 +46,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
-        }
-
-        binding.homeDayGoalLayout.setOnClickListener {
-            val mainActivity = activity as MainActivity
-            mainActivity.startNextActivity(OnBoardingActivity::class.java)
         }
 
         /*init: 1. TB&VP 2. 날짜*/

@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityOnboardingBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.adapter.OnboardingViewpagerAdapter
 import com.footprint.footprint.ui.signin.SigninActivity
 import com.footprint.footprint.utils.saveOnboarding
 import com.google.android.material.tabs.TabLayoutMediator
