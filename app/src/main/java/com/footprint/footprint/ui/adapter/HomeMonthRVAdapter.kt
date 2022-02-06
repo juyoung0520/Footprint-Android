@@ -77,9 +77,8 @@ class HomeMonthRVAdapter(
 
             /*스타일*/
             // 오늘 날짜 bold체로
-            val dateInt = date.date
-            Log.d("CALENDAR", "date: $date dateInt: $dateInt")
-            if ((position in firstDateIndex..lastDateIndex) && data == dateInt) {
+            val  dateInt = date.date
+            if ((position in firstDateIndex .. lastDateIndex) && dataList[position] == dateInt) {
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
             }
 

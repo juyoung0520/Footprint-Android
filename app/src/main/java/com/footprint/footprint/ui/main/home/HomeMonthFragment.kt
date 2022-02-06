@@ -77,7 +77,7 @@ class HomeMonthFragment() :
 
         //리사이클러뷰 어댑터 연결
         calRVAdapter =
-            HomeMonthRVAdapter(nowDate, tMonth.getDayRateRes, widthPx, vpAreaPx.toInt(), itemMaxPx)
+            HomeMonthRVAdapter(nowDate, widthPx, vpAreaPx.toInt(), itemMaxPx)
         binding.homeMonthCalRv.adapter = calRVAdapter
         binding.homeMonthCalRv.layoutManager =
             GridLayoutManager(context, 7, LinearLayoutManager.VERTICAL, false)

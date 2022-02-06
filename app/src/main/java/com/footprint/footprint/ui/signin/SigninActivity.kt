@@ -198,8 +198,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             }
             "ONGOING" -> startRegisterActivity()
         }
-
     }
+
 
     override fun onSignInFailure(code: Int, message: String) {
         Log.d("SIGNIN/API-FAILURE", "code: $code message: $message")

@@ -51,7 +51,7 @@ object AuthService {
                     when(body.code){
                         1000 -> {
                             val result = body.result
-                            signinView.onSignInSuccess(result)
+                            if(result != null) signinView.onSignInSuccess(result)
                         }
                         else -> signinView.onSignInFailure(body.code, body.message)
                     }
