@@ -188,6 +188,24 @@
     <string name="title_night">밤(21-0)</string>
     <string name="title_dawn">새벽(1-4)</string>
     <string name="title_different_every_time">매번 다름</string>
+    
+    <!--마이페이지-->
+    <string name="msg_nick_name_unit">님</string>
+    <string name="msg_today">오늘</string>
+    <string name="msg_this_month">이번달</string>
+    <string name="title_this_month_goal">이번달 목표</string>
+    <string name="msg_this_month_goal_week">주 회</string>
+    <string name="msg_this_month_goal_day">하루 분</string>
+    <string name="msg_walk_count">산책 횟수</string>
+    <string name="title_statistics">통계</string>
+    <string name="msg_last_three_month">*이전 3달 기준</string>
+    <string name="msg_statistics_week_res">주로 에 산책을 가장 많이 나가요</string>
+    <string name="msg_statistics_month_count_res">이번달엔 회 기록했어요</string>
+    <string name="msg_statistics_month_rate_res">이번달엔 %달성했어요</string>
+    <string name="msg_percent_unit">(%)</string>
+    <string name="msg_count_unit">(회)</string>
+    <string name="title_statistics_month_count_res">월별 기록 횟수</string>
+    <string name="title_statistics_month_rate_res">월별 달성률</string>
 
     <!--뱃지-->
     <string name="title_achievement_badge">달성 뱃지</string>

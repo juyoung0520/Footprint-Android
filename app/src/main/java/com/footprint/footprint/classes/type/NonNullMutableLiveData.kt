@@ -1,4 +1,4 @@
-package com.footprint.footprint.classes
+package com.footprint.footprint.classes.type
 
 import androidx.lifecycle.MutableLiveData
 
