@@ -75,6 +75,14 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageGoalRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
+
+        binding.mypageSettingIv.setOnClickListener {
+            findNavController().navigate(R.id.action_mypageFragment_to_navigation)
+        }
+
+        binding.mypageGoalRightIv.setOnClickListener {
+            findNavController().navigate(R.id.action_mypageFragment_to_goalThisMonthFragment)
+        }
     }
 
     // 글자색 바꾸는 함수
