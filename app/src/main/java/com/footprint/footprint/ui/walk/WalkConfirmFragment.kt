@@ -14,7 +14,6 @@ import com.footprint.footprint.databinding.FragmentWalkConfirmBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.main.calendar.WalkDetailActivity
 import com.footprint.footprint.utils.getDeviceHeight
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -33,8 +32,6 @@ class WalkConfirmFragment :
             binding.walkConfirmSlidingUpPanelLayout.apply {
                 if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)   //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
                     panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-                else if (requireActivity() is WalkDetailActivity) //WalkDetailActivity 화면에서 온 경우 -> 액티비티 종료
-                    requireActivity().finish()
                 else {    //WalkAfterActivity 화면에서 온 경우 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
                     setWalkDialogBundle(getString(R.string.msg_stop_walk), getString(R.string.action_delete))
                     actionDialogFragment.show(requireActivity().supportFragmentManager, null)
@@ -113,13 +110,13 @@ class WalkConfirmFragment :
 
                     if (walk.footprints.isEmpty()) {  //산책 중에 남긴 발자국이 없다가 종료 후 처음 발자국을 남긴 경우
                         walk.footprints.add(footprint)
-                        footprintRVAdapter.setData(walk.footprints)
+                        footprintRVAdapter.setDataAfterVer(walk.footprints)
 
                         binding.walkConfirmPlusTv.visibility = View.INVISIBLE
                         binding.walkConfirmPlusLineView.visibility = View.INVISIBLE
                     } else {    //어댑터에 데이터 추가하고 UI 업데이트
                         footprintRVAdapter.addData(footprint, position + 1)
-                        walk.footprints = footprintRVAdapter.getData()
+                        walk.footprints = footprintRVAdapter.getDataDetailVer()
 
                         binding.walkConfirmPlusTv.visibility = View.INVISIBLE
                         binding.walkConfirmPlusLineView.visibility = View.INVISIBLE
@@ -139,24 +136,16 @@ class WalkConfirmFragment :
                     val footprint = Gson().fromJson<FootprintModel>(it, FootprintModel::class.java) //string -> FootprintModel
 
                     //어댑터에 데이터 수정하고 UI 업데이트
-                    footprintRVAdapter.updateData(footprint, position)
-                    walk.footprints = footprintRVAdapter.getData()
+                    footprintRVAdapter.updateDataVerAfter(footprint, position)
+                    walk.footprints = footprintRVAdapter.getDataDetailVer()
                 }
             }
     }
 
     //기록 관련 리사이클러뷰 초기화
     private fun initAdapter() {
-        footprintRVAdapter = FootprintRVAdapter(requireActivity().javaClass.simpleName)
+        footprintRVAdapter = FootprintRVAdapter()
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
-            //발자국 삭제 텍스트뷰 클릭 리스너 -> 해당 발자국을 삭제할까요? 다이얼로그 화면 띄우기
-            override fun showDeleteDialog(position: Int) {
-                this@WalkConfirmFragment.position = position  //클릭된 post 인덱스를 전역변수로 저장해 놓는다.
-
-                setWalkDialogBundle(getString(R.string.msg_delete_footprint), getString(R.string.action_delete))
-                actionDialogFragment.show(requireActivity().supportFragmentManager, null)
-            }
-
             //발자국 추가 텍스트뷰 클릭 리스너
             override fun addFootprint(position: Int) {
                 this@WalkConfirmFragment.position = position
@@ -183,7 +172,7 @@ class WalkConfirmFragment :
         })
 
         //어댑터에 데이터 저장
-        footprintRVAdapter.setData(walk.footprints)
+        footprintRVAdapter.setDataAfterVer(walk.footprints)
         binding.walkConfirmPostRv.adapter = footprintRVAdapter
     }
 
@@ -201,8 +190,6 @@ class WalkConfirmFragment :
 
             //해당 발자국을 삭제할까요?
             override fun action2(isAction: Boolean) {
-                if (isAction)
-                    footprintRVAdapter.removeData(this@WalkConfirmFragment.position)
             }
         })
     }

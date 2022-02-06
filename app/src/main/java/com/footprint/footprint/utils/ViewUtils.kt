@@ -101,16 +101,14 @@ fun autoScrollToBottom(View: NestedScrollView, imgView: View){
 }
 
 fun getAbsolutePathByBitmap(context: Context, bitmap: Bitmap): String {
-//    val path = "${(context.applicationInfo.dataDir + File.separator + System.currentTimeMillis())}.jpg"
-    val path = "${(context.applicationInfo.dataDir + File.separator + System.currentTimeMillis())}.png"
+    val path = "${(context.applicationInfo.dataDir + File.separator + System.currentTimeMillis())}.jpg"
     val file = File(path)
     var out: OutputStream? = null
 
     try {
         file.createNewFile()
         out = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out)
     } finally {
         out?.close()
     }

@@ -1,11 +1,15 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.footprint.Footprint
+import com.footprint.footprint.data.remote.walk.AcquiredBadge
+import com.footprint.footprint.data.remote.walk.WalkInfoResponse
 import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ActivityWalkAfterBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -13,7 +17,7 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.google.gson.Gson
 
 class WalkAfterActivity :
-    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate) {
+    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), WalkView {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var navHostFragment: NavHostFragment
 
@@ -66,11 +70,9 @@ class WalkAfterActivity :
 
             override fun action1(isAction: Boolean) {
                 if (isAction) {
-                    finish()
-
                     val fragment = (navHostFragment.childFragmentManager.fragments[0]) as WalkConfirmFragment
                     val walkModel = fragment.getWalk()
-                    WalkService.writeWalk(walkModel)
+                    WalkService.writeWalk(this@WalkAfterActivity, walkModel)
                 }
             }
 
@@ -86,5 +88,33 @@ class WalkAfterActivity :
         bundle.putString("action", action)
 
         actionDialogFragment.arguments = bundle
+    }
+
+    override fun onWalkLoading() {
+        binding.walkAfterLoadingPb.visibility = View.VISIBLE
+    }
+
+    override fun onWriteWalkSuccess(badgeList: List<AcquiredBadge>) {
+        binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+
+        if (badgeList.isEmpty())
+            finish()
+        else {
+
+        }
+    }
+
+    override fun onGetWalkSuccess(walk: WalkInfoResponse) {
+    }
+
+    override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
+    }
+
+    override fun onDeleteWalkSuccess() {
+    }
+
+    override fun onWalkFail(code: Int, message: String) {
+        binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+        showToast(getString(R.string.error_api_fail))
     }
 }

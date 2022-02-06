@@ -1,7 +1,7 @@
 package com.footprint.footprint.data.model
 
 data class WalkModel(
-    var walkIndex: Int? = null,
+    var walkIdx: Int = 0,
     var walkTitle: String = "", //00번째 산책
     var walkTime: String = "",  //산책 시간
     var startAt: String = "",
@@ -11,8 +11,4 @@ data class WalkModel(
     var calorie: Int = 0,
     var pathImg: String = "",
     var footprints: ArrayList<FootprintModel> = arrayListOf()
-    /*var walkIdx: Int = 0,
-    var startTime: String = "",
-    var endTime: String = "",
-    var pathImageUrl: String = "",*/
 )

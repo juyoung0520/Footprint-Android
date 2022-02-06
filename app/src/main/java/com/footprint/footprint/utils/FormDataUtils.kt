@@ -13,8 +13,7 @@ object FormDataUtils {
 
     fun prepareFilePart(key: String, fileUri: String): MultipartBody.Part {
         val file: File = File(fileUri)
-//        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/jpg"), file)
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/${file.extension}"), file)
+        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/jpg"), file)
         return MultipartBody.Part.createFormData(key, file.name, requestFile)
     }
  }

@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.databinding.ItemFootprintBinding
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class FootprintRVAdapter(private val activityClass: String) :
+class FootprintRVAdapter() :
     RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
-        fun showDeleteDialog(position: Int)
         fun addFootprint(position: Int)
         fun updateFootprint(position: Int, footprint: FootprintModel)
     }
@@ -40,7 +40,8 @@ class FootprintRVAdapter(private val activityClass: String) :
     )
 
     private var footprintIcIdx: Int = 0
-    private var footprints: ArrayList<FootprintModel> = arrayListOf()
+    private var footprintsAfterVer: ArrayList<FootprintModel>? = null
+    private var footprintsDetailVer: ArrayList<Footprint>? = null
 
     private lateinit var binding: ItemFootprintBinding
     private lateinit var myItemClickListener: MyItemClickListener
@@ -66,28 +67,42 @@ class FootprintRVAdapter(private val activityClass: String) :
         else
             holder.postStartIv.visibility = View.INVISIBLE
 
+        if (footprintsAfterVer==null)
+            bindDetailVer(holder, position, footprintsDetailVer!![position])
+        else
+            bindAfterVer(holder, position, footprintsAfterVer!![position])
+    }
+
+    override fun getItemCount(): Int {
+        return if (footprintsAfterVer==null)
+            footprintsDetailVer!!.size
+        else
+            footprintsAfterVer!!.size
+    }
+
+    private fun bindAfterVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: FootprintModel) {
         //기록 시간
-        holder.postTimeTv.text = footprints[position].recordAt.split(" ")[1].substring(0, 5)
+        holder.postTimeTv.text = footprint.recordAt.split(" ")[1].substring(0, 5)
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
-            myItemClickListener.updateFootprint(position, footprints[position])
+            myItemClickListener.updateFootprint(position, footprint)
         }
 
         //발자국 아이콘
-        if (footprints[position].isMarked) {    //발자국 표시가 있는 발자국일 때
+        if (footprint.isMarked) {    //발자국 표시가 있는 발자국일 때
             holder.footPrintIv.visibility = View.VISIBLE
             holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
         } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
             holder.footPrintIv.visibility = View.INVISIBLE
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
-        if (footprints[position].photos.isEmpty()) {
+        if (footprint.photos.isEmpty()) {
             holder.photoVp.visibility = View.GONE
             holder.photoIndicator.visibility = View.GONE
         } else {
             val photoRVAdapter = PhotoRVAdapter(1)
-            photoRVAdapter.addImgList(footprints[position].photos as ArrayList<String>)
+            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
             holder.photoVp.adapter = photoRVAdapter
             holder.photoVp.visibility = View.VISIBLE
 
@@ -95,31 +110,18 @@ class FootprintRVAdapter(private val activityClass: String) :
             holder.photoIndicator.visibility = View.VISIBLE
         }
 
-        //발자국 내용 해시태그 폰트 색상 바꾸기
-        var hashTagCnt = 0
-        val hashtagInContent = SpannableString(footprints[position].write)
-        val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
-        while (matcher.find() && hashTagCnt < 5) {
-            hashTagCnt++    //5개까지만
-            Log.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
-
-            hashtagInContent.setSpan(
-                ForegroundColorSpan(ContextCompat.getColor(binding.root.context, R.color.primary)),
-                matcher.start(),
-                matcher.end(),
-                0
-            )
-        }
+        //기록 내용
+        val hashtagInContent = findHashTag(footprint.write)
         holder.contentTv.text = hashtagInContent
 
         //기록 내용 더보기, 간략히 보기
         holder.contentTv.post(Runnable {
             val lineCnt: Int = holder.contentTv.lineCount
 
-            if (footprints[position].photos.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
+            if (footprint.photos.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
                 holder.contentTv.maxLines = 3
                 holder.viewMoreTv.visibility = View.VISIBLE
-            } else if (footprints[position].photos.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
+            } else if (footprint.photos.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
                 holder.contentTv.maxLines = 2
                 holder.viewMoreTv.visibility = View.VISIBLE
             } else {    //이외 상황
@@ -135,55 +137,136 @@ class FootprintRVAdapter(private val activityClass: String) :
             } else {
                 holder.viewMoreTv.text = "더보기"
 
-                if (footprints[position].photos.isEmpty())
+                if (footprint.photos.isEmpty())
                     holder.contentTv.maxLines = 3
                 else
                     holder.contentTv.maxLines = 2
             }
         }
 
-        if (activityClass == "WalkAfterActivity") {  //산책 종료 후 산책 정보 확인 화면일 때 -> 발자국 추가 가능
-            holder.plusTv.visibility = View.VISIBLE
-            holder.plusLine.visibility = View.VISIBLE
+        //기록 추가 UI VISIBLE
+        holder.plusTv.visibility = View.VISIBLE
+        holder.plusLine.visibility = View.VISIBLE
 
-            //기록 추가 텍스트뷰 클릭 리스너
-            holder.plusTv.setOnClickListener {
-                myItemClickListener.addFootprint(position)
-            }
-        } else {    //산책 정보 상세 화면일 때 -> 발자국 추가 불가능
-            holder.plusTv.visibility = View.INVISIBLE
-            holder.plusLine.visibility = View.INVISIBLE
+        //기록 추가 텍스트뷰 클릭 리스너
+        holder.plusTv.setOnClickListener {
+            myItemClickListener.addFootprint(position)
         }
     }
 
-    override fun getItemCount(): Int = footprints.size
+    private fun bindDetailVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: Footprint) {
+        holder.postTimeTv.text = footprint.recordAt //기록 시간
 
-    fun setData(footprints: ArrayList<FootprintModel>) {
-        this.footprints = footprints
+        //기록 편집 텍스트뷰 클릭 리스너
+        holder.editTv.setOnClickListener {
+            myItemClickListener.updateFootprint(position, FootprintModel(write = footprint.write, hashtagList = footprint.tagList, photos = footprint.photoList))
+        }
+
+        //발자국 아이콘
+        holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
+        holder.footPrintIv.visibility = View.VISIBLE
+
+        //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
+        if (footprint.photoList.isEmpty()) {
+            holder.photoVp.visibility = View.GONE
+            holder.photoIndicator.visibility = View.GONE
+        } else {
+            val photoRVAdapter = PhotoRVAdapter(1)
+            photoRVAdapter.addImgList(footprint.photoList as ArrayList<String>)
+            holder.photoVp.adapter = photoRVAdapter
+            holder.photoVp.visibility = View.VISIBLE
+
+            holder.photoIndicator.setViewPager(holder.photoVp)
+            holder.photoIndicator.visibility = View.VISIBLE
+        }
+
+        //내용
+        val hashtagInContent = findHashTag(footprint.write)
+        holder.contentTv.text = hashtagInContent
+
+        //기록 내용 더보기, 간략히 보기
+        holder.contentTv.post(Runnable {
+            val lineCnt: Int = holder.contentTv.lineCount
+
+            if (footprint.photoList.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
+                holder.contentTv.maxLines = 3
+                holder.viewMoreTv.visibility = View.VISIBLE
+            } else if (footprint.photoList.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
+                holder.contentTv.maxLines = 2
+                holder.viewMoreTv.visibility = View.VISIBLE
+            } else {    //이외 상황
+                holder.viewMoreTv.visibility = View.INVISIBLE
+            }
+        })
+
+        //기록 내용 더보기, 간략히 보기 클릭 리스너
+        holder.viewMoreTv.setOnClickListener {
+            if (holder.viewMoreTv.text.toString() == "더보기") {
+                holder.contentTv.maxLines = Int.MAX_VALUE
+                holder.viewMoreTv.text = "간략히 보기"
+            } else {
+                holder.viewMoreTv.text = "더보기"
+
+                if (footprint.photoList.isEmpty())
+                    holder.contentTv.maxLines = 3
+                else
+                    holder.contentTv.maxLines = 2
+            }
+        }
+
+        //기록 추가 UI INVISIBLE
+        holder.plusTv.visibility = View.INVISIBLE
+        holder.plusLine.visibility = View.INVISIBLE
+    }
+
+    private fun findHashTag(write: String): SpannableString {
+        //발자국 내용 해시태그 폰트 색상 바꾸기
+        var hashTagCnt = 0
+        val hashtagInContent = SpannableString(write)
+        val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
+        while (matcher.find() && hashTagCnt < 5) {
+            hashTagCnt++    //5개까지만
+            Log.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
+
+            hashtagInContent.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(binding.root.context, R.color.primary)),
+                matcher.start(),
+                matcher.end(),
+                0
+            )
+        }
+
+        return hashtagInContent
+    }
+
+    fun setDataAfterVer(footprints: ArrayList<FootprintModel>) {
+        this.footprintsAfterVer = footprints
 
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
-    fun getData(): ArrayList<FootprintModel> = this.footprints
+    fun setDataDetailVer(footprints: ArrayList<Footprint>) {
+        this.footprintsDetailVer = footprints
 
-    fun removeData(position: Int) {
-        this.footprints.removeAt(position)
+        footprintIcIdx = 0
         notifyDataSetChanged()
     }
+
+    fun getDataDetailVer(): ArrayList<FootprintModel> = this.footprintsAfterVer!!
 
     fun addData(footprint: FootprintModel, position: Int) {
-        if (this.footprints.size == position)
-            this.footprints.add(footprint)
+        if (this.footprintsAfterVer!!.size == position)
+            this.footprintsAfterVer!!.add(footprint)
         else
-            this.footprints.add(position, footprint)
+            this.footprintsAfterVer!!.add(position, footprint)
 
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
-    fun updateData(footprint: FootprintModel, position: Int) {
-        footprints[position] = footprint
+    fun updateDataVerAfter(footprint: FootprintModel, position: Int) {
+        footprintsAfterVer!![position] = footprint
 
         footprintIcIdx = 0
         notifyDataSetChanged()

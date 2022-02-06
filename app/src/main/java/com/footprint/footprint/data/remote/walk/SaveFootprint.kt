@@ -4,5 +4,5 @@ data class SaveFootprint(
     var coordinates: List<Double> = listOf(),
     var recordAt: String = "",
     var write: String = "",
-    var hashtagList: List<String> = listOf()
+    var hashtagList: List<String>? = null
 )
