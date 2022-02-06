@@ -18,6 +18,7 @@ class ActionDialogFragment() : DialogFragment() {
     private lateinit var myDialogCallback: MyDialogCallback
 
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
+    private lateinit var action: String
 
     //다이얼로그 콜백 인터페이스
     interface MyDialogCallback {
@@ -29,6 +30,7 @@ class ActionDialogFragment() : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         msg = arguments?.getString("msg").toString()
+        action = arguments?.getString("action").toString()
     }
 
     override fun onCreateView(
@@ -61,21 +63,7 @@ class ActionDialogFragment() : DialogFragment() {
 
     private fun initUI() {
         binding.walkDialogMsgTv.text = msg
-
-        when (msg) {
-            getString(R.string.msg_stop_realtime_record), getString(R.string.msg_stop_walk) -> binding.walkDialogActionTv.text =
-                "중지"
-            getString(R.string.action_delete), getString(R.string.msg_cancel_walk), getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> binding.walkDialogActionTv.text =
-                "삭제"
-            getString(R.string.msg_save_post), getString(R.string.msg_save_walk) -> binding.walkDialogActionTv.text =
-                "저장"
-            getString(R.string.msg_change_representative_badge) -> binding.walkDialogActionTv.text =
-                getString(R.string.action_set)
-            getString(R.string.msg_logout) -> binding.walkDialogActionTv.text =
-                getString(R.string.title_logout)
-            getString(R.string.msg_withdrawal) -> binding.walkDialogActionTv.text =
-                getString(R.string.action_withdrawal)
-        }
+        binding.walkDialogActionTv.text = action
 
         when {
             msg.contains("산책' 을 삭제하시겠어요?") -> {
