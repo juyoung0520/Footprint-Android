@@ -6,14 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.users.TMonthDayRateRes
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import com.footprint.footprint.ui.main.home.HomeMonthCalendar
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, private val vpAreaPx: Int, private val itemMaxPx: Int) :
     RecyclerView.Adapter<HomeMonthRVAdapter.ViewHolder>() {
 
     private var dataList: ArrayList<Int> = arrayListOf()
+    private var userDatas: ArrayList<TMonthDayRateRes> = ArrayList()
     private var weeks: Int = 0
 
     //커스텀 캘린더 클래스를 이용하여 날짜 세팅
@@ -83,7 +87,23 @@ class HomeMonthRVAdapter(private val date: Date, private val widthPx: Int, priva
                 binding.itemHomeMonthDayPb.visibility = View.GONE
             }
 
+            /*달성율 반영*/
+            if(position in firstDateIndex .. lastDateIndex){
+                for(userData in userDatas){
+                    if(userData.day == data){
+                        //프로그레스 바 visibility -> VISIBLE
+                        binding.itemHomeMonthDayPb.visibility = View.VISIBLE
+                        //달성율 반영
+                        binding.itemHomeMonthDayPb.progress = userData.rate.roundToInt()
+                    }
+                }
+            }
+
         }
     }
 
+    fun setUserData(data: ArrayList<TMonthDayRateRes> ){
+        userDatas.clear()
+        userDatas = data
+    }
 }

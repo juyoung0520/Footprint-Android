@@ -15,8 +15,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
 
-            app:progress_end_color="@color/secondary"
-            app:progress_start_color="@color/secondary"
+            app:progress_end_color="@color/black_light"
+            app:progress_start_color="@color/black_light"
 
             app:progress_stroke_cap="round"
             app:progress_stroke_width="17dp"
@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="-10dp"
             android:elevation="320dp"
-            android:text="80%"
-            android:textColor="@color/secondary"
+            android:text="-%"
+            android:textColor="@color/black_light"
             app:layout_constraintBottom_toBottomOf="@id/home_day_pb"
             app:layout_constraintEnd_toEndOf="@id/home_day_pb"
             app:layout_constraintStart_toStartOf="@id/home_day_pb"
@@ -61,9 +61,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/home_day_goal_layout"
-            android:layout_width="105dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:background="@drawable/bg_grayround"
+            android:paddingHorizontal="11dp"
             app:layout_constraintVertical_bias="0.4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +76,6 @@
                 style="@style/tv_caption_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:text="@string/title_home_goal"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -87,21 +87,10 @@
                 style="@style/tv_body_b_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" : 48"
+                android:text=" : 0분"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/home_day_goal_title_tv"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/home_day_goal_unit_tv"
-                style="@style/tv_body_b_12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/msg_min_ko_unit"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/home_day_goal_tv"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -176,6 +176,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         val jwtId = result.jwtId
         val status = result.status
+        val checkMonthChanged = result.checkMonthChanged
 
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
@@ -183,12 +184,18 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel.providerType")
 
         //2. STATUS에 따른 처리
-        // DONE: 가입된 회원, MainActivity로
-        // NONE, ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
+        // ACTIVE: 가입된 회원, MainActivity로
+        // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
         when (status) {
-            "DONE" -> startMainActivity()
+            "ACTIVE" -> startMainActivity()
             "ONGOING" -> startRegisterActivity()
         }
+
+        //3. 첫 로그인 확인
+        if(checkMonthChanged){
+            //뱃지 API 요청
+        }
+
     }
 
 

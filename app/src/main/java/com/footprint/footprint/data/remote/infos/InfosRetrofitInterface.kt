@@ -2,11 +2,9 @@ package com.footprint.footprint.data.remote.infos
 
 
 import com.footprint.footprint.data.model.UserModel
-import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
 import retrofit2.*
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface InfosRetrofitInterface  {
 

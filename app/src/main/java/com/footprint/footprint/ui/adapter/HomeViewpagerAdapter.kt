@@ -5,7 +5,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.footprint.footprint.ui.main.home.HomeDayFragment
 import com.footprint.footprint.ui.main.home.HomeMonthFragment
 
+
+
+
 class HomeViewpagerAdapter(fragment : Fragment) : FragmentStateAdapter(fragment) {
+
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
@@ -14,4 +18,5 @@ class HomeViewpagerAdapter(fragment : Fragment) : FragmentStateAdapter(fragment)
             else -> HomeMonthFragment()
         }
     }
+
 }

@@ -5,6 +5,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
@@ -13,6 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.data.remote.badge.MonthBadge
+import com.footprint.footprint.data.remote.users.TMonth
+import com.footprint.footprint.data.remote.users.Today
+import com.footprint.footprint.data.remote.users.User
+import com.footprint.footprint.data.remote.users.UserService
 import com.google.android.gms.location.*
 import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.data.remote.weather.ITEM
@@ -20,22 +27,31 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
-import com.footprint.footprint.ui.lock.LockActivity
 import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    WeatherView {
-
+    WeatherView, HomeView {
+    private lateinit var homeVPAdapter: HomeViewpagerAdapter
     lateinit var weatherService: WeatherService
+
+    interface OnDataChangedListener {
+        fun onChange()
+    }
+    fun setItemClickListener(onDataChangedListener: OnDataChangedListener) {
+        this.onDataChangedListener = onDataChangedListener
+    }
+    private lateinit var onDataChangedListener : OnDataChangedListener
 
     override fun initAfterBinding() {
         //산책 시작 버튼 => Walk Activity
@@ -49,19 +65,38 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
 
         /*init: 1. TB&VP 2. 날짜*/
-        initTB()
+        if(!::homeVPAdapter.isInitialized)
+            initTB()
         initDate()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //유저 닉네임, 날씨 -> 한번만 바뀜
+        /*init: 1. 유저*/
+        UserService.setHomeView(this)
+        UserService.getUser()
+        BadgeService.getMonthBadge(this)
 
         /*init: 3. 날씨 */
         setPermission()   //위치 정보 사용 요청
         requestLocation() //날씨 API
     }
 
+    override fun onStart() {
+        super.onStart()
+        //일별, 월별
+        /*init: 1. 일별*/
+        UserService.getToday()
+        /*init: 2. 월별*/
+        UserService.getTMonth()
+    }
+
     /*Function*/
     //TabLayout과 Viewpager 연결
     private fun initTB() {
         val tbTitle = arrayListOf("일별", "월별")
-        val homeVPAdapter = HomeViewpagerAdapter(this)
+        homeVPAdapter = HomeViewpagerAdapter(this)
         binding.homeDaymonthVp.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.homeDaymonthVp.adapter = homeVPAdapter
         TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
@@ -266,7 +301,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
         Log.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
-        if(binding.homeWeatherTempTv != null && binding.homeWeatherConTv != null){
+        GlobalScope.launch(Dispatchers.Main) {
+            //visibility 조절
+            binding.homeTopLineIv.visibility = View.VISIBLE
+            binding.homeTopWeatherIv.visibility = View.VISIBLE
+            binding.homeWeatherTempTv.visibility = View.VISIBLE
+            binding.homeWeatherConTv.visibility = View.VISIBLE
+
             binding.homeWeatherTempTv.text = tmp
             binding.homeWeatherConTv.text = weatherValue
             val imgRes = when(weatherValue){
@@ -288,6 +329,74 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onWeatherFailure(code: Int, message: String) {
         //오류 메시지 띄우기
         Log.d("WEATHER/API-Failure", code.toString() + message)
+    }
+
+    /*유저 정보 API*/
+    override fun onUserSuccess(user: User) {
+        Log.d("HOME(USER)/API-SUCCESS", user.toString())
+
+        //닉네임 바꿔주기
+        GlobalScope.launch(Dispatchers.Main) {
+            binding.homeTopUsernameTv.text = user.nickname
+        }
+    }
+
+    override fun onUserFailure(code: Int, message: String) {
+        Log.d("HOME(USER)/API-FAILURE", code.toString() + message)
+    }
+
+    override fun onTodaySuccess(today: Today) {
+        Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
+        //목표 바꿔주기
+        GlobalScope.launch(Dispatchers.Main) {
+            val color = if(today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
+            binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
+            binding.homeDayGoalWalkTv.text = today.walkTime.toString()
+            binding.homeDayGoalDistTv.text = today.distance.toString()
+            binding.homeDayGoalKcalTv.text = today.calorie.toString()
+        }
+
+        //달성율, 오늘 목표 -> DayFragment
+        val bundle = Bundle()
+         bundle.putFloat("TodayGoalRate", today.goalRate)
+         bundle.putInt("TodayWalkGoalTime", today.walkGoalTime)
+         val homeDay = HomeDayFragment()
+         homeDay.arguments = bundle
+
+        Log.d("HOMEDAYFRG", "Bundle 보냄")
+    }
+
+    override fun onTodayFailure(code: Int, message: String) {
+        Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
+    }
+
+    override fun onTMonthSuccess(tMonth: TMonth) {
+        Log.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
+        //목표 바꿔주기
+        GlobalScope.launch(Dispatchers.Main) {
+            binding.homeMonthGoalWalkTv.text = tMonth.getMonthTotal?.monthTotalMin.toString()
+            binding.homeMonthGoalDistTv.text = tMonth.getMonthTotal?.monthTotalDistance.toString()
+            binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal?.monthPerCal.toString()
+        }
+
+        //목표 요일, 일별 달성율(day, rate) -> DayFragment
+        val bundle = Bundle()
+        /*bundle.putStringArrayList("TMonthGoalDays", tMonth.goalDayList)
+        bundle.putSerializable("TMonthDayRateRes", tMonth.getDayRateRes)
+        val homeMonth = HomeMonthFragment()
+        homeMonth.arguments = bundle*/
+    }
+
+    override fun onTMonthFailure(code: Int, message: String) {
+        Log.d("HOME(TMONTH)/API-FAILURE", code.toString() + message)
+    }
+
+    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
+        Log.d("HOME(BADGE)/API-SUCCESS", monthBadge.toString())
+    }
+
+    override fun onMonthBadgeFailure(code: Int, message: String) {
+        Log.d("HOME(BADGE)/API-SUCCESS", code.toString() + message)
     }
 
 }
