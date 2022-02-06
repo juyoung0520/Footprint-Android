@@ -19,6 +19,7 @@ class ActionDialogFragment() : DialogFragment() {
 
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
     private lateinit var action: String
+    private lateinit var desc: String
 
     //다이얼로그 콜백 인터페이스
     interface MyDialogCallback {
@@ -31,6 +32,7 @@ class ActionDialogFragment() : DialogFragment() {
 
         msg = arguments?.getString("msg").toString()
         action = arguments?.getString("action").toString()
+        desc = arguments?.getString("desc", "").toString()
     }
 
     override fun onCreateView(
@@ -65,35 +67,26 @@ class ActionDialogFragment() : DialogFragment() {
         binding.walkDialogMsgTv.text = msg
         binding.walkDialogActionTv.text = action
 
-        when {
-            msg.contains("산책' 을 삭제하시겠어요?") -> {
-                binding.walkDialogDescTv.text = "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요"
-                binding.walkDialogDescTv.visibility = View.VISIBLE
-            }
-            msg == getString(R.string.msg_logout) -> {
-                binding.walkDialogDescTv.text = getString(R.string.msg_logout_desc)
-                binding.walkDialogDescTv.visibility = View.VISIBLE
-            }
-            msg == getString(R.string.msg_withdrawal) -> {
-                binding.walkDialogDescTv.text = getString(R.string.msg_withdrawal_desc)
-                binding.walkDialogDescTv.visibility = View.VISIBLE
+        if (desc.isBlank()) {
+            binding.walkDialogDescTv.visibility = View.INVISIBLE
+        } else {
+            binding.walkDialogDescTv.visibility = View.VISIBLE
+            binding.walkDialogDescTv.text = desc
+        }
 
-                binding.walkDialogCancelTv.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.primary
-                    )
+        if (msg == getString(R.string.msg_withdrawal)) {
+            binding.walkDialogCancelTv.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.primary
                 )
-                binding.walkDialogActionTv.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.black_dark
-                    )
+            )
+            binding.walkDialogActionTv.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.black_dark
                 )
-            }
-            else -> {
-                binding.walkDialogDescTv.visibility = View.GONE
-            }
+            )
         }
     }
 
