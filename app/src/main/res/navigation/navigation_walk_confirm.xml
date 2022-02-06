@@ -13,7 +13,7 @@
             android:id="@+id/action_walkConfirmFragment2_to_footprintDialogFragment3"
             app:destination="@id/footprintDialogFragment3" />
         <argument
-            android:name="footprints"
+            android:name="walk"
             app:argType="string" />
     </fragment>
 
