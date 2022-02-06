@@ -77,8 +77,8 @@ object BadgeService {
             ) {
                 val body = response.body()
 
-                when (body!!.code) {
-                    1000 -> {
+                when(body!!.code){
+                    1000 ->{
                         //요청 성공
                         val result = body.result
                         homeView.onMonthBadgeSuccess(result!!)
@@ -99,4 +99,5 @@ object BadgeService {
         })
 
     }
+
 }
