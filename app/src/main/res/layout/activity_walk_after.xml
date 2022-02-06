@@ -60,4 +60,15 @@
         app:layout_constraintTop_toBottomOf="@+id/walk_after_tb"
         app:layout_constraintVertical_weight="1" />
 
+    <ProgressBar
+        android:id="@+id/walk_after_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="invisible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
