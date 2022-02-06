@@ -203,6 +203,9 @@
     <string name="msg_statistics_month_count_res">이번달엔 회 기록했어요</string>
     <string name="msg_statistics_month_rate_res">이번달엔 %달성했어요</string>
     <string name="msg_percent_unit">(%)</string>
+    <string name="msg_count_unit">(회)</string>
+    <string name="title_statistics_month_count_res">월별 기록 횟수</string>
+    <string name="title_statistics_month_rate_res">월별 달성률</string>
 
     <!--뱃지-->
     <string name="title_achievement_badge">달성 뱃지</string>
