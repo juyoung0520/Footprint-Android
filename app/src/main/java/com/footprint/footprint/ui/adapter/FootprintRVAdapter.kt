@@ -67,8 +67,7 @@ class FootprintRVAdapter(private val activityClass: String) :
             holder.postStartIv.visibility = View.INVISIBLE
 
         //기록 시간
-        footprints[position]
-        holder.postTimeTv.text = footprints[position].recordAt
+        holder.postTimeTv.text = footprints[position].recordAt.split(" ")[1].substring(0, 5)
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
@@ -98,7 +97,7 @@ class FootprintRVAdapter(private val activityClass: String) :
 
         //발자국 내용 해시태그 폰트 색상 바꾸기
         var hashTagCnt = 0
-        val hashtagInContent = SpannableString(footprints[position].content)
+        val hashtagInContent = SpannableString(footprints[position].write)
         val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
         while (matcher.find() && hashTagCnt < 5) {
             hashTagCnt++    //5개까지만
@@ -165,6 +164,8 @@ class FootprintRVAdapter(private val activityClass: String) :
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
+
+    fun getData(): ArrayList<FootprintModel> = this.footprints
 
     fun removeData(position: Int) {
         this.footprints.removeAt(position)

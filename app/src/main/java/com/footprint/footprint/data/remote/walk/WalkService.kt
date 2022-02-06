@@ -1,10 +1,12 @@
 package com.footprint.footprint.data.remote.walk
 
 import android.util.Log
+import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.ui.main.calendar.CalendarView
 import com.footprint.footprint.ui.main.calendar.SearchResultView
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import okhttp3.MultipartBody
 import retrofit2.*
 
 object WalkService {
@@ -78,6 +80,53 @@ object WalkService {
                 searchResultView.onSearchReaultFailure(400, t.message!!)
             }
 
+        })
+    }
+
+    fun writeWalk(walk: WalkModel) {
+        val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()
+        val saveWalkReq: SaveWalk =
+            SaveWalk(startAt = walk.startAt, endAt = walk.endAt, distance = walk.distance, coordinates = walk.coordinate, calorie = walk.calorie, userIdx = 1)
+
+        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg))
+
+        val footprintsReq: ArrayList<SaveFootprint> = arrayListOf()
+        for (footprint in walk.footprints) {
+            val data: SaveFootprint = SaveFootprint(
+                footprint.coordinate,
+                footprint.recordAt,
+                footprint.write,
+                footprint.hashtagList
+            )
+            footprintsReq.add(data)
+
+            if (footprint.photos.isEmpty())
+                saveWalkReq.photoMatchNumList.add(0)
+            else {
+                saveWalkReq.photoMatchNumList.add(footprint.photos.size)
+
+                for (photo in footprint.photos)
+                    photosReq.add(FormDataUtils.prepareFilePart("photos", photo))
+            }
+        }
+
+        Log.d("WalkService", "\nwriteWalk\nsaveWalkReq: $saveWalkReq\nfootprintsReq: $footprintsReq")
+
+        val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)
+        val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)
+
+        walkService.writeWalk(walkFormData, footprintListFormData, photosReq).enqueue(object : Callback<WriteWalkResponse> {
+            override fun onResponse(
+                call: Call<WriteWalkResponse>,
+                response: Response<WriteWalkResponse>
+            ) {
+                val res = response.body()
+                Log.d("WalkService","writeWalk-RES: ${res?.code}")
+            }
+
+            override fun onFailure(call: Call<WriteWalkResponse>, t: Throwable) {
+                Log.e("WalkService", "writeWalk-ERROR: ${t.message.toString()}")
+            }
         })
     }
 

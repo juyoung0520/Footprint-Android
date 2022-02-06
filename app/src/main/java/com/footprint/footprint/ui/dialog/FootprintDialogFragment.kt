@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +19,8 @@ import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
+import com.footprint.footprint.utils.getAbsolutePathByBitmap
+import com.footprint.footprint.utils.uriToBitmap
 import com.google.gson.Gson
 import gun0912.tedimagepicker.builder.TedImagePicker
 import com.gun0912.tedpermission.PermissionListener
@@ -145,7 +146,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             .startMultiImage { uriList ->
                 imgList.clear()
                 uriList.forEach {
-                    imgList.add(it.toString())
+                    imgList.add(getAbsolutePathByBitmap(requireContext(), uriToBitmap(requireContext(), it)))
                 }
 
                 photoRVAdapter.addImgList(imgList)
@@ -219,11 +220,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private fun setMyClickListener() {
         //취소 누르면 다이얼로그 나가기 -> 이전 화면(WalkMapFragment)에 기록데이터를 null 로 하여 데이터 전달
         binding.postDialogCancelTv.setOnClickListener {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                "post",
-                null
-            )
-
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("post", null)
             dismiss()
         }
 
@@ -286,9 +283,10 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             footprint = FootprintModel()
 
             val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-            footprint.recordAt = current.format(DateTimeFormatter.ISO_DATE_TIME)
+            footprint.recordAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         }
-        footprint.content = binding.postDialogContentEt.text.toString()
+        footprint.coordinate = listOf(10.0, 12.0)
+        footprint.write = binding.postDialogContentEt.text.toString()
         footprint.hashtagList = hashtags
         footprint.photos = imgList
 
@@ -304,7 +302,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     private fun setUI(footprint: FootprintModel) {
-        binding.postDialogContentEt.setText(footprint.content)
+        binding.postDialogContentEt.setText(footprint.write)
 
         if (footprint.photos.isEmpty()) {
             setDeletePhotoUI()
