@@ -4,28 +4,25 @@ import android.content.Intent
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.badge.MonthBadge
-import com.footprint.footprint.data.remote.users.TMonth
-import com.footprint.footprint.data.remote.users.Today
-import com.footprint.footprint.data.remote.users.User
-import com.footprint.footprint.data.remote.users.UserService
+import com.footprint.footprint.data.remote.acheive.TMonth
+import com.footprint.footprint.data.remote.acheive.Today
+import com.footprint.footprint.data.remote.acheive.AcheiveService
+import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.remote.user.UserService
 import com.google.android.gms.location.*
 import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.data.remote.weather.ITEM
@@ -51,8 +48,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
 
-    lateinit var weatherService: WeatherService
+    private var walkGoalTime = 0
 
+    lateinit var weatherService: WeatherService
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
@@ -79,11 +77,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UserService.setHomeView(this)
+        AcheiveService.setHomeView(this)
 
         //유저 닉네임, 날씨 -> 한번만 호출
         /*init: 1. 유저*/
-        UserService.getUser()
+        UserService.getUser(this)
 
         /*뱃지(임시)*/
         //BadgeService.getMonthBadge(this)
@@ -94,9 +92,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         super.onStart()
         //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
         /*init: 1. 일별*/
-        UserService.getToday(this)
+        AcheiveService.getToday(this)
         /*init: 2. 월별*/
-        UserService.getTMonth(this)
+        AcheiveService.getTMonth(this)
     }
 
     /*Function*/
@@ -360,6 +358,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
+        walkGoalTime = today.walkGoalTime
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //목표 바꿔주기
@@ -367,8 +366,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                     if (today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
                 binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
                 binding.homeDayGoalWalkTv.text = today.walkTime.toString()
+                binding.homeDayGoalWalkTv.isSelected = true
                 binding.homeDayGoalDistTv.text = today.distance.toString()
+                binding.homeDayGoalDistTv.isSelected = true
                 binding.homeDayGoalKcalTv.text = today.calorie.toString()
+                binding.homeDayGoalKcalTv.isSelected = true
             })
         }
 
@@ -385,11 +387,18 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                //목표 바꿔주기
-                binding.homeMonthGoalWalkTv.text = tMonth.getMonthTotal?.monthTotalMin.toString()
-                binding.homeMonthGoalDistTv.text =
-                    tMonth.getMonthTotal?.monthTotalDistance.toString()
-                binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal?.monthPerCal.toString()
+                //누적 산책시간
+                val monthTotalMin = tMonth.getMonthTotal.monthTotalMin
+                val color = if(monthTotalMin > walkGoalTime) "#FFC01D" else "#241F20"
+                binding.homeMonthGoalWalkTv.setTextColor(Color.parseColor(color))
+                binding.homeMonthGoalWalkTv.text = monthTotalMin.toString()
+                binding.homeMonthGoalWalkTv.isSelected = true
+                //누적 거리
+                binding.homeMonthGoalDistTv.text = tMonth.getMonthTotal.monthTotalDistance.toString()
+                binding.homeMonthGoalDistTv.isSelected = true
+                //누적 칼로리
+                binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal.monthPerCal.toString()
+                binding.homeMonthGoalKcalTv.isSelected = true
             })
         }
 

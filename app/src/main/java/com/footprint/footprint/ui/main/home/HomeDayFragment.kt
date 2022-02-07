@@ -1,17 +1,11 @@
 package com.footprint.footprint.ui.main.home
 
+import android.graphics.Color
 import android.util.Log
 import android.view.View
-import androidx.navigation.fragment.NavHostFragment
-import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.users.Today
-import com.footprint.footprint.data.remote.users.UserService
+import com.footprint.footprint.data.remote.acheive.Today
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate),
     HomeDayView {
@@ -50,10 +44,10 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
 
         //달성율 색 변경: 100(primary), 0(black_dark), else(secondary)
         val color =
-            if (TodayGoalRate == 100) R.color.primary else if (TodayGoalRate == 0) R.color.black else R.color.secondary
-        circleProgressBar.setProgressStartColor(color)
-        circleProgressBar.setProgressEndColor(color)
-        binding.homeDayProgressTv.setTextColor(resources.getColor(color))
+            if (TodayGoalRate == 100) " #4FB8E7" else if (TodayGoalRate == 0) "#241F20" else "#FFC01D"
+        circleProgressBar.setProgressStartColor(Color.parseColor(color))
+        circleProgressBar.setProgressEndColor(Color.parseColor(color))
+        binding.homeDayProgressTv.setTextColor(Color.parseColor(color))
 
         //2. 목표 시간 텍스트 변경
         val goalTimeString = if (TodayWalkGoalTime < 60)

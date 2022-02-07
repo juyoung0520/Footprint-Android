@@ -1,6 +1,6 @@
 package com.footprint.footprint.ui.main.home
 
-import com.footprint.footprint.data.remote.users.Today
+import com.footprint.footprint.data.remote.acheive.Today
 
 interface HomeDayView {
     /*일별 목표 받아오기*/

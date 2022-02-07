@@ -9,7 +9,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
+import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.remote.user.UserResponse
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.convertDpToSp
@@ -17,16 +20,16 @@ import com.google.gson.Gson
 import com.skydoves.balloon.*
 import kotlin.math.floor
 
-class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate) {
+class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate), MyInfoUpdateView {
     private val args: MyInfoUpdateFragmentArgs by navArgs()
 
     private lateinit var animation: Animation   //EditText 애니메이션
-    private lateinit var user: UserModel
+    private lateinit var user: SimpleUserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        user = Gson().fromJson(args.user, UserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
+        user = Gson().fromJson(args.user, SimpleUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
     }
 
     override fun initAfterBinding() {
@@ -39,7 +42,7 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
     }
 
     //내 정보 "수정" 화면
-    private fun setUpdateUI(user: UserModel) {
+    private fun setUpdateUI(user: SimpleUserModel) {
         binding.myInfoUpdateNicknameEt.setText(user.nickname)   //닉네임
 
         binding.myInfoUpdateGenderRg.apply {    //성별
@@ -50,17 +53,17 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             }
         }
 
-        if (user.birth!=null)  {    //생년월일
-            val birthList = user.birth!!.split(".")
+        if (user.birth != "1900-01-01")  {    //생년월일
+            val birthList = user.birth.split("-")
             binding.myInfoUpdateBirthYearEt.setText(birthList[0])
             binding.myInfoUpdateBirthMonthEt.setText(birthList[1])
             binding.myInfoUpdateBirthDayEt.setText(birthList[2])
         }
 
-        if (user.height!=null)  //키
+        if (user.height!= 0)  //키
             binding.myInfoUpdateHeightEt.setText(user.height.toString())
 
-        if (user.weight!=null)  //몸무게
+        if (user.weight!= 0)  //몸무게
             binding.myInfoUpdateWeightEt.setText(user.weight.toString())
     }
 
@@ -96,6 +99,8 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             hideKeyboard()  //키보드 내리기
 
             if (validate()) {   //유효성 검사를 통과한 경우 -> 1. 사용자 정보 수정 API 를 요청한다. 2. 요청 성공: MyInfoUpdateFragment 화면으로 돌아간다.
+                UserService.updateUser(this)
+
                 Log.d("MyInfoUpdateFragment", "저장! user: ${bindUser()}")
                 (requireActivity()).onBackPressed()
             }
@@ -210,8 +215,8 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
     }
 
     //사용자 정보 수정 후 사용자 정보 조회 화면에 넘겨줄 유저 데이터 바인딩 함수
-    private fun bindUser(): UserModel {
-        val user = UserModel()
+    private fun bindUser(): SimpleUserModel {
+        val user = SimpleUserModel()
 
         user.nickname = binding.myInfoUpdateNicknameEt.text.toString()    //닉네임(필수)
 
@@ -223,7 +228,7 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
 
         if (binding.myInfoUpdateBirthYearEt.text.isNotBlank())    //생년월일
             user.birth =
-                "${binding.myInfoUpdateBirthYearEt.text}.${binding.myInfoUpdateBirthMonthEt.text}.${binding.myInfoUpdateBirthDayEt.text}"
+                "${binding.myInfoUpdateBirthYearEt.text}-${binding.myInfoUpdateBirthMonthEt.text}-${binding.myInfoUpdateBirthDayEt.text}"
 
         if (binding.myInfoUpdateHeightEt.text.isNotBlank())   //키
             user.height = binding.myInfoUpdateHeightEt.text.toString().toInt()
@@ -263,5 +268,13 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         balloon.setOnBalloonClickListener(OnBalloonClickListener {
             balloon.dismiss()
         })
+    }
+
+    override fun onUpdateSuccess(result: UserResponse) {
+        Log.d("INFOUPDATE/API-SUCCESS", result.toString())
+    }
+
+    override fun onUpdateFailure(code: Int, message: String) {
+        Log.d("INFOUPDATE/API-SUCCESS", code.toString() + message)
     }
 }
