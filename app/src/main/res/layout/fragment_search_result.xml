@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_no_search_result"
-        android:textColor="@color/gray"
+        android:textColor="@color/white_caption"
         android:textAppearance="@style/tv_body_b_14"
         app:layout_constraintTop_toTopOf="@id/search_result_background_v"
         app:layout_constraintStart_toStartOf="@id/search_result_background_v"

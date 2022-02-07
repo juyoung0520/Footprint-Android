@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.walk.DayResult
+import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
@@ -35,7 +37,7 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.roundToInt
 
-class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
+class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate), CalendarView {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -99,6 +101,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
             override fun onDayClick(oldSelection: LocalDate?, selection: LocalDate) {
                 selectDate(oldSelection, selection)
+                // 날짜의 산책s API 호출
             }
         })
 
@@ -116,14 +119,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             firstDayOfWeek,
             object : Completion {
                 override fun invoke() {
-
-                    binding.calendarLoadingBgV.visibility = View.GONE
-                    binding.calendarLoadingPb.visibility = View.GONE
-
-                    binding.calendarWalkCv.scrollToMonth(currentMonth)
-
-                    afterInitCalendar()
-
+                    if (view != null) {
+                        binding.calendarWalkCv.scrollToMonth(currentMonth)
+                        afterInitCalendar()
+                    }
                 }
             })
     }
@@ -132,10 +131,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private fun afterInitCalendar() {
         binding.calendarWalkCv.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
-                if (view != null) {
-                    binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
-                    currentMonth = p1.yearMonth
-                }
+                // Month API 호출
+                WalkService.getMonthWalks(this@CalendarFragment, p1.year, p1.month)
+
+                binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
+                currentMonth = p1.yearMonth
             }
         }
 
@@ -174,6 +174,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         binding.calendarWalkNumber2Tv.text = " ${walks.size}"
 
         val adapter = WalkRVAdapter()
+        adapter.setFragmentManager(requireActivity().supportFragmentManager)
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
@@ -220,7 +221,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             )
     }
 
-    fun changeDayOfWeek(dayOfWeek: String): String {
+    private fun changeDayOfWeek(dayOfWeek: String): String {
         return when (dayOfWeek) {
             "MONDAY" -> "월"
             "TUESDAY" -> "화"
@@ -251,8 +252,20 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         }
     }
 
-    override fun onDestroyView() {
-        if (job != null) job!!.cancel()
-        super.onDestroyView()
+    override fun onCalendarLoading() {
+        binding.calendarLoadingBgV.visibility = View.VISIBLE
+        binding.calendarLoadingPb.visibility = View.VISIBLE
+    }
+
+    override fun onCalendarFailure(code: Int, message: String) {
+        binding.calendarLoadingBgV.visibility = View.GONE
+        binding.calendarLoadingPb.visibility = View.GONE
+    }
+
+    override fun onMonthSuccess(monthResult: List<DayResult>) {
+        binding.calendarLoadingBgV.visibility = View.GONE
+        binding.calendarLoadingPb.visibility = View.GONE
+        
+        calendarDayBinder.setCurrentMonthResults(monthResult)
     }
 }
