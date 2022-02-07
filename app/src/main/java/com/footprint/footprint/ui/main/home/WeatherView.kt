@@ -4,7 +4,6 @@ import com.footprint.footprint.data.remote.weather.ITEM
 import com.footprint.footprint.data.remote.weather.WeatherResponse
 
 interface WeatherView {
-    fun onWeatherLoading()
     fun onWeatherSuccess(items: List<ITEM>)
     fun onWeatherFailure(code: Int, message: String)
 }

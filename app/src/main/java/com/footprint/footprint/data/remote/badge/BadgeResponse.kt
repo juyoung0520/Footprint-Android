@@ -16,8 +16,8 @@ data class ChangeRepresentativeBadgeResponse(
     val result: BadgeInfo,
 )
 
-import com.footprint.footprint.data.remote.auth.Login
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class BadgeResponse(
     val repBadgeInfo: BadgeInfo,
@@ -60,4 +60,4 @@ data class MonthBadge(
     @SerializedName("badgeName") val badgeName: String, //뱃지 이름
     @SerializedName("badgeUrl") val badgeUrl: String,   //뱃지 이미지 url
     @SerializedName("badgeDate") val badgeDate: String  //뱃지 날짜 확인 컬럼
-)
+): Serializable

@@ -287,11 +287,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
 
-    /*WeatherView*/
-    override fun onWeatherLoading() {
-        //로딩바띄우기
-    }
-
+    /*날씨 API*/
     override fun onWeatherSuccess(items: List<ITEM>) {
         Log.d("WEATHER/API-SUCCESS", items.toString())
 
@@ -339,23 +335,22 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
-        //오류 메시지 띄우기
-        Log.d("WEATHER/API-Failure", code.toString() + message)
+        Log.d("WEATHER/API-FAILURE", "code: $code message: $message")
     }
 
-    /*유저 정보 API*/
+    /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
         Log.d("HOME(USER)/API-SUCCESS", user.toString())
 
         //닉네임 바꿔주기
         binding.homeTopUsernameTv.text = user.nickname
-
     }
-
     override fun onUserFailure(code: Int, message: String) {
-        Log.d("HOME(USER)/API-FAILURE", code.toString() + message)
+        Log.d("HOME(USER)/API-FAILURE", "code: $code message: $message")
     }
 
+
+    /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
         walkGoalTime = today.walkGoalTime
@@ -377,11 +372,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeDayFragment
         (fragmentList[0] as HomeDayFragment).onTodaySuccess(today)
     }
-
     override fun onTodayFailure(code: Int, message: String) {
         Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
     }
 
+    /*월별 정보 조회 API*/
     override fun onTMonthSuccess(tMonth: TMonth) {
         Log.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
 
@@ -405,20 +400,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeMonthFragment
         (fragmentList[1] as HomeMonthFragment).onTMonthSuccess(tMonth)
     }
-
     override fun onTMonthFailure(code: Int, message: String) {
         Log.d("HOME(TMONTH)/API-FAILURE", code.toString() + message)
     }
 
-    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
-        Log.d("HOME(BADGE)/API-SUCCESS", monthBadge.toString())
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-        Log.d("HOME(BADGE)/API-SUCCESS", code.toString() + message)
-    }
-
     override fun onDestroyView() {
+        //등록된 jobs cancel -> binding error 막기 위해
         for (job in jobs) {
             job.cancel()
         }
