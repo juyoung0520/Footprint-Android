@@ -45,7 +45,7 @@ class GoalThisMonthFragment :
 
     private fun bind() {
         //현재 년도, 월 구해서 화면에 보여주기
-        val monthList = goal.month.split(" ")
+        val monthList = goal.month!!.split(" ")
         binding.goalThisMonthYearTv.text = monthList[0]
         binding.goalThisMonthMonthTv.text = " ${monthList[1]}"
 
@@ -69,7 +69,7 @@ class GoalThisMonthFragment :
             else -> getString(R.string.title_different_every_time)
         }
 
-        if (goal.goalNextModified)
+        if (goal.goalNextModified!!)
             binding.goalThisMonthChangeGoalTv.text = getString(R.string.msg_see_goal_next_month)
         else
             binding.goalThisMonthChangeGoalTv.text = getString(R.string.msg_change_goal_next_month)
