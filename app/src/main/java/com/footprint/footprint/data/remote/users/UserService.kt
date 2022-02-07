@@ -1,6 +1,8 @@
 package com.footprint.footprint.data.remote.users
 
 import android.util.Log
+import com.footprint.footprint.ui.main.home.HomeDayView
+import com.footprint.footprint.ui.main.home.HomeMonthView
 import retrofit2.*
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
@@ -38,7 +40,7 @@ object UserService {
     }
 
     /*일별 정보 API*/
-    fun getToday(){
+    fun getToday(homeDayView: HomeDayView){
         userService.getToday().enqueue(object : Callback<TodayResponse>{
             override fun onResponse(call: Call<TodayResponse>, response: Response<TodayResponse>) {
                 val body = response.body()
@@ -47,14 +49,14 @@ object UserService {
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
-                        homeView.onTodaySuccess(result!!)
+                        homeDayView.onTodaySuccess(result!!)
                     }
-                    else -> homeView.onTodayFailure(body.code, body.message)
+                    else -> homeDayView.onTodayFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<TodayResponse>, t: Throwable) {
-                homeView.onTodayFailure(213, t.message.toString())
+                homeDayView.onTodayFailure(213, t.message.toString())
                 Log.d("TODAY/API-FAILURE", t.message.toString())
             }
         })
@@ -62,7 +64,7 @@ object UserService {
 
 
     /*월별 정보 API*/
-    fun getTMonth(){
+    fun getTMonth(homeMonthView: HomeMonthView){
         userService.getTMonth().enqueue(object : Callback<TMonthResponse>{
             override fun onResponse(
                 call: Call<TMonthResponse>,
@@ -74,15 +76,15 @@ object UserService {
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
-                        homeView.onTMonthSuccess(result!!)
+                        homeMonthView.onTMonthSuccess(result!!)
                     }
-                    else -> homeView.onTMonthFailure(body.code, body.message)
+                    else -> homeMonthView.onTMonthFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<TMonthResponse>, t: Throwable) {
                 Log.d("TMONTH/API-FAILURE", t.message.toString())
-                homeView.onTMonthFailure(213, t.message.toString())
+                homeMonthView.onTMonthFailure(213, t.message.toString())
             }
 
         })

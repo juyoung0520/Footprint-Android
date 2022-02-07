@@ -32,8 +32,6 @@ import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import com.kizitonwose.calendarview.utils.yearMonth
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
