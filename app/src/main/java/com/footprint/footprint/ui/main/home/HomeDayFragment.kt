@@ -1,75 +1,61 @@
 package com.footprint.footprint.ui.main.home
 
 import android.util.Log
+import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.users.Today
+import com.footprint.footprint.data.remote.users.UserService
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class HomeDayFragment : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate){
+class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate),
+    HomeDayView {
 
+    private lateinit var today: Today
 
     override fun initAfterBinding() {
-        //circleProgressBar = binding.homeDayPb
-        Log.d("HOMEDAYFRG", "initAfterBinding")
-
-        val currentFragment = NavHostFragment.findNavController(this).currentDestination
-        Log.d("day", currentFragment.toString())
     }
 
-
-    fun receiveData(){
-        val circleProgressBar = binding.homeDayPb
-        Log.d("HOMEDAYFRG", "onStart")
-        val bundle = this.arguments
-        Log.d("HOMEDAYFRG", "Bundle null")
-        if (bundle != null) {
-            Log.d("HOMEDAYFRG", "Bundle 도착")
-            val goalRate = bundle.getFloat("TodayGoalRate", 0f).roundToInt()
-            val goalTime = bundle.getInt("TodayWalkGoalTime", 0)
-
-            //프로그레스바 & 달성율 텍스트 변경
-            circleProgressBar.progress = goalRate
-            binding.homeDayProgressTv.text = String.format("%d%%", goalRate)
-
-            //달성율 색 변경: 100(primary), 0(black_dark), else(secondary)
-            val color =
-                if (goalRate == 100) R.color.primary else if (goalRate == 0) R.color.black_light else R.color.secondary
-            circleProgressBar.setProgressStartColor(color)
-            circleProgressBar.setProgressEndColor(color)
-            binding.homeDayProgressTv.setTextColor(resources.getColor(color))
-
-            //목표 시간 텍스트 변경
-            val goalTimeString = if (goalTime < 60)
-                String.format(" : %d분", goalTime)
-            else {
-                if (goalTime % 60 == 0)
-                    String.format(" : %d시간", goalTime / 60)
-                else
-                    String.format(" : %d시간 %d분", goalTime / 60, goalTime % 60)
-            }
-
-            binding.homeDayGoalTv.text = goalTimeString
+    override fun onResume() {
+        super.onResume()
+        if (::today.isInitialized){
+            setDayFragment()
+            setLoadingBar(false)
+        }else{
+            setLoadingBar(true)
         }
+
+    }
+    override fun onTodaySuccess(today: Today) {
+        this.today = today
     }
 
-    fun sendDayData(TodayGoalRate: Int, TodayWalkGoalTime: Int){
-        Log.d("HOMEDAYFRG", "도착")
+    override fun onTodayFailure(code: Int, message: String) {
+        Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
+    }
 
-        //프로그레스바 & 달성율 텍스트 변경
+    private fun setDayFragment() {
+        val TodayGoalRate = today.goalRate.toInt()
+        val TodayWalkGoalTime = today.walkGoalTime
+
+        //1. 프로그레스바 & 달성율
         val circleProgressBar = binding.homeDayPb
         circleProgressBar.progress = TodayGoalRate
         binding.homeDayProgressTv.text = String.format("%d%%", TodayGoalRate)
 
         //달성율 색 변경: 100(primary), 0(black_dark), else(secondary)
         val color =
-            if (TodayGoalRate == 100) R.color.primary else if (TodayGoalRate == 0) R.color.black_light else R.color.secondary
+            if (TodayGoalRate == 100) R.color.primary else if (TodayGoalRate == 0) R.color.black else R.color.secondary
         circleProgressBar.setProgressStartColor(color)
         circleProgressBar.setProgressEndColor(color)
         binding.homeDayProgressTv.setTextColor(resources.getColor(color))
 
-        //목표 시간 텍스트 변경
+        //2. 목표 시간 텍스트 변경
         val goalTimeString = if (TodayWalkGoalTime < 60)
             String.format(" : %d분", TodayWalkGoalTime)
         else {
@@ -80,5 +66,18 @@ class HomeDayFragment : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBind
         }
 
         binding.homeDayGoalTv.text = goalTimeString
+    }
+
+    /*로딩 바*/
+    private fun setLoadingBar(btn: Boolean){
+        if(btn){
+            //ON
+            binding.homeDayLoadingPb.visibility = View.VISIBLE
+            binding.homeDayLoadingBgV.visibility = View.VISIBLE
+        }else{
+            //OFF
+            binding.homeDayLoadingPb.visibility = View.GONE
+            binding.homeDayLoadingBgV.visibility = View.GONE
+        }
     }
 }

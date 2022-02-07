@@ -9,9 +9,15 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.badge.BadgeService
@@ -32,26 +38,22 @@ import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    WeatherView, HomeView {
+    WeatherView, HomeView, HomeDayView, HomeMonthView {
+
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
+    private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
+
     lateinit var weatherService: WeatherService
 
-    interface OnDataChangedListener {
-        fun onChange()
-    }
-    fun setItemClickListener(onDataChangedListener: OnDataChangedListener) {
-        this.onDataChangedListener = onDataChangedListener
-    }
-    private lateinit var onDataChangedListener : OnDataChangedListener
+    private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
         //산책 시작 버튼 => Walk Activity
@@ -65,38 +67,43 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
 
         /*init: 1. TB&VP 2. 날짜*/
-        if(!::homeVPAdapter.isInitialized)
+        if (!::homeVPAdapter.isInitialized)
             initTB()
         initDate()
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //유저 닉네임, 날씨 -> 한번만 바뀜
-        /*init: 1. 유저*/
-        UserService.setHomeView(this)
-        UserService.getUser()
-        BadgeService.getMonthBadge(this)
 
         /*init: 3. 날씨 */
         setPermission()   //위치 정보 사용 요청
         requestLocation() //날씨 API
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        UserService.setHomeView(this)
+
+        //유저 닉네임, 날씨 -> 한번만 호출
+        /*init: 1. 유저*/
+        UserService.getUser()
+
+        /*뱃지(임시)*/
+        //BadgeService.getMonthBadge(this)
+    }
+
+
     override fun onStart() {
         super.onStart()
-        //일별, 월별
+        //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
         /*init: 1. 일별*/
-        UserService.getToday()
+        UserService.getToday(this)
         /*init: 2. 월별*/
-        UserService.getTMonth()
+        UserService.getTMonth(this)
     }
 
     /*Function*/
     //TabLayout과 Viewpager 연결
     private fun initTB() {
         val tbTitle = arrayListOf("일별", "월별")
-        homeVPAdapter = HomeViewpagerAdapter(this)
+        homeVPAdapter = HomeViewpagerAdapter(this, fragmentList)
         binding.homeDaymonthVp.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         binding.homeDaymonthVp.adapter = homeVPAdapter
         TabLayoutMediator(binding.homeDaymonthTb, binding.homeDaymonthVp) { tab, position ->
@@ -107,6 +114,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 setGoal(position)
+
             }
         }
         binding.homeDaymonthVp.registerOnPageChangeCallback(changeCB)
@@ -159,9 +167,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
-
-        weatherService = WeatherService(this)
+        weatherService = WeatherService(this@HomeFragment)
         weatherService.getWeather(base_date, base_time, nx.toString(), ny.toString())
+
     }
 
     private fun getTime(time: String): String {
@@ -212,6 +220,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             )
             .check()
     }
+
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
@@ -231,8 +240,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            Log.d("WEATHER/LOCATION-RESULT-LL", "위경도 "+location.toString())
-                            Log.d("WEATHER/LOCATION-RESULT-XY", "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}")
+                            Log.d("WEATHER/LOCATION-RESULT-LL", "위경도 " + location.toString())
+                            Log.d(
+                                "WEATHER/LOCATION-RESULT-XY",
+                                "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}"
+                            )
 
                             setWeather(rs.x.toInt(), rs.y.toInt())
                         }
@@ -253,9 +265,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     private fun getWeatherValue(rainType: String, sky: String, wind: Int): String {
         val result: String
-        if(wind > 13){
+        if (wind > 13) {
             result = "바람"
-        }else{
+        } else {
             result = when (rainType) {
                 "0" -> {
                     when (sky) {
@@ -301,27 +313,29 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
         Log.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
-        GlobalScope.launch(Dispatchers.Main) {
-            //visibility 조절
-            binding.homeTopLineIv.visibility = View.VISIBLE
-            binding.homeTopWeatherIv.visibility = View.VISIBLE
-            binding.homeWeatherTempTv.visibility = View.VISIBLE
-            binding.homeWeatherConTv.visibility = View.VISIBLE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {//visibility 조절
+                binding.homeTopLineIv.visibility = View.VISIBLE
+                binding.homeTopWeatherIv.visibility = View.VISIBLE
+                binding.homeWeatherTempTv.visibility = View.VISIBLE
+                binding.homeWeatherUnitTv.visibility = View.VISIBLE
+                binding.homeWeatherConTv.visibility = View.VISIBLE
 
-            binding.homeWeatherTempTv.text = tmp
-            binding.homeWeatherConTv.text = weatherValue
-            val imgRes = when(weatherValue){
-                "맑음" -> R.drawable.ic_weather_sunny
-                "구름 많음" -> R.drawable.ic_weather_clounmany
-                "흐림" -> R.drawable.ic_weather_cloud
-                "소나기" -> R.drawable.ic_weather_shower
-                "비" -> R.drawable.ic_weather_rain
-                "눈" -> R.drawable.ic_weather_snowy
-                "비 또는 눈" -> R.drawable.ic_weather_snoworrain
-                "바람" -> R.drawable.ic_weather_windy
-                else -> R.drawable.ic_weather_sunny
-            }
-            binding.homeTopWeatherIv.setImageResource(imgRes)
+                binding.homeWeatherTempTv.text = tmp
+                binding.homeWeatherConTv.text = weatherValue
+                val imgRes = when (weatherValue) {
+                    "맑음" -> R.drawable.ic_weather_sunny
+                    "구름 많음" -> R.drawable.ic_weather_clounmany
+                    "흐림" -> R.drawable.ic_weather_cloud
+                    "소나기" -> R.drawable.ic_weather_shower
+                    "비" -> R.drawable.ic_weather_rain
+                    "눈" -> R.drawable.ic_weather_snowy
+                    "비 또는 눈" -> R.drawable.ic_weather_snoworrain
+                    "바람" -> R.drawable.ic_weather_windy
+                    else -> R.drawable.ic_weather_sunny
+                }
+                binding.homeTopWeatherIv.setImageResource(imgRes)
+            })
         }
 
     }
@@ -336,9 +350,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         Log.d("HOME(USER)/API-SUCCESS", user.toString())
 
         //닉네임 바꿔주기
-        GlobalScope.launch(Dispatchers.Main) {
-            binding.homeTopUsernameTv.text = user.nickname
-        }
+        binding.homeTopUsernameTv.text = user.nickname
+
     }
 
     override fun onUserFailure(code: Int, message: String) {
@@ -347,23 +360,20 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
-        //목표 바꿔주기
-        GlobalScope.launch(Dispatchers.Main) {
-            val color = if(today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
-            binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
-            binding.homeDayGoalWalkTv.text = today.walkTime.toString()
-            binding.homeDayGoalDistTv.text = today.distance.toString()
-            binding.homeDayGoalKcalTv.text = today.calorie.toString()
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                //목표 바꿔주기
+                val color =
+                    if (today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
+                binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
+                binding.homeDayGoalWalkTv.text = today.walkTime.toString()
+                binding.homeDayGoalDistTv.text = today.distance.toString()
+                binding.homeDayGoalKcalTv.text = today.calorie.toString()
+            })
         }
 
-        //달성율, 오늘 목표 -> DayFragment
-        val bundle = Bundle()
-         bundle.putFloat("TodayGoalRate", today.goalRate)
-         bundle.putInt("TodayWalkGoalTime", today.walkGoalTime)
-         val homeDay = HomeDayFragment()
-         homeDay.arguments = bundle
-
-        Log.d("HOMEDAYFRG", "Bundle 보냄")
+        // -> HomeDayFragment
+        (fragmentList[0] as HomeDayFragment).onTodaySuccess(today)
     }
 
     override fun onTodayFailure(code: Int, message: String) {
@@ -372,19 +382,19 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onTMonthSuccess(tMonth: TMonth) {
         Log.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
-        //목표 바꿔주기
-        GlobalScope.launch(Dispatchers.Main) {
-            binding.homeMonthGoalWalkTv.text = tMonth.getMonthTotal?.monthTotalMin.toString()
-            binding.homeMonthGoalDistTv.text = tMonth.getMonthTotal?.monthTotalDistance.toString()
-            binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal?.monthPerCal.toString()
+
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                //목표 바꿔주기
+                binding.homeMonthGoalWalkTv.text = tMonth.getMonthTotal?.monthTotalMin.toString()
+                binding.homeMonthGoalDistTv.text =
+                    tMonth.getMonthTotal?.monthTotalDistance.toString()
+                binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal?.monthPerCal.toString()
+            })
         }
 
-        //목표 요일, 일별 달성율(day, rate) -> DayFragment
-        val bundle = Bundle()
-        /*bundle.putStringArrayList("TMonthGoalDays", tMonth.goalDayList)
-        bundle.putSerializable("TMonthDayRateRes", tMonth.getDayRateRes)
-        val homeMonth = HomeMonthFragment()
-        homeMonth.arguments = bundle*/
+        // -> HomeMonthFragment
+        (fragmentList[1] as HomeMonthFragment).onTMonthSuccess(tMonth)
     }
 
     override fun onTMonthFailure(code: Int, message: String) {
@@ -399,4 +409,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         Log.d("HOME(BADGE)/API-SUCCESS", code.toString() + message)
     }
 
+    override fun onDestroyView() {
+        for (job in jobs) {
+            job.cancel()
+        }
+        super.onDestroyView()
+    }
 }

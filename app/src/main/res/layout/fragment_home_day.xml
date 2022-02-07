@@ -40,7 +40,7 @@
             style="@style/tv_body_b_12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="320dp"
+            android:elevation="10dp"
             android:text="@string/title_home_achieve"
             app:layout_constraintBottom_toTopOf="@id/home_day_progress_tv"
             app:layout_constraintEnd_toEndOf="@id/home_day_progress_tv"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-10dp"
-            android:elevation="320dp"
+            android:elevation="10dp"
             android:text="-%"
             android:textColor="@color/black_light"
             app:layout_constraintBottom_toBottomOf="@id/home_day_pb"
@@ -93,5 +93,24 @@
                 app:layout_constraintStart_toEndOf="@id/home_day_goal_title_tv"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/home_day_loading_bg_v"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_light"
+        android:elevation="15dp"/>
+
+    <ProgressBar
+        android:id="@+id/home_day_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="15dp"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
