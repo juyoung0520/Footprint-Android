@@ -1,9 +1,12 @@
 package com.footprint.footprint.ui.main.home
 
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.footprint.footprint.data.remote.achieve.TMonth
+import com.footprint.footprint.data.remote.users.TMonth
+import com.footprint.footprint.data.remote.users.TMonthDayRateRes
+import com.footprint.footprint.data.remote.users.Today
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
@@ -11,6 +14,7 @@ import com.footprint.footprint.utils.*
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeMonthFragment() :
@@ -59,10 +63,10 @@ class HomeMonthFragment() :
         }
 
         /*테스트 정보*/
-        /*val data1 = TMonthDayRateRes(20, 50f)
+        val data1 = TMonthDayRateRes(20, 50f)
         val data2 = TMonthDayRateRes(3, 20f)
         val data3 = TMonthDayRateRes(15, 100f)
-        val dsr = arrayListOf<TMonthDayRateRes>(data1, data2, data3)*/
+        val dsr = arrayListOf<TMonthDayRateRes>(data1, data2, data3)
 
         //2. RVA 연결
         //현재 날짜 받아오기
@@ -77,7 +81,7 @@ class HomeMonthFragment() :
 
         //리사이클러뷰 어댑터 연결
         calRVAdapter =
-            HomeMonthRVAdapter(nowDate, widthPx, vpAreaPx.toInt(), itemMaxPx)
+            HomeMonthRVAdapter(nowDate, dsr, widthPx, vpAreaPx.toInt(), itemMaxPx)
         binding.homeMonthCalRv.adapter = calRVAdapter
         binding.homeMonthCalRv.layoutManager =
             GridLayoutManager(context, 7, LinearLayoutManager.VERTICAL, false)

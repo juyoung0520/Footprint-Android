@@ -112,6 +112,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:elevation="15dp"
         android:visibility="visible"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

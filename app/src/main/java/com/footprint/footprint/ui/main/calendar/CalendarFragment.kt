@@ -11,16 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.footprint.footprint.data.remote.walk.DayResult
-import com.footprint.footprint.data.remote.walk.DayWalkResult
-import com.footprint.footprint.data.remote.walk.UserDateWalk
-import com.footprint.footprint.data.remote.walk.WalkService
+import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.lock.LockActivity
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.utils.getPWDstatus
@@ -39,18 +35,19 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.roundToInt
 
-class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate),
-    CalendarView {
+class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
-    private val jobs = arrayListOf<Job>()
+    private var job: Job? = null
 
     override fun initAfterBinding() {
         setBinding()
 
         initCalendar()
+
+        initWalkAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,11 +68,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun setBinding() {
-        binding.calendarSearchIv.setOnClickListener {
-            val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
-            findNavController().navigate(action)
-        }
-
         val localDate = LocalDate.now()
         binding.calendarMonthTitleTv.text =
             String.format("%d.%d", localDate.year, localDate.monthValue)
@@ -87,11 +79,15 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 localDate.dayOfMonth,
                 changeDayOfWeek(localDate.dayOfWeek.toString())
             )
-        //DayWalk API 호출
-        WalkService.getDayWalks(
-            this,
-            String.format("%d-%02d-%02d", localDate.year, localDate.monthValue, localDate.dayOfMonth)
-        )
+
+        binding.calendarBackIv.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.calendarSearchIv.setOnClickListener {
+            val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun initCalendar() {
@@ -124,12 +120,14 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             firstDayOfWeek,
             object : Completion {
                 override fun invoke() {
-                    if (view != null) {
-                        jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                            binding.calendarWalkCv.scrollToMonth(currentMonth)
-                            afterInitCalendar()
-                        })
-                    }
+
+                    binding.calendarLoadingBgV.visibility = View.GONE
+                    binding.calendarLoadingPb.visibility = View.GONE
+
+                    binding.calendarWalkCv.scrollToMonth(currentMonth)
+
+                    afterInitCalendar()
+
                 }
             })
     }
@@ -138,11 +136,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private fun afterInitCalendar() {
         binding.calendarWalkCv.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
-                // Month API 호출
-                WalkService.getMonthWalks(this@CalendarFragment, p1.year, p1.month)
-
-                binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
-                currentMonth = p1.yearMonth
+                if (view != null) {
+                    binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
+                    currentMonth = p1.yearMonth
+                }
             }
         }
 
@@ -168,15 +165,23 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     }
 
-    private fun initWalkAdapter(walks: List<DayWalkResult>) {
+    private fun initWalkAdapter() {
+        val walks = arrayListOf<WalkModel>()
+        walks.apply {
+            add(WalkModel(0))
+            add(WalkModel(1))
+            add(WalkModel(2))
+            add(WalkModel(3))
+            add(WalkModel(4))
+        }
+
         binding.calendarWalkNumber2Tv.text = " ${walks.size}"
 
-        val adapter = WalkRVAdapter(requireContext())
-        adapter.setFragmentManager(requireActivity().supportFragmentManager)
+        val adapter = WalkRVAdapter()
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(walk: UserDateWalk) {
+            override fun onItemClick(walk: WalkModel) {
                 lockUnlock(walk.walkIdx)
             }
         })
@@ -217,14 +222,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 selection.dayOfMonth,
                 changeDayOfWeek(selection.dayOfWeek.toString())
             )
-        //DayWalk API 호출
-        WalkService.getDayWalks(
-            this,
-            String.format("%d-%02d-%02d", selection.year, selection.monthValue, selection.dayOfMonth)
-        )
     }
 
-    private fun changeDayOfWeek(dayOfWeek: String): String {
+    fun changeDayOfWeek(dayOfWeek: String): String {
         return when (dayOfWeek) {
             "MONDAY" -> "월"
             "TUESDAY" -> "화"
@@ -255,78 +255,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         }
     }
 
-    override fun onMonthLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarLoadingBgV.visibility = View.VISIBLE
-                binding.calendarLoadingPb.visibility = View.VISIBLE
-            })
-        }
-    }
-
-    override fun onDayWalkLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarHintTv.visibility = View.VISIBLE
-                binding.calendarWalkRv.visibility = View.GONE
-            })
-        }
-    }
-
-    override fun onCalendarFailure(code: Int, message: String) {
-        when (code) {
-            // Month
-            400 -> {
-                Log.d("$TAG/CALENDAR/API", "CALENDAR/MONTH/$message")
-                if (view != null) {
-                    jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                        binding.calendarLoadingBgV.visibility = View.GONE
-                        binding.calendarLoadingPb.visibility = View.GONE
-                    })
-                }
-            }
-            401 -> {
-                Log.d("$TAG/CALENDAR/API", "CALENDAR/DAY-WALK/$message")
-            }
-            else -> {
-                Log.d("$TAG/CALENDAR/", "CALENDAR/DAY-WALK/$message")
-            }
-        }
-    }
-
-    override fun onMonthSuccess(monthResult: List<DayResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/MONTH/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarLoadingBgV.visibility = View.GONE
-                binding.calendarLoadingPb.visibility = View.GONE
-
-                calendarDayBinder.setCurrentMonthResults(monthResult)
-            })
-        }
-    }
-
-    override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/DAY-WALK/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                initWalkAdapter(dayWalkResult)
-
-                if (dayWalkResult.isNotEmpty()) {
-                    binding.calendarHintTv.visibility = View.GONE
-                    binding.calendarWalkRv.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
     override fun onDestroyView() {
+        if (job != null) job!!.cancel()
         super.onDestroyView()
-
-        jobs.map {
-            it.cancel()
-        }
     }
 }
