@@ -35,4 +35,6 @@
 
     <!--TedImagePicker(갤러리 라이브러리) 숫자뷰 배경색-->
     <color name="ted_image_picker_primary">#4FBBE7</color>
+
+    <color name="gray">#C4C4C4</color>
 </resources>
