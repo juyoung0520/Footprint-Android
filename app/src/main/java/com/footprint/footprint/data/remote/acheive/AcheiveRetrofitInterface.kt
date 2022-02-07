@@ -1,12 +1,10 @@
-package com.footprint.footprint.data.remote.users
+package com.footprint.footprint.data.remote.acheive
 
+import com.footprint.footprint.data.remote.user.UserResponse
 import retrofit2.*
 import retrofit2.http.GET
 
-interface UserRetrofitInterface {
-    //유저 정보 조회 API
-     @GET("users")
-     fun getUser() : Call<UserResponse>
+interface AcheiveRetrofitInterface {
 
     //일별 정보 조회 API
     @GET("users/today")

@@ -1,9 +1,7 @@
 package com.footprint.footprint.ui.main.home
 
 import com.footprint.footprint.data.remote.badge.MonthBadge
-import com.footprint.footprint.data.remote.users.TMonth
-import com.footprint.footprint.data.remote.users.Today
-import com.footprint.footprint.data.remote.users.User
+import com.footprint.footprint.data.remote.user.User
 
 interface HomeView {
     /*유저 정보 받아오기*/

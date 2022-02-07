@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.achieve.TMonthDayRateRes
+import com.footprint.footprint.data.remote.acheive.TMonthDayRateRes
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import com.footprint.footprint.ui.main.home.HomeMonthCalendar
 import java.util.*

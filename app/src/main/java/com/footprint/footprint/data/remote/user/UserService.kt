@@ -21,7 +21,7 @@ object UserService {
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
                 if(body != null){
-                    when(body.code){
+                    when(body!!.code){
                         1000 -> {
                             registerView.onRegisterSuccess(body.result)
                         }
@@ -89,10 +89,11 @@ object UserService {
         })
     }
 
+
     /*유저 정보 업데이트 API*/
-    fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
-        userService.updateUser(user).enqueue(object : Callback<UserRegisterResponse>{
-            override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
+    fun updateUser(view: MyInfoUpdateView){
+        userService.updateUser().enqueue(object : Callback<UserResponse>{
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 val body = response.body()
 
                 Log.d("UPDATE/API-SUCCESS", body.toString())

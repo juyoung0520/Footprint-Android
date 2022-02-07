@@ -28,7 +28,6 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     override fun onStart() {
         super.onStart()
-
         //유저 정보 조회 API 호출
         UserService.getUser(this)
     }
@@ -196,7 +195,6 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         })
     }
 
-    /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
         Log.d("MYINFO(USER)/API-SUCCESS", user.toString())
 
@@ -213,5 +211,14 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     override fun onUserFailure(code: Int, message: String) {
         Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
+    }
+
+    /*<수정>뱃지 옮기고 지울 것!*/
+    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
+
+    }
+
+    override fun onMonthBadgeFailure(code: Int, message: String) {
+
     }
 }
