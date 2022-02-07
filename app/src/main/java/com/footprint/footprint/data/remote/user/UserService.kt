@@ -1,6 +1,7 @@
 package com.footprint.footprint.data.remote.user
 
 import android.util.Log
+import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.register.RegisterView
@@ -19,7 +20,7 @@ object UserService {
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
                 if(body != null){
-                    when(body!!.code){
+                    when(body.code){
                         1000 -> {
                             registerView.onRegisterSuccess(body.result)
                         }
@@ -65,9 +66,9 @@ object UserService {
     }
 
     /*유저 정보 업데이트 API*/
-    fun updateUser(view: MyInfoUpdateView){
-        userService.updateUser().enqueue(object : Callback<UserResponse>{
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+    fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
+        userService.updateUser(user).enqueue(object : Callback<UserRegisterResponse>{
+            override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
 
                 Log.d("UPDATE/API-SUCCESS", body.toString())
@@ -79,7 +80,7 @@ object UserService {
                 }
             }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
                 view.onUpdateFailure(213, t.message.toString())
                 Log.d("UPDATE/API-FAILURE", t.message.toString())
             }

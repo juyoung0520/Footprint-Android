@@ -2,7 +2,7 @@ package com.footprint.footprint.data.remote.user
 
 import com.google.gson.annotations.SerializedName
 
-/*정보 등록*/
+/*정보 등록, 수정*/
 data class UserRegisterResponse(
     @SerializedName("isSuccess") val isSuccess: Boolean,
     @SerializedName("code")val code: Int,
