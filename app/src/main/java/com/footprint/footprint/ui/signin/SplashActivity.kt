@@ -21,7 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, MonthBadgeView {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, BadgeView {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private var isGoogleLogin = false
     private var isKakaoLogin = false
