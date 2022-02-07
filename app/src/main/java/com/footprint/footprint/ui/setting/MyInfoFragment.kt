@@ -28,6 +28,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     override fun onStart() {
         super.onStart()
+
         //유저 정보 조회 API 호출
         UserService.getUser(this)
     }
@@ -195,6 +196,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         })
     }
 
+    /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
         Log.d("MYINFO(USER)/API-SUCCESS", user.toString())
 
