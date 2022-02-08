@@ -143,6 +143,7 @@
     <string name="msg_stop_realtime_record">실시간 기록을 중지할까요?</string>
     <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
     <string name="msg_leave_footprint">발자국을 남겼어요.</string>
+    <string name="msg_update_footprint">발자국을 수정했어요.</string>
     <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
     <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
     <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
@@ -161,6 +162,7 @@
     <string name="title_record_unit">회</string>
     <string name="title_view_more">더보기</string>
     <string name="title_view_short">간략히 보기</string>
+    <string name="msg_save_walk_success">산책 정보가 저장되었어요.</string>
 
     <!--글 작성하기-->
     <string name="title_leave_footprint">발자국 남기기</string>
@@ -262,6 +264,8 @@
     <!--다음달 목표-->
     <string name="title_goal_next_month">다음달 목표</string>
     <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--코스 추천-->
     <string name="title_comming_soon">~ Coming Soon ~</string>
