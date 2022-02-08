@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
 import com.footprint.footprint.data.remote.achieve.AchieveService
@@ -79,7 +78,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AcheiveService.setHomeView(this)
+        AchieveService.setHomeView(this)
 
         //유저 닉네임 -> 한번만 호출
         UserService.getUser(this)
@@ -89,8 +88,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onStart() {
         super.onStart()
         //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
-        AcheiveService.getToday(this)
-        AcheiveService.getTMonth(this)
+        AchieveService.getToday(this)
+        AchieveService.getTMonth(this)
     }
 
     /*Function*/
@@ -152,7 +151,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 //허용 시
-                //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
                 Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
@@ -168,7 +166,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         }
                     }.show()
-                //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
                 Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }
