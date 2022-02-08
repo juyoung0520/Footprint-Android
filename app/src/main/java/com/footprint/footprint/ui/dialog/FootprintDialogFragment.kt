@@ -1,22 +1,27 @@
 package com.footprint.footprint.ui.dialog
 
 import android.Manifest
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
@@ -27,6 +32,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.santalu.textmatcher.rule.HashtagRule
 import com.santalu.textmatcher.style.HashtagStyle
+import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -36,12 +42,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var binding: FragmentFootprintDialogBinding
     private lateinit var photoRVAdapter: PhotoRVAdapter
     private lateinit var footprint: FootprintModel
+    private lateinit var myDialogCallback: MyDialogCallback
 
     private var textMatcherFlag: Int = 1
     private var isUpdate: Boolean = false
 
     private val imgList: ArrayList<String> = arrayListOf<String>()  //선택한 사진을 저장하는 변수
-    private val args: FootprintDialogFragmentArgs by navArgs()
 
     //퍼미션 확인 후 콜백 리스너
     private var permissionListener: PermissionListener = object : PermissionListener {
@@ -54,6 +60,11 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
     }
 
+    interface MyDialogCallback {
+        fun sendFootprint(footprint: FootprintModel)
+        fun sendUpdatedFootprint(footprint: FootprintModel)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,18 +75,16 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
-        //해시태그 관련 설정(TextMatcher)
-        setHashTag()
-        //뷰페이저 어댑터 설정
-        initAdapter()
-        //클릭 리스너 설정
-        setMyClickListener()
+        setHashTag()    //해시태그 관련 설정(TextMatcher)
+        initAdapter()   //뷰페이저 어댑터 설정
+        setMyClickListener()    //클릭 리스너 설정
 
-        if (args.footprint!!.isNotBlank()) {    //발자국 수정
-            footprint = Gson().fromJson(args.footprint, FootprintModel::class.java)
+        val footprintStr = arguments?.getString("footprint", "")
+        if (footprintStr!=null) {
             isUpdate = true
-            setUI(footprint)
+            setUI(Gson().fromJson(footprintStr, Footprint::class.java))
         }
+
 
         return binding.root
     }
@@ -145,12 +154,30 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             .max(5, R.string.error_photo_cnt_exceeded)
             .startMultiImage { uriList ->
                 imgList.clear()
+
                 uriList.forEach {
-                    imgList.add(getAbsolutePathByBitmap(requireContext(), uriToBitmap(requireContext(), it)))
+                    if (it.toString().startsWith("https://")) {   //원래 저장돼 있던 이미지: url -> Bitmap 변환(비동기 방식)
+                        Glide.with(this@FootprintDialogFragment).asBitmap().load(it).into(object : CustomTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                imgList.add(getAbsolutePathByBitmap(requireContext(), resource))
+
+                                if (imgList.size==uriList.size) {
+                                    photoRVAdapter.addImgList(imgList)
+                                    binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
+                                }
+                            }
+
+                            override fun onLoadCleared(placeholder: Drawable?) {
+                            }
+                        })
+                    } else    //새로 저장할 이미지
+                        imgList.add(getAbsolutePathByBitmap(requireContext(), uriToBitmap(requireContext(), it)))
                 }
 
-                photoRVAdapter.addImgList(imgList)
-                binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
+                if (imgList.size==uriList.size) {
+                    photoRVAdapter.addImgList(imgList)
+                    binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
+                }
 
                 if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면
                     setDeletePhotoUI()
@@ -189,12 +216,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                 //해시태그가 5개보다 많아지면
                 if (hashtags.size > 5) {
                     //"해시태그는 5개까지 작성할 수 있어요." 토스트 메세지 띄우기
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_hashtag_exceed_cnt),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
+                    Toast.makeText(requireContext(), getString(R.string.error_hashtag_exceed_cnt), Toast.LENGTH_SHORT).show()
 
                     textMatcherFlag = 0
                     binding.postDialogContentEt.addTextChangedListener(this)
@@ -220,7 +242,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private fun setMyClickListener() {
         //취소 누르면 다이얼로그 나가기 -> 이전 화면(WalkMapFragment)에 기록데이터를 null 로 하여 데이터 전달
         binding.postDialogCancelTv.setOnClickListener {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set("post", null)
             dismiss()
         }
 
@@ -244,32 +265,19 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         binding.postDialogSaveTv.setOnClickListener {
             if (binding.postDialogContentEt.text!!.isBlank() && imgList.isEmpty()) {  //필수 데이터(기록 내용)가 입력됐는지 확인
                 //"사진이나 글을 추가해주세요." 다이얼로그 화면 띄우기
-                val action =
-                    FootprintDialogFragmentDirections.actionGlobalMsgDialogFragment(
-                        getString(R.string.msg_add_photo_or_writing)
-                    )
-                findNavController().navigate(action)
+                val bundle: Bundle = Bundle()
+                bundle.putString("msg", getString(R.string.msg_add_photo_or_writing))
+
+                val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
+                msgDialogFragment.arguments = bundle
+                msgDialogFragment.show(requireActivity().supportFragmentManager, null)
             } else {
                 dismiss()   //프래그먼트 종료
 
-                if (isUpdate) { //발자국 추가하기 -> 지금까지 입력한 발자국 데이터를 이전 화면(WalkMapFragment)으로 전달
-                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                        "updatedFootprint",
-                        Gson().toJson(setFootprintData())
-                    )
-                } else {    //발자국 수정하기 -> 수정된 발자국 데이터를 이전 화면(WalkMapFragment)으로 전달
-                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                        "footprint",
-                        Gson().toJson(setFootprintData())
-                    )
-                }
-
-                //"발자국을 남겼어요." 다이얼로그 화면 띄우기
-                val action =
-                    FootprintDialogFragmentDirections.actionGlobalMsgDialogFragment(
-                        getString(R.string.msg_leave_footprint)
-                    )
-                findNavController().navigate(action)
+                if (isUpdate)   //발자국 수정일 때
+                    myDialogCallback.sendUpdatedFootprint(setFootprintData())
+                else    //발자국 추가일 때
+                    myDialogCallback.sendFootprint(setFootprintData())
             }
         }
     }
@@ -301,22 +309,26 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         photoRVAdapter.clearImgList()
     }
 
-    private fun setUI(footprint: FootprintModel) {
+    private fun setUI(footprint: Footprint) {
         binding.postDialogContentEt.setText(footprint.write)
 
-        if (footprint.photos.isEmpty()) {
+        if (footprint.photoList.isEmpty()) {
             setDeletePhotoUI()
         } else {
             imgList.clear()
-            imgList.addAll(footprint.photos)
+            imgList.addAll(footprint.photoList)
 
             binding.postDialogPhotoVp.visibility = View.VISIBLE
-            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
+            photoRVAdapter.addImgList(footprint.photoList as ArrayList<String>)
 
             binding.postDialogPhotoIndicator.visibility = View.VISIBLE
             binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
 
             binding.postDialogAddPhotoTv.setText(R.string.action_delete_photo)
         }
+    }
+
+    fun setMyDialogCallback(myDialogCallback: MyDialogCallback) {
+        this.myDialogCallback = myDialogCallback
     }
 }
