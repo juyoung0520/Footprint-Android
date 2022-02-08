@@ -9,8 +9,10 @@ import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
+import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.removeJwt
@@ -51,20 +53,22 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     /*자동 로그인 API*/
     override fun onAutoLoginSuccess(result: Login?) {
         if(result != null){
-            if(result.status == "ACTIVE"){
-                if(result.checkMonthChanged){ // 바뀜 -> 뱃지 API 호출
-                    BadgeService.getMonthBadge(this)
-                }else{ // -> 메인 액티비티
-                    startNextActivity(MainActivity::class.java)
-                    finish()
+            when(result.status) {
+                "ACTIVE" -> {   // 가입된 회원
+                    if (result.checkMonthChanged) { // 첫 접속 -> 뱃지 API 호출
+                        BadgeService.getMonthBadge(this)
+                    }else{ // -> 메인 액티비티
+                        startMainActivity()
+                    }
+                }
+                "ONGOING" -> { // 가입이 완료되지 않은 회원 -> 로그인 액티비티
+                    startSignInActivity()
                 }
             }
         }else{ // -> 로그인 액티비티
             removeJwt()
-            startNextActivity(SigninActivity::class.java)
-            finish()
+            startSignInActivity()
         }
-
 
         Log.d("SPLASH/API-SUCCESS", "status: $result.status jwt: $result.jwtId")
     }
@@ -84,6 +88,19 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     override fun onMonthBadgeFailure(code: Int, message: String) {
         Log.d("SPLASH(BADGE)/API-FAILURE", code.toString() + message)
+    }
+
+    /*액티비티 이동*/
+    //Main Activity
+    private fun startMainActivity() {
+        startNextActivity(MainActivity::class.java)
+        finish()
+    }
+
+    //SignIn Activity
+    private fun startSignInActivity() {
+        startNextActivity(SigninActivity::class.java)
+        finish()
     }
 
 }

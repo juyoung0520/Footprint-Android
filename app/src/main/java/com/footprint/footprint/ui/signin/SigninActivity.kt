@@ -227,12 +227,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         finish()
     }
 
-    //Register Activity
-    private fun startRegisterActivity() {
-        startNextActivity(RegisterActivity::class.java)
-        finish()
-    }
-
     //Agree Activity
     private fun startAgreeActivity() {
         startNextActivity(AgreeActivity::class.java)

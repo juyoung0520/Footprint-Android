@@ -16,7 +16,11 @@ class AgreeFragment : BaseFragment<FragmentAgreeBinding>(FragmentAgreeBinding::i
 
     override fun initAfterBinding() {
         setClickListener()
+    }
 
+    override fun onStart() {
+        super.onStart()
+        checkAllChecked()
     }
 
     //클릭 리스너
