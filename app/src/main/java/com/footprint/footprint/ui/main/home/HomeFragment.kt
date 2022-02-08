@@ -54,47 +54,43 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
+        if (!::homeVPAdapter.isInitialized)
+            initTB()
+        initDate()
+
+        setClickListener()
+
+        setPermission()   //위치 정보 사용 요청
+        requestLocation() //날씨 API
+    }
+
+    private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
+        //설정 버튼 -> 설정 프래그먼트
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
-
-        /*init: 1. TB&VP 2. 날짜*/
-        if (!::homeVPAdapter.isInitialized)
-            initTB()
-        initDate()
-
-
-        /*init: 3. 날씨 */
-        setPermission()   //위치 정보 사용 요청
-        requestLocation() //날씨 API
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AchieveService.setHomeView(this)
+        AcheiveService.setHomeView(this)
 
-        //유저 닉네임, 날씨 -> 한번만 호출
-        /*init: 1. 유저*/
+        //유저 닉네임 -> 한번만 호출
         UserService.getUser(this)
-
-        /*뱃지(임시)*/
-        //BadgeService.getMonthBadge(this)
     }
 
 
     override fun onStart() {
         super.onStart()
         //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
-        /*init: 1. 일별*/
-        AchieveService.getToday(this)
-        /*init: 2. 월별*/
-        AchieveService.getTMonth(this)
+        AcheiveService.getToday(this)
+        AcheiveService.getTMonth(this)
     }
 
     /*Function*/
@@ -151,38 +147,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         )
     }
 
-    /*상단 날씨 받아오기*/
-    private fun setWeather(nx: Int, ny: Int) {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
-        var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
-        var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
-        val base_time = getTime(time)
-        Log.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
-
-        if (base_time >= "2000") {
-            cal.add(Calendar.DATE, -1).toString()
-            base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
-        }
-        Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
-
-        weatherService = WeatherService(this@HomeFragment)
-        weatherService.getWeather(base_date, base_time, nx.toString(), ny.toString())
-
-    }
-
-    private fun getTime(time: String): String {
-        return when (time) {
-            in "00".."02" -> "2000" // 00~02
-            in "03".."05" -> "2300" // 03~05
-            in "06".."08" -> "0200" // 06~08
-            in "09".."11" -> "0500" // 09~11
-            in "12".."14" -> "0800" // 12~14
-            in "16".."18" -> "1100" // 15~17
-            in "18".."20" -> "1400" // 18~20
-            else -> "1700"
-        }
-    }
-
+    //위치 정보 권한 허용 함수
     private fun setPermission() {
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
@@ -219,6 +184,40 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             .check()
     }
 
+    /*상단 날씨 받아오기: nx, ny, time*/
+    private fun setWeather(nx: Int, ny: Int) {
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
+        var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
+        val base_time = getTime(time)
+        Log.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
+
+        if (base_time >= "2000") {
+            cal.add(Calendar.DATE, -1).toString()
+            base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
+        }
+        Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
+
+        weatherService = WeatherService(this@HomeFragment)
+        weatherService.getWeather(base_date, base_time, nx.toString(), ny.toString())
+
+    }
+
+    //시간 결정 함수(time)
+    private fun getTime(time: String): String {
+        return when (time) {
+            in "00".."02" -> "2000" // 00~02
+            in "03".."05" -> "2300" // 03~05
+            in "06".."08" -> "0200" // 06~08
+            in "09".."11" -> "0500" // 09~11
+            in "12".."14" -> "0800" // 12~14
+            in "16".."18" -> "1100" // 15~17
+            in "18".."20" -> "1400" // 18~20
+            else -> "1700"
+        }
+    }
+
+    //GPS로 위치 받아오는 함수(nx, ny)
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
@@ -261,6 +260,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
     }
 
+    //하늘 상태 결정해 주는 함수
     private fun getWeatherValue(rainType: String, sky: String, wind: Int): String {
         val result: String
         if (wind > 13) {

@@ -4,22 +4,23 @@ import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import com.footprint.footprint.R
-import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
-import com.footprint.footprint.ui.BaseFragment
-import android.view.View.OnFocusChangeListener
-import com.footprint.footprint.data.model.UserModel
-import java.lang.Integer.parseInt
 import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RadioGroup
+import com.footprint.footprint.R
+import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
+import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 import com.skydoves.balloon.ArrowOrientation
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
 import com.skydoves.balloon.showAlignTop
+import java.lang.Integer.parseInt
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -45,8 +46,14 @@ class RegisterInfoFragment() :
         /*툴팁*/
         setHelpBallon()
 
+        /*스크롤뷰 초기화*/
+        initScrollView()
+
         /*버튼 활성화 & 눌렀을 때*/
         binding.registerInfoActionBtn.setOnClickListener {
+            //포커스 제거
+            clearFocus()
+
             //Birth Validation
             val validatedBirth = birthValidation()
 
@@ -63,6 +70,36 @@ class RegisterInfoFragment() :
 
     }
 
+    //스크롤뷰 초기화 함수
+    private fun initScrollView() {
+        //스크롤뷰 height 정해지면 -> 받아오기
+        val sv = binding.registerInfoScrollviewV
+        sv.getViewTreeObserver().addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                sv.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+
+                //내부 layout들 초기화
+                binding.registerInfoNicknameAndGenderLayout.setHeight((sv.getHeight()) / 2)
+                binding.registerInfoBirthAndWheightLayout.setHeight((sv.getHeight()) / 2)
+                binding.registerInfoBlankV.setHeight((sv.getHeight()) / 2)
+
+                //사용자 스크롤 막기
+                sv.setScrollingEnabled(false)
+            }
+        })
+    }
+
+
+    //화면에 있는 모든 EditText 의 Focus 를 해제하는 함수
+    private fun clearFocus() {
+        binding.registerInfoNicknameEt.clearFocus()
+        binding.registerInfoBirthYearEt.clearFocus()
+        binding.registerInfoBirthMonthEt.clearFocus()
+        binding.registerInfoBirthDayEt.clearFocus()
+        binding.registerInfoHeightEt.clearFocus()
+        binding.registerInfoWeightEt.clearFocus()
+    }
+
     /*Button*/
     private fun checkBtnState() {
         // 닉네임 OK & 성별 OK => 버튼 활성화
@@ -73,15 +110,10 @@ class RegisterInfoFragment() :
     private fun nicknameEt() {
         val nicknameEt = binding.registerInfoNicknameEt
         nicknameEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                nicknameEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
                 nicknameTextWatcher()
             } else {
                 if (nicknameEt.text.isEmpty()) {
-                    nicknameEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     isNicknameCorrect = false
                 }
 
@@ -99,8 +131,7 @@ class RegisterInfoFragment() :
                     binding.registerInfoNicknameErrorTv.visibility = View.VISIBLE
                     isNicknameCorrect = false
                 } else {
-                    if (nicknameEt.text.isNotEmpty()) {
-                        //닉네임에 반영
+                    if (nicknameEt.text.isNotEmpty()) { //닉네임에 반영
                         newUser.nickname = nicknameEt.text.toString()
                         Log.d("REGISTER-INFO/NICKNAME-WATCHER", newUser.toString())
                         nicknameEt.backgroundTintList =
@@ -131,26 +162,25 @@ class RegisterInfoFragment() :
             isGenderCorrect = true
             checkBtnState()
         })
+
     }
 
 
-    /*Birth: Focus, Watcher*/
+    /*Birth: Focus*/
     private fun birthEt() {
         //year
         val yearEt = binding.registerInfoBirthYearEt
         yearEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                yearEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
                 binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
-                yearTextWatcher()
-            } else {
-                //Focus 떼졌을 때
+                scrollUp(isUp = true)
+            } else { // Focus X
                 if (yearEt.text.isEmpty()) {
-                    yearEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                } else {
+                    yearEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.primary))
+                    binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
                 }
 
             }
@@ -159,18 +189,16 @@ class RegisterInfoFragment() :
         //month
         val monthEt = binding.registerInfoBirthMonthEt
         monthEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                monthEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
+                scrollUp(isUp = true)
                 binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
-                monthTextWatcher()
-            } else {
-                // No Focus
+            } else { // Focus X
                 if (monthEt.text.isEmpty()) {
-                    monthEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                } else {
+                    monthEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.primary))
+                    binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
                 }
             }
         }
@@ -178,18 +206,16 @@ class RegisterInfoFragment() :
         //day
         val dayEt = binding.registerInfoBirthDayEt
         dayEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                dayEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
+                scrollUp(isUp = true)
                 binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
-                dayTextWatcher()
-            } else {
-                // Focus X
+            } else { // Focus X
                 if (dayEt.text.isEmpty()) {
-                    dayEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary_light))
+                } else {
+                    dayEt.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.primary))
+                    binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
                 }
             }
         }
@@ -197,53 +223,6 @@ class RegisterInfoFragment() :
 
     }
 
-    private fun yearTextWatcher() {
-        val yearEt = binding.registerInfoBirthYearEt
-        yearEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable) {
-                if (yearEt.text.isNotEmpty()) {
-                    yearEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.primary))
-                    binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
-                }
-            }
-
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
-
-    private fun monthTextWatcher() {
-        val monthEt = binding.registerInfoBirthMonthEt
-        monthEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable) {
-                if (monthEt.text.isNotEmpty()) {
-                    monthEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.primary))
-                    binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
-                }
-            }
-
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
-
-    private fun dayTextWatcher() {
-        val dayEt = binding.registerInfoBirthDayEt
-        dayEt.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable) {
-                if (dayEt.text.isNotEmpty()) {
-                    dayEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.primary))
-                    binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
-                }
-            }
-
-            override fun beforeTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {}
-        })
-    }
 
     /*Validation- Birth*/
     private fun birthValidation(): Boolean {
@@ -258,7 +237,6 @@ class RegisterInfoFragment() :
             year = parseInt(yearEt.text.toString())
             if (year !in 1901 until thisYear) {
                 yearEt.startAnimation(animation)
-                yearEt.requestFocus()
                 yearEt.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.secondary))
                 binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.secondary))
@@ -272,7 +250,6 @@ class RegisterInfoFragment() :
             month = parseInt(monthEt.text.toString())
             if (month !in 1..12) {
                 monthEt.startAnimation(animation)
-                monthEt.requestFocus()
                 monthEt.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.secondary))
                 binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.secondary))
@@ -286,7 +263,6 @@ class RegisterInfoFragment() :
             day = parseInt(dayEt.text.toString())
             if (day !in 1..31) {
                 dayEt.startAnimation(animation)
-                dayEt.requestFocus()
                 dayEt.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.secondary))
                 binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.secondary))
@@ -341,15 +317,11 @@ class RegisterInfoFragment() :
         val heightEt = binding.registerInfoHeightEt
         val heightUnit = binding.registerInfoHeightUnitTv
         heightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                heightEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
+                scrollUp(isUp = true)
                 heightUnit.setTextColor(resources.getColor(R.color.primary))
             } else {
                 if (heightEt.text.isEmpty()) {
-                    heightEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoHeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
                 }
             }
@@ -357,8 +329,7 @@ class RegisterInfoFragment() :
     }
 
     private fun heightValidation(): Boolean {
-        if (binding.registerInfoHeightEt.text.isNotEmpty()) {
-            //값 O
+        if (binding.registerInfoHeightEt.text.isNotEmpty()) { //값 O
             val height = binding.registerInfoHeightEt.text.toString().toInt()
             if (height !in 100..250) {
                 binding.registerInfoHeightEt.startAnimation(animation)
@@ -370,8 +341,7 @@ class RegisterInfoFragment() :
                 newUser.height = height
                 return true
             }
-        } else {
-            //값 X
+        } else { //값 X
             newUser.height = 0
             return true
         }
@@ -382,16 +352,11 @@ class RegisterInfoFragment() :
         val weightEt = binding.registerInfoWeightEt
         val weightUnit = binding.registerInfoWeightUnitTv
         weightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                // Focus
-                weightEt.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.primary))
+            if (hasFocus) { // Focus
+                scrollUp(isUp = true)
                 weightUnit.setTextColor(resources.getColor(R.color.primary))
-                //weightTextWatcher()
             } else {
                 if (weightEt.text.isEmpty()) {
-                    weightEt.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.white_underline))
                     binding.registerInfoWeightUnitTv.setTextColor(resources.getColor(R.color.primary_light))
 
                 }
@@ -441,13 +406,13 @@ class RegisterInfoFragment() :
             .setFocusable(false)
             .build()
 
-
-        val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
         //width = 200/2 중간 => 에서 0.3만큼 오른쪽으로 치우치게
+        val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
+
 
         var keyboardStatus = false
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
-            onShowKeyboard = {
+            onShowKeyboard = { keyboardHeight ->
                 Log.d("KEYBOARD", "UP")
                 keyboardStatus = true
                 if (balloon.isShowing) balloon.dismiss()
@@ -456,6 +421,7 @@ class RegisterInfoFragment() :
                 Log.d("KEYBOARD", "DOWN")
                 keyboardStatus = false
                 if (balloon.isShowing) balloon.dismiss()
+                scrollUp(false)
             }
         )
 
@@ -463,6 +429,23 @@ class RegisterInfoFragment() :
         binding.registerInfoWeightHelpIv.setOnClickListener {
             if (!keyboardStatus)
                 binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
+        }
+    }
+
+    //자동 스크롤 함수
+    private fun scrollUp(isUp: Boolean) {
+        if (isUp) {
+            binding.registerInfoScrollviewV.setScrollingEnabled(true)
+            binding.registerInfoScrollviewV.smoothScrollTo(
+                0,
+                binding.registerInfoNicknameAndGenderLayout.height - 50,
+                500
+            )
+            binding.registerInfoScrollviewV.setScrollingEnabled(false)
+        } else {
+            binding.registerInfoScrollviewV.setScrollingEnabled(true)
+            binding.registerInfoScrollviewV.smoothScrollTo(0, 0, 500)
+            binding.registerInfoScrollviewV.setScrollingEnabled(false)
         }
     }
 
