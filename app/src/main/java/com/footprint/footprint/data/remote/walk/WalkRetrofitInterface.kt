@@ -7,12 +7,12 @@ import retrofit2.http.Query
 
 interface WalkRetrofitInterface {
     /* calendarFragment */
-    @GET("/users/months/footprints")
+    @GET("users/months/footprints")
     fun getMonthWalks(@Query("year")year: Int, @Query("month")month: Int): Call<MonthResponse>
 
-    @GET("/users/{date}")
+    @GET("users/{date}")
     fun getDayWalks(@Path("date")date: String): Call<DayWalksResponse>
 
-    @GET("/users/tags")
+    @GET("users/tags")
     fun getTagWalkDates(@Query("tag")tag: String): Call<TagWalkDatesResponse>
 }

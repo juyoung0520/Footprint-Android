@@ -72,10 +72,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun setBinding() {
-        binding.calendarBackIv.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         binding.calendarSearchIv.setOnClickListener {
             val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
             findNavController().navigate(action)
