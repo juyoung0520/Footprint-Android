@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.main.calendar
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.data.model.WalkModel
@@ -17,9 +18,12 @@ import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.google.gson.Gson
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(FragmentSearchResultBinding::inflate), SearchResultView{
     private lateinit var currentTag: String
+    private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
         currentTag = navArgs<SearchResultFragmentArgs>().value.tag
@@ -76,14 +80,16 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
     }
 
     override fun onSearchReaultLoading() {
-        binding.searchResultLoadingPb.visibility = View.VISIBLE
-        binding.searchResultHintTv.visibility = View.VISIBLE
-        binding.searchResultWalkDatesRv.visibility = View.GONE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.searchResultLoadingPb.visibility = View.VISIBLE
+                binding.searchResultHintTv.visibility = View.VISIBLE
+                binding.searchResultWalkDatesRv.visibility = View.GONE
+            })
+        }
     }
 
     override fun onSearchReaultFailure(code: Int, message: String) {
-        binding.searchResultLoadingPb.visibility = View.GONE
-
         when (code) {
             400 -> {
                 Log.d("$TAG/SEARCH-RESULT/API", "SEARCH-RESULT/$message")
@@ -92,13 +98,33 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
                 Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/$message")
             }
         }
+
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.searchResultLoadingPb.visibility = View.GONE
+            })
+        }
     }
 
     override fun onSearchResultSuccess(walkDates: List<WalkDateResult>) {
-        binding.searchResultLoadingPb.visibility = View.GONE
-        binding.searchResultHintTv.visibility = View.GONE
-        binding.searchResultWalkDatesRv.visibility = View.VISIBLE
         Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/success")
-        initAdapter(walkDates)
+
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.searchResultLoadingPb.visibility = View.GONE
+                binding.searchResultHintTv.visibility = View.GONE
+                binding.searchResultWalkDatesRv.visibility = View.VISIBLE
+
+                initAdapter(walkDates)
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        jobs.map {
+            it.cancel()
+        }
     }
 }

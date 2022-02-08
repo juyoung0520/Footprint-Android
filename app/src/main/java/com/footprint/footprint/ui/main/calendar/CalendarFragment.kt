@@ -46,7 +46,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private lateinit var calendarDayBinder: CalendarDayBinder
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
-    private var job: Job? = null
+    private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
         setBinding()
@@ -130,8 +130,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             object : Completion {
                 override fun invoke() {
                     if (view != null) {
-                        binding.calendarWalkCv.scrollToMonth(currentMonth)
-                        afterInitCalendar()
+                        jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                            binding.calendarWalkCv.scrollToMonth(currentMonth)
+                            afterInitCalendar()
+                        })
                     }
                 }
             })
@@ -259,13 +261,21 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onMonthLoading() {
-        binding.calendarLoadingBgV.visibility = View.VISIBLE
-        binding.calendarLoadingPb.visibility = View.VISIBLE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.calendarLoadingBgV.visibility = View.VISIBLE
+                binding.calendarLoadingPb.visibility = View.VISIBLE
+            })
+        }
     }
 
     override fun onDayWalkLoading() {
-        binding.calendarHintTv.visibility = View.VISIBLE
-        binding.calendarWalkRv.visibility = View.GONE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.calendarHintTv.visibility = View.VISIBLE
+                binding.calendarWalkRv.visibility = View.GONE
+            })
+        }
     }
 
     override fun onCalendarFailure(code: Int, message: String) {
@@ -273,8 +283,12 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             // Month
             400 -> {
                 Log.d("$TAG/CALENDAR/API", "CALENDAR/MONTH/$message")
-                binding.calendarLoadingBgV.visibility = View.GONE
-                binding.calendarLoadingPb.visibility = View.GONE
+                if (view != null) {
+                    jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                        binding.calendarLoadingBgV.visibility = View.GONE
+                        binding.calendarLoadingPb.visibility = View.GONE
+                    })
+                }
             }
             401 -> {
                 Log.d("$TAG/CALENDAR/API", "CALENDAR/DAY-WALK/$message")
@@ -286,20 +300,38 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
-        binding.calendarLoadingBgV.visibility = View.GONE
-        binding.calendarLoadingPb.visibility = View.GONE
-
         Log.d("$TAG/SEARCH-RESULT", "CALENDAR/MONTH/success")
-        calendarDayBinder.setCurrentMonthResults(monthResult)
+
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.calendarLoadingBgV.visibility = View.GONE
+                binding.calendarLoadingPb.visibility = View.GONE
+
+                calendarDayBinder.setCurrentMonthResults(monthResult)
+            })
+        }
     }
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        initWalkAdapter(dayWalkResult)
         Log.d("$TAG/SEARCH-RESULT", "CALENDAR/DAY-WALK/success")
 
-        if (dayWalkResult.isNotEmpty()) {
-            binding.calendarHintTv.visibility = View.GONE
-            binding.calendarWalkRv.visibility = View.VISIBLE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                initWalkAdapter(dayWalkResult)
+
+                if (dayWalkResult.isNotEmpty()) {
+                    binding.calendarHintTv.visibility = View.GONE
+                    binding.calendarWalkRv.visibility = View.VISIBLE
+                }
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        jobs.map {
+            it.cancel()
         }
     }
 }
