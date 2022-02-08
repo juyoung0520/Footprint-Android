@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.walk
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
@@ -21,6 +22,8 @@ import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class WalkDetailActivity :
     BaseActivity<ActivityWalkDetailBinding>(ActivityWalkDetailBinding::inflate), WalkDetailView {
@@ -29,6 +32,7 @@ class WalkDetailActivity :
     private lateinit var footprintRVAdapter: FootprintRVAdapter
 
     private val args: WalkDetailActivityArgs by navArgs()
+    private val jobs: ArrayList<Job> = arrayListOf()
 
     private var tempUpdateFootprintPosition: Int? = null    //수정하고자 하는 발자국의 RV 어댑터 위치
     private var tempUpdateFootprint: Footprint? = null  //수정하고자 하는 발자국 데이터
@@ -49,6 +53,14 @@ class WalkDetailActivity :
             else
                 super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        for (job in jobs) {
+            job.cancel()
+        }
+
+        super.onDestroy()
     }
 
     private fun setMyClickListener() {
@@ -163,50 +175,74 @@ class WalkDetailActivity :
     }
 
     override fun onWalkDetailLoading() {
-        binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 INVISIBLE
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 INVISIBLE
+            })
+        }
     }
 
     override fun onWalkDetailFail(code: Int, message: String) {
-        binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
-        showToast(getString(R.string.error_api_fail))
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+                showToast(getString(R.string.error_api_fail))
+            })
+        }
     }
 
     override fun onGetWalkSuccess(walk: WalkInfoResponse) {
-        bindWalkInfo(walk)
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                bindWalkInfo(walk)
+            })
+        }
     }
 
     override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
-        if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
-            binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
-            binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
-            binding.walkDetailAllDeleteTv.visibility = View.INVISIBLE
-        } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
-            binding.walkDetailSlidingUpPanelLayout.panelHeight =
-                (getDeviceHeight() - convertDpToPx(this, 90) - (getDeviceHeight() * 0.42)).toInt()
-            binding.walkDetailSlidedLayout.visibility = View.VISIBLE
-            binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
-            binding.walkDetailAllDeleteTv.visibility = View.VISIBLE
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
+                    binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
+                    binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
+                    binding.walkDetailAllDeleteTv.visibility = View.INVISIBLE
+                } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
+                    binding.walkDetailSlidingUpPanelLayout.panelHeight =
+                        (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
+                    binding.walkDetailSlidedLayout.visibility = View.VISIBLE
+                    binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
+                    binding.walkDetailAllDeleteTv.visibility = View.VISIBLE
 
-            initAdapter(footprints as ArrayList<Footprint>)
+                    initAdapter(footprints as ArrayList<Footprint>)
+                }
+            })
         }
     }
 
     //삭제 요청이 성공적으로 응답하면 산책 정보랑 발자국 정보 다시 받아오기
     override fun onDeleteWalkSuccess() {
-        FootprintService.getFootprints(this, args.walkIdx)
-        WalkService.getWalk(this, args.walkIdx)
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)
+                WalkService.getWalk(this@WalkDetailActivity, args.walkIdx)
+            })
+        }
     }
 
     override fun onUpdateFootprintSuccess() {
-        binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
 
-        //발자국을 수정했어요 메세지 다이얼로그 띄우기
-        val bundle: Bundle = Bundle()
-        bundle.putString("msg", getString(R.string.msg_update_footprint))
-        val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
-        msgDialogFragment.arguments = bundle
-        msgDialogFragment.show(supportFragmentManager, null)
+                //발자국을 수정했어요 메세지 다이얼로그 띄우기
+                val bundle: Bundle = Bundle()
+                bundle.putString("msg", getString(R.string.msg_update_footprint))
+                val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
+                msgDialogFragment.arguments = bundle
+                msgDialogFragment.show(supportFragmentManager, null)
 
-        FootprintService.getFootprints(this, args.walkIdx)  //수정된 발자국 정보로 업데이트 하기 위해 다시 발자국 데이터 조회 요청 보내기
+                FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)  //수정된 발자국 정보로 업데이트 하기 위해 다시 발자국 데이터 조회 요청 보내기
+            })
+        }
     }
 }

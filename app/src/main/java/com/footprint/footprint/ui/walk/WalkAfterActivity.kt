@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
@@ -19,6 +20,8 @@ import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class WalkAfterActivity :
     BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), WalkAfterView {
@@ -29,6 +32,8 @@ class WalkAfterActivity :
 
     private var tempAddFootprintPosition: Int? = null   //발자국을 추가할 때 추가하려고 하는 위치를 임시 저장하는 변수
     private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
+
+    private val jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
         setMyClickListener()
@@ -51,6 +56,14 @@ class WalkAfterActivity :
                 actionDialogFragment.show(supportFragmentManager, null)
             }
         }
+    }
+
+    override fun onDestroy() {
+        for (job in jobs) {
+            job.cancel()
+        }
+
+        super.onDestroy()
     }
 
     private fun setMyClickListener() {
@@ -210,22 +223,34 @@ class WalkAfterActivity :
     }
 
     override fun onWalkAfterLoading() {
-        binding.walkAfterLoadingPb.visibility = View.VISIBLE
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkAfterLoadingPb.visibility = View.VISIBLE
+            })
+        }
     }
 
     override fun onWalkAfterFail(code: Int, message: String) {
-        binding.walkAfterLoadingPb.visibility = View.INVISIBLE
-        showToast(getString(R.string.error_api_fail))
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+                showToast(getString(R.string.error_api_fail))
+            })
+        }
     }
 
     override fun onWriteWalkSuccess(badgeList: List<AcquiredBadge>) {
-        binding.walkAfterLoadingPb.visibility = View.INVISIBLE
-        showToast(getString(R.string.msg_save_walk_success))
+        if (this!=null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+                showToast(getString(R.string.msg_save_walk_success))
 
-        if (badgeList.isEmpty())    //얻은 뱃지가 없을 때
-            finish()
-        else {  //얻은 뱃지가 있을 때
+                if (badgeList.isEmpty())    //얻은 뱃지가 없을 때
+                    finish()
+                else {  //얻은 뱃지가 있을 때
 
+                }
+            })
         }
     }
 }
