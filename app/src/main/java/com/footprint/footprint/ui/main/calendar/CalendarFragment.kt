@@ -272,8 +272,15 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         when (code) {
             // Month
             400 -> {
+                Log.d("$TAG/CALENDAR/API", "CALENDAR/MONTH/$message")
                 binding.calendarLoadingBgV.visibility = View.GONE
                 binding.calendarLoadingPb.visibility = View.GONE
+            }
+            401 -> {
+                Log.d("$TAG/CALENDAR/API", "CALENDAR/DAY-WALK/$message")
+            }
+            else -> {
+                Log.d("$TAG/CALENDAR/", "CALENDAR/DAY-WALK/$message")
             }
         }
     }
@@ -282,11 +289,13 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         binding.calendarLoadingBgV.visibility = View.GONE
         binding.calendarLoadingPb.visibility = View.GONE
 
+        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/MONTH/success")
         calendarDayBinder.setCurrentMonthResults(monthResult)
     }
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
         initWalkAdapter(dayWalkResult)
+        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/DAY-WALK/success")
 
         if (dayWalkResult.isNotEmpty()) {
             binding.calendarHintTv.visibility = View.GONE

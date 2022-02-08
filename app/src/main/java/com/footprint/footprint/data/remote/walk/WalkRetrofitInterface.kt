@@ -12,4 +12,7 @@ interface WalkRetrofitInterface {
 
     @GET("/users/{date}")
     fun getDayWalks(@Path("date")date: String): Call<DayWalksResponse>
+
+    @GET("/users/tags")
+    fun getTagWalkDates(@Query("tag")tag: String): Call<TagWalkDatesResponse>
 }

@@ -13,14 +13,17 @@ import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.UserDateWalk
 import com.footprint.footprint.databinding.ItemWalkBinding
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import com.footprint.footprint.R
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<DayWalkResult>()
+    private var currentTag: String ?= null
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
     private lateinit var fragmentManager: FragmentManager
-
 
     interface OnItemClickListener {
         fun onItemClick(walk: UserDateWalk)
@@ -36,6 +39,10 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
         this.walks.addAll(walks)
 
         notifyDataSetChanged()
+    }
+
+    fun setCurrentTag(tag: String) {
+        currentTag = tag
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -98,6 +105,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
     inner class WalkViewHolder(val binding: ItemWalkBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(position: Int) {
             val walk = walks[position].walk
             binding.walkNthRecordTv.text = walk.walkIdx.toString()
@@ -117,28 +125,23 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
             val hashtag = walks[position].hashtag
             for (idx in hashtag.indices) {
                 when(idx) {
-                    1 -> {
-                        binding.walkTag1Tv.visibility = View.VISIBLE
-                        binding.walkTag1Tv.text = hashtag[idx]
-                    }
-                    2 -> {
-                        binding.walkTag2Tv.visibility = View.VISIBLE
-                        binding.walkTag2Tv.text = hashtag[idx]
-                    }
-                    3 -> {
-                        binding.walkTag3Tv.visibility = View.VISIBLE
-                        binding.walkTag3Tv.text = hashtag[idx]
-                    }
-                    4 -> {
-                        binding.walkTag4Tv.visibility = View.VISIBLE
-                        binding.walkTag4Tv.text = hashtag[idx]
-                    }
-                    5 -> {
-                        binding.walkTag5Tv.visibility = View.VISIBLE
-                        binding.walkTag5Tv.text = hashtag[idx]
-                    }
+                    1 -> initTag(binding.walkTag1Tv, hashtag[idx])
+                    2 -> initTag(binding.walkTag2Tv, hashtag[idx])
+                    3 -> initTag(binding.walkTag3Tv, hashtag[idx])
+                    4 -> initTag(binding.walkTag4Tv, hashtag[idx])
+                    5 -> initTag(binding.walkTag5Tv, hashtag[idx])
                 }
             }
         }
+
+        private fun initTag(textView: TextView, tag: String) {
+            if (currentTag != null && currentTag == tag) {
+                textView.background = getDrawable(context, R.color.primary_55)
+            }
+
+            textView.visibility = View.VISIBLE
+            textView.text = tag
+        }
     }
 }
+

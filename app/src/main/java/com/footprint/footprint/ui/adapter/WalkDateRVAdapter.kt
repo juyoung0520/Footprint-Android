@@ -11,6 +11,7 @@ import com.footprint.footprint.databinding.ItemWalkDateBinding
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
     private val walkDates = arrayListOf<WalkDateResult>()
+    private lateinit var currentTag: String
 
     private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
 
@@ -27,6 +28,10 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
         this.walkDates.addAll(walkDates)
 
         notifyDataSetChanged()
+    }
+
+    fun setCurrentTag(tag: String) {
+        currentTag = tag
     }
 
     fun setWalkClickListener(listener: WalkRVAdapter.OnItemClickListener) {
@@ -73,6 +78,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
 
             val adapter = WalkRVAdapter(context)
             adapter.setWalks(walkDates[position].walks)
+            adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)
             adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
