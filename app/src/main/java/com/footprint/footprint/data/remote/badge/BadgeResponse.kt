@@ -15,7 +15,7 @@ data class ChangeRepresentativeBadgeResponse(
 )
 
 data class BadgeResponse(
-    val reqBadgeInfo: BadgeInfo,
+    val repBadgeInfo: BadgeInfo,
     val badgeList: List<BadgeInfo>
 )
 

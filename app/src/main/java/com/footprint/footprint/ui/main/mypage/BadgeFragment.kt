@@ -40,8 +40,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         //디바이스 크기에 맞춰 뱃지 아이템의 크기 조정하기
         val size = (getDeviceWidth() - convertDpToPx(requireContext(), 74)) / 3
 
-//        badgeRVAdapter = BadgeRVAdapter(badgeInfo.reqBadgeInfo, size) //서버 반영되면 사용
-        badgeRVAdapter = BadgeRVAdapter(badgeInfo.badgeList[0], size)
+        badgeRVAdapter = BadgeRVAdapter(badgeInfo.repBadgeInfo, size) //어댑터에 대표 뱃지 정보와 뱃지 크기를 전달한다.
         badgeRVAdapter.setData(badgeInfo.badgeList)
 
         //대표뱃지 변경 클릭 리스너
@@ -97,7 +96,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     override fun onGetBadgeSuccess(badgeInfo: BadgeResponse) {
         binding.badgeLoadingPb.visibility = View.INVISIBLE
 
-//        bindRepresentativeBade(badgeInfo.reqBadgeInfo)    //나중에 서버 올라가면 사용
+        bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
         initAdapter(badgeInfo)
     }
 

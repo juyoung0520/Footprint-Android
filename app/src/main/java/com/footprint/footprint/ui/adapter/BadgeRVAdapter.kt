@@ -40,15 +40,15 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
         params.height = size
         holder.badgeIv.layoutParams = params
 
-        val badge = badges.find { it.badgeOrder.toInt()==position }
-        if (badge==null) {
+        val badge = badges.find { it.badgeOrder.toInt()==position } //현재 포지션의 뱃지를 사용자가 얻었는지 확인한다.
+        if (badge==null) {  //얻지 못한 뱃지의 경우
             //뱃지 이미지
             holder.badgeIv.setImageResource(R.drawable.ic_no_badge)
             //뱃지 이름 -> 얻은 뱃지는 이름을 보여주고, 얻지  못한 뱃지는 이름을 보여주지 않는다.
             holder.badgeName.visibility = View.INVISIBLE
             //뱃지 클릭 리스너 비활성화
             holder.root.isEnabled = false
-        } else {
+        } else {    //얻은 뱃지의 경우
             //뱃지 이미지
             Glide.with(holder.itemView).load(badge.badgeUrl).into(holder.badgeIv)
             //뱃지 이름 -> 얻은 뱃지는 이름을 보여주고, 얻지  못한 뱃지는 이름을 보여주지 않는다.
@@ -59,18 +59,18 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
 
             //뱃지 클릭 리스너 활성화
             holder.root.isEnabled = true
+
+            //대표 뱃지 변경
+            holder.root.setOnClickListener {
+                myItemClickListener.changeRepresentativeBadge(badge)
+            }
         }
 
         //대표뱃지에는 대표뱃지 뷰를 보여주고, 그 외 뱃지는 보여주지 않는다.
-        if (representativeBadge.badgeOrder.toInt() == position)
+        if (representativeBadge.badgeIdx == badge?.badgeIdx)
             holder.representativeBadge.visibility = View.VISIBLE
         else
             holder.representativeBadge.visibility = View.GONE
-
-        //대표 뱃지 변경
-        holder.root.setOnClickListener {
-            myItemClickListener.changeRepresentativeBadge(badges.find { it.badgeOrder.toInt()==position }!!)
-        }
     }
 
     override fun getItemCount(): Int = 19
