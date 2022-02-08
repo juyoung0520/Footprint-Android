@@ -9,22 +9,29 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.data.remote.footprint.FootprintService
-import com.footprint.footprint.data.remote.walk.AcquiredBadge
 import com.footprint.footprint.data.remote.walk.WalkInfoResponse
 import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ActivityWalkDetailBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.dialog.FootprintDialogFragment
+import com.footprint.footprint.ui.dialog.MsgDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
+import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 class WalkDetailActivity :
-    BaseActivity<ActivityWalkDetailBinding>(ActivityWalkDetailBinding::inflate), WalkView {
+    BaseActivity<ActivityWalkDetailBinding>(ActivityWalkDetailBinding::inflate), WalkDetailView {
     private lateinit var actionDialogFragment: ActionDialogFragment
+    private lateinit var footprintDialogFragment: FootprintDialogFragment
+    private lateinit var footprintRVAdapter: FootprintRVAdapter
 
     private val args: WalkDetailActivityArgs by navArgs()
+
+    private var tempUpdateFootprintPosition: Int? = null
+    private var tempUpdateFootprint: Footprint? = null
 
     override fun initAfterBinding() {
         FootprintService.getFootprints(this, args.walkIdx)
@@ -32,6 +39,7 @@ class WalkDetailActivity :
 
         setMyClickListener()
         setActionDialog()
+        initFootprintDialog()
     }
 
     override fun onBackPressed() {
@@ -66,13 +74,52 @@ class WalkDetailActivity :
         actionDialogFragment = ActionDialogFragment()
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
 
+            //'OO번째 산책' 을 삭제하시겠어요? 다이얼로그 프래그먼트 콜백 함수
             override fun action1(isAction: Boolean) {
-                if (isAction) {
+                if (isAction)
                     WalkService.deleteWalk(this@WalkDetailActivity, args.walkIdx)
-                }
             }
 
             override fun action2(isAction: Boolean) {
+            }
+
+        })
+    }
+
+    private fun initFootprintDialog() {
+        footprintDialogFragment = FootprintDialogFragment()
+
+        footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
+            override fun sendFootprint(footprint: FootprintModel) {
+            }
+
+            override fun sendUpdatedFootprint(footprint: FootprintModel) {
+                initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
+                Log.d("WalkDetailActivity", "sendUpdatedFootprint tempUpdateFootprint: $tempUpdateFootprint")
+                Log.d("WalkDetailActivity", "sendUpdatedFootprint footprint: $footprint")
+
+                //수정된 데이터만 모아서 요청하기
+                val reqMap: HashMap<String, Any> = HashMap()
+                if (footprint.write!=tempUpdateFootprint!!.write)
+                    reqMap["write"] = footprint.write
+                if (footprint.hashtagList!=tempUpdateFootprint!!.tagList) {
+                    for (i in footprint.hashtagList!!.indices) {
+                        reqMap["tagList[$i]"] = footprint.hashtagList!![i]
+                    }
+                }
+
+                var photos: List<String>? = null
+                if (footprint.photos!=tempUpdateFootprint!!.photoList) {
+                    photos = if (footprint.photos.isEmpty())
+                        null
+                    else
+                        footprint.photos
+                }
+
+                Log.d("WalkDetailActivity", "sendUpdatedFootprint reqMap: $reqMap")
+
+                //발자국 수정 요청 보내기
+                FootprintService.updateFootprint(this@WalkDetailActivity, tempUpdateFootprint!!.footprintIdx, reqMap, photos)
             }
 
         })
@@ -92,19 +139,24 @@ class WalkDetailActivity :
 
     //기록 관련 리사이클러뷰 초기화
     private fun initAdapter(footprints: ArrayList<Footprint>) {
-        val footprintRVAdapter = FootprintRVAdapter()
+        footprintRVAdapter = FootprintRVAdapter()
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
-            //발자국 추가 텍스트뷰 클릭 리스너
             override fun addFootprint(position: Int) {
             }
 
-            //발자국 편집 텍스트뷰 클릭 리스너
-            override fun updateFootprint(position: Int, footprint: FootprintModel) {
-                /*this@WalkConfirmFragment.position = position
+            override fun updateFootprintVerAfter(position: Int, footprint: FootprintModel) {
+            }
 
-                //발자국 작성하기 다이얼로그 화면 띄우기(수정)
-                val action = WalkConfirmFragmentDirections.actionWalkConfirmFragment2ToFootprintDialogFragment3(Gson().toJson(footprint))
-                findNavController().navigate(action)*/
+            //발자국 편집 텍스트뷰 클릭 리스너
+            override fun updateFootprintVerDetail(position: Int, footprint: Footprint) {
+                Log.d("WalkDetailActivity", "updateFootprintVerDetail footprint: $footprint")
+                tempUpdateFootprintPosition = position
+                tempUpdateFootprint = footprint
+
+                val bundle: Bundle = Bundle()
+                bundle.putString("footprint", Gson().toJson(footprint))
+                footprintDialogFragment.arguments = bundle
+                footprintDialogFragment.show(supportFragmentManager, null)
             }
         })
 
@@ -113,30 +165,28 @@ class WalkDetailActivity :
         binding.walkDetailPostRv.adapter = footprintRVAdapter
     }
 
-    override fun onWalkLoading() {
+    override fun onWalkDetailLoading() {
+        binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 INVISIBLE
     }
 
-    override fun onWalkFail(code: Int, message: String) {
+    override fun onWalkDetailFail(code: Int, message: String) {
+        binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
         showToast(getString(R.string.error_api_fail))
-    }
-
-    override fun onWriteWalkSuccess(badgeList: List<AcquiredBadge>) {
     }
 
     override fun onGetWalkSuccess(walk: WalkInfoResponse) {
         Log.d("WalkDetailActivity", "\nonGetWalkSuccess\nwalk: $walk")
-
         bindWalkInfo(walk)
     }
 
     override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
         Log.d("WalkDetailActivity", "\nonGetFootprintsSuccess\nfootprints: $footprints")
 
-        if (footprints == null) {
+        if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
             binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
             binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
             binding.walkDetailAllDeleteTv.visibility = View.INVISIBLE
-        } else {
+        } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
             binding.walkDetailSlidingUpPanelLayout.panelHeight =
                 (getDeviceHeight() - convertDpToPx(this, 90) - (getDeviceHeight() * 0.42)).toInt()
             binding.walkDetailSlidedLayout.visibility = View.VISIBLE
@@ -147,8 +197,22 @@ class WalkDetailActivity :
         }
     }
 
+    //삭제 요청이 성공적으로 응답하면 산책 정보랑 발자국 정보 다시 받아오기
     override fun onDeleteWalkSuccess() {
         FootprintService.getFootprints(this, args.walkIdx)
         WalkService.getWalk(this, args.walkIdx)
+    }
+
+    override fun onUpdateFootprintSuccess() {
+        binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+
+        //발자국을 수정했어요 메세지 다이얼로그 띄우기
+        val bundle: Bundle = Bundle()
+        bundle.putString("msg", getString(R.string.msg_update_footprint))
+        val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
+        msgDialogFragment.arguments = bundle
+        msgDialogFragment.show(supportFragmentManager, null)
+
+        FootprintService.getFootprints(this, args.walkIdx)
     }
 }
