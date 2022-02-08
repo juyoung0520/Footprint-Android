@@ -5,7 +5,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,8 +16,6 @@ import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.remote.achieve.*
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
-import com.footprint.footprint.utils.getJwt
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -31,15 +28,20 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import kotlin.collections.ArrayList
 
-class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate), MyPageView {
+class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
+    MyPageView {
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
         UserService.getUser(this)
         AchieveService.getInfoDetail(this)
 
-        binding.mypageGoalRightIv.setOnClickListener {
+        binding.mypageInfoRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
+        }
+
+        binding.mypageGoalRightIv.setOnClickListener {
+            findNavController().navigate(R.id.action_mypageFragment_to_goalThisMonthFragment)
         }
 
         binding.mypageSettingIv.setOnClickListener {
@@ -65,14 +67,26 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         // 이번달 목표
         val userGoalRes = result.getUserGoalRes
         binding.mypageGoalRightIv.setOnClickListener {
-            val action = MyPageFragmentDirections.actionMypageFragmentToGoalThisMonthFragment(userGoalRes)
+            val action =
+                MyPageFragmentDirections.actionMypageFragmentToGoalThisMonthFragment(userGoalRes)
             findNavController().navigate(action)
         }
         binding.mypageGoalWeekTv.text =
-            getSpannableString(binding.mypageGoalWeekTv.text, userGoalRes.dayIdx.size.toString(), 2, spanColorPrimary)
+            getSpannableString(
+                binding.mypageGoalWeekTv.text,
+                userGoalRes.dayIdx.size.toString(),
+                2,
+                spanColorPrimary
+            )
         binding.mypageGoalDayTv.text =
-            getSpannableString(binding.mypageGoalDayTv.text, userGoalRes.userGoalTime.walkGoalTime!!.toString(), 3, spanColorPrimary)
-        binding.mypageGoalTimeTv.text = convertToWalkTimeSlotToStr(userGoalRes.userGoalTime.walkTimeSlot!!)
+            getSpannableString(
+                binding.mypageGoalDayTv.text,
+                userGoalRes.userGoalTime.walkGoalTime!!.toString(),
+                3,
+                spanColorPrimary
+            )
+        binding.mypageGoalTimeTv.text =
+            convertToWalkTimeSlotToStr(userGoalRes.userGoalTime.walkTimeSlot!!)
 
         // 통계
         val userInfoStat = result.userInfoStat
@@ -81,7 +95,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             binding.mypageStatisticsWeekResultTv.text = mostWalkDay
         } else {
             binding.mypageStatisticsWeekResultTv.text = getSpannableString(
-                binding.mypageStatisticsWeekResultTv.text, getMostWalkDay(userInfoStat.mostWalkDay), 3, spanColorSecondary
+                binding.mypageStatisticsWeekResultTv.text,
+                getMostWalkDay(userInfoStat.mostWalkDay),
+                3,
+                spanColorSecondary
             )
         }
         binding.mypageStatisticsMonthCountResultTv.text = getSpannableString(
@@ -140,7 +157,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageStatisticsWeekChartBc.apply {
             xAxis.apply {
                 textColor = requireContext().getColor(R.color.black)
-                valueFormatter = XAxisFormatter(arrayListOf<String>("일", "월", "화", "수", "목", "금", "토"))
+                valueFormatter =
+                    XAxisFormatter(arrayListOf<String>("일", "월", "화", "수", "목", "금", "토"))
             }
         }
         // week 그래프 데이터 설정
@@ -372,7 +390,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     private fun convertToWalkTimeSlotToStr(slot: Int): String {
-        return when(slot) {
+        return when (slot) {
             1 -> "이른 오전"
             2 -> "늦은 오전"
             3 -> "이른 오후"

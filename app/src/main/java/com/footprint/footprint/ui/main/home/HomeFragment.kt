@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
 import com.footprint.footprint.data.remote.achieve.AchieveService
@@ -54,46 +53,42 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
+        if (!::homeVPAdapter.isInitialized)
+            initTB()
+        initDate()
+
+        setClickListener()
+
+        setPermission()   //위치 정보 사용 요청
+        requestLocation() //날씨 API
+    }
+
+    private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
             val mainActivity = activity as MainActivity
             mainActivity.startNextActivity(WalkActivity::class.java)
         }
 
+        //설정 버튼 -> 설정 프래그먼트
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
-
-        /*init: 1. TB&VP 2. 날짜*/
-        if (!::homeVPAdapter.isInitialized)
-            initTB()
-        initDate()
-
-
-        /*init: 3. 날씨 */
-        setPermission()   //위치 정보 사용 요청
-        requestLocation() //날씨 API
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AchieveService.setHomeView(this)
 
-        //유저 닉네임, 날씨 -> 한번만 호출
-        /*init: 1. 유저*/
+        //유저 닉네임 -> 한번만 호출
         UserService.getUser(this)
-
-        /*뱃지(임시)*/
-        //BadgeService.getMonthBadge(this)
     }
 
 
     override fun onStart() {
         super.onStart()
         //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
-        /*init: 1. 일별*/
         AchieveService.getToday(this)
-        /*init: 2. 월별*/
         AchieveService.getTMonth(this)
     }
 
@@ -151,7 +146,42 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         )
     }
 
-    /*상단 날씨 받아오기*/
+    //위치 정보 권한 허용 함수
+    private fun setPermission() {
+        val permissionListener = object : PermissionListener {
+            override fun onPermissionGranted() {
+                //허용 시
+                Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
+            }
+
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                //거절 시
+                AlertDialog.Builder(activity).setMessage("권한 거절로 일부 기능이 제한됩니다.")
+                    .setPositiveButton("권한 설정하러 가기") { dialog, which ->
+                        try {
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                .setData(Uri.parse("package:com.footprint.footprint"))
+                        } catch (e: ActivityNotFoundException) {
+                            e.printStackTrace()
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        }
+                    }.show()
+                Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
+            }
+        }
+
+        //권한 설정
+        TedPermission.create().setPermissionListener(permissionListener)
+            .setRationaleMessage("정확한 날씨 정보를 위해 권한을 허용해 주세요")
+            .setDeniedMessage("권한을 거부하셨습니다. [앱 설정] -> [권한]에서 허용해 주세요.")
+            .setPermissions(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            .check()
+    }
+
+    /*상단 날씨 받아오기: nx, ny, time*/
     private fun setWeather(nx: Int, ny: Int) {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
@@ -170,6 +200,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     }
 
+    //시간 결정 함수(time)
     private fun getTime(time: String): String {
         return when (time) {
             in "00".."02" -> "2000" // 00~02
@@ -183,42 +214,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
     }
 
-    private fun setPermission() {
-        val permissionListener = object : PermissionListener {
-            override fun onPermissionGranted() {
-                //허용 시
-                //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
-                Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
-            }
-
-            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                //거절 시
-                AlertDialog.Builder(activity).setMessage("권한 거절로 일부 기능이 제한됩니다.")
-                    .setPositiveButton("권한 설정하러 가기") { dialog, which ->
-                        try {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                .setData(Uri.parse("package:com.footprint.footprint"))
-                        } catch (e: ActivityNotFoundException) {
-                            e.printStackTrace()
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        }
-                    }.show()
-                //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
-                Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
-            }
-        }
-
-        //권한 설정
-        TedPermission.create().setPermissionListener(permissionListener)
-            .setRationaleMessage("정확한 날씨 정보를 위해 권한을 허용해 주세요")
-            .setDeniedMessage("권한을 거부하셨습니다. [앱 설정] -> [권한]에서 허용해 주세요.")
-            .setPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            .check()
-    }
-
+    //GPS로 위치 받아오는 함수(nx, ny)
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
@@ -261,6 +257,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
     }
 
+    //하늘 상태 결정해 주는 함수
     private fun getWeatherValue(rainType: String, sky: String, wind: Int): String {
         val result: String
         if (wind > 13) {
@@ -287,11 +284,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
 
-    /*WeatherView*/
-    override fun onWeatherLoading() {
-        //로딩바띄우기
-    }
-
+    /*날씨 API*/
     override fun onWeatherSuccess(items: List<ITEM>) {
         Log.d("WEATHER/API-SUCCESS", items.toString())
 
@@ -339,23 +332,22 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
-        //오류 메시지 띄우기
-        Log.d("WEATHER/API-Failure", code.toString() + message)
+        Log.d("WEATHER/API-FAILURE", "code: $code message: $message")
     }
 
-    /*유저 정보 API*/
+    /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
         Log.d("HOME(USER)/API-SUCCESS", user.toString())
 
         //닉네임 바꿔주기
         binding.homeTopUsernameTv.text = user.nickname
-
     }
-
     override fun onUserFailure(code: Int, message: String) {
-        Log.d("HOME(USER)/API-FAILURE", code.toString() + message)
+        Log.d("HOME(USER)/API-FAILURE", "code: $code message: $message")
     }
 
+
+    /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
         walkGoalTime = today.walkGoalTime
@@ -377,11 +369,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeDayFragment
         (fragmentList[0] as HomeDayFragment).onTodaySuccess(today)
     }
-
     override fun onTodayFailure(code: Int, message: String) {
         Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
     }
 
+    /*월별 정보 조회 API*/
     override fun onTMonthSuccess(tMonth: TMonth) {
         Log.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
 
@@ -405,20 +397,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeMonthFragment
         (fragmentList[1] as HomeMonthFragment).onTMonthSuccess(tMonth)
     }
-
     override fun onTMonthFailure(code: Int, message: String) {
         Log.d("HOME(TMONTH)/API-FAILURE", code.toString() + message)
     }
 
-    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
-        Log.d("HOME(BADGE)/API-SUCCESS", monthBadge.toString())
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-        Log.d("HOME(BADGE)/API-SUCCESS", code.toString() + message)
-    }
-
     override fun onDestroyView() {
+        //등록된 jobs cancel -> binding error 막기 위해
         for (job in jobs) {
             job.cancel()
         }

@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.UserDateWalk

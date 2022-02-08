@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.register
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.util.Log
 import android.view.WindowManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,9 @@ import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 import com.footprint.footprint.ui.register.info.RegisterInfoFragment
 import com.footprint.footprint.utils.getJwt
 import com.google.android.material.tabs.TabLayoutMediator
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
@@ -25,7 +29,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
             initVP()
 
         //soft Keyboard Up
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 
 
@@ -73,5 +77,23 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
             Log.d("REGISTER/USER", newUser.toString())
         }
+    }
+
+    //빈 공간 클릭 시 키보드 자동으로 내려주는 함수
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val focusView: View? = currentFocus
+        if (focusView != null) {
+            val rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = ev.x.toInt()
+            val y = ev.y.toInt()
+            if (!rect.contains(x, y)) {
+                val imm: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(focusView.getWindowToken(), 0)
+                focusView.clearFocus()
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 }

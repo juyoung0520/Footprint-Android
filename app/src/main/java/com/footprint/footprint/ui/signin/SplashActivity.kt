@@ -1,8 +1,13 @@
 package com.footprint.footprint.ui.signin
 
+import android.content.Intent
 import android.os.Handler
 import android.util.Log
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.auth.AuthService
+import com.footprint.footprint.data.remote.auth.Login
+import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -16,7 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, MonthBadgeView {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private var isGoogleLogin = false
     private var isKakaoLogin = false
@@ -34,94 +39,52 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 startNextActivity(OnBoardingActivity::class.java)
                 finish()
             } else {
-                //3. true -> 로그인 상태 확인
-                checkGoogleLogin()
-                checkKakaoLogin()
+                autoLogin()
             }
         }, 3000)
     }
 
 
-    /*Google 로그인 체크: 1. 로그인 체크 2. 정보 Log(기능 완성되면 지울 것)*/
-    private fun checkGoogleLogin() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_login_server_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this@SplashActivity, gso)
-
-        //구글 로그인 정보 확인
-        val gsa = GoogleSignIn.getLastSignedInAccount(this@SplashActivity)
-        if (gsa == null) {
-            //구글 로그인 X
-            isGoogleLogin = false
-        } else {
-            //구글 로그인 O
-            isGoogleLogin = true
-
-            Log.d("GOOGLE/AUTO-LOGIN", gsa.idToken.toString())
-            Log.d("GOOGLE/AUTO-LOGIN", gsa.displayName.toString())
-            Log.d("GOOGLE/AUTO-LOGIN", gsa.email.toString())
-
-        }
-    }
-
-    /*Kakao 로그인 체크: 1. 로그인 체크 2. Log 확인(후에 지울 예정)*/
-    private fun checkKakaoLogin() {
-        // 로그인 정보 확인
-        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-            if (error != null) {
-                //카카오 로그인 x
-                isKakaoLogin = false
-            } else if (tokenInfo != null) {
-                //카카오 로그인 O
-                isKakaoLogin = true
-
-                getKakaoUser()
-            }
-
-            autoLogin()
-        }
-    }
-
-    //Log 확인 위해 회원정보 받아오는 함수
-    private fun getKakaoUser() {
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e("KAKAO/USER-FAIL", "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                isKakaoLogin = true
-                Log.i("KAKAO/USER-SUCCESS", "사용자 정보 요청 성공" + user.toString())
-            }
-        }
-    }
-
-    /*자동 로그인
-    * 1. google:t, kakao:f, login status: google =>  구글 로그인  & Main
-    * 2. google:f, kakao:t, login status: kakao  => 카카오 로그인 & Main
-    * 3. google:f, kakao:f    ...  나머지         => 로그인 X     & SignIn
-    * */
-    private fun autoLogin() {
-        val loginStatus = getLoginStatus(this)
-        if (!isGoogleLogin && isKakaoLogin && loginStatus == "kakao") {
-            //Main Activity (Kakao)
-            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-            Log.d("AUTO-LOGIN/KAKAO", "Kakao 계정으로 로그인하였습니다.")
-            startNextActivity(MainActivity::class.java)
-            finish()
-        } else if (isGoogleLogin && !isKakaoLogin && loginStatus == "google") {
-            //Main Activity(Google)
-            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-            Log.d("AUTO-LOGIN/GOOGLE", "Google 계정으로 로그인하였습니다.")
-            startNextActivity(MainActivity::class.java)
-            finish()
-        } else {
-            //SignUp Activity
-            Log.d("AUTO-LOGIN/VALUE", "Google: ${isGoogleLogin} Kakao: ${isKakaoLogin}")
-            Log.d("AUTO-LOGIN/NONE", "로그인 정보가 존재하지 않습니다.")
+    private fun autoLogin(){
+        Log.d("SPLASH", getJwt().toString())
+        if(getJwt() != null){ // O -> 자동로그인 API 호출
+            AuthService.autoLogin(this)
+        }else{  // X -> 로그인 액티비티
             startNextActivity(SigninActivity::class.java)
             finish()
         }
-        Log.d("AUTO-LOGIN/JWT", getJwt().toString())
     }
+
+
+    /*자동 로그인 API*/
+    override fun onAutoLoginSuccess(result: Login) {
+        if(result.status == "ACTIVE"){
+            if(result.checkMonthChanged){ // 바뀜 -> 뱃지 API 호출
+                BadgeService.getMonthBadge(this)
+            }else{ // -> 메인 액티비티
+                startNextActivity(MainActivity::class.java)
+                finish()
+            }
+        }
+
+        Log.d("SPLASH/API-SUCCESS", "status: $result.status jwt: $result.jwtId")
+    }
+
+    override fun onAutoLoginFailure(code: Int, message: String) {
+        Log.d("SPLASH/API-FAILURE", "code: $code message: $message")
+    }
+
+    /*뱃지 API*/
+    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: MonthBadge?) {
+        val intent = Intent(this, MainActivity::class.java)
+        if(isBadgeExist)
+            intent.putExtra("badge", monthBadge)
+        startActivity(intent)
+        Log.d("SPLASH(BADGE)/API-SUCCESS", monthBadge.toString())
+    }
+
+    override fun onMonthBadgeFailure(code: Int, message: String) {
+        Log.d("SPLASH(BADGE)/API-FAILURE", code.toString() + message)
+    }
+
 }

@@ -23,17 +23,23 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
-    SignInView {
+    SignInView, MonthBadgeView {
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var socialUserModel: SocialUserModel
 
     override fun initAfterBinding() {
+        setClickListener()
+    }
+
+    private fun setClickListener() {
         //카카오 로그인
         binding.signinKakaologinBtnLayout.setOnClickListener {
             setKakaoLogin()
@@ -93,7 +99,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             UserApiClient.instance.loginWithKakaoAccount(this@SigninActivity, callback = callback)
         }
     }
-
     private fun getKakaoUser() {
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -142,7 +147,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         }
         return getResult
     }
-
     private fun getGoogleUser(completedTask: Task<GoogleSignInAccount>) {
         try {
 
@@ -170,8 +174,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     //-> Response
-    override fun onSignInLoading() {}
-
     override fun onSignInSuccess(result: Login) {
 
         val jwtId = result.jwtId
@@ -184,35 +186,49 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel.providerType")
 
         //2. STATUS에 따른 처리
-        // ACTIVE: 가입된 회원, MainActivity로
+        // ACTIVE: 가입된 회원 -> 뱃지 API 호출
         // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
         when (status) {
-            "ACTIVE" -> startMainActivity()
+            "ACTIVE" -> {
+                if(checkMonthChanged){ // -> 뱃지 API 호출
+                    BadgeService.getMonthBadge(this)
+                }else{
+                    startMainActivity()
+                }
+            }
             "ONGOING" -> startRegisterActivity()
         }
 
-        //3. 첫 로그인 확인
-        if(checkMonthChanged){
-            //뱃지 API 요청
-        }
-
     }
-
 
     override fun onSignInFailure(code: Int, message: String) {
         Log.d("SIGNIN/API-FAILURE", "code: $code message: $message")
     }
 
+    /*이달의 뱃지 조회 API*/
+    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: MonthBadge?) {
+        val intent = Intent(this, MainActivity::class.java)
+        if(isBadgeExist)
+            intent.putExtra("badge", monthBadge)
+        startActivity(intent)
+        Log.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
+    }
+
+    override fun onMonthBadgeFailure(code: Int, message: String) {
+        Log.d("SIGNIN(BADGE)/API-FAILURE", code.toString() + message)
+    }
+
+
     /*액티비티 이동*/
     //Main Activity
     private fun startMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startNextActivity(MainActivity::class.java)
         finish()
     }
 
     //Register Activity
     private fun startRegisterActivity() {
-        startActivity(Intent(this, RegisterActivity::class.java))
+        startNextActivity(RegisterActivity::class.java)
         finish()
     }
 }

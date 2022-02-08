@@ -214,13 +214,4 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
     override fun onUserFailure(code: Int, message: String) {
         Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
     }
-
-    /*<수정>뱃지 옮기고 지울 것!*/
-    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
-
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-
-    }
 }
