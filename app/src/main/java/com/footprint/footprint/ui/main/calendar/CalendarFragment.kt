@@ -80,10 +80,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 changeDayOfWeek(localDate.dayOfWeek.toString())
             )
 
-        binding.calendarBackIv.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         binding.calendarSearchIv.setOnClickListener {
             val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
             findNavController().navigate(action)
