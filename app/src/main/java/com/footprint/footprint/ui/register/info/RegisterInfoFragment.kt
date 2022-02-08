@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.register.info
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -399,7 +400,7 @@ class RegisterInfoFragment() :
             .setArrowColorMatchBalloon(true)
             .setArrowPosition(0.2f)
             .setCornerRadius(40F)
-            .setBackgroundColorResource(R.color.black_80)
+            .setBackgroundColor(Color.parseColor("#CC4D4D4F"))
             .setBalloonAnimation(BalloonAnimation.ELASTIC)
             .setDismissWhenClicked(true)
             .setAutoDismissDuration(3000)
@@ -413,21 +414,18 @@ class RegisterInfoFragment() :
         var keyboardStatus = false
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
             onShowKeyboard = { keyboardHeight ->
-                Log.d("KEYBOARD", "UP")
                 keyboardStatus = true
-                if (balloon.isShowing) balloon.dismiss()
+                //if (balloon.isShowing) balloon.dismiss()
             },
             onHideKeyboard = {
-                Log.d("KEYBOARD", "DOWN")
                 keyboardStatus = false
-                if (balloon.isShowing) balloon.dismiss()
+               //if (balloon.isShowing) balloon.dismiss()
                 scrollUp(false)
             }
         )
 
         //키보드 올라갔을 때만 툴팁 띄우기 (임시)
         binding.registerInfoWeightHelpIv.setOnClickListener {
-            if (!keyboardStatus)
                 binding.registerInfoWeightHelpIv.showAlignTop(balloon, xoff, -5)
         }
     }
