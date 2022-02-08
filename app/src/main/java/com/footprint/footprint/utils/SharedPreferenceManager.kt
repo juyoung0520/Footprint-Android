@@ -110,3 +110,18 @@ fun getPWDstatus(context: Context): String? {
 
     return spf.getString("pwdStatus", "DEFAULT")
 }
+
+/*Notification: 앱 푸시 알림 - true(알림 on) false(알림 off)*/
+fun saveNotification(context: Context, status: Boolean){
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+    val editor = spf.edit()
+
+    editor.putBoolean("notification", status)
+    editor.apply()
+}
+
+fun getNotification(context: Context): Boolean{
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+
+    return spf.getBoolean("notification", false)
+}
