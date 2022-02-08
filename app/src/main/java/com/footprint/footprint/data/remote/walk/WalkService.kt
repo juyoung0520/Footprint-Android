@@ -6,7 +6,6 @@ import com.footprint.footprint.ui.walk.WalkAfterView
 import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
-import com.google.gson.Gson
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -82,16 +81,16 @@ object WalkService {
         })
     }
 
+    //산책 정보 저장
     fun writeWalk(walkAfterView: WalkAfterView, walk: WalkModel) {
         walkAfterView.onWalkAfterLoading()
 
-        val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()
-        val saveWalkReq: SaveWalk =
-            SaveWalk(startAt = walk.startAt, endAt = walk.endAt, distance = walk.distance, coordinates = walk.coordinate, calorie = walk.calorie)
+        val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()    //서버에 전달할 이미지 리스트
+        val saveWalkReq: SaveWalk = SaveWalk(startAt = walk.startAt, endAt = walk.endAt, distance = walk.distance, coordinates = walk.coordinate, calorie = walk.calorie)   //서버에 전달할 산책 정보 객체
 
-        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg))
+        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg))    //산책 동선 사진을 이미지 리스트에 추가
 
-        val footprintsReq: ArrayList<SaveFootprint> = arrayListOf()
+        val footprintsReq: ArrayList<SaveFootprint> = arrayListOf() //서버에 전달할 발자국 데이터
         for (footprint in walk.footprints) {
             val data: SaveFootprint = SaveFootprint(
                 footprint.coordinate,
@@ -102,21 +101,22 @@ object WalkService {
             )
             footprintsReq.add(data)
 
+            //산책 정보의 photoMatchNumList 데이터 가공(각 발자국 별 저장된 이미지 갯수를 저장)
             if (footprint.photos.isEmpty())
                 saveWalkReq.photoMatchNumList.add(0)
             else {
                 saveWalkReq.photoMatchNumList.add(footprint.photos.size)
 
+                //이미지를 MultipartBody.Part 객체로 생성
                 for (photo in footprint.photos)
                     photosReq.add(FormDataUtils.prepareFilePart("photos", photo))
             }
         }
 
-        Log.d("WalkService", "\nwriteWalk\nsaveWalkReq: ${Gson().toJson(saveWalkReq)}\nfootprintsReq: ${Gson().toJson(footprintsReq)}")
+        val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)   //산책 정보를 FormData 로 변환
+        val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)    //발자국 정보를 FormData 로 변환
 
-        val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)
-        val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)
-
+        //산책 저장 API 호출
         walkService.writeWalk(walkFormData, footprintListFormData, photosReq).enqueue(object : Callback<WriteWalkResponse> {
             override fun onResponse(
                 call: Call<WriteWalkResponse>,
@@ -133,12 +133,12 @@ object WalkService {
 
             override fun onFailure(call: Call<WriteWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "writeWalk-ERROR: ${t.message.toString()}")
-
                 walkAfterView.onWalkAfterFail(5000, t.message.toString())
             }
         })
     }
 
+    //산책 정보 조회
     fun getWalk(walkDetailView: WalkDetailView, walkIdx: Int) {
         walkService.getWalk(walkIdx).enqueue(object : Callback<GetWalkResponse> {
             override fun onResponse(
@@ -156,13 +156,13 @@ object WalkService {
 
             override fun onFailure(call: Call<GetWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "getWalk-ERROR: ${t.message.toString()}")
-
                 walkDetailView.onWalkDetailFail(5000, t.message.toString())
             }
 
         })
     }
 
+    //산책 정보 삭제
     fun deleteWalk(walkDetailView: WalkDetailView, walkIdx: Int) {
         walkService.deleteWalk(walkIdx).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(
@@ -180,7 +180,6 @@ object WalkService {
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
-
                 walkDetailView.onWalkDetailFail(5000, t.message.toString())
             }
 

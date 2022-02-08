@@ -180,7 +180,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 lockUnlock(walk.walkIdx)
 
                 //클릭한 아이템의 walkIdx 를 walkDetailActivity 에 전달
-                val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(85)
+//                val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(walk.walkIdx)   //날짜별 산책 데이터 조회 API 가 연결됐을 때 사용
+                val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(85) //연결될 동안 사용할 코드
                 findNavController().navigate(action)
             }
         })

@@ -16,6 +16,7 @@ interface WalkRetrofitInterface {
     @GET("users/tags")
     fun getTagWalkDates(@Query("tag")tag: String): Call<TagWalkDatesResponse>
 
+    //산책 저장
     @Multipart
     @POST("walks")
     fun writeWalk(
@@ -24,9 +25,11 @@ interface WalkRetrofitInterface {
         @Part photos: List<MultipartBody.Part>
     ): Call<WriteWalkResponse>
 
+    //산책 정보 조회
     @GET("walks/{walkidx}")
     fun getWalk(@Path("walkidx") walkIdx: Int): Call<GetWalkResponse>
 
+    //산책 정보 삭제
     @PATCH("walks/{walkIdx}/status")
     fun deleteWalk(@Path("walkIdx") walkIdx: Int): Call<BaseResponse>
 }

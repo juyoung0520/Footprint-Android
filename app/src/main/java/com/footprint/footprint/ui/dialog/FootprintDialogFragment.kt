@@ -79,12 +79,11 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         initAdapter()   //뷰페이저 어댑터 설정
         setMyClickListener()    //클릭 리스너 설정
 
-        val footprintStr = arguments?.getString("footprint", "")
-        if (footprintStr!=null) {
+        val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
+        if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
             setUI(Gson().fromJson(footprintStr, Footprint::class.java))
         }
-
 
         return binding.root
     }
@@ -161,7 +160,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 imgList.add(getAbsolutePathByBitmap(requireContext(), resource))
 
-                                if (imgList.size==uriList.size) {
+                                //비동기 방식이라 사진이 모두 변환됐는지 확인하는 용도
+                                if (imgList.size==uriList.size) {   //사진이 모두 변환됐으면 뷰페이저에 해당 이미지 데이터 전달
                                     photoRVAdapter.addImgList(imgList)
                                     binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
                                 }
@@ -179,9 +179,9 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                     binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
                 }
 
-                if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면
+                if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면 -> 사진 추가하기 텍스트뷰 보여주기
                     setDeletePhotoUI()
-                } else {    //이미지를 선택했다면
+                } else {    //이미지를 선택했다면 -> 사진 삭제하기 텍스트뷰 보여주기, 사진 뷰페이저&인디케이터 VISIBLE
                     binding.postDialogPhotoVp.visibility = View.VISIBLE
                     binding.postDialogPhotoIndicator.visibility = View.VISIBLE
                     binding.postDialogAddPhotoTv.text = getString(R.string.action_delete_photo)
@@ -189,18 +189,23 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             }
     }
 
+    //사진 뷰페이저 어댑터 초기화 함수
     private fun initAdapter() {
         photoRVAdapter = PhotoRVAdapter(0)
+
+        //갤러리 아이콘 이미지뷰 클릭 리스너 -> 갤러리로 이동
         photoRVAdapter.setMyItemClickListener(object : PhotoRVAdapter.MyItemClickListener {
             override fun goGalleryClick() {
                 goGallery()
             }
         })
+
         binding.postDialogPhotoVp.adapter = photoRVAdapter
     }
 
+    //해시태그 관련 설정 함수
     private fun setHashTag() {
-        //해시태그 관련 설정
+        //해시태그의 텍스트 스타일 설정 객체
         val hashtagStyle = HashtagStyle(
             textColor = ContextCompat.getColor(requireActivity(), R.color.primary),
             isBold = false
@@ -226,7 +231,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
     }
 
-    //find hashtag
+    //사용자가 입력한 내용 속에서 해시태그를 찾는 함수
     private fun findHashTag(): java.util.ArrayList<String> {
         val pattern = Regex("#([0-9a-zA-Z가-힣]*)")
         val matchedWords = pattern.findAll(binding.postDialogContentEt.text.toString())
@@ -240,12 +245,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     private fun setMyClickListener() {
-        //취소 누르면 다이얼로그 나가기 -> 이전 화면(WalkMapFragment)에 기록데이터를 null 로 하여 데이터 전달
+        //취소 텍스트뷰 클릭 리스너 -> 프래그먼트 종료
         binding.postDialogCancelTv.setOnClickListener {
             dismiss()
         }
 
-        //갤러리 이동 전 퍼미션 체크
+        //사진 추가하기/삭제하기 텍스트뷰 클릭 리스너 -> 갤러리 이동 전 퍼미션 체크
         binding.postDialogAddPhotoIv.setOnClickListener {
             if (binding.postDialogAddPhotoTv.text == getString(R.string.action_add_photo))
                 checkPermission()
@@ -253,7 +258,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                 setDeletePhotoUI()
         }
 
-        //사진 추가하기/사진 삭제하기 텍스트뷰 클릭 리스너
+        //사진 추가하기/삭제하기 이미지뷰 클릭 리스너 -> 갤러리 이동 전 퍼미션 체크
         binding.postDialogAddPhotoTv.setOnClickListener {
             if ((it as TextView).text == getString(R.string.action_add_photo))
                 checkPermission()
@@ -263,16 +268,15 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
         //저장 텍스트뷰 클릭 리스너
         binding.postDialogSaveTv.setOnClickListener {
-            if (binding.postDialogContentEt.text!!.isBlank() && imgList.isEmpty()) {  //필수 데이터(기록 내용)가 입력됐는지 확인
-                //"사진이나 글을 추가해주세요." 다이얼로그 화면 띄우기
+            if (binding.postDialogContentEt.text!!.isBlank() && imgList.isEmpty()) {  //유효성 검사 통과 X -> "사진이나 글을 추가해주세요." 다이얼로그 화면 띄우기
                 val bundle: Bundle = Bundle()
-                bundle.putString("msg", getString(R.string.msg_add_photo_or_writing))
-
                 val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
+
+                bundle.putString("msg", getString(R.string.msg_add_photo_or_writing))
                 msgDialogFragment.arguments = bundle
                 msgDialogFragment.show(requireActivity().supportFragmentManager, null)
-            } else {
-                dismiss()   //프래그먼트 종료
+            } else {    //유효성 검사 통과 -> 프래그먼트 종료, 콜백함수 호출
+                dismiss()
 
                 if (isUpdate)   //발자국 수정일 때
                     myDialogCallback.sendUpdatedFootprint(setFootprintData())
@@ -282,25 +286,30 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
     }
 
+    //사용자가 입력한 발자국 데이터를 가져오는 함수
     private fun setFootprintData(): FootprintModel {
-        var hashtags = findHashTag()
-        if (hashtags.isNotEmpty() && hashtags.size > 5)
-            hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
-
+        //발자국 추가하기 화면일 경우에는 아직 footprint 객체가 초기화되기 전이므로 초기화 시키기
         if (!::footprint.isInitialized) {
             footprint = FootprintModel()
 
             val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
             footprint.recordAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         }
-        footprint.coordinate = listOf(10.0, 12.0)
-        footprint.write = binding.postDialogContentEt.text.toString()
+
+        //해시태그
+        var hashtags = findHashTag()
+        if (hashtags.isNotEmpty() && hashtags.size > 5)
+            hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
         footprint.hashtagList = hashtags
-        footprint.photos = imgList
+
+        footprint.coordinate = listOf(10.0, 12.0)   //발자국을 남긴 좌표
+        footprint.write = binding.postDialogContentEt.text.toString()   //발자국 내용
+        footprint.photos = imgList  //발자국 사진
 
         return footprint
     }
 
+    //사진 삭제하기 텍스트뷰/이미지뷰를 눌렀을 때 호출되는 함수 -> 사진 추가하기로 바꾸고, 선택됐던 모든 이미지 삭제
     private fun setDeletePhotoUI() {
         binding.postDialogPhotoVp.visibility = View.GONE
         binding.postDialogPhotoIndicator.visibility = View.GONE
@@ -309,12 +318,13 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         photoRVAdapter.clearImgList()
     }
 
+    //발자국 수정하기 화면 상태일 때 사용자가 수정 전 입력했던 발자국 데이터를 바인딩하는 함수
     private fun setUI(footprint: Footprint) {
-        binding.postDialogContentEt.setText(footprint.write)
+        binding.postDialogContentEt.setText(footprint.write)    //발자국 내용
 
-        if (footprint.photoList.isEmpty()) {
+        if (footprint.photoList.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
             setDeletePhotoUI()
-        } else {
+        } else {    //사진이 있으면 "사진 삭제하기" 버전
             imgList.clear()
             imgList.addAll(footprint.photoList)
 

@@ -1,7 +1,6 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
@@ -26,10 +25,10 @@ class WalkAfterActivity :
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
-    private lateinit var walk: WalkModel
+    private lateinit var walk: WalkModel    //WalkMpFragment 로부터 전달 받은 walk 데이터
 
-    private var tempAddFootprintPosition: Int? = null
-    private var tempUpdateFootprintPosition: Int? = null
+    private var tempAddFootprintPosition: Int? = null   //발자국을 추가할 때 추가하려고 하는 위치를 임시 저장하는 변수
+    private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
 
     override fun initAfterBinding() {
         setMyClickListener()
@@ -55,20 +54,19 @@ class WalkAfterActivity :
     }
 
     private fun setMyClickListener() {
-        //취소 텍스트뷰 클릭 리스너
+        //취소 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
         binding.walkAfterCancelTv.setOnClickListener {
-            //‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
             setWalkDialogBundle("'00번째 산책' 작성을 취소할까요?", getString(R.string.action_delete))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
-        //저장 텍스트뷰 클릭 리스너
+        //저장 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
         binding.walkAfterSaveTv.setOnClickListener {
-            //‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
             setWalkDialogBundle("'00번째 산책'을 저장할까요?", getString(R.string.action_save))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
+        //발자국 추가 텍스트뷰 클릭 리스너 -> FootprintDialogFragment 띄우기
         binding.walkAfterPlusTv.setOnClickListener {
             footprintDialogFragment.show(supportFragmentManager, null)
         }
@@ -82,24 +80,24 @@ class WalkAfterActivity :
 
             //‘OO번째 산책’ 작성을 취소할까요?
             override fun action1(isAction: Boolean) {
-                Log.d("WalkAfterActivity", "산책 취소")
-
-                if (isAction)
+                if (isAction)   //삭제 버튼 누르면 액티비티 종료
                     finish()
             }
 
-            //‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
+            //‘OO번째 산책’을 저장할까요?
             override fun action2(isAction: Boolean) {
-                Log.d("WalkAfterActivity", "산책 저장 walk: $walk")
-                WalkService.writeWalk(this@WalkAfterActivity, walk)
+                if (isAction)   //저장 버튼 누르면 산책 정보 저장 API 호출
+                    WalkService.writeWalk(this@WalkAfterActivity, walk)
             }
         })
     }
 
+    //FootprintDialogFragment 초기화 함수
     private fun initFootprintDialog() {
         footprintDialogFragment = FootprintDialogFragment()
 
         footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
+            //발자국 추가
             override fun sendFootprint(footprint: FootprintModel) {
                 //발자국을 남겼어요 메세지 다이얼로그 띄우기
                 val bundle: Bundle = Bundle()
@@ -110,19 +108,19 @@ class WalkAfterActivity :
 
                 footprint.isMarked = 0  //얘는 산책 중에 남긴 게 아니니까 0으로 변경
 
-                if (tempAddFootprintPosition==null) {
-                    footprintRVAdapter.addData(footprint, 0)   //어댑터에 데이터 추가하여 UI 업데이트
+                if (tempAddFootprintPosition==null) {   //첫번째 발자국을 남긴 경우: 산책 기록이 없어요! -> 발자국 RV
+                   footprintRVAdapter.addData(footprint, 0)   //어댑터에 데이터 추가하여 UI 업데이트
                     binding.walkAfterPostRv.visibility = View.VISIBLE
                     binding.walkAfterPlusLineView.visibility = View.INVISIBLE
                     binding.walkAfterPlusTv.visibility = View.INVISIBLE
                 } else
                     footprintRVAdapter.addData(footprint, tempAddFootprintPosition!!)   //어댑터에 데이터 추가하여 UI 업데이트
-
                 binding.walkAfterRecordTv.text = walk.footprints.size.toString()    //기록 수를 보여주는 텍스트뷰도 증가
 
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
+            //발자국 수정
             override fun sendUpdatedFootprint(footprint: FootprintModel) {
                 //발자국을 수정했어요 메세지 다이얼로그 띄우기
                 val bundle: Bundle = Bundle()
@@ -139,9 +137,9 @@ class WalkAfterActivity :
         })
     }
 
+    //산책 정보를 바인딩하는 함수
     private fun bindWalkData() {
-        binding.walkAfterTitleTv.text = "00번째 산책"
-
+        binding.walkAfterTitleTv.text = "00번째 산책"   //산책 이름
         Glide.with(this).load(walk.pathImg).into(binding.walkAfterMapIv)    //산책 동선 이미지
         binding.walkAfterWalkTimeTv.text = walk.walkTime    //산책 시간
         binding.walkAfterCalorieTv.text = walk.calorie.toString()   //칼로리
@@ -149,19 +147,19 @@ class WalkAfterActivity :
         binding.walkAfterRecordTv.text = walk.footprints.size.toString()    //발자국 수
         binding.walkAfterTimeDescTv.text = "${walk.startAt.split(" ")[0].replace("-", ".")} ${walk.startAt.split(" ")[1].substring(0, 5)}~${walk.endAt.split(" ")[1].substring(0, 5)}"  //산책 날짜
 
-        binding.walkAfterSlidingUpPanelLayout.panelHeight = (getDeviceHeight() - convertDpToPx(this, 90) - (getDeviceHeight() * 0.42)).toInt()
+        binding.walkAfterSlidingUpPanelLayout.panelHeight = (getDeviceHeight() - convertDpToPx(this, 90) - (getDeviceHeight() * 0.42)).toInt()  //SlidingPanelLayout 높이 설정
 
-        if (walk.footprints.isEmpty()) {  //산책 도중 기록을 남기지 않았을 때
+        if (walk.footprints.isEmpty()) {  //산책 도중 기록을 남기지 않았을 때 -> 산책 기록이 없어요!
             binding.walkAfterPostRv.visibility = View.INVISIBLE
             binding.walkAfterPlusLineView.visibility = View.VISIBLE
             binding.walkAfterPlusTv.visibility = View.VISIBLE
-        } else {    //산책 도중 기록을 남겼을 때
+        } else {    //산책 도중 기록을 남겼을 때 -> 발자국 정보들을 보여주는 SlidingPanelLayout
             binding.walkAfterPostRv.visibility = View.VISIBLE
             binding.walkAfterPlusLineView.visibility = View.INVISIBLE
             binding.walkAfterPlusTv.visibility = View.INVISIBLE
         }
 
-        initAdapter()
+        initAdapter()   //어댑터 초기화
     }
 
     //기록 관련 리사이클러뷰 초기화
@@ -170,22 +168,23 @@ class WalkAfterActivity :
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
             //발자국 추가 텍스트뷰 클릭 리스너
             override fun addFootprint(position: Int) {
-                if (walk.footprints.size>=9) {
+                if (walk.footprints.size>=9) {  //현재 발자국 개수가 9개인 경우 -> "발자국은 최대 9개까지 남길 수 있어요" 메세지 다이얼로그 프래그먼트 띄우기
                     val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
                     val bundle: Bundle = Bundle()
                     bundle.putString("msg", getString(R.string.error_post_cnt_exceed))
                     msgDialogFragment.arguments = bundle
                     msgDialogFragment.show(supportFragmentManager, null)
-                } else {
-                    tempAddFootprintPosition = position + 1
+                } else {    //FootprintDialogFragment 띄우기
+                    tempAddFootprintPosition = position + 1 //발자국 위치를 추가할 position 데이터 저장
                     footprintDialogFragment.show(supportFragmentManager, null)
                 }
             }
 
             //발자국 편집 텍스트뷰 클릭 리스너
             override fun updateFootprintVerAfter(position: Int, footprint: FootprintModel) {
-                tempUpdateFootprintPosition = position
+                tempUpdateFootprintPosition = position  //수정하고자 하는 발자국 데이터의 위치 저장
 
+                //수정할 발자국 데이터와 함께 FootprintDialogFragment 띄우기
                 val bundle: Bundle = Bundle()
                 bundle.putString("footprint", Gson().toJson(footprint))
                 footprintDialogFragment.arguments = bundle

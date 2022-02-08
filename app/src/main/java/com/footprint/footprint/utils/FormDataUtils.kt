@@ -6,6 +6,7 @@ import java.io.File
 import okhttp3.RequestBody
 import okhttp3.MultipartBody
 
+//FormData 로 변환하는 유틸 객체
 object FormDataUtils {
     fun getPartMap(value: HashMap<String, Any>): HashMap<String, RequestBody> {
         val partMap: HashMap<String, RequestBody> = HashMap()
