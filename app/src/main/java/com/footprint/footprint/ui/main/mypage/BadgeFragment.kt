@@ -1,9 +1,12 @@
 package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
+import android.view.View
+import com.bumptech.glide.Glide
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.Badge
+import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeResponse
+import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.databinding.FragmentBadgeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.BadgeRVAdapter
@@ -11,45 +14,15 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 
-class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate) {
+class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate), BadgeView {
 
     private lateinit var badgeRVAdapter: BadgeRVAdapter
     private lateinit var actionDialogFragment: ActionDialogFragment
 
-    //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 데이터를 담아 놓는 전역 변수(임시)
-    private var representativeBadge: Badge? = null
-
-    //뱃지 데이터(임시)
-    private val badgeRes = BadgeResponse(
-        badges = listOf(
-            Badge(
-                "10km",
-                R.drawable.ic_badge_10km,
-                0
-            ),
-            Badge(
-                "누적기록 10회",
-                R.drawable.ic_footprint_10,
-                4
-            ),
-            Badge(
-                "22.01 PRO",
-                R.drawable.ic_badge_202201_pro,
-                7
-            )
-        ),
-        representativeBadge = Badge(
-            "22.01 PRO",
-            R.drawable.ic_badge_202201_pro,
-            7
-        )
-    )
+    private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
 
     override fun initAfterBinding() {
-        bindRepresentativeBade(badgeRes.representativeBadge)
-
-        if (!::badgeRVAdapter.isInitialized)
-            initAdapter()
+        BadgeService.getBadgeInfo(this) //뱃지 정보 요청 API 실행
 
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
@@ -58,27 +31,29 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     }
 
     //대표 뱃지 데이터 바인딩
-    private fun bindRepresentativeBade(badge: Badge) {
-        binding.badgeRepresentativeBadgeIv.setImageResource(badge.img)
-        binding.badgeRepresentativeBadgeNameTv.text = badge.name
+    private fun bindRepresentativeBade(badge: BadgeInfo) {
+        Glide.with(this).load(badge.badgeUrl).into(binding.badgeRepresentativeBadgeIv)
+        binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
     }
 
-    private fun initAdapter() {
+    private fun initAdapter(badgeInfo: BadgeResponse) {
         //디바이스 크기에 맞춰 뱃지 아이템의 크기 조정하기
         val size = (getDeviceWidth() - convertDpToPx(requireContext(), 74)) / 3
 
-        badgeRVAdapter = BadgeRVAdapter(badgeRes.representativeBadge, size)
-        badgeRVAdapter.setData(badgeRes.badges)
+//        badgeRVAdapter = BadgeRVAdapter(badgeInfo.reqBadgeInfo, size) //서버 반영되면 사용
+        badgeRVAdapter = BadgeRVAdapter(badgeInfo.badgeList[0], size)
+        badgeRVAdapter.setData(badgeInfo.badgeList)
 
         //대표뱃지 변경 클릭 리스너
         badgeRVAdapter.setMyItemClickListener(object : BadgeRVAdapter.MyItemClickListener {
-            override fun changeRepresentativeBadge(badge: Badge) {
-                representativeBadge = badge
+            override fun changeRepresentativeBadge(badge: BadgeInfo) {
+                representativeBadgeIdx = badge.badgeIdx //임시로 사용자가 선택한 대표뱃지 인덱스를 저장
 
+                //대표뱃지로 설정할까요? 다이얼로그 띄우기
                 val bundle = Bundle()
                 bundle.putSerializable("msg", getString(R.string.msg_change_representative_badge))
+                bundle.putString("action", getString(R.string.action_set))
                 actionDialogFragment.arguments = bundle
-
                 actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             }
 
@@ -90,14 +65,11 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     private fun initActionDialog() {
         actionDialogFragment = ActionDialogFragment()
 
+        //대표뱃지로 설정할까요? 다이얼로그
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
-                if (isAction) {
-                    badgeRes.representativeBadge = representativeBadge!!
-                    bindRepresentativeBade(representativeBadge!!)
-
-                    //어댑터에도 대표뱃지를 변경하는 메서드 호출
-                    badgeRVAdapter.changeRepresentativeBadge(representativeBadge!!)
+                if (isAction) { //사용자가 설정을 누르면 -> 대표빗지 변경 요청 API 실행
+                    BadgeService.changeRepresentativeBadge(this@BadgeFragment, representativeBadgeIdx!!)
                 }
             }
 
@@ -112,15 +84,25 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         binding.badgeBackIv.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
 
-        binding.badgeAchievementBadgeTv.setOnClickListener {
-            badgeRVAdapter.addBadge(
-                Badge(
-                    "누적기록 30회",
-                    R.drawable.ic_footprint_30,
-                    6
-                )
-            )
-        }
+    override fun onBadgeLoading() {
+        binding.badgeLoadingPb.visibility = View.VISIBLE
+    }
+
+    override fun onBadgeFail(code: Int, message: String) {
+        binding.badgeLoadingPb.visibility = View.INVISIBLE
+    }
+
+    override fun onGetBadgeSuccess(badgeInfo: BadgeResponse) {
+        binding.badgeLoadingPb.visibility = View.INVISIBLE
+
+//        bindRepresentativeBade(badgeInfo.reqBadgeInfo)    //나중에 서버 올라가면 사용
+        initAdapter(badgeInfo)
+    }
+
+    override fun onChangeRepresentativeBadge(representativeBadge: BadgeInfo) {
+        bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
+        badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
     }
 }
