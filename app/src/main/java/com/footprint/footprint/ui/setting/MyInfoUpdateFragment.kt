@@ -265,12 +265,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             .setArrowOrientation(ArrowOrientation.BOTTOM)
             .setArrowPosition(0.2f)
             .setCornerRadius(40F)
-            .setBackgroundColor(Color.parseColor("#CC4D4D4F"))
-            .setArrowColorMatchBalloon(true)
+            .setBackgroundColorResource(R.color.black_80)
             .setBalloonAnimation(BalloonAnimation.ELASTIC)
             .setAutoDismissDuration(3000)
-            .setDismissWhenClicked(true)
-            .setFocusable(false)
             .build()
 
         //Help 버튼 누르면 => 해당 위치에 뜸
@@ -278,6 +275,11 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         binding.myInfoUpdateWeightHelpIv.setOnClickListener {
             binding.myInfoUpdateWeightHelpIv.showAlignTop(balloon, xOff, -5)
         }
+
+        //말풍선 클릭 시 => 사라짐
+        balloon.setOnBalloonClickListener(OnBalloonClickListener {
+            balloon.dismiss()
+        })
     }
 
     /*정보 수정 API*/

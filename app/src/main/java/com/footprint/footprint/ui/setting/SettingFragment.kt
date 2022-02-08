@@ -40,6 +40,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             binding.settingLockFootprintSb.isChecked = true
             setPwdSettingVisibility()
         }
+
+        //알림 상태
+        binding.settingNotificationSb.isChecked = getNotification(requireContext())
     }
 
     private fun initLoginStatus() {
@@ -143,6 +146,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 }
 
             })
+        }
+
+        //알림 스위치버튼 클릭 리스너
+        binding.settingNotificationSb.setOnClickListener {
+            saveNotification(requireContext(), binding.settingNotificationSb.isChecked)
         }
 
         //산책기록 잠금 스위치버튼 클릭 리스너

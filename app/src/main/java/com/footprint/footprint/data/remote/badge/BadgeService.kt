@@ -9,6 +9,7 @@ import retrofit2.*
 object BadgeService {
     private val badgeService = retrofit.create(BadgeRetrofitInterface::class.java)
 
+
     fun getBadgeInfo(badgeView: BadgeView) {
         badgeView.onBadgeLoading()
 
@@ -67,7 +68,7 @@ object BadgeService {
     }
 
     /*이달의 뱃지 조회 API*/
-    fun getMonthBadge(badgeView: MonthBadgeView){
+    fun getMonthBadge(monthBadgeView: MonthBadgeView){
         badgeService.getMonthBadge().enqueue(object : Callback<MonthBadgeResponse>{
             override fun onResponse(
                 call: Call<MonthBadgeResponse>,
@@ -79,21 +80,21 @@ object BadgeService {
                     1000 ->{
                         //요청 성공
                         val result = body.result
-                        badgeView.onMonthBadgeSuccess(true, result)
+                        monthBadgeView.onMonthBadgeSuccess(true, result)
                         Log.d("MBADGE/API-SUCCESS", body.toString())
                     }
                     3030 -> {
                         //이번 달에 획득한 뱃지가 없습니다. (PRO, LOVER, MASTER)
-                        badgeView.onMonthBadgeSuccess(false, null)
+                        monthBadgeView.onMonthBadgeSuccess(false, null)
                         Log.d("MBADGE/API-SUCCESS", "이번 달에 획득한 뱃지가 없습니다.")
                     }
-                    else -> badgeView.onMonthBadgeFailure(body.code, body.message)
+                    else -> monthBadgeView.onMonthBadgeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<MonthBadgeResponse>, t: Throwable) {
                 Log.d("MBADGE/API-FAILURE", t.message.toString())
-                badgeView.onMonthBadgeFailure(213, t.message.toString())
+                monthBadgeView.onMonthBadgeFailure(213, t.message.toString())
             }
         })
 

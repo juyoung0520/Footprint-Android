@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/agreeFragment">
+
+    <fragment
+        android:id="@+id/agreeFragment"
+        android:name="com.footprint.footprint.ui.agree.AgreeFragment"
+        android:label="agreeFragment">
+
+        <action
+            android:id="@+id/action_agreeFragment_to_agreeUseFragment"
+            app:destination="@id/agreeUseFragment" />
+        <action
+            android:id="@+id/action_agreeFragment_to_agreeLocationFragment"
+            app:destination="@id/agreeLocationFragment" />
+        <action
+            android:id="@+id/action_agreeFragment_to_agreeUserFragment"
+            app:destination="@id/agreeUserFragment" />
+
+    </fragment>
+
+
+    <!--프래그먼트들-->
+    <fragment
+        android:id="@+id/agreeUseFragment"
+        android:name="com.footprint.footprint.ui.agree.AgreeUseFragment"
+        android:label="agreeUseFragment" />
+
+    <fragment
+        android:id="@+id/agreeLocationFragment"
+        android:name="com.footprint.footprint.ui.agree.AgreeLocationFragment"
+        android:label="agreeLocationFragment" />
+
+    <fragment
+        android:id="@+id/agreeUserFragment"
+        android:name="com.footprint.footprint.ui.agree.AgreeUserFragment"
+        android:label="agreeUserFragment" />
+</navigation>

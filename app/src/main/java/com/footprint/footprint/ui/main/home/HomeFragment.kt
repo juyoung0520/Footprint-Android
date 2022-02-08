@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
-import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.google.android.gms.location.*
@@ -29,6 +29,7 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
+import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -73,6 +74,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //설정 버튼 -> 설정 프래그먼트
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
+        }
+
+        binding.homeMonthGoalLayout.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(AgreeActivity::class.java)
         }
     }
 
@@ -151,6 +157,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 //허용 시
+                //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
                 Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
@@ -166,6 +173,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         }
                     }.show()
+                //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
                 Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }

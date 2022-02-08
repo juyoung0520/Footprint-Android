@@ -57,6 +57,24 @@
     <string name="title_onboarding4">산책 일기 확인하기</string>
     <string name="msg_onboarding4">그동안의 산책과 생각들을 추억할 수 있어요</string>
 
+    <!--약관 동의-->
+    <string name="title_agree">약관동의</string>
+    <string name="msg_agree_description">서비스 이용을 위해서 약관 동의가 필요해요</string>
+    <string name="title_agree_use">이용약관 (필수)</string>
+    <string name="title_agree_location">위치서비스 이용약관 (필수)</string>
+    <string name="title_agree_user">개인정보 수집 이용 (필수)</string>
+    <string name="title_agree_notification">앱 푸시 알림 수신 동의 (선택)</string>
+    <string name="title_agree_all">모두 동의합니다</string>
+
+
+    <string name="title_agreement_use">이용약관</string>
+    <string name="title_agreement_location">위치 서비스 이용약관</string>
+    <string name="title_agreement_user">개인정보 처리방침</string>
+    <string name="msg_agreement_use">@string/agreement_use</string>
+    <string name="msg_agreement_location">@string/agreement_location</string>
+    <string name="msg_agreement_user">@string/agreement_user</string>
+
+
     <!--로그인-->
     <string name="title_login">로그인</string>
     <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>

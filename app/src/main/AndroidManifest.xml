@@ -64,7 +64,7 @@
             </intent-filter>
         </activity>
 
-        <!-- onboarding & register -->
+        <!-- onboarding & agree & register  -->
         <activity
             android:name=".ui.onboarding.OnBoardingActivity"
             android:screenOrientation="portrait"
@@ -72,6 +72,11 @@
 
         <activity
             android:name=".ui.register.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.agree.AgreeActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
 

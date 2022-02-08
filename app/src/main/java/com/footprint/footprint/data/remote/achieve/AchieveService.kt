@@ -18,7 +18,6 @@ object AchieveService {
         this.homeView = homeView
     }
 
-
     /*일별 정보 API*/
     fun getToday(homeDayView: HomeDayView){
         achieveService.getToday().enqueue(object : Callback<TodayResponse>{

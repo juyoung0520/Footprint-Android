@@ -25,6 +25,7 @@ import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.badge.MonthBadge
+import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
@@ -196,7 +197,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                     startMainActivity()
                 }
             }
-            "ONGOING" -> startRegisterActivity()
+            "ONGOING" -> startAgreeActivity()
         }
 
     }
@@ -229,6 +230,12 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     //Register Activity
     private fun startRegisterActivity() {
         startNextActivity(RegisterActivity::class.java)
+        finish()
+    }
+
+    //Agree Activity
+    private fun startAgreeActivity() {
+        startNextActivity(AgreeActivity::class.java)
         finish()
     }
 }

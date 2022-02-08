@@ -89,6 +89,7 @@ object UserService {
         })
     }
 
+
     /*유저 정보 업데이트 API*/
     fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
         userService.updateUser(user).enqueue(object : Callback<UserRegisterResponse>{
