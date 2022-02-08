@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.databinding.ItemCalendarDayBinding
 import com.footprint.footprint.ui.main.MainActivity
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -21,6 +23,8 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
         fun onDayClick(oldSelection: LocalDate?, selection: LocalDate)
     }
 
+    private val currentMonthResults = arrayListOf<DayResult>()
+    private val currentMonthDates = arrayListOf<Int>()
     private lateinit var mOnDayClickListener: OnDayClickListener
 
     // inner class 안에 있으면 안된다.
@@ -29,6 +33,17 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
 
     fun setOnDayClickListener(listener: OnDayClickListener) {
         mOnDayClickListener = listener
+    }
+
+    fun setCurrentMonthResults(dayResults: List<DayResult>) {
+        currentMonthResults.clear()
+        currentMonthResults.addAll(dayResults)
+
+        // 날짜만 담기
+        currentMonthDates.clear()
+        currentMonthResults.map {
+            currentMonthDates.add(it.day)
+        }
     }
 
     fun setSelectedDate(localDate: LocalDate) {
@@ -101,7 +116,15 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
                 binding.calendarDayBgV.background = null
             }
 
-            setIndicator(day.date.dayOfMonth % 3 + 1)
+            if(currentMonthDates.contains(day.date.dayOfMonth)) {
+                val idx = currentMonthDates.indexOf(day.date.dayOfMonth)
+                when (currentMonthResults[idx].walkCount) {
+                    1 -> setIndicator(1)
+                    2 -> setIndicator(2)
+                    3 -> setIndicator(3)
+                    else -> setIndicator(3)
+                }
+            }
 
             binding.root.setOnClickListener {
                 if (day.owner == DayOwner.THIS_MONTH) {

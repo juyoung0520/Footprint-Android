@@ -14,7 +14,10 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.R
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
+import com.footprint.footprint.ui.walk.WalkMapFragmentDirections
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.*

@@ -52,7 +52,7 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
 
             binding.searchSearchBarEt.setText("")
 
-            actionToSearchResultFragment(result)
+            actionToSearchResultFragment("#$result")
         }
 
         (activity as MainActivity).hideKeyboard(binding.searchSearchBarEt)

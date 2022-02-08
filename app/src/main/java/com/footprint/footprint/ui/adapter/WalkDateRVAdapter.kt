@@ -1,17 +1,17 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.data.model.WalkDateModel
-import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.walk.WalkDateResult
 import com.footprint.footprint.databinding.ItemWalkDateBinding
 
-class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
-    private val walkDates = arrayListOf<WalkDateModel>()
+class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
+    private val walkDates = arrayListOf<WalkDateResult>()
+    private lateinit var currentTag: String
 
     private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
 
@@ -23,11 +23,15 @@ class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHol
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalkDates(walkDates: ArrayList<WalkDateModel>) {
+    fun setWalkDates(walkDates: List<WalkDateResult>) {
         this.walkDates.clear()
         this.walkDates.addAll(walkDates)
 
         notifyDataSetChanged()
+    }
+
+    fun setCurrentTag(tag: String) {
+        currentTag = tag
     }
 
     fun setWalkClickListener(listener: WalkRVAdapter.OnItemClickListener) {
@@ -42,6 +46,7 @@ class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHol
         this.fragmentManager = fragmentManager
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeWalkDate(position: Int) {
         if (walkDates.isEmpty() || position !in 0..walkDates.size) {
             return
@@ -71,8 +76,9 @@ class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHol
         fun bind(position: Int) {
             binding.walkDateDateTv.text = walkDates[position].walkAt
 
-            val adapter = WalkRVAdapter()
+            val adapter = WalkRVAdapter(context)
             adapter.setWalks(walkDates[position].walks)
+            adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)
             adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {

@@ -1,25 +1,32 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.data.model.WalkModel
+import com.bumptech.glide.Glide
+import com.footprint.footprint.data.remote.walk.DayWalkResult
+import com.footprint.footprint.data.remote.walk.UserDateWalk
 import com.footprint.footprint.databinding.ItemWalkBinding
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import com.footprint.footprint.R
 
-class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
-    private val walks = arrayListOf<WalkModel>()
+class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
+    private val walks = arrayListOf<DayWalkResult>()
+    private var currentTag: String ?= null
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
     private lateinit var fragmentManager: FragmentManager
 
-
     interface OnItemClickListener {
-        fun onItemClick(walk: WalkModel)
+        fun onItemClick(walk: UserDateWalk)
     }
 
     interface OnItemRemoveClickListener {
@@ -27,11 +34,15 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalks(walks: ArrayList<WalkModel>) {
+    fun setWalks(walks: List<DayWalkResult>) {
         this.walks.clear()
         this.walks.addAll(walks)
 
         notifyDataSetChanged()
+    }
+
+    fun setCurrentTag(tag: String) {
+        currentTag = tag
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -46,6 +57,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         this.fragmentManager = fragmentManager
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeWalk(position: Int) {
         if (walks.isEmpty() || position !in 0..walks.size) {
             return
@@ -61,6 +73,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) {
+                    // remove API
                     removeWalk(position)
                     mOnItemRemoveClickListener.onItemRemoveClick()
                 }
@@ -71,7 +84,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         })
 
         val bundle = Bundle()
-        bundle.putString("msg", "'OO번째 산책' 을 삭제하시겠어요?")
+        bundle.putString("msg", "'${walks[position].walk.walkIdx}번째 산책' 을 삭제하시겠어요?")
 
         actionDialogFragment.arguments = bundle
         actionDialogFragment.show(fragmentManager, null)
@@ -92,16 +105,43 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
 
     inner class WalkViewHolder(val binding: ItemWalkBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(position: Int) {
-            binding.walkNthRecordTv.text = walks[position].walkIdx.toString()
+            val walk = walks[position].walk
+            binding.walkNthRecordTv.text = walk.walkIdx.toString()
 
             binding.root.setOnClickListener {
-                mOnItemClickListener.onItemClick(walks[position])
+                mOnItemClickListener.onItemClick(walk)
             }
 
             binding.walkRemoveTv.setOnClickListener {
                 showRemoveDialog(position)
             }
+
+            binding.walkTimeTv.text = String.format("%s~%s", walk.startTime, walk.endTime)
+
+            Glide.with(context).load(walk.pathImageUrl).into(binding.walkPathIv)
+
+            val hashtag = walks[position].hashtag
+            for (idx in hashtag.indices) {
+                when(idx) {
+                    1 -> initTag(binding.walkTag1Tv, hashtag[idx])
+                    2 -> initTag(binding.walkTag2Tv, hashtag[idx])
+                    3 -> initTag(binding.walkTag3Tv, hashtag[idx])
+                    4 -> initTag(binding.walkTag4Tv, hashtag[idx])
+                    5 -> initTag(binding.walkTag5Tv, hashtag[idx])
+                }
+            }
+        }
+
+        private fun initTag(textView: TextView, tag: String) {
+            if (currentTag != null && currentTag == tag) {
+                textView.background = getDrawable(context, R.color.primary_55)
+            }
+
+            textView.visibility = View.VISIBLE
+            textView.text = tag
         }
     }
 }
+
