@@ -3,7 +3,7 @@ package com.footprint.footprint.ui.main.home
 import android.graphics.Color
 import android.util.Log
 import android.view.View
-import com.footprint.footprint.data.remote.acheive.Today
+import com.footprint.footprint.data.remote.achieve.Today
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
 

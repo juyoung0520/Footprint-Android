@@ -57,7 +57,7 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
 
     private fun bind() {
         //현재 년도, 월 구해서 화면에 보여주기
-        val monthList = goal.month.split(" ")
+        val monthList = goal.month!!.split(" ")
         binding.goalNextMonthUpdateYearTv.text = monthList[0]
         binding.goalNextMonthUpdateMonthTv.text = " ${monthList[1]}"
 

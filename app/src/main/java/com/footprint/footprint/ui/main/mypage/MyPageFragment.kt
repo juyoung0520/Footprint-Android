@@ -5,84 +5,101 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.classes.custom.CustomBarChartRender
+import com.footprint.footprint.data.remote.achieve.*
+import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.getJwt
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.BarLineChartBase
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet
-import com.github.mikephil.charting.interfaces.datasets.IDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.*
 import kotlin.collections.ArrayList
 
-class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate) {
+class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate), MyPageView {
+    private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        setBinding()
+        UserService.getUser(this)
+        AchieveService.getInfoDetail(this)
 
-        setBarCharts()
-        setLineChart()
-    }
-
-    private fun setBinding() {
-        binding.mypageTodayPb.progress = 80
-        binding.mypageMonthPb.progress = 80
-
-        val spanColorPrimary =
-            ForegroundColorSpan(requireContext().getColor(R.color.primary))
-        val spanColorSecondary =
-            ForegroundColorSpan(requireContext().getColor(R.color.secondary))
-
-        val week = "3"
-        binding.mypageGoalWeekTv.text =
-            getSpannableString(binding.mypageGoalWeekTv.text, week, 2, spanColorPrimary)
-
-        val minute = "20"
-        binding.mypageGoalDayTv.text =
-            getSpannableString(binding.mypageGoalDayTv.text, minute, 3, spanColorPrimary)
-
-        val res1 = "월요일"
-        binding.mypageStatisticsWeekResultTv.text = getSpannableString(
-            binding.mypageStatisticsWeekResultTv.text, res1, 3, spanColorSecondary
-        )
-
-        val res2 = "20"
-        binding.mypageStatisticsMonthCountResultTv.text = getSpannableString(
-            binding.mypageStatisticsMonthCountResultTv.text,
-            res2,
-            5,
-            spanColorSecondary
-        )
-
-        val res3 = "56"
-        binding.mypageStatisticsMonthRateResultTv.text = getSpannableString(
-            binding.mypageStatisticsMonthRateResultTv.text,
-            res3,
-            5,
-            spanColorSecondary
-        )
-
-        binding.mypageInfoRightIv.setOnClickListener {
+        binding.mypageGoalRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
 
         binding.mypageSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_navigation)
         }
+    }
 
+    private fun setBinding(result: AchieveDetailResult) {
+        // 사용자 달성률
+        val userInfoAchieve = result.userInfoAchieve
+        binding.mypageTodayPb.progress = userInfoAchieve.todayGoalRate
+        binding.mypageTodayProgressTv.text = "${userInfoAchieve.todayGoalRate}%"
+        binding.mypageMonthPb.progress = userInfoAchieve.monthGoalRate
+        binding.mypageMonthProgressTv.text = "${userInfoAchieve.monthGoalRate}%"
+        binding.mypageCountNumberTv.text = userInfoAchieve.userWalkCount.toString()
+
+        // 글자 색상
+        val spanColorPrimary =
+            ForegroundColorSpan(requireContext().getColor(R.color.primary))
+        val spanColorSecondary =
+            ForegroundColorSpan(requireContext().getColor(R.color.secondary))
+
+        // 이번달 목표
+        val userGoalRes = result.getUserGoalRes
         binding.mypageGoalRightIv.setOnClickListener {
-            findNavController().navigate(R.id.action_mypageFragment_to_goalThisMonthFragment)
+            val action = MyPageFragmentDirections.actionMypageFragmentToGoalThisMonthFragment(userGoalRes)
+            findNavController().navigate(action)
         }
+        binding.mypageGoalWeekTv.text =
+            getSpannableString(binding.mypageGoalWeekTv.text, userGoalRes.dayIdx.size.toString(), 2, spanColorPrimary)
+        binding.mypageGoalDayTv.text =
+            getSpannableString(binding.mypageGoalDayTv.text, userGoalRes.userGoalTime.walkGoalTime!!.toString(), 3, spanColorPrimary)
+        binding.mypageGoalTimeTv.text = convertToWalkTimeSlotToStr(userGoalRes.userGoalTime.walkTimeSlot!!)
+
+        // 통계
+        val userInfoStat = result.userInfoStat
+        val mostWalkDay = getMostWalkDay(userInfoStat.mostWalkDay)
+        if (mostWalkDay == getString(R.string.mst_no_walk_during_3_months)) {
+            binding.mypageStatisticsWeekResultTv.text = mostWalkDay
+        } else {
+            binding.mypageStatisticsWeekResultTv.text = getSpannableString(
+                binding.mypageStatisticsWeekResultTv.text, getMostWalkDay(userInfoStat.mostWalkDay), 3, spanColorSecondary
+            )
+        }
+        binding.mypageStatisticsMonthCountResultTv.text = getSpannableString(
+            binding.mypageStatisticsMonthCountResultTv.text,
+            userInfoStat.thisMonthWalkCount.toString(),
+            5,
+            spanColorSecondary
+        )
+        binding.mypageStatisticsMonthRateResultTv.text = getSpannableString(
+            binding.mypageStatisticsMonthRateResultTv.text,
+            userInfoStat.thisMonthGoalRate.toString(),
+            5,
+            spanColorSecondary
+        )
+
+        // 그래프 적용
+        setBarCharts(userInfoStat)
+        setLineChart(userInfoStat.monthlyWalkCount)
     }
 
     // 글자색 바꾸는 함수
@@ -116,7 +133,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         return spannableText
     }
 
-    private fun setBarCharts() {
+    private fun setBarCharts(userStatRes: InfoStatResult) {
         // week 그래프 설정
         initCharts(binding.mypageStatisticsWeekChartBc)
 
@@ -127,7 +144,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             }
         }
         // week 그래프 데이터 설정
-        setWeekChartData()
+        setWeekChartData(userStatRes.userWeekDayRate)
 
         // 월별 달성률 그래프 설정
         initCharts(binding.mypageStatisticsMonthRateChartBc)
@@ -140,7 +157,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         //월별 달성률 그래프 데이터 설정
-        setMonthRateChartData()
+        setMonthRateChartData(userStatRes.monthlyGoalRate)
     }
 
     private fun initCharts(chart: BarChart) {
@@ -192,7 +209,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun setLineChart() {
+    private fun setLineChart(monthCount: List<Int>) {
         val colorGray = requireContext().getColor(R.color.white_caption)
 
         binding.mypageStatisticsMonthCountChartLc.apply {
@@ -206,6 +223,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             setPadding(25, 10, 25, 10)
             extraBottomOffset = 15f
             axisLeft.apply {
+                axisMaximum = 50f
                 axisMinimum = 0f
                 granularity = 10f
                 setLabelCount(6, false)
@@ -235,21 +253,20 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         // 월별 기록 횟수 데이터 설정
-        setMonthCountChartData()
+        setMonthCountChartData(monthCount)
     }
 
-    private fun setWeekChartData() {
+    private fun setWeekChartData(weekRate: List<Double>) {
         // 값
-        val weekRate = arrayListOf(0f, 40f, 50f, 100f, 50f, 20f, 10f)
-        val maxIdx = weekRate.indexOf(weekRate.maxOrNull())
+        val maxValue = weekRate.maxOrNull()
 
         // 그래프에 엔트리 넣고, 색깔 리스트 설정
         val entries = arrayListOf<BarEntry>()
         val colors = arrayListOf<Int>()
 
-        for (idx in 0 until weekRate.size) {
-            entries.add(BarEntry((idx + 1).toFloat(), weekRate[idx]))
-            if (maxIdx == idx) {
+        for (idx in weekRate.indices) {
+            entries.add(BarEntry((idx + 1).toFloat(), weekRate[idx].toFloat()))
+            if (maxValue == weekRate[idx]) {
                 colors.add(requireContext().getColor(R.color.secondary))
             } else {
                 colors.add(requireContext().getColor(R.color.primary))
@@ -272,16 +289,13 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun setMonthCountChartData() {
-        // 값
-        val monthCount = arrayListOf(20f, 40f, 40f, 100f, 50f, 20f, 0f)
-
+    private fun setMonthCountChartData(monthCount: List<Int>) {
         // 그래프에 엔트리 넣고, 색깔 리스트 설정
         val entries = arrayListOf<Entry>()
         val colors = arrayListOf<Int>()
 
-        for (idx in 0 until monthCount.size) {
-            entries.add(Entry((idx + 1).toFloat(), monthCount[idx]))
+        for (idx in monthCount.indices) {
+            entries.add(Entry((idx + 1).toFloat(), monthCount[idx].toFloat()))
             if (monthCount.size - 1 == idx) {
                 colors.add(requireContext().getColor(R.color.secondary))
             } else {
@@ -307,16 +321,13 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun setMonthRateChartData() {
-        // 값
-        val monthRate = arrayListOf(20f, 40f, 40f, 80f, 50f, 20f, 10f)
-
+    private fun setMonthRateChartData(monthRate: List<Int>) {
         // 그래프에 엔트리 넣고, 색깔 리스트 설정
         val entries = arrayListOf<BarEntry>()
         val colors = arrayListOf<Int>()
 
-        for (idx in 0 until monthRate.size) {
-            entries.add(BarEntry((idx + 1).toFloat(), monthRate[idx]))
+        for (idx in monthRate.indices) {
+            entries.add(BarEntry((idx + 1).toFloat(), monthRate[idx].toFloat()))
             if (idx == 0) {
                 colors.add(requireContext().getColor(R.color.primary_dark))
             } else if (idx == monthRate.size - 1) {
@@ -360,9 +371,69 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         return months
     }
 
+    private fun convertToWalkTimeSlotToStr(slot: Int): String {
+        return when(slot) {
+            1 -> "이른 오전"
+            2 -> "늦은 오전"
+            3 -> "이른 오후"
+            4 -> "늦은 오후"
+            5 -> "밤"
+            6 -> "새벽"
+            else -> ""
+        }
+    }
+
+    private fun getMostWalkDay(list: List<String>): String {
+        return list[0]
+    }
+
     inner class XAxisFormatter(private val labels: ArrayList<String>) : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             return labels.getOrNull(value.toInt() - 1) ?: value.toString()
+        }
+    }
+
+    override fun onMyPageLoading() {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.VISIBLE
+            })
+        }
+    }
+
+    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.GONE
+
+                setBinding(achieveDetailResult)
+            })
+        }
+    }
+
+    override fun onUserSuccess(user: User) {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageNickNameTv.text = user.nickname
+
+                Glide.with(requireContext()).load(user.badgeUrl).into(binding.mypageRepBadgeIv)
+            })
+        }
+    }
+
+    override fun onMyPageFailure(code: Int, message: String) {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.GONE
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        jobs.map {
+            it.cancel()
         }
     }
 }

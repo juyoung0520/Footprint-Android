@@ -18,9 +18,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.badge.MonthBadge
-import com.footprint.footprint.data.remote.acheive.TMonth
-import com.footprint.footprint.data.remote.acheive.Today
-import com.footprint.footprint.data.remote.acheive.AcheiveService
+import com.footprint.footprint.data.remote.achieve.TMonth
+import com.footprint.footprint.data.remote.achieve.Today
+import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.google.android.gms.location.*
@@ -77,7 +77,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AcheiveService.setHomeView(this)
+        AchieveService.setHomeView(this)
 
         //유저 닉네임, 날씨 -> 한번만 호출
         /*init: 1. 유저*/
@@ -92,9 +92,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         super.onStart()
         //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
         /*init: 1. 일별*/
-        AcheiveService.getToday(this)
+        AchieveService.getToday(this)
         /*init: 2. 월별*/
-        AcheiveService.getTMonth(this)
+        AchieveService.getTMonth(this)
     }
 
     /*Function*/

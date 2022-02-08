@@ -40,7 +40,7 @@ class GoalNextMonthFragment :
 
     private fun bind() {
         //다음달 년도, 월 구해서 화면에 보여주기
-        val monthList = goal.month.split(" ")
+        val monthList = goal.month!!.split(" ")
         binding.goalNextMonthYearTv.text = monthList[0]
         binding.goalNextMonthMonthTv.text = " ${monthList[1]}"
 

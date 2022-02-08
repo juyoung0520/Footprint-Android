@@ -200,6 +200,7 @@
     <string name="title_statistics">통계</string>
     <string name="msg_last_three_month">*이전 3달 기준</string>
     <string name="msg_statistics_week_res">주로 에 산책을 가장 많이 나가요</string>
+    <string name="mst_no_walk_during_3_months">최근 3개월간 산책을 하지 않았어요</string>
     <string name="msg_statistics_month_count_res">이번달엔 회 기록했어요</string>
     <string name="msg_statistics_month_rate_res">이번달엔 %달성했어요</string>
     <string name="msg_percent_unit">(%)</string>

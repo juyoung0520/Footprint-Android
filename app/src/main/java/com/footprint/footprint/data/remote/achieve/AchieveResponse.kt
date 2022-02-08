@@ -1,4 +1,4 @@
-package com.footprint.footprint.data.remote.acheive
+package com.footprint.footprint.data.remote.achieve
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
