@@ -4,6 +4,8 @@ import android.util.Log
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.ui.walk.WalkAfterView
 import com.footprint.footprint.ui.walk.WalkDetailView
+import com.footprint.footprint.ui.main.calendar.CalendarView
+import com.footprint.footprint.ui.main.calendar.SearchResultView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import okhttp3.MultipartBody

@@ -1,7 +1,6 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
@@ -41,7 +40,7 @@ class WalkDetailActivity :
         FootprintService.getFootprints(this, args.walkIdx)  //산책별 발자국 리스트 조회 API 요청
         WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청청
 
-       setMyClickListener()
+        setMyClickListener()
         setActionDialog()
         initFootprintDialog()
     }

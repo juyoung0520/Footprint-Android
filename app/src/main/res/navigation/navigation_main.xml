@@ -115,6 +115,9 @@
         <argument
             android:name="tag"
             app:argType="string" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_walkDetailActivity"
+            app:destination="@id/walkDetailActivity" />
     </fragment>
     <fragment
         android:id="@+id/goalThisMonthFragment"
