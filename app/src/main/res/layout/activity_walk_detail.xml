@@ -310,6 +310,17 @@
             app:layout_constraintTop_toBottomOf="@+id/walk_detail_time_desc_tv"
             tools:listitem="@layout/item_footprint" />
 
+        <ProgressBar
+            android:id="@+id/walk_detail_loading_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
