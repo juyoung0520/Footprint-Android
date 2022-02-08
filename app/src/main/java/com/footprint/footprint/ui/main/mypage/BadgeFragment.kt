@@ -68,7 +68,10 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) { //사용자가 설정을 누르면 -> 대표빗지 변경 요청 API 실행
-                    BadgeService.changeRepresentativeBadge(this@BadgeFragment, representativeBadgeIdx!!)
+                    BadgeService.changeRepresentativeBadge(
+                        this@BadgeFragment,
+                        representativeBadgeIdx!!
+                    )
                 }
             }
 
@@ -86,22 +89,28 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     }
 
     override fun onBadgeLoading() {
-        binding.badgeLoadingPb.visibility = View.VISIBLE
+        if (view != null)
+            binding.badgeLoadingPb.visibility = View.VISIBLE
     }
 
     override fun onBadgeFail(code: Int, message: String) {
-        binding.badgeLoadingPb.visibility = View.INVISIBLE
+        if (view != null)
+            binding.badgeLoadingPb.visibility = View.INVISIBLE
     }
 
     override fun onGetBadgeSuccess(badgeInfo: BadgeResponse) {
-        binding.badgeLoadingPb.visibility = View.INVISIBLE
+        if (view != null) {
+            binding.badgeLoadingPb.visibility = View.INVISIBLE
 
-        bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
-        initAdapter(badgeInfo)
+            bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
+            initAdapter(badgeInfo)
+        }
     }
 
     override fun onChangeRepresentativeBadge(representativeBadge: BadgeInfo) {
-        bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
-        badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
+        if (view != null) {
+            bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
+            badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
+        }
     }
 }
