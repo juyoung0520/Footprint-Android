@@ -80,11 +80,11 @@ object AchieveService {
                 call: Call<AchieveDetailResponse>,
                 response: Response<AchieveDetailResponse>
             ) {
-                val response = response.body()!!
+                val resp = response.body()!!
 
-                when(response.code) {
-                    1000 -> myPageView.onMyPageSuccess(response.result)
-                    else -> myPageView.onMyPageFailure(response.code, response.message)
+                when(resp.code) {
+                    1000 -> myPageView.onMyPageSuccess(resp.result)
+                    else -> myPageView.onMyPageFailure(resp.code, resp.message)
                 }
             }
 

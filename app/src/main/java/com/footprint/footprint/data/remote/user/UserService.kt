@@ -4,6 +4,7 @@ import android.util.Log
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.ui.main.home.HomeView
+import com.footprint.footprint.ui.main.mypage.MyPageView
 import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.ui.setting.MyInfoUpdateView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
@@ -60,6 +61,29 @@ object UserService {
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 view.onUserFailure(213, t.message.toString())
+                Log.d("USER/API-FAILURE", t.message.toString())
+            }
+        })
+    }
+
+    /*유저 정보 API 마이페이지*/
+    fun getUser(view: MyPageView){
+        userService.getUser().enqueue(object : Callback<UserResponse>{
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                val body = response.body()
+
+                Log.d("USER/API-SUCCESS", body.toString())
+                when(body!!.code){
+                    1000 ->{
+                        val result = body.result
+                        view.onUserSuccess(result!!)
+                    }
+                    else -> view.onMyPageFailure(body.code, body.message)
+                }
+            }
+
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                view.onMyPageFailure(213, t.message.toString())
                 Log.d("USER/API-FAILURE", t.message.toString())
             }
         })

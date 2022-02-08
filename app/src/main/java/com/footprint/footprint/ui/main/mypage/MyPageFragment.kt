@@ -7,12 +7,16 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.remote.achieve.*
+import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.getJwt
 import com.github.mikephil.charting.charts.BarChart
@@ -22,12 +26,16 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate), MyPageView {
+    private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
+        UserService.getUser(this)
         AchieveService.getInfoDetail(this)
 
         binding.mypageGoalRightIv.setOnClickListener {
@@ -386,17 +394,46 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     override fun onMyPageLoading() {
-        binding.mypageLoadingPb.visibility = View.VISIBLE
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.VISIBLE
+            })
+        }
     }
 
-    override fun onMyPageSuccess(result: AchieveDetailResult) {
-        binding.mypageLoadingPb.visibility = View.GONE
+    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.GONE
 
-        setBinding(result)
+                setBinding(achieveDetailResult)
+            })
+        }
+    }
+
+    override fun onUserSuccess(user: User) {
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageNickNameTv.text = user.nickname
+
+                Glide.with(requireContext()).load(user.badgeUrl).into(binding.mypageRepBadgeIv)
+            })
+        }
     }
 
     override fun onMyPageFailure(code: Int, message: String) {
-        binding.mypageLoadingPb.visibility = View.GONE
-        Log.d("$TAG/MYPAGE/RESPONSE-FAIL", "$code/$message")
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                binding.mypageLoadingPb.visibility = View.GONE
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        jobs.map {
+            it.cancel()
+        }
     }
 }
