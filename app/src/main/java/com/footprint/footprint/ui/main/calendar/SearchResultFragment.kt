@@ -31,7 +31,7 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
         setBinding()
 
         // Tag API
-        WalkService.getTagWalkDates(this, currentTag)
+        WalkService.getTagWalkDates(this, currentTag.drop(1))
     }
 
     private fun setBinding() {
