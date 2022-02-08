@@ -23,7 +23,6 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
-import com.footprint.footprint.data.remote.badge.Badge
 import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.ui.register.RegisterActivity
@@ -31,7 +30,7 @@ import com.footprint.footprint.utils.*
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
-    SignInView, BadgeView {
+    SignInView, MonthBadgeView {
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var socialUserModel: SocialUserModel

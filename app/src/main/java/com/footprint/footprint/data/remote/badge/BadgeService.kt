@@ -1,15 +1,13 @@
 package com.footprint.footprint.data.remote.badge
 
 import android.util.Log
-import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.main.mypage.BadgeView
-import com.footprint.footprint.utils.GlobalApplication
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.footprint.footprint.ui.signin.MonthBadgeView
+import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import retrofit2.*
 
 object BadgeService {
-    private val badgeService = GlobalApplication.retrofit.create(BadgeRetrofitInterface::class.java)
+    private val badgeService = retrofit.create(BadgeRetrofitInterface::class.java)
 
     fun getBadgeInfo(badgeView: BadgeView) {
         badgeView.onBadgeLoading()
@@ -69,8 +67,8 @@ object BadgeService {
     }
 
     /*이달의 뱃지 조회 API*/
-    fun getMonthBadge(homeView: HomeView) {
-        badgeService.getMonthBadge().enqueue(object : Callback<MonthBadgeResponse> {
+    fun getMonthBadge(badgeView: MonthBadgeView){
+        badgeService.getMonthBadge().enqueue(object : Callback<MonthBadgeResponse>{
             override fun onResponse(
                 call: Call<MonthBadgeResponse>,
                 response: Response<MonthBadgeResponse>
@@ -81,20 +79,21 @@ object BadgeService {
                     1000 ->{
                         //요청 성공
                         val result = body.result
-                        homeView.onMonthBadgeSuccess(result!!)
+                        badgeView.onMonthBadgeSuccess(true, result)
                         Log.d("MBADGE/API-SUCCESS", body.toString())
                     }
                     3030 -> {
                         //이번 달에 획득한 뱃지가 없습니다. (PRO, LOVER, MASTER)
+                        badgeView.onMonthBadgeSuccess(false, null)
                         Log.d("MBADGE/API-SUCCESS", "이번 달에 획득한 뱃지가 없습니다.")
                     }
-                    else -> homeView.onMonthBadgeFailure(body.code, body.message)
+                    else -> badgeView.onMonthBadgeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<MonthBadgeResponse>, t: Throwable) {
                 Log.d("MBADGE/API-FAILURE", t.message.toString())
-                homeView.onMonthBadgeFailure(213, t.message.toString())
+                badgeView.onMonthBadgeFailure(213, t.message.toString())
             }
         })
 
