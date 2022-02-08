@@ -16,7 +16,6 @@ import com.footprint.footprint.utils.DialogFragmentUtils
 class ActionDialogFragment() : DialogFragment() {
     private lateinit var binding: FragmentActionDialogBinding
     private lateinit var myDialogCallback: MyDialogCallback
-
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
     private lateinit var action: String
     private lateinit var desc: String
@@ -93,20 +92,20 @@ class ActionDialogFragment() : DialogFragment() {
     private fun setMyClickListener() {
         //취소 텍스트뷰 클릭 리스너
         binding.walkDialogCancelTv.setOnClickListener {
-            when (msg) {
-                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(false)
-                else -> myDialogCallback.action1(false)
-            }
+            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'\\d\\d번째 산책'을 저장할까요?".toRegex()))
+                myDialogCallback.action2(false)
+            else
+                myDialogCallback.action1(false)
 
             dismiss()
         }
 
         //액션 텍스트뷰(중지, 저장, 삭제 등) 클릭 리스너
         binding.walkDialogActionTv.setOnClickListener {
-            when (msg) {
-                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(true)
-                else -> myDialogCallback.action1(true)
-            }
+            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'([0-9]+)번째 산책'을 저장할까요\\?".toRegex()))
+                myDialogCallback.action2(true)
+            else
+                myDialogCallback.action1(true)
 
             dismiss()
         }
