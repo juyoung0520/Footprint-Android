@@ -97,7 +97,6 @@
         android:layout_height="0dp"
         android:layout_marginTop="23dp"
         android:layout_marginBottom="13dp"
-        android:src="@drawable/ic_badge_202201_pro"
         app:layout_constraintBottom_toTopOf="@+id/badge_representative_badge_name_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,5 +127,16 @@
         app:spanCount="3"
         tools:itemCount="19"
         tools:listitem="@layout/item_badge" />
+
+    <ProgressBar
+        android:id="@+id/badge_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        app:layout_constraintTop_toTopOf="@+id/badge_badge_rv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/badge_badge_rv"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

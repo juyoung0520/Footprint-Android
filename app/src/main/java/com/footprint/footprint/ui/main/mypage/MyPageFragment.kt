@@ -72,7 +72,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             spanColorSecondary
         )
 
-        binding.mypageGoalRightIv.setOnClickListener {
+        binding.mypageInfoRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
 
