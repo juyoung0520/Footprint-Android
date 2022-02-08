@@ -1,10 +1,10 @@
-package com.footprint.footprint.data.remote.user
+package com.footprint.footprint.data.remote.achieve
 
 import com.footprint.footprint.data.model.GoalModel
 import com.google.gson.annotations.SerializedName
 
 // 나중에 user -> infos 안으로
-data class InfoDetailResult(
+data class AchieveDetailResult(
     @SerializedName("userInfoAchieve")val userInfoAchieve: InfoAchieveResult,
     @SerializedName("getUserGoalRes")val getUserGoalRes: GoalModel,
     @SerializedName("userInfoStat")val userInfoStat: InfoStatResult,
@@ -25,9 +25,9 @@ data class InfoStatResult(
     @SerializedName("monthlyGoalRate")val monthlyGoalRate: List<Int>,
 )
 
-data class InfoDetailResponse(
+data class AchieveDetailResponse(
     @SerializedName("isSuccess")val isSuccess: Boolean,
     @SerializedName("code")val code: Int,
     @SerializedName("message")val message: String,
-    @SerializedName("result")val result: InfoDetailResult
+    @SerializedName("result")val result: AchieveDetailResult
 )

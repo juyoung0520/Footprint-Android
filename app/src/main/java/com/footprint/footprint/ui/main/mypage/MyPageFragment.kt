@@ -12,9 +12,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.classes.custom.CustomBarChartRender
-import com.footprint.footprint.data.remote.infos.InfoService
-import com.footprint.footprint.data.remote.user.InfoDetailResult
-import com.footprint.footprint.data.remote.user.InfoStatResult
+import com.footprint.footprint.data.remote.achieve.*
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.getJwt
 import com.github.mikephil.charting.charts.BarChart
@@ -30,7 +28,7 @@ import kotlin.collections.ArrayList
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate), MyPageView {
 
     override fun initAfterBinding() {
-        InfoService.getInfoDetail(this)
+        AchieveService.getInfoDetail(this)
 
         binding.mypageGoalRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
@@ -41,7 +39,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun setBinding(result: InfoDetailResult) {
+    private fun setBinding(result: AchieveDetailResult) {
         // 사용자 달성률
         val userInfoAchieve = result.userInfoAchieve
         binding.mypageTodayPb.progress = userInfoAchieve.todayGoalRate
@@ -391,7 +389,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageLoadingPb.visibility = View.VISIBLE
     }
 
-    override fun onMyPageSuccess(result: InfoDetailResult) {
+    override fun onMyPageSuccess(result: AchieveDetailResult) {
         binding.mypageLoadingPb.visibility = View.GONE
 
         setBinding(result)
