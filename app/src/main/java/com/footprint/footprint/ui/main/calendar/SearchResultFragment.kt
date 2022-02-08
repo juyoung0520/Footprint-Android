@@ -76,6 +76,13 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
             }
         })
 
+        adapter.setWalkClickListener(object : WalkRVAdapter.OnItemClickListener {
+            override fun onItemClick(walk: UserDateWalk) {
+                val action = SearchResultFragmentDirections.actionSearchResultFragmentToWalkDetailActivity(walk.walkIdx)
+                findNavController().navigate(action)
+            }
+        })
+
         binding.searchResultWalkDatesRv.adapter = adapter
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_post_dialog"
+    android:background="@drawable/bg_write_footprint_dialog"
     android:paddingTop="9dp"
     android:paddingBottom="24dp"
     tools:context=".ui.dialog.FootprintDialogFragment">
@@ -102,6 +102,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="start"
                 android:hint="@string/msg_input_tag"
+                android:lineSpacingExtra="4dp"
                 android:paddingBottom="95dp"
                 android:textAppearance="@style/tv_caption_14"
                 android:textColor="@color/black"

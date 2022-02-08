@@ -17,7 +17,7 @@ import com.footprint.footprint.utils.DialogFragmentUtils
 class MsgDialogFragment : DialogFragment() {
     private lateinit var binding: FragmentMsgDialogBinding
 
-    private val args: MsgDialogFragmentArgs by navArgs()
+    private var msg: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +28,9 @@ class MsgDialogFragment : DialogFragment() {
         //다이얼로그 프래그먼트 모서리 둥글게
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+
+        initUI()
+        setMyClickListener()
 
         return binding.root
     }
@@ -41,14 +44,17 @@ class MsgDialogFragment : DialogFragment() {
             0.9f,
             0.19f
         )
-
-        initUI()
-        setMyClickListener()
     }
 
     private fun initUI() {
-        if (args.msg != null)
-            binding.msgDialogMsgTv.text = args.msg
+        msg = arguments?.getString("msg", "")!!
+
+        if (msg.isBlank()) {
+            val args: MsgDialogFragmentArgs by navArgs()
+            msg = args.msg
+        }
+
+        binding.msgDialogMsgTv.text = msg
     }
 
     private fun setMyClickListener() {
@@ -56,7 +62,7 @@ class MsgDialogFragment : DialogFragment() {
             dismiss()
 
             //GoalNextMonthUpdateFragment(다음달 목표 수정 화면) -> GoalNextMonthFragment(다음달 목표 화면)로 이동
-            if (args.msg==getString(R.string.msg_success_update_goal))
+            if (msg==getString(R.string.msg_success_update_goal))
                 findNavController().navigate(R.id.action_msgDialogFragment2_to_goalNextMonthFragment)
         }
     }

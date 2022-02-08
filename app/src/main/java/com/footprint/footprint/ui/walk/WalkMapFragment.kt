@@ -18,17 +18,23 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.model.FootprintsModel
+import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
 import com.footprint.footprint.service.WalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.dialog.FootprintDialogFragment
+import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBinding::inflate),
@@ -36,6 +42,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private lateinit var map: NaverMap
     private lateinit var locationOverlay: LocationOverlay
     private lateinit var currentPathOverlay: PathOverlay
+    private lateinit var footprintDialogFragment: FootprintDialogFragment
 
     private var isWalking: Boolean = false
     private var paths = mutableListOf<Path>()
@@ -45,10 +52,16 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private lateinit var spannable: SpannableString
 
-    private val footprints: FootprintsModel = FootprintsModel() //지금까지 사용자가 기록한 총 데이터
+    private val footprints: ArrayList<FootprintModel> = arrayListOf() //지금까지 사용자가 기록한 총 데이터
+    private val walkModel: WalkModel = WalkModel()  //산책 데이터
 
     override fun initAfterBinding() {
+        walkModel.walkTitle = "00번째 산책" //00번째 산책
+        //산책 시작 시간 데이터 저장
+        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
+        walkModel.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
+        initFootprintDialog()   //FootprintDialogFragment 초기화
     }
 
     override fun onCreateView(
@@ -70,22 +83,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 }
 
         mapFragment.getMapAsync(this)
-
-        //실시간 글 작성하기 화면으로부터 전달 받는 post 데이터
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>("post")
-            ?.observe(viewLifecycleOwner) {
-                Log.d("WalkMapFragment", "post observe -> $it")
-
-                sendCommandToService(WalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
-
-                if (it != null) {
-                    footprints.footprints.add(Gson().fromJson(it, FootprintModel::class.java))
-
-                    if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
-                        putMarker(paths.last().last(), footprints.footprints.size)
-                    }
-                }
-            }
 
         return binding.root
     }
@@ -195,16 +192,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             setWalkState(false)
             isFootprint = true
 
-            if (footprints.footprints.size >= 9) {  //기록이 이미 9개가 됐으면
+            if (footprints.size >= 9) {  //기록이 이미 9개가 됐으면
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
-                val action =
-                    WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
+                val action = WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
                 findNavController().navigate(action)
-            } else {    //아직 9개가 안됐으면 -> 발자국 남기기 다이얼로그 화면 띄우기
-                val action =
-                    WalkMapFragmentDirections.actionWalkMapFragmentToFootprintDialogFragment()
-                findNavController().navigate(action)
-            }
+            } else  //아직 9개가 안됐으면 -> 발자국 남기기 다이얼로그 화면 띄우기
+                footprintDialogFragment.show(requireActivity().supportFragmentManager, null)
         }
 
         binding.walkmapMiddleIv.setOnClickListener {
@@ -354,6 +347,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun showStopWalkDialog() {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
+        bundle.putString("action", getString(R.string.action_stop))
 
         val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
         actionDialogFragment.arguments = bundle
@@ -361,19 +355,17 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         actionDialogFragment.show(requireActivity().supportFragmentManager, null)
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-
             override fun action1(isAction: Boolean) {
                 if (isAction) {   //사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
-                    val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+                    map.takeSnapshot { bitmap ->    //산책 동선 사진
+                        walkModel.pathImg = getAbsolutePathByBitmap(requireContext(), bitmap)
+                        bindWalkModel()
 
-                    if (footprints.footprints.size != 0)
-                        intent.putExtra(
-                            "footprints",
-                            Gson().toJson(footprints)
-                        )  //우선 임의로 저장한 기록만 넘겨줌
-
-                    startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-                    (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
+                        val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+                        intent.putExtra("walk", Gson().toJson(walkModel))    //산책 정보 전달
+                        startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+                        (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
+                    }
                 } 
             }
 
@@ -393,6 +385,42 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         } else {
             requireContext().startService(intent)
         }
+    }
+
+    //산책 데이터 모델에 데이터 바인딩
+    private fun bindWalkModel() {
+        walkModel.walkTime = binding.walkmapWalktimeNumberTv.text.toString()    //산책 시간
+        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
+        walkModel.endAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))   //산책 종료 시간
+        walkModel.distance = binding.walkmapDistanceNumberTv.text.toString().toDouble() //산책 거리
+        walkModel.coordinate = listOf(listOf(1.5, 2.12, 3.31, 4.25), listOf(1.64, 9.51, 1.64, 9.51))    //산책 동선 좌표
+        walkModel.calorie = binding.walkmapCalorieNumberTv.text.toString().toInt()  //칼로리
+        walkModel.footprints = footprints    //발자국
+    }
+
+    private fun initFootprintDialog() {
+        footprintDialogFragment = FootprintDialogFragment()
+
+        footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
+            override fun sendFootprint(footprint: FootprintModel) {
+                sendCommandToService(WalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
+                initFootprintDialog()   //FootprintDialogFragment 초기화
+
+                //"발자국을 남겼어요." 다이얼로그 화면 띄우기
+                val action = WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.msg_leave_footprint))
+                findNavController().navigate(action)
+
+                footprints.add(footprint)   //footprints 리스트에 발자국 추가
+
+                if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
+                    putMarker(paths.last().last(), footprints.size)
+                }
+            }
+
+            override fun sendUpdatedFootprint(footprint: FootprintModel) {
+            }
+
+        })
     }
 
     override fun onDestroyView() {

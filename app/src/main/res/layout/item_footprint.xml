@@ -57,28 +57,6 @@
         app:layout_constraintTop_toTopOf="@+id/item_footprint_post_view" />
 
     <TextView
-        android:id="@+id/item_footprint_delete_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="9dp"
-        android:text="@string/action_delete"
-        android:textAppearance="@style/tv_headline_eb_12"
-        android:textColor="@color/primary"
-        app:layout_constraintBottom_toBottomOf="@+id/item_footprint_post_time_tv"
-        app:layout_constraintEnd_toStartOf="@+id/item_footprint_delete_edit_line_view"
-        app:layout_constraintTop_toTopOf="@+id/item_footprint_post_time_tv" />
-
-    <View
-        android:id="@+id/item_footprint_delete_edit_line_view"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="9dp"
-        android:background="@color/white_dark"
-        app:layout_constraintBottom_toBottomOf="@+id/item_footprint_delete_tv"
-        app:layout_constraintEnd_toStartOf="@+id/item_footprint_edit_tv"
-        app:layout_constraintTop_toTopOf="@+id/item_footprint_delete_tv" />
-
-    <TextView
         android:id="@+id/item_footprint_edit_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -86,9 +64,9 @@
         android:text="@string/action_edit"
         android:textAppearance="@style/tv_headline_eb_12"
         android:textColor="@color/black_light"
-        app:layout_constraintBottom_toBottomOf="@+id/item_footprint_delete_edit_line_view"
+        app:layout_constraintBottom_toBottomOf="@+id/item_footprint_post_time_tv"
         app:layout_constraintEnd_toEndOf="@+id/item_footprint_post_view"
-        app:layout_constraintTop_toTopOf="@+id/item_footprint_delete_edit_line_view" />
+        app:layout_constraintTop_toTopOf="@+id/item_footprint_post_time_tv" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/item_footprint_photo_vp"
@@ -121,6 +99,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="6dp"
         android:ellipsize="end"
+        android:lineSpacingExtra="4dp"
         android:textAppearance="@style/tv_caption_12"
         app:layout_constraintBottom_toTopOf="@+id/item_footprint_view_more_tv"
         app:layout_constraintEnd_toEndOf="@+id/item_footprint_post_view"

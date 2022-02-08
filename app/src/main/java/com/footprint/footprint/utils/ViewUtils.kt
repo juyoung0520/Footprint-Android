@@ -6,11 +6,18 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources
 import android.os.Handler
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
-import com.footprint.footprint.ui.onboarding.OnBoardingActivity
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import kotlin.math.roundToInt
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
@@ -68,7 +75,6 @@ fun fadeIn(view: View) {
     }
 }
 
-
 fun fadeOut(view: View) {
     view.animate()
         .alpha(0f)
@@ -92,4 +98,31 @@ fun autoScrollToBottom(View: NestedScrollView, imgView: View){
             ).setDuration(1200).start()
         }
     }, 300)
+}
+
+fun getAbsolutePathByBitmap(context: Context, bitmap: Bitmap): String {
+    val path = "${(context.applicationInfo.dataDir + File.separator + System.currentTimeMillis())}.jpg"
+    val file = File(path)
+    var out: OutputStream? = null
+
+    try {
+        file.createNewFile()
+        out = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, out)
+    } finally {
+        out?.close()
+    }
+
+    return file.absolutePath
+}
+
+fun uriToBitmap(context: Context, uri: Uri): Bitmap {
+    val bitmap = if (Build.VERSION.SDK_INT < 28) {
+        MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+    } else {
+        val source = ImageDecoder.createSource(context.contentResolver, uri)
+        ImageDecoder.decodeBitmap(source)
+    }
+
+    return bitmap
 }

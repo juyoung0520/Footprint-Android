@@ -16,8 +16,9 @@ import com.footprint.footprint.utils.DialogFragmentUtils
 class ActionDialogFragment() : DialogFragment() {
     private lateinit var binding: FragmentActionDialogBinding
     private lateinit var myDialogCallback: MyDialogCallback
-
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
+    private lateinit var action: String
+    private lateinit var desc: String
 
     //다이얼로그 콜백 인터페이스
     interface MyDialogCallback {
@@ -29,6 +30,8 @@ class ActionDialogFragment() : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         msg = arguments?.getString("msg").toString()
+        action = arguments?.getString("action").toString()
+        desc = arguments?.getString("desc", "").toString()
     }
 
     override fun onCreateView(
@@ -61,71 +64,48 @@ class ActionDialogFragment() : DialogFragment() {
 
     private fun initUI() {
         binding.walkDialogMsgTv.text = msg
+        binding.walkDialogActionTv.text = action
 
-        when (msg) {
-            getString(R.string.msg_stop_realtime_record), getString(R.string.msg_stop_walk) -> binding.walkDialogActionTv.text =
-                "중지"
-            getString(R.string.action_delete), getString(R.string.msg_cancel_walk), getString(R.string.msg_delete_footprint), "'OO번째 산책' 을 삭제하시겠어요?" -> binding.walkDialogActionTv.text =
-                "삭제"
-            getString(R.string.msg_save_post), getString(R.string.msg_save_walk) -> binding.walkDialogActionTv.text =
-                "저장"
-            getString(R.string.msg_change_representative_badge) -> binding.walkDialogActionTv.text =
-                getString(R.string.action_set)
-            getString(R.string.msg_logout) -> binding.walkDialogActionTv.text =
-                getString(R.string.title_logout)
-            getString(R.string.msg_withdrawal) -> binding.walkDialogActionTv.text =
-                getString(R.string.action_withdrawal)
+        if (desc.isBlank()) {
+            binding.walkDialogDescTv.visibility = View.INVISIBLE
+        } else {
+            binding.walkDialogDescTv.visibility = View.VISIBLE
+            binding.walkDialogDescTv.text = desc
         }
 
-        when {
-            msg.contains("산책' 을 삭제하시겠어요?") -> {
-                binding.walkDialogDescTv.text = "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요"
-                binding.walkDialogDescTv.visibility = View.VISIBLE
-            }
-            msg == getString(R.string.msg_logout) -> {
-                binding.walkDialogDescTv.text = getString(R.string.msg_logout_desc)
-                binding.walkDialogDescTv.visibility = View.VISIBLE
-            }
-            msg == getString(R.string.msg_withdrawal) -> {
-                binding.walkDialogDescTv.text = getString(R.string.msg_withdrawal_desc)
-                binding.walkDialogDescTv.visibility = View.VISIBLE
-
-                binding.walkDialogCancelTv.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.primary
-                    )
+        if (msg == getString(R.string.msg_withdrawal)) {
+            binding.walkDialogCancelTv.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.primary
                 )
-                binding.walkDialogActionTv.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.black_dark
-                    )
+            )
+            binding.walkDialogActionTv.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.black_dark
                 )
-            }
-            else -> {
-                binding.walkDialogDescTv.visibility = View.GONE
-            }
+            )
         }
     }
 
     private fun setMyClickListener() {
         //취소 텍스트뷰 클릭 리스너
         binding.walkDialogCancelTv.setOnClickListener {
-            when (msg) {
-                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(false)
-                else -> myDialogCallback.action1(false)
-            }
+            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'\\d\\d번째 산책'을 저장할까요?".toRegex()))
+                myDialogCallback.action2(false)
+            else
+                myDialogCallback.action1(false)
 
             dismiss()
         }
 
         //액션 텍스트뷰(중지, 저장, 삭제 등) 클릭 리스너
         binding.walkDialogActionTv.setOnClickListener {
-            when (msg) {
-                getString(R.string.msg_delete_footprint), getString(R.string.msg_withdrawal) -> myDialogCallback.action2(true)
-                else -> myDialogCallback.action1(true)
-            }
+            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'([0-9]+)번째 산책'을 저장할까요\\?".toRegex()))
+                myDialogCallback.action2(true)
+            else
+                myDialogCallback.action1(true)
 
             dismiss()
         }

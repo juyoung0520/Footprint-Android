@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -63,9 +62,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             if (result.resultCode == Activity.RESULT_OK) {
                 //1. 잠금 해제 로그 & 토스트
                 Log.d("CALENDAR/LOCK", "잠금 해제 성공")
-                Toast.makeText(context, "잠금 해제 성공", Toast.LENGTH_SHORT).show()
 
                 //2. 산책 기록 프래그먼트로 이동
+                goWalkDetailActivity(result.data!!.getIntExtra("walkIdx", 0))
             }
         }
     }
@@ -244,15 +243,22 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             //잠금 해제 액티비티(LockActivity)로 이동, UNLOCK: 잠금 해제 모드
             val intent = Intent(requireContext(), LockActivity::class.java)
             intent.putExtra("mode", "UNLOCK")
+            intent.putExtra("walkIdx", walkIdx) //보고 싶은 산책 정보 인덱스를 LockActivity 에 전달
             resultLauncher.launch(intent)
         } else {
             // 잠금 없음
             //1. 잠금 없음 로그 & 토스트
             Log.d("CALENDAR/LOCK", "잠금 없음")
-            Toast.makeText(context, "${walkIdx}번째 산책", Toast.LENGTH_SHORT).show()
 
             //2. 산책 기록 프래그먼트로 이동
+            goWalkDetailActivity(walkIdx)
         }
+    }
+
+    //WalkDetailActivity 로 이동하는 함수
+    fun goWalkDetailActivity(walkIdx: Int) {
+        val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(walkIdx)   //날짜별 산책 데이터 조회 API 가 연결됐을 때 사용
+        findNavController().navigate(action)
     }
 
     override fun onMonthLoading() {

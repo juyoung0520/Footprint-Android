@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.footprint.footprint.databinding.ItemPhotoBinding
 
 //사진 뷰페이저 어댑터
@@ -28,7 +29,11 @@ class PhotoRVAdapter(private val layout: Int) : RecyclerView.Adapter<PhotoRVAdap
     }
 
     override fun onBindViewHolder(holder: PhotoRVAdapter.ViewHolder, position: Int) {
-        holder.photoIv.setImageURI(Uri.parse(imgList[position]))    //이미지
+        //이미지
+        if (imgList[position].startsWith("https://"))
+            Glide.with(holder.itemView).load(imgList[position]).into(holder.photoIv)
+        else
+            holder.photoIv.setImageURI(Uri.parse(imgList[position]))
 
         if (layout == 0) {    //글 작성하기 화면일 때
             holder.goGalleryView.visibility = View.VISIBLE  //갤러리 이동

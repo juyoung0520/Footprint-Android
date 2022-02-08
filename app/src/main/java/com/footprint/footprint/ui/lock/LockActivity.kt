@@ -212,8 +212,9 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                         pwdChangeUI()
                         type = "CHANGE"
                     } else {
-                        //그냥 잠금 해제 -> 요청 보낸 액티비티로 RESULT_OK(결과값) 보내기
+                        //그냥 잠금 해제 -> 요청 보낸 액티비티로 RESULT_OK(결과값), walkIdx 보내기
                         val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("walkIdx", this@LockActivity.intent.getIntExtra("walkIdx", 0))
                         setResult(RESULT_OK, intent)
                         finish()
                     }
@@ -298,5 +299,4 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
         }
         binding.lockTitleTv.setText(R.string.title_lock_unlock)
     }
-
 }
