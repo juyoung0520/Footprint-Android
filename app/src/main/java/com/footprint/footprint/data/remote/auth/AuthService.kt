@@ -21,7 +21,7 @@ object AuthService {
                 Log.d("AUTOLOGIN/API-SUCCESS", body.toString())
                 if(body!= null){
                     when(body.code){
-                        1000 -> {
+                        1000, 2004 -> {
                             val result = body.result
                             splashView.onAutoLoginSuccess(result)
                         }
