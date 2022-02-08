@@ -28,5 +28,5 @@ interface WalkRetrofitInterface {
     fun getWalk(@Path("walkidx") walkIdx: Int): Call<GetWalkResponse>
 
     @PATCH("walks/{walkIdx}/status")
-    fun deleteWalk(@Path("walkIdx") walkIdx: Int): Call<DeleteWalkResponse>
+    fun deleteWalk(@Path("walkIdx") walkIdx: Int): Call<BaseResponse>
 }

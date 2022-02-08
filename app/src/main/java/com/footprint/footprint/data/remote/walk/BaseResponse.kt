@@ -1,8 +1,8 @@
 package com.footprint.footprint.data.remote.walk
 
-data class DeleteWalkResponse(
+data class BaseResponse(
     val isSuccess: Boolean,
     val code: Int,
     val message: String,
-    val result: String
+    val result: Any
 )

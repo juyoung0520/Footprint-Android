@@ -2,14 +2,15 @@ package com.footprint.footprint.data.remote.walk
 
 import android.util.Log
 import com.footprint.footprint.data.model.WalkModel
-import com.footprint.footprint.ui.main.calendar.CalendarView
-import com.footprint.footprint.ui.main.calendar.SearchResultView
-import com.footprint.footprint.ui.walk.WalkView
+import com.footprint.footprint.ui.walk.WalkAfterView
+import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.google.gson.Gson
 import okhttp3.MultipartBody
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 object WalkService {
     private val walkService = retrofit.create(WalkRetrofitInterface::class.java)
@@ -81,8 +82,8 @@ object WalkService {
         })
     }
 
-    fun writeWalk(walkView: WalkView, walk: WalkModel) {
-        walkView.onWalkLoading()
+    fun writeWalk(walkAfterView: WalkAfterView, walk: WalkModel) {
+        walkAfterView.onWalkAfterLoading()
 
         val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()
         val saveWalkReq: SaveWalk =
@@ -96,7 +97,8 @@ object WalkService {
                 footprint.coordinate,
                 footprint.recordAt,
                 footprint.write,
-                footprint.hashtagList
+                footprint.hashtagList,
+                footprint.isMarked
             )
             footprintsReq.add(data)
 
@@ -124,20 +126,20 @@ object WalkService {
                 Log.d("WalkService","\nwriteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
 
                 when (val code = res?.code) {
-                    1000 -> walkView.onWriteWalkSuccess(res?.result!!)
-                    else -> walkView.onWalkFail(code!!, res?.message.toString())
+                    1000 -> walkAfterView.onWriteWalkSuccess(res?.result!!)
+                    else -> walkAfterView.onWalkAfterFail(code!!, res?.message.toString())
                 }
             }
 
             override fun onFailure(call: Call<WriteWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "writeWalk-ERROR: ${t.message.toString()}")
 
-                walkView.onWalkFail(5000, t.message.toString())
+                walkAfterView.onWalkAfterFail(5000, t.message.toString())
             }
         })
     }
 
-    fun getWalk(walkView: WalkView, walkIdx: Int) {
+    fun getWalk(walkDetailView: WalkDetailView, walkIdx: Int) {
         walkService.getWalk(walkIdx).enqueue(object : Callback<GetWalkResponse> {
             override fun onResponse(
                 call: Call<GetWalkResponse>,
@@ -147,39 +149,39 @@ object WalkService {
                 Log.d("WalkService","\ngetWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
 
                 if (res?.code==1000)
-                    walkView.onGetWalkSuccess(res?.result)
+                    walkDetailView.onGetWalkSuccess(res?.result)
                 else
-                    walkView.onWalkFail(res?.code!!, res?.message)
+                    walkDetailView.onWalkDetailFail(res?.code!!, res?.message)
             }
 
             override fun onFailure(call: Call<GetWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "getWalk-ERROR: ${t.message.toString()}")
 
-                walkView.onWalkFail(5000, t.message.toString())
+                walkDetailView.onWalkDetailFail(5000, t.message.toString())
             }
 
         })
     }
 
-    fun deleteWalk(walkView: WalkView, walkIdx: Int) {
-        walkService.deleteWalk(walkIdx).enqueue(object : Callback<DeleteWalkResponse> {
+    fun deleteWalk(walkDetailView: WalkDetailView, walkIdx: Int) {
+        walkService.deleteWalk(walkIdx).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(
-                call: Call<DeleteWalkResponse>,
-                response: Response<DeleteWalkResponse>
+                call: Call<BaseResponse>,
+                updateFootprintResponse: Response<BaseResponse>
             ) {
-                val res = response.body()
+                val res = updateFootprintResponse.body()
                 Log.d("WalkService","\ndeleteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
 
                 if (res?.code==1000)
-                    walkView.onDeleteWalkSuccess()
+                    walkDetailView.onDeleteWalkSuccess()
                 else
-                    walkView.onWalkFail(res?.code!!, res?.message!!)
+                    walkDetailView.onWalkDetailFail(res?.code!!, res?.message!!)
             }
 
-            override fun onFailure(call: Call<DeleteWalkResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
 
-                walkView.onWalkFail(5000, t.message.toString())
+                walkDetailView.onWalkDetailFail(5000, t.message.toString())
             }
 
         })
