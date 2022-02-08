@@ -20,12 +20,14 @@ object AuthService {
                 val body = response.body()
 
                 Log.d("LOGIN/API-SUCCESS", body.toString())
-                when(body!!.code){
-                    1000 -> {
-                        val result = body.result
-                        signinView.onSignInSuccess(result!!)
+                if(body!= null){
+                    when(body.code){
+                        1000 -> {
+                            val result = body.result
+                            if(result != null) signinView.onSignInSuccess(result)
+                        }
+                        else -> signinView.onSignInFailure(body.code, body.message)
                     }
-                    else -> signinView.onSignInFailure(body.code, body.message)
                 }
             }
 

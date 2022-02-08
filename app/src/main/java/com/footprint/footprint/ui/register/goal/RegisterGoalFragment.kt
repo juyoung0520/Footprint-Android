@@ -7,7 +7,7 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
-import com.footprint.footprint.data.remote.infos.InfoService
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
@@ -221,7 +221,7 @@ class RegisterGoalFragment() :
             Log.d("RegisterGoalFragment", "완료! -> $userModel")
 
             //정보 등록 API 호출
-            InfoService.registerInfos(this, userModel)
+            UserService.registerInfos(this, userModel)
         }
     }
 

@@ -11,4 +11,8 @@ interface BadgeRetrofitInterface {
 
     @PATCH("users/badges/title/{badgeIdx}")
     fun changeRepresentativeBadge(@Path("badgeIdx") badgeIdx: Int): Call<ChangeRepresentativeBadgeResponse>
+
+    /*이달의 뱃지 조회 API*/
+    @GET("users/badges/status")
+    fun getMonthBadge(): Call<MonthBadgeResponse>
 }

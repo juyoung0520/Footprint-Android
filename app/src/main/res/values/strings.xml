@@ -7,6 +7,13 @@
     <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
 
     <!--공통-->
+    <!--메뉴-->
+    <string name="menu_home">홈</string>
+    <string name="menu_calendar">산책기록</string>
+    <string name="menu_course">코스추천</string>
+    <string name="menu_mypage">마이페이지</string>
+
+    <!--액션-->
     <string name="action_cancel">취소</string>
     <string name="action_edit">편집</string>
     <string name="action_save">저장</string>
@@ -17,14 +24,6 @@
     <string name="action_set">설정</string>
     <string name="action_update">수정</string>
     <string name="action_withdrawal">회원탈퇴</string>
-
-    <!--메뉴-->
-    <string name="menu_home">홈</string>
-    <string name="menu_calendar">산책기록</string>
-    <string name="menu_course">코스추천</string>
-    <string name="menu_mypage">마이페이지</string>
-
-    <!--액션-->
     <string name="action_startwalk">산책 시작</string>
 
     <!--설명-->
@@ -39,6 +38,8 @@
     <string name="msg_year_unit">년</string>
     <string name="msg_month_unit">월</string>
     <string name="msg_day_unit">일</string>
+    <string name="msg_temp_unit">°C</string>
+    <string name="msg_default">-</string>
 
     <!--에러-->
 

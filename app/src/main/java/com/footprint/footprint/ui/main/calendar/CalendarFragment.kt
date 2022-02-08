@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
@@ -26,6 +27,8 @@ import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import com.kizitonwose.calendarview.utils.yearMonth
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
@@ -36,6 +39,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    private var job: Job? = null
 
     override fun initAfterBinding() {
         setBinding()
@@ -75,10 +80,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 changeDayOfWeek(localDate.dayOfWeek.toString())
             )
 
-        binding.calendarBackIv.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         binding.calendarSearchIv.setOnClickListener {
             val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
             findNavController().navigate(action)
@@ -108,27 +109,33 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         val lastMonth = currentMonth.plusMonths(120)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
+
         binding.calendarWalkCv.setupAsync(
             firstMonth,
             lastMonth,
             firstDayOfWeek,
             object : Completion {
                 override fun invoke() {
+
                     binding.calendarLoadingBgV.visibility = View.GONE
                     binding.calendarLoadingPb.visibility = View.GONE
 
                     binding.calendarWalkCv.scrollToMonth(currentMonth)
 
                     afterInitCalendar()
+
                 }
             })
     }
 
+
     private fun afterInitCalendar() {
         binding.calendarWalkCv.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
-                binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
-                currentMonth = p1.yearMonth
+                if (view != null) {
+                    binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
+                    currentMonth = p1.yearMonth
+                }
             }
         }
 
@@ -151,6 +158,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             binding.calendarWalkCv.scrollToDate(localDate)
             selectDate(oldSelection, localDate)
         }
+
     }
 
     private fun initWalkAdapter() {
@@ -233,7 +241,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             val intent = Intent(requireContext(), LockActivity::class.java)
             intent.putExtra("mode", "UNLOCK")
             resultLauncher.launch(intent)
-        }else{
+        } else {
             // 잠금 없음
             //1. 잠금 없음 로그 & 토스트
             Log.d("CALENDAR/LOCK", "잠금 없음")
@@ -241,5 +249,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
             //2. 산책 기록 프래그먼트로 이동
         }
+    }
+
+    override fun onDestroyView() {
+        if (job != null) job!!.cancel()
+        super.onDestroyView()
     }
 }

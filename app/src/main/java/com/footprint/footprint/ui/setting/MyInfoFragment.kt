@@ -1,37 +1,41 @@
 package com.footprint.footprint.ui.setting
 
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.remote.badge.MonthBadge
+import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.utils.convertDpToSp
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 import kotlin.math.floor
 
-class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate) {
+class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate),
+    HomeView {
 
-    private lateinit var user: UserModel
+    private lateinit var user: SimpleUserModel
 
     override fun initAfterBinding() {
-        //임시 유저 데이터
-        user = UserModel(
-            nickname = "맨발의 기봉이",
-            gender = "female",
-            birth = "1999.12.31",
-            height = 170,
-            weight = 50
-        )
-        setLookUI(user) //내 정보 조회 화면 데이터 바인딩
-        setMyEventListener()
-        setHelpBalloon()    //툴팁
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        //유저 정보 조회 API 호출
+        UserService.getUser(this)
+    }
+
+
     //내 정보 "조회" 화면
-    private fun setLookUI(user: UserModel) {
+    private fun setLookUI(user: SimpleUserModel) {
         binding.myInfoNicknameEt.setText(user.nickname) //닉네임
 
         binding.myInfoGenderRg.apply {  //성별
@@ -44,7 +48,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
         setBirthUI(user.birth)  //생년월일
 
-        if (user.height == null) {  //키 데이터가 없을 때
+        if (user.height == 0) {  //키 데이터가 없을 때
             binding.myInfoHeightEt.setBackgroundResource(R.drawable.bg_my_info_et_white_dark)
             binding.myInfoHeightUnitTv.setTextColor(
                 ContextCompat.getColor(
@@ -63,7 +67,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
             binding.myInfoHeightEt.setText(user.height.toString())
         }
 
-        if (user.weight == null) {  //체중 데이터가 없을 때
+        if (user.weight == 0) {  //체중 데이터가 없을 때
             binding.myInfoWeightEt.setBackgroundResource(R.drawable.bg_my_info_et_white_dark)
             binding.myInfoWeightUnitTv.setTextColor(
                 ContextCompat.getColor(
@@ -91,13 +95,15 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
         //수정 텍스트뷰 클릭 리스너 -> user 데이터를 전달하면서 MyInfoUpdateFragment 로 이동
         binding.myInfoUpdateTv.setOnClickListener {
-            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(Gson().toJson(user))
+            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(
+                Gson().toJson(user)
+            )
             findNavController().navigate(action)
         }
     }
 
-    private fun setBirthUI(birth: String?) {
-        if (birth == null) {  //생년월일 정보를 입력하지 않았을 때
+    private fun setBirthUI(birth: String) {
+        if (birth == "1900-01-01") {  //생년월일 정보를 입력하지 않았을 때
             //년도
             binding.myInfoBirthYearEt.setBackgroundResource(R.drawable.bg_my_info_et_white_dark)
             binding.myInfoBirthYearUnitTv.setTextColor(
@@ -125,7 +131,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
                 )
             )
         } else {    //생년월일 정보를 입력했을 때
-            val birthList = birth.split(".")
+            val birthList = birth.split("-")
 
             //년도
             binding.myInfoBirthYearEt.setText(birthList[0])
@@ -188,5 +194,33 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         balloon.setOnBalloonClickListener(OnBalloonClickListener {
             balloon.dismiss()
         })
+    }
+
+    /*유저 정보 조회 API*/
+    override fun onUserSuccess(user: User) {
+        Log.d("MYINFO(USER)/API-SUCCESS", user.toString())
+
+        this.user = SimpleUserModel(user.nickname, user.sex, user.birth, user.height, user.weight)
+
+        binding.myInfoDayLoadingBgV.visibility = View.GONE
+        binding.myInfoDayLoadingPb.visibility = View.GONE
+        setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
+        setMyEventListener()
+        setHelpBalloon()    //툴팁
+
+        Log.d("MYINFO(USER)", this.user.toString())
+    }
+
+    override fun onUserFailure(code: Int, message: String) {
+        Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
+    }
+
+    /*<수정>뱃지 옮기고 지울 것!*/
+    override fun onMonthBadgeSuccess(monthBadge: MonthBadge) {
+
+    }
+
+    override fun onMonthBadgeFailure(code: Int, message: String) {
+
     }
 }

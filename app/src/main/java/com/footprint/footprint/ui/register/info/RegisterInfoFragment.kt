@@ -256,7 +256,7 @@ class RegisterInfoFragment() :
         var year: Int? = null
         if (yearEt.text.isNotEmpty()) {
             year = parseInt(yearEt.text.toString())
-            if (year !in 1900 until thisYear) {
+            if (year !in 1901 until thisYear) {
                 yearEt.startAnimation(animation)
                 yearEt.requestFocus()
                 yearEt.backgroundTintList =
@@ -306,7 +306,7 @@ class RegisterInfoFragment() :
                 ColorStateList.valueOf(resources.getColor(R.color.primary))
             return true
         } else if (results[0] == 0 && results[1] == 0 && results[2] == 0) {
-            newUser.birth = "0000-00-00"
+            newUser.birth = "1900-01-01"
             return true
         }
 
