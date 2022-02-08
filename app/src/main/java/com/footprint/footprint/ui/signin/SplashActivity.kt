@@ -16,7 +16,7 @@ import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.removeJwt
 
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, BadgeView {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, MonthBadgeView {
 
     override fun initAfterBinding() {
         //온보딩 화면 O/X => 3초 후 실행
