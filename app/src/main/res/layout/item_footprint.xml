@@ -99,6 +99,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="6dp"
         android:ellipsize="end"
+        android:lineSpacingExtra="4dp"
         android:textAppearance="@style/tv_caption_12"
         app:layout_constraintBottom_toTopOf="@+id/item_footprint_view_more_tv"
         app:layout_constraintEnd_toEndOf="@+id/item_footprint_post_view"
