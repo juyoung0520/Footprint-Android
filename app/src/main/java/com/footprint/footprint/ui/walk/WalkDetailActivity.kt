@@ -30,14 +30,14 @@ class WalkDetailActivity :
 
     private val args: WalkDetailActivityArgs by navArgs()
 
-    private var tempUpdateFootprintPosition: Int? = null
-    private var tempUpdateFootprint: Footprint? = null
+    private var tempUpdateFootprintPosition: Int? = null    //수정하고자 하는 발자국의 RV 어댑터 위치
+    private var tempUpdateFootprint: Footprint? = null  //수정하고자 하는 발자국 데이터
 
     override fun initAfterBinding() {
-        FootprintService.getFootprints(this, args.walkIdx)
-        WalkService.getWalk(this, args.walkIdx)
+        FootprintService.getFootprints(this, args.walkIdx)  //산책별 발자국 리스트 조회 API 요청
+        WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청청
 
-        setMyClickListener()
+       setMyClickListener()
         setActionDialog()
         initFootprintDialog()
     }
@@ -76,8 +76,8 @@ class WalkDetailActivity :
 
             //'OO번째 산책' 을 삭제하시겠어요? 다이얼로그 프래그먼트 콜백 함수
             override fun action1(isAction: Boolean) {
-                if (isAction)
-                    WalkService.deleteWalk(this@WalkDetailActivity, args.walkIdx)
+                if (isAction)   //사용자가 삭제 버튼을 누른 경우
+                    WalkService.deleteWalk(this@WalkDetailActivity, args.walkIdx)   //산책 정보 삭제 API 호출
             }
 
             override fun action2(isAction: Boolean) {
@@ -86,6 +86,7 @@ class WalkDetailActivity :
         })
     }
 
+    //발자국 수정 시 호출되는 다이얼로그 프래그먼트 초기화 함수
     private fun initFootprintDialog() {
         footprintDialogFragment = FootprintDialogFragment()
 
@@ -94,50 +95,45 @@ class WalkDetailActivity :
             }
 
             override fun sendUpdatedFootprint(footprint: FootprintModel) {
-                initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
-                Log.d("WalkDetailActivity", "sendUpdatedFootprint tempUpdateFootprint: $tempUpdateFootprint")
-                Log.d("WalkDetailActivity", "sendUpdatedFootprint footprint: $footprint")
+                initFootprintDialog()   //다이얼로그 프래그먼트 초기화
 
                 //수정된 데이터만 모아서 요청하기
                 val reqMap: HashMap<String, Any> = HashMap()
-                if (footprint.write!=tempUpdateFootprint!!.write)
+                if (footprint.write!=tempUpdateFootprint!!.write)   //글
                     reqMap["write"] = footprint.write
-                if (footprint.hashtagList!=tempUpdateFootprint!!.tagList) {
-                    for (i in footprint.hashtagList!!.indices) {
-                        reqMap["tagList[$i]"] = footprint.hashtagList!![i]
+                if (footprint.hashtagList!=tempUpdateFootprint!!.tagList) { //해시태그
+                    if (footprint.hashtagList!!.isEmpty()) {    //해시태그를 모두 삭제한 경우
+                        reqMap["tagList"] = ""
+                    } else {    //해시 태그를 모두 삭제하지 않은 경우
+                        for (i in footprint.hashtagList!!.indices) {
+                            reqMap["tagList[$i]"] = footprint.hashtagList!![i]
+                        }
                     }
                 }
-
-                var photos: List<String>? = null
+                var photos: List<String>? = null    //사진 -> 수정된 사진이 없으면 null
                 if (footprint.photos!=tempUpdateFootprint!!.photoList) {
-                    photos = if (footprint.photos.isEmpty())
-                        null
-                    else
-                        footprint.photos
+                    photos = footprint.photos
                 }
 
-                Log.d("WalkDetailActivity", "sendUpdatedFootprint reqMap: $reqMap")
-
-                //발자국 수정 요청 보내기
+                //발자국 수정 요청 API 호출
                 FootprintService.updateFootprint(this@WalkDetailActivity, tempUpdateFootprint!!.footprintIdx, reqMap, photos)
             }
 
         })
     }
 
+    //산책 정보 데이터 바인딩 함수
     private fun bindWalkInfo(walk: WalkInfoResponse) {
-        binding.walkDetailWalkDateTv.text =
-            "${walk.getWalkTime.date} ${walk.getWalkTime.startAt}~${walk.getWalkTime.endAt}"
-        binding.walkDetailTimeDescTv.text =
-            "${walk.getWalkTime.date} ${walk.getWalkTime.startAt}~${walk.getWalkTime.endAt}"
-        binding.walkDetailWalkTimeTv.text = walk.getWalkTime.timeString
-        binding.walkDetailCalorieTv.text = walk.calorie.toString()
-        binding.walkDetailDistanceTv.text = walk.distance.toString()
-        binding.walkDetailRecordTv.text = walk.footCount.toString()
-        Glide.with(this).load(walk.pathImageUrl).into(binding.walkDetailMapIv)
+        binding.walkDetailWalkDateTv.text = "${walk.getWalkTime.date} ${walk.getWalkTime.startAt}~${walk.getWalkTime.endAt}"    //산책 날짜
+        binding.walkDetailTimeDescTv.text = "${walk.getWalkTime.date} ${walk.getWalkTime.startAt}~${walk.getWalkTime.endAt}"    //산책 날짜
+        binding.walkDetailWalkTimeTv.text = walk.getWalkTime.timeString //산책 시간
+        binding.walkDetailCalorieTv.text = walk.calorie.toString()  //산책하는 동안 소모된 칼로리
+        binding.walkDetailDistanceTv.text = walk.distance.toString()    //산책 거리
+        binding.walkDetailRecordTv.text = walk.footCount.toString() //발자국 횟수
+        Glide.with(this).load(walk.pathImageUrl).into(binding.walkDetailMapIv)  //산책 동선 이미지
     }
 
-    //기록 관련 리사이클러뷰 초기화
+    //발자국 리사이클러뷰 어댑터 클래스 초기화
     private fun initAdapter(footprints: ArrayList<Footprint>) {
         footprintRVAdapter = FootprintRVAdapter()
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
@@ -149,10 +145,11 @@ class WalkDetailActivity :
 
             //발자국 편집 텍스트뷰 클릭 리스너
             override fun updateFootprintVerDetail(position: Int, footprint: Footprint) {
-                Log.d("WalkDetailActivity", "updateFootprintVerDetail footprint: $footprint")
+                //수정하고자 하는 발자국의 어댑터 위치와 데이터를 임시 저장
                 tempUpdateFootprintPosition = position
                 tempUpdateFootprint = footprint
 
+                //발자국 데이터와 함께 FootprintDialogFragment 호출
                 val bundle: Bundle = Bundle()
                 bundle.putString("footprint", Gson().toJson(footprint))
                 footprintDialogFragment.arguments = bundle
@@ -175,13 +172,10 @@ class WalkDetailActivity :
     }
 
     override fun onGetWalkSuccess(walk: WalkInfoResponse) {
-        Log.d("WalkDetailActivity", "\nonGetWalkSuccess\nwalk: $walk")
         bindWalkInfo(walk)
     }
 
     override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
-        Log.d("WalkDetailActivity", "\nonGetFootprintsSuccess\nfootprints: $footprints")
-
         if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
             binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
             binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
@@ -213,6 +207,6 @@ class WalkDetailActivity :
         msgDialogFragment.arguments = bundle
         msgDialogFragment.show(supportFragmentManager, null)
 
-        FootprintService.getFootprints(this, args.walkIdx)
+        FootprintService.getFootprints(this, args.walkIdx)  //수정된 발자국 정보로 업데이트 하기 위해 다시 발자국 데이터 조회 요청 보내기
     }
 }
