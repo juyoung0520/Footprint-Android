@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import com.footprint.footprint.data.model.WalkDateModel
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.ItemWalkDateBinding
 
-class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
+class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
     private val walkDates = arrayListOf<WalkDateModel>()
 
     private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
@@ -71,8 +72,8 @@ class WalkDateRVAdapter : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHol
         fun bind(position: Int) {
             binding.walkDateDateTv.text = walkDates[position].walkAt
 
-            val adapter = WalkRVAdapter()
-            adapter.setWalks(walkDates[position].walks)
+            val adapter = WalkRVAdapter(context)
+//            adapter.setWalks(walkDates[position].walks)
 
             adapter.setOnItemClickListener(onWalkClickListener)
             adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {

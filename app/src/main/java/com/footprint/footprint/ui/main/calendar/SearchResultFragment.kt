@@ -55,7 +55,7 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
             add(WalkDateModel("2021.12.11 토", walks = arrayListOf(WalkModel(4), WalkModel(5))))
         }
 
-        val adapter = WalkDateRVAdapter()
+        val adapter = WalkDateRVAdapter(requireContext())
 
         adapter.setWalkDates(walkDates)
         adapter.setFragmentManager(requireActivity().supportFragmentManager)

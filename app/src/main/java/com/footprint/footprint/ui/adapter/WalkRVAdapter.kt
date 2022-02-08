@@ -1,17 +1,21 @@
 package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.databinding.ItemWalkBinding
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 
-class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
-    private val walks = arrayListOf<WalkModel>()
+class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
+    private val walks = arrayListOf<DayWalkResult>()
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
@@ -27,7 +31,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalks(walks: ArrayList<WalkModel>) {
+    fun setWalks(walks: List<DayWalkResult>) {
         this.walks.clear()
         this.walks.addAll(walks)
 
@@ -46,6 +50,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         this.fragmentManager = fragmentManager
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeWalk(position: Int) {
         if (walks.isEmpty() || position !in 0..walks.size) {
             return
@@ -61,6 +66,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) {
+                    // remove API
                     removeWalk(position)
                     mOnItemRemoveClickListener.onItemRemoveClick()
                 }
@@ -71,7 +77,7 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
         })
 
         val bundle = Bundle()
-        bundle.putString("msg", "'OO번째 산책' 을 삭제하시겠어요?")
+        bundle.putString("msg", "'${walks[position].walk.walkIdx}번째 산책' 을 삭제하시겠어요?")
 
         actionDialogFragment.arguments = bundle
         actionDialogFragment.show(fragmentManager, null)
@@ -93,14 +99,45 @@ class WalkRVAdapter() : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     inner class WalkViewHolder(val binding: ItemWalkBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.walkNthRecordTv.text = walks[position].walkIdx.toString()
+            val walk = walks[position].walk
+            binding.walkNthRecordTv.text = walk.walkIdx.toString()
 
             binding.root.setOnClickListener {
-                mOnItemClickListener.onItemClick(walks[position])
+                mOnItemClickListener.onItemClick(walk)
             }
 
             binding.walkRemoveTv.setOnClickListener {
                 showRemoveDialog(position)
+            }
+
+            binding.walkTimeTv.text = String.format("%s~%s", walk.startAt, walk.endAt)
+
+            Glide.with(context).load(walk.pathImg).into(binding.walkPathIv)
+
+            val hashtag = walks[position].hashtag
+            for (idx in hashtag.indices) {
+                when(idx) {
+                    1 -> {
+                        binding.walkTag1Tv.visibility = View.VISIBLE
+                        binding.walkTag1Tv.text = hashtag[idx]
+                    }
+                    2 -> {
+                        binding.walkTag2Tv.visibility = View.VISIBLE
+                        binding.walkTag2Tv.text = hashtag[idx]
+                    }
+                    3 -> {
+                        binding.walkTag3Tv.visibility = View.VISIBLE
+                        binding.walkTag3Tv.text = hashtag[idx]
+                    }
+                    4 -> {
+                        binding.walkTag4Tv.visibility = View.VISIBLE
+                        binding.walkTag4Tv.text = hashtag[idx]
+                    }
+                    5 -> {
+                        binding.walkTag5Tv.visibility = View.VISIBLE
+                        binding.walkTag5Tv.text = hashtag[idx]
+                    }
+                }
             }
         }
     }

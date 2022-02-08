@@ -13,12 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.DayResult
+import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.lock.LockActivity
+import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.utils.getPWDstatus
@@ -37,7 +39,8 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.roundToInt
 
-class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate), CalendarView {
+class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate),
+    CalendarView {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -48,8 +51,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         setBinding()
 
         initCalendar()
-
-        initWalkAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +71,15 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun setBinding() {
+        binding.calendarBackIv.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.calendarSearchIv.setOnClickListener {
+            val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
+            findNavController().navigate(action)
+        }
+
         val localDate = LocalDate.now()
         binding.calendarMonthTitleTv.text =
             String.format("%d.%d", localDate.year, localDate.monthValue)
@@ -81,11 +91,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 localDate.dayOfMonth,
                 changeDayOfWeek(localDate.dayOfWeek.toString())
             )
-
-        binding.calendarSearchIv.setOnClickListener {
-            val action = CalendarFragmentDirections.actionCalendarFragmentToSearchFragment()
-            findNavController().navigate(action)
-        }
+        //DayWalk API 호출
+        WalkService.getDayWalks(
+            this,
+            String.format("%d-%02d-%02d", localDate.year, localDate.monthValue, localDate.dayOfMonth)
+        )
     }
 
     private fun initCalendar() {
@@ -101,7 +111,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
             override fun onDayClick(oldSelection: LocalDate?, selection: LocalDate) {
                 selectDate(oldSelection, selection)
-                // 날짜의 산책s API 호출
             }
         })
 
@@ -161,19 +170,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     }
 
-    private fun initWalkAdapter() {
-        val walks = arrayListOf<WalkModel>()
-        walks.apply {
-            add(WalkModel(0))
-            add(WalkModel(1))
-            add(WalkModel(2))
-            add(WalkModel(3))
-            add(WalkModel(4))
-        }
-
+    private fun initWalkAdapter(walks: List<DayWalkResult>) {
         binding.calendarWalkNumber2Tv.text = " ${walks.size}"
 
-        val adapter = WalkRVAdapter()
+        val adapter = WalkRVAdapter(requireContext())
         adapter.setFragmentManager(requireActivity().supportFragmentManager)
         adapter.setWalks(walks)
 
@@ -219,6 +219,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 selection.dayOfMonth,
                 changeDayOfWeek(selection.dayOfWeek.toString())
             )
+        //DayWalk API 호출
+        WalkService.getDayWalks(
+            this,
+            String.format("%d-%02d-%02d", selection.year, selection.monthValue, selection.dayOfMonth)
+        )
     }
 
     private fun changeDayOfWeek(dayOfWeek: String): String {
@@ -252,20 +257,39 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         }
     }
 
-    override fun onCalendarLoading() {
+    override fun onMonthLoading() {
         binding.calendarLoadingBgV.visibility = View.VISIBLE
         binding.calendarLoadingPb.visibility = View.VISIBLE
     }
 
+    override fun onDayWalkLoading() {
+        binding.calendarHintTv.visibility = View.VISIBLE
+        binding.calendarWalkRv.visibility = View.GONE
+    }
+
     override fun onCalendarFailure(code: Int, message: String) {
-        binding.calendarLoadingBgV.visibility = View.GONE
-        binding.calendarLoadingPb.visibility = View.GONE
+        when (code) {
+            // Month
+            400 -> {
+                binding.calendarLoadingBgV.visibility = View.GONE
+                binding.calendarLoadingPb.visibility = View.GONE
+            }
+        }
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
         binding.calendarLoadingBgV.visibility = View.GONE
         binding.calendarLoadingPb.visibility = View.GONE
-        
+
         calendarDayBinder.setCurrentMonthResults(monthResult)
+    }
+
+    override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
+        initWalkAdapter(dayWalkResult)
+        
+        if (dayWalkResult.isNotEmpty()) {
+            binding.calendarHintTv.visibility = View.GONE
+            binding.calendarWalkRv.visibility = View.VISIBLE
+        }
     }
 }
