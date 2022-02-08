@@ -24,7 +24,8 @@ class FootprintRVAdapter() :
     RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
         fun addFootprint(position: Int)
-        fun updateFootprint(position: Int, footprint: FootprintModel)
+        fun updateFootprintVerAfter(position: Int, footprint: FootprintModel)
+        fun updateFootprintVerDetail(position: Int, footprint: Footprint)
     }
 
     private val footprintIcList: ArrayList<Int> = arrayListOf(
@@ -86,11 +87,11 @@ class FootprintRVAdapter() :
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
-            myItemClickListener.updateFootprint(position, footprint)
+            myItemClickListener.updateFootprintVerAfter(position, footprint)
         }
 
         //발자국 아이콘
-        if (footprint.isMarked) {    //발자국 표시가 있는 발자국일 때
+        if (footprint.isMarked==1) {    //발자국 표시가 있는 발자국일 때
             holder.footPrintIv.visibility = View.VISIBLE
             holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
         } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
@@ -159,12 +160,15 @@ class FootprintRVAdapter() :
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
-            myItemClickListener.updateFootprint(position, FootprintModel(write = footprint.write, hashtagList = footprint.tagList, photos = footprint.photoList))
+            myItemClickListener.updateFootprintVerDetail(position, footprint)
         }
 
         //발자국 아이콘
-        holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
-        holder.footPrintIv.visibility = View.VISIBLE
+        if (footprint.onWalk==1) {    //발자국 표시가 있는 발자국일 때
+            holder.footPrintIv.visibility = View.VISIBLE
+            holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
+        } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
+            holder.footPrintIv.visibility = View.INVISIBLE
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
         if (footprint.photoList.isEmpty()) {

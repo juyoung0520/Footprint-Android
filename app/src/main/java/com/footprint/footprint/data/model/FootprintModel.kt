@@ -13,5 +13,5 @@ data class FootprintModel(
     var write: String = "",   //발자국 내용
     var hashtagList: List<String>? = null,  //해시태그
     var photos: List<String> = arrayListOf(),   //사진
-    var isMarked: Boolean = true    //발자국 아이콘 여부
+    var isMarked: Int = 1    //발자국 아이콘 여부
 )
