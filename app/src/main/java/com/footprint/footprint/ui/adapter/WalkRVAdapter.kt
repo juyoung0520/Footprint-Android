@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.DayWalkResult
+import com.footprint.footprint.data.remote.walk.UserDateWalk
 import com.footprint.footprint.databinding.ItemWalkBinding
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 
@@ -23,7 +23,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
 
     interface OnItemClickListener {
-        fun onItemClick(walk: WalkModel)
+        fun onItemClick(walk: UserDateWalk)
     }
 
     interface OnItemRemoveClickListener {
@@ -110,9 +110,9 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
                 showRemoveDialog(position)
             }
 
-            binding.walkTimeTv.text = String.format("%s~%s", walk.startAt, walk.endAt)
+            binding.walkTimeTv.text = String.format("%s~%s", walk.startTime, walk.endTime)
 
-            Glide.with(context).load(walk.pathImg).into(binding.walkPathIv)
+            Glide.with(context).load(walk.pathImageUrl).into(binding.walkPathIv)
 
             val hashtag = walks[position].hashtag
             for (idx in hashtag.indices) {

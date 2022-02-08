@@ -2,17 +2,15 @@ package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.data.model.WalkDateModel
-import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.walk.WalkDateResult
 import com.footprint.footprint.databinding.ItemWalkDateBinding
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
-    private val walkDates = arrayListOf<WalkDateModel>()
+    private val walkDates = arrayListOf<WalkDateResult>()
 
     private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
 
@@ -24,7 +22,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalkDates(walkDates: ArrayList<WalkDateModel>) {
+    fun setWalkDates(walkDates: List<WalkDateResult>) {
         this.walkDates.clear()
         this.walkDates.addAll(walkDates)
 
@@ -43,6 +41,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
         this.fragmentManager = fragmentManager
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeWalkDate(position: Int) {
         if (walkDates.isEmpty() || position !in 0..walkDates.size) {
             return
@@ -73,7 +72,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
             binding.walkDateDateTv.text = walkDates[position].walkAt
 
             val adapter = WalkRVAdapter(context)
-//            adapter.setWalks(walkDates[position].walks)
+            adapter.setWalks(walkDates[position].walks)
 
             adapter.setOnItemClickListener(onWalkClickListener)
             adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {

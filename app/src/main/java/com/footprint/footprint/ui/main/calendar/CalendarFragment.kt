@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.data.remote.walk.DayWalkResult
+import com.footprint.footprint.data.remote.walk.UserDateWalk
 import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -178,7 +179,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(walk: WalkModel) {
+            override fun onItemClick(walk: UserDateWalk) {
                 lockUnlock(walk.walkIdx)
             }
         })
@@ -286,7 +287,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
         initWalkAdapter(dayWalkResult)
-        
+
         if (dayWalkResult.isNotEmpty()) {
             binding.calendarHintTv.visibility = View.GONE
             binding.calendarWalkRv.visibility = View.VISIBLE
