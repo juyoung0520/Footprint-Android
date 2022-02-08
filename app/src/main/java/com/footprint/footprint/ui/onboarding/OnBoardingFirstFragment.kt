@@ -10,8 +10,7 @@ import com.footprint.footprint.utils.convertDpToPx
 class OnBoardingFirstFragment : BaseFragment<FragmentOnboardingFirstBinding>(FragmentOnboardingFirstBinding::inflate) {
 
     override fun initAfterBinding() {
-        val imgSize = convertDpToPx(requireContext(), 477)
-        Glide.with(this).load(R.raw.walking).override(imgSize).into(binding.onboardingFirstImageIv)
+        Glide.with(this).load(R.raw.walking).into(binding.onboardingFirstImageIv)
     }
 
 }
