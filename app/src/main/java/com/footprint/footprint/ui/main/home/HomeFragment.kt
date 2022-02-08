@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.data.remote.acheive.TMonth
 import com.footprint.footprint.data.remote.acheive.Today
 import com.footprint.footprint.data.remote.acheive.AcheiveService
@@ -30,6 +29,7 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
+import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -74,6 +74,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //설정 버튼 -> 설정 프래그먼트
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
+        }
+
+        binding.homeMonthGoalLayout.setOnClickListener {
+            val mainActivity = activity as MainActivity
+            mainActivity.startNextActivity(AgreeActivity::class.java)
         }
     }
 
