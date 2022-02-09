@@ -251,7 +251,10 @@
     <string name="title_password_setting">암호 변경</string>
     <string name="title_logout">로그아웃</string>
     <string name="title_withdrawal">회원 탈퇴</string>
-    <string name="title_version_copyright">버전 0.00.0\nⓒ 2021. 발자국 all rights reserved.</string>
+    <string name="title_version_copyright">버전 1.0.0\nⓒ 2021. 발자국 all rights reserved.</string>
+    <string name="title_privacy_policy">개인정보처리방침</string>
+    <string name="title_terms_of_user">이용약관</string>
+    <string name="title_location_terms_of_service">위치서비스이용약관</string>
 
     <!--내 정보-->
     <string name="title_my_info">내 정보</string>

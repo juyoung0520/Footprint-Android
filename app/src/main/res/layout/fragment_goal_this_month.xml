@@ -41,12 +41,12 @@
         android:layout_height="wrap_content"
         android:text="2021년"
         android:textAppearance="@style/tv_headline_eb_18"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintVertical_bias="0.32"
-        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
         app:layout_constraintBottom_toTopOf="@+id/goal_this_month_line_view"
-        app:layout_constraintEnd_toStartOf="@+id/goal_this_month_month_tv"/>
+        app:layout_constraintEnd_toStartOf="@+id/goal_this_month_month_tv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.32" />
 
     <TextView
         android:id="@+id/goal_this_month_month_tv"
@@ -55,21 +55,21 @@
         android:text=" 12월"
         android:textAppearance="@style/tv_headline_eb_18"
         android:textColor="@color/primary"
-        app:layout_constraintStart_toEndOf="@+id/goal_this_month_year_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_this_month_year_tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/goal_this_month_year_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/goal_this_month_year_tv" />
+        app:layout_constraintStart_toEndOf="@+id/goal_this_month_year_tv"
+        app:layout_constraintTop_toTopOf="@+id/goal_this_month_year_tv" />
 
     <TextView
         android:id="@+id/goal_this_month_msg_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="@string/msg_not_edit_goal_this_month"
         android:textAppearance="@style/tv_body_b_12"
         android:textColor="@color/black_light"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_month_tv" />
 
     <View
@@ -90,23 +90,23 @@
         android:layout_marginStart="34dp"
         android:text="@string/title_goal_day"
         android:textAppearance="@style/tv_headline_eb_16"
-        app:layout_constraintVertical_bias="0.17"
-        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_line_view"
         app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_day_line_view"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_line_view"
+        app:layout_constraintVertical_bias="0.17" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/goal_this_month_goal_day_rv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="29dp"
+        android:layout_marginHorizontal="26.5dp"
         android:orientation="horizontal"
-        app:layout_constraintVertical_bias="0.57"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_day_line_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_line_view"
-        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_day_line_view"
+        app:layout_constraintVertical_bias="0.57"
         tools:itemCount="7"
         tools:listitem="@layout/item_day" />
 
@@ -114,8 +114,8 @@
         android:id="@+id/goal_this_month_goal_day_line_view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/white"
         android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
         app:layout_constraintVertical_bias="0.4" />
@@ -127,34 +127,34 @@
         android:layout_marginStart="34dp"
         android:text="@string/title_goal_walk_time"
         android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_walk_time_line_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.18"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_day_line_view"
-        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_walk_time_line_view"/>
+        app:layout_constraintVertical_bias="0.18" />
 
     <Button
         android:id="@+id/goal_this_month_goal_walk_time_btn"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginHorizontal="34dp"
-        android:enabled="false"
         android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:enabled="false"
         android:stateListAnimator="@null"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
         app:backgroundTint="@null"
-        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_day_line_view"
         app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_walk_time_line_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_day_line_view"
         app:layout_constraintVertical_bias="0.6" />
 
     <View
         android:id="@+id/goal_this_month_goal_walk_time_line_view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/white"
         android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
         app:layout_constraintVertical_bias="0.63" />
@@ -166,26 +166,26 @@
         android:layout_marginStart="34dp"
         android:text="@string/title_goal_walk_slot"
         android:textAppearance="@style/tv_headline_eb_16"
-        app:layout_constraintVertical_bias="0.12"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintVertical_bias="0.12" />
 
     <Button
         android:id="@+id/goal_this_month_goal_walk_slot_btn"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginHorizontal="34dp"
-        android:enabled="false"
         android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:enabled="false"
         android:stateListAnimator="@null"
         android:textAppearance="@style/tv_body_b_14"
         android:textColor="@color/black"
         app:backgroundTint="@null"
-        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
         app:layout_constraintVertical_bias="0.39" />
 
     <TextView
@@ -193,12 +193,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_change_goal_next_month"
-        android:textColor="@color/primary"
         android:textAppearance="@style/tv_body_b_14"
-        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
+        android:textColor="@color/primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.69"/>
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.69" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
