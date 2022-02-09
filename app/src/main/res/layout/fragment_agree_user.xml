@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/agree_use_title_tv"
-            style="@style/tv_headline_eb_16"
+            style="@style/tv_subtitle_b_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_agreement_user"
@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/msg_agreement_user"
+            style="@style/tv_caption_14"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/agree_use_title_tv"
             app:layout_constraintBottom_toBottomOf="parent"/>

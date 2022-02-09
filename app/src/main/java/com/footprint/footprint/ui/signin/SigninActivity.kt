@@ -23,10 +23,9 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.ui.agree.AgreeActivity
-import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
 
@@ -50,13 +49,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val getResult = googleClient()
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
-        }
-
-        //다음에 로그인 할래요 -> RegisterActivity 로 이동
-        binding.signinNologinTv.setOnClickListener {
-            //this.startNextActivity(RegisterActivity::class.java) //로그인 되면 지워줘
-            this.startNextActivity(MainActivity::class.java)
-            finish()
         }
     }
 
@@ -207,7 +199,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     /*이달의 뱃지 조회 API*/
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: MonthBadge?) {
+    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
         val intent = Intent(this, MainActivity::class.java)
         if(isBadgeExist)
             intent.putExtra("badge", monthBadge)
@@ -224,12 +216,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     //Main Activity
     private fun startMainActivity() {
         startNextActivity(MainActivity::class.java)
-        finish()
-    }
-
-    //Register Activity
-    private fun startRegisterActivity() {
-        startNextActivity(RegisterActivity::class.java)
         finish()
     }
 

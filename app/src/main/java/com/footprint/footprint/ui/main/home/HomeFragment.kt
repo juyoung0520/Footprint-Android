@@ -6,11 +6,11 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
-import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -29,8 +29,6 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
-import com.footprint.footprint.ui.agree.AgreeActivity
-import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
@@ -45,30 +43,54 @@ import kotlin.collections.ArrayList
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView, HomeView, HomeDayView, HomeMonthView {
 
+    //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
 
-    private var walkGoalTime = 0
+    //Walk 액티비티로 전달할 유저 정보
+    private var userInfo: Array<Int?> = arrayOf(0, null, null)  //목표 시간, 키, 몸무게
 
-    lateinit var weatherService: WeatherService
+    //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
-        if (!::homeVPAdapter.isInitialized)
-            initTB()
+        //Initialize
+        initTB()
         initDate()
 
-        setClickListener()
+        setClickListener() //클릭 이벤트 설정
+        setPermission()    //위치 정보 사용 요청
+    }
 
-        setPermission()   //위치 정보 사용 요청
-        requestLocation() //날씨 API
+    override fun onStart() {
+        super.onStart()
+        //날씨 API
+        requestLocation()
+
+        //유저 조회 API
+        UserService.getUser(this)
+
+        //일별, 월별 API
+        AchieveService.getToday(this)
+        AchieveService.getTMonth(this)
     }
 
     private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
-            val mainActivity = activity as MainActivity
-            mainActivity.startNextActivity(WalkActivity::class.java)
+            //유저 정보가 다 채워져야 산책 시작 가능
+            if (userInfo[1] != null && userInfo[2] != null) {
+                val intent = Intent(activity, WalkActivity::class.java)
+
+                intent.putExtra("goalTime", userInfo[0])
+                intent.putExtra("height", userInfo[1])
+                intent.putExtra("weight", userInfo[2])
+
+                Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]}")
+                startActivity(intent)
+            } else { //정보 없음
+                Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
+            }
         }
 
         //설정 버튼 -> 설정 프래그먼트
@@ -76,26 +98,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
 
-        binding.homeMonthGoalLayout.setOnClickListener {
-            val mainActivity = activity as MainActivity
-            mainActivity.startNextActivity(AgreeActivity::class.java)
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AchieveService.setHomeView(this)
-
-        //유저 닉네임 -> 한번만 호출
-        UserService.getUser(this)
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
-        AchieveService.getToday(this)
-        AchieveService.getTMonth(this)
     }
 
     /*Function*/
@@ -203,9 +205,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
-        weatherService = WeatherService(this@HomeFragment)
-        weatherService.getWeather(base_date, base_time, nx.toString(), ny.toString())
-
+        (WeatherService(this@HomeFragment)).getWeather(base_date, base_time, nx.toString(), ny.toString())
     }
 
     //시간 결정 함수(time)
@@ -349,7 +349,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //닉네임 바꿔주기
         binding.homeTopUsernameTv.text = user.nickname
+
+        //유저 정보 저장
+        userInfo[1] = user.height
+        userInfo[2] = user.weight
     }
+
     override fun onUserFailure(code: Int, message: String) {
         Log.d("HOME(USER)/API-FAILURE", "code: $code message: $message")
     }
@@ -358,7 +363,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
-        walkGoalTime = today.walkGoalTime
+        userInfo[0] = today.walkGoalTime
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //목표 바꿔주기
@@ -377,6 +382,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeDayFragment
         (fragmentList[0] as HomeDayFragment).onTodaySuccess(today)
     }
+
     override fun onTodayFailure(code: Int, message: String) {
         Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
     }
@@ -389,12 +395,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //누적 산책시간
                 val monthTotalMin = tMonth.getMonthTotal.monthTotalMin
-                val color = if(monthTotalMin > walkGoalTime) "#FFC01D" else "#241F20"
+                val color = if (monthTotalMin > userInfo[0]!!) "#FFC01D" else "#241F20"
                 binding.homeMonthGoalWalkTv.setTextColor(Color.parseColor(color))
                 binding.homeMonthGoalWalkTv.text = monthTotalMin.toString()
                 binding.homeMonthGoalWalkTv.isSelected = true
                 //누적 거리
-                binding.homeMonthGoalDistTv.text = tMonth.getMonthTotal.monthTotalDistance.toString()
+                binding.homeMonthGoalDistTv.text =
+                    tMonth.getMonthTotal.monthTotalDistance.toString()
                 binding.homeMonthGoalDistTv.isSelected = true
                 //누적 칼로리
                 binding.homeMonthGoalKcalTv.text = tMonth.getMonthTotal.monthPerCal.toString()
@@ -405,6 +412,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         // -> HomeMonthFragment
         (fragmentList[1] as HomeMonthFragment).onTMonthSuccess(tMonth)
     }
+
     override fun onTMonthFailure(code: Int, message: String) {
         Log.d("HOME(TMONTH)/API-FAILURE", code.toString() + message)
     }
