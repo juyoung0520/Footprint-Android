@@ -29,19 +29,10 @@ data class BadgeInfo(
     val badgeOrder: String
 ): Serializable
 
-/*이달의 뱃지 조회 API*/
+/*이달의 뱃지 조회 Response*/
 data class MonthBadgeResponse(
     @SerializedName("isSuccess") val isSuccess: Boolean,
     @SerializedName("code")val code: Int,
     @SerializedName("message")val message: String,
     @SerializedName("result")val result: BadgeInfo?
 )
-
-/*
-data class MonthBadge(
-    @SerializedName("badgeIdx") val badgeIdx: Int,      //뱃지 인덱스
-    @SerializedName("badgeName") val badgeName: String, //뱃지 이름
-    @SerializedName("badgeUrl") val badgeUrl: String,   //뱃지 이미지 url
-    @SerializedName("badgeDate") val badgeDate: String  //뱃지 날짜 확인 컬럼
-): Serializable
-*/

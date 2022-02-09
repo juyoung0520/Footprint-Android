@@ -185,9 +185,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             "ACTIVE" -> {
                 if(checkMonthChanged){ // -> 뱃지 API 호출
                     BadgeService.getMonthBadge(this)
-                }else{
+                }/*else{
                     startMainActivity()
-                }
+                }*/
             }
             "ONGOING" -> startAgreeActivity()
         }
