@@ -102,6 +102,7 @@ fun autoScrollToBottom(View: NestedScrollView, imgView: View){
     }, 300)
 }
 
+/*이미지 관련*/
 fun getAbsolutePathByBitmap(context: Context, bitmap: Bitmap): String {
     val path = "${(context.applicationInfo.dataDir + File.separator + System.currentTimeMillis())}.jpg"
     val file = File(path)

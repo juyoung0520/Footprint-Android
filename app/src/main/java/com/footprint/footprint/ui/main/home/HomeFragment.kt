@@ -20,8 +20,6 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
-import com.footprint.footprint.data.remote.badge.BadgeInfo
-import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.google.android.gms.location.*
@@ -31,7 +29,6 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
-import com.footprint.footprint.ui.signin.MonthBadgeView
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
@@ -44,7 +41,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    WeatherView, HomeView, HomeDayView, HomeMonthView, MonthBadgeView {
+    WeatherView, HomeView, HomeDayView, HomeMonthView{
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -76,8 +73,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //일별, 월별 API
         AchieveService.getToday(this)
         AchieveService.getTMonth(this)
-
-        BadgeService.getMonthBadge(this)
     }
 
     private fun setClickListener() {
@@ -428,14 +423,5 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             job.cancel()
         }
         super.onDestroyView()
-    }
-
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
-        Log.d("HOME/BADGE", "획득한 뱃지가 ${isBadgeExist}")
-        Log.d("HOME/BADGE", monthBadge.toString())
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-
     }
 }

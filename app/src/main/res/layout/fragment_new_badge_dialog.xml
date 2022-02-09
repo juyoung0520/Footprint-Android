@@ -58,10 +58,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textAppearance="@style/tv_headline_eb_16"
+        android:textAppearance="@style/tv_subtitle_b_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_badge_star4_iv" />
+
+    <TextView
+        android:id="@+id/new_badge_message_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/msg_badge"
+        android:textAppearance="@style/tv_overline_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_badge_title_tv" />
 
     <View
         android:id="@+id/new_badge_line_view"

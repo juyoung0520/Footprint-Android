@@ -27,7 +27,7 @@ data class BadgeInfo(
     val badgeUrl: String,
     val badgeDate: String,
     val badgeOrder: String
-): Serializable
+)
 
 /*이달의 뱃지 조회 Response*/
 data class MonthBadgeResponse(
