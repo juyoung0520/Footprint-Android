@@ -26,7 +26,6 @@ import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.ui.agree.AgreeActivity
-import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.*
 
 
@@ -50,13 +49,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val getResult = googleClient()
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
-        }
-
-        //다음에 로그인 할래요 -> RegisterActivity 로 이동
-        binding.signinNologinTv.setOnClickListener {
-            //this.startNextActivity(RegisterActivity::class.java) //로그인 되면 지워줘
-            this.startNextActivity(MainActivity::class.java)
-            finish()
         }
     }
 

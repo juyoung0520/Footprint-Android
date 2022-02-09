@@ -208,6 +208,7 @@
                 android:id="@+id/register_info_grayline_iv"
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/bg_signup_grayline"
                 app:layout_constraintTop_toBottomOf="@id/register_info_nickname_and_gender_layout"
                 app:layout_constraintBottom_toTopOf="@id/register_info_birth_and_wheight_layout"/>

@@ -31,6 +31,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
@@ -74,11 +75,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //설정 버튼 -> 설정 프래그먼트
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
-        }
-
-        binding.homeMonthGoalLayout.setOnClickListener {
-            val mainActivity = activity as MainActivity
-            mainActivity.startNextActivity(AgreeActivity::class.java)
         }
     }
 
