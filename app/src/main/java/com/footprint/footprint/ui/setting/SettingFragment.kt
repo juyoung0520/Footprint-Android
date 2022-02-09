@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.setting
 
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,7 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.kakao.sdk.user.UserApiClient
 
-
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -28,9 +28,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
 
-
         initLoginStatus()
         setMyEventListener()
+
+        //개인정보처리방침, 이용약관, 위치서비스이용약관 밑줄 표시
+        binding.settingPrivacyPolicyTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        binding.settingTermsOfUserTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        binding.settingLocationTermsOfServiceTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
     }
 
     override fun onStart() {

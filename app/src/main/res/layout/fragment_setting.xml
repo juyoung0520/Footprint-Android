@@ -153,10 +153,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_question_mark"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/setting_lock_footprint_iv"
         app:layout_constraintStart_toStartOf="@+id/setting_lock_footprint_iv"
-        app:layout_constraintTop_toBottomOf="@+id/setting_lock_footprint_iv"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@+id/setting_lock_footprint_iv" />
 
     <TextView
         android:id="@+id/setting_password_setting_tv"
@@ -165,10 +165,10 @@
         android:layout_marginStart="15dp"
         android:text="@string/title_password_setting"
         android:textAppearance="@style/tv_subtitle_b_16"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/setting_password_setting_iv"
         app:layout_constraintStart_toEndOf="@+id/setting_password_setting_iv"
-        app:layout_constraintTop_toTopOf="@+id/setting_password_setting_iv"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="@+id/setting_password_setting_iv" />
 
     <ImageView
         android:id="@+id/setting_password_setting_next_iv"
@@ -176,10 +176,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:src="@drawable/ic_right_black_light"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/setting_password_setting_iv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/setting_password_setting_iv"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="@+id/setting_password_setting_iv" />
 
     <View
         android:id="@+id/setting_lock_line_view"
@@ -231,18 +231,97 @@
         app:layout_constraintStart_toEndOf="@+id/setting_withdrawal_iv"
         app:layout_constraintTop_toTopOf="@+id/setting_withdrawal_iv" />
 
-    <TextView
-        android:id="@+id/setting_version_tv"
+    <View
+        android:id="@+id/setting_version_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:background="@color/white"
-        android:gravity="center|top"
-        android:paddingTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setting_withdrawal_iv" />
+
+    <View
+        android:id="@+id/setting_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/white_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/setting_version_view"
+        app:layout_constraintTop_toTopOf="@+id/setting_version_view"
+        app:layout_constraintVertical_bias="0.64" />
+
+    <ImageView
+        android:id="@+id/setting_app_icon_iv"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:src="@drawable/ic_app_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/setting_app_icon_text_iv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/setting_line_view"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <ImageView
+        android:id="@+id/setting_app_icon_text_iv"
+        android:layout_width="48dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="6dp"
+        android:src="@drawable/ic_logo_black"
+        app:layout_constraintBottom_toBottomOf="@+id/setting_app_icon_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/setting_app_icon_iv"
+        app:layout_constraintTop_toTopOf="@+id/setting_app_icon_iv" />
+
+    <TextView
+        android:id="@+id/setting_privacy_policy_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_privacy_policy"
+        android:textAppearance="@style/tv_overline_10"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/setting_terms_of_user_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/setting_line_view" />
+
+    <TextView
+        android:id="@+id/setting_terms_of_user_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_terms_of_user"
+        android:textAppearance="@style/tv_overline_10"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="@+id/setting_privacy_policy_tv"
+        app:layout_constraintEnd_toStartOf="@+id/setting_location_terms_of_service_tv"
+        app:layout_constraintStart_toEndOf="@+id/setting_privacy_policy_tv"
+        app:layout_constraintTop_toTopOf="@+id/setting_privacy_policy_tv" />
+
+    <TextView
+        android:id="@+id/setting_location_terms_of_service_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_location_terms_of_service"
+        android:textAppearance="@style/tv_overline_10"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="@+id/setting_privacy_policy_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/setting_terms_of_user_tv"
+        app:layout_constraintTop_toTopOf="@+id/setting_privacy_policy_tv" />
+
+    <TextView
+        android:id="@+id/setting_version_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
         android:text="@string/title_version_copyright"
         android:textAppearance="@style/tv_overline_10"
         android:textColor="@color/black_light"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_withdrawal_iv" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/setting_line_view"
+        app:layout_constraintVertical_bias="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
