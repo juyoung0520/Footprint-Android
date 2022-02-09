@@ -12,11 +12,7 @@ import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 
 object AchieveService {
     private val achieveService = retrofit.create(AchieveRetrofitInterface::class.java)
-    private lateinit var homeView: HomeView
 
-    fun setHomeView(homeView: HomeView){
-        this.homeView = homeView
-    }
 
     /*일별 정보 API*/
     fun getToday(homeDayView: HomeDayView){
@@ -69,6 +65,7 @@ object AchieveService {
         })
     }
 
+    /*마이페이지 정보(통계) API*/
     fun getInfoDetail(myPageView: MyPageView) {
         val infoService = retrofit.create(AchieveRetrofitInterface::class.java)
 

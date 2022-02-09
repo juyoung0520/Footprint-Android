@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
-import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
@@ -30,9 +29,6 @@ import com.footprint.footprint.data.remote.weather.WeatherService
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
-import com.footprint.footprint.ui.agree.AgreeActivity
-import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
@@ -47,23 +43,36 @@ import kotlin.collections.ArrayList
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
     WeatherView, HomeView, HomeDayView, HomeMonthView {
 
+    //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
 
+    //Walk 액티비티로 전달할 유저 정보
     private var userInfo: Array<Int?> = arrayOf(0, null, null)  //목표 시간, 키, 몸무게
 
-    lateinit var weatherService: WeatherService
+    //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
-        if (!::homeVPAdapter.isInitialized)
-            initTB()
+        //Initialize
+        initTB()
         initDate()
 
-        setClickListener()
+        setClickListener() //클릭 이벤트 설정
+        setPermission()    //위치 정보 사용 요청
+    }
 
-        setPermission()   //위치 정보 사용 요청
-        requestLocation() //날씨 API
+    override fun onStart() {
+        super.onStart()
+        //날씨 API
+        requestLocation()
+
+        //유저 조회 API
+        UserService.getUser(this)
+
+        //일별, 월별 API
+        AchieveService.getToday(this)
+        AchieveService.getTMonth(this)
     }
 
     private fun setClickListener() {
@@ -79,7 +88,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
                 Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]}")
                 startActivity(intent)
-            }else{ //정보 없음
+            } else { //정보 없음
                 Toast.makeText(activity, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -89,23 +98,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
 
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AchieveService.setHomeView(this)
-
-        //유저 닉네임 -> 한번만 호출
-        UserService.getUser(this)
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        //일별, 월별 -> 홈프래그먼트 돌아올 때마다 호출
-        AchieveService.getToday(this)
-        AchieveService.getTMonth(this)
     }
 
     /*Function*/
@@ -213,9 +205,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
-        weatherService = WeatherService(this@HomeFragment)
-        weatherService.getWeather(base_date, base_time, nx.toString(), ny.toString())
-
+        (WeatherService(this@HomeFragment)).getWeather(base_date, base_time, nx.toString(), ny.toString())
     }
 
     //시간 결정 함수(time)
