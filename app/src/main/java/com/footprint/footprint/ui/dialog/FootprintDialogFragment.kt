@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -21,7 +20,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
@@ -82,7 +80,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
         if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
-            setUI(Gson().fromJson(footprintStr, Footprint::class.java))
+            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
         }
 
         return binding.root
@@ -319,17 +317,17 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     //발자국 수정하기 화면 상태일 때 사용자가 수정 전 입력했던 발자국 데이터를 바인딩하는 함수
-    private fun setUI(footprint: Footprint) {
+    private fun setUI(footprint: FootprintModel) {
         binding.postDialogContentEt.setText(footprint.write)    //발자국 내용
 
-        if (footprint.photoList.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
+        if (footprint.photos.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
             setDeletePhotoUI()
         } else {    //사진이 있으면 "사진 삭제하기" 버전
             imgList.clear()
-            imgList.addAll(footprint.photoList)
+            imgList.addAll(footprint.photos)
 
             binding.postDialogPhotoVp.visibility = View.VISIBLE
-            photoRVAdapter.addImgList(footprint.photoList as ArrayList<String>)
+            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
 
             binding.postDialogPhotoIndicator.visibility = View.VISIBLE
             binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)

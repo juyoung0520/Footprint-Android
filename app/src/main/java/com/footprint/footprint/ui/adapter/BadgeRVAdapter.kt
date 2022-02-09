@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.databinding.ItemBadgeBinding
+import com.footprint.footprint.utils.loadSvg
 
 class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val size: Int) :
     RecyclerView.Adapter<BadgeRVAdapter.BadgeViewHolder>() {
@@ -50,7 +50,7 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
             holder.root.isEnabled = false
         } else {    //얻은 뱃지의 경우
             //뱃지 이미지
-            Glide.with(holder.itemView).load(badge.badgeUrl).into(holder.badgeIv)
+            holder.badgeIv.loadSvg(holder.itemView.context, badge.badgeUrl)
             //뱃지 이름 -> 얻은 뱃지는 이름을 보여주고, 얻지  못한 뱃지는 이름을 보여주지 않는다.
             holder.badgeName.apply {
                 text = badge.badgeName

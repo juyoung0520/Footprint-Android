@@ -14,7 +14,9 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.widget.NestedScrollView
+import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -125,4 +127,11 @@ fun uriToBitmap(context: Context, uri: Uri): Bitmap {
     }
 
     return bitmap
+}
+
+fun ImageView.loadSvg(context: Context, url: String?) {
+    GlideToVectorYou
+        .init()
+        .with(context)
+        .load(Uri.parse(url), this)
 }

@@ -2,8 +2,6 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeResponse
@@ -14,8 +12,7 @@ import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.footprint.footprint.utils.loadSvg
 
 class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate), BadgeView {
 
@@ -23,8 +20,6 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     private lateinit var actionDialogFragment: ActionDialogFragment
 
     private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
-
-    private val jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
         BadgeService.getBadgeInfo(this) //뱃지 정보 요청 API 실행
@@ -37,7 +32,8 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
     //대표 뱃지 데이터 바인딩
     private fun bindRepresentativeBade(badge: BadgeInfo) {
-        Glide.with(this).load(badge.badgeUrl).into(binding.badgeRepresentativeBadgeIv)
+        binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
+//        Glide.with(this).load(badge.badgeUrl).into(binding.badgeRepresentativeBadgeIv)
         binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
     }
 
@@ -73,10 +69,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) { //사용자가 설정을 누르면 -> 대표빗지 변경 요청 API 실행
-                    BadgeService.changeRepresentativeBadge(
-                        this@BadgeFragment,
-                        representativeBadgeIdx!!
-                    )
+                    BadgeService.changeRepresentativeBadge(this@BadgeFragment, representativeBadgeIdx!!)
                 }
             }
 
@@ -94,38 +87,22 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     }
 
     override fun onBadgeLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.badgeLoadingPb.visibility = View.VISIBLE
-            })
-        }
+        binding.badgeLoadingPb.visibility = View.VISIBLE
     }
 
     override fun onBadgeFail(code: Int, message: String) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.badgeLoadingPb.visibility = View.INVISIBLE
-            })
-        }
+        binding.badgeLoadingPb.visibility = View.INVISIBLE
     }
 
     override fun onGetBadgeSuccess(badgeInfo: BadgeResponse) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.badgeLoadingPb.visibility = View.INVISIBLE
+        binding.badgeLoadingPb.visibility = View.INVISIBLE
 
-                bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
-                initAdapter(badgeInfo)
-            })
-        }
+        bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
+        initAdapter(badgeInfo)
     }
 
     override fun onChangeRepresentativeBadge(representativeBadge: BadgeInfo) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
-                badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
-            })
-        }
+        bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
+        badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
     }
 }

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.databinding.FragmentNewBadgeDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils
+import com.footprint.footprint.utils.loadSvg
 import com.google.gson.Gson
 
 class NewBadgeDialogFragment : DialogFragment() {
@@ -61,7 +62,7 @@ class NewBadgeDialogFragment : DialogFragment() {
     }
 
     private fun bindBadge(badge: BadgeInfo) {
-        Glide.with(this).load(badge.badgeUrl).into(binding.newBadgeBadgeIv)
+        binding.newBadgeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
         binding.newBadgeTitleTv.text = "'${badge.badgeName}'\n뱃지를 획득했어요!"
     }
 
