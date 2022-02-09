@@ -1,32 +1,38 @@
 package com.footprint.footprint.ui.main.mypage
 
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.model.UserGoalTime
+import com.footprint.footprint.data.remote.goal.GoalService
 import com.footprint.footprint.databinding.FragmentGoalNextMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.google.gson.Gson
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class GoalNextMonthFragment :
-    BaseFragment<FragmentGoalNextMonthBinding>(FragmentGoalNextMonthBinding::inflate) {
+    BaseFragment<FragmentGoalNextMonthBinding>(FragmentGoalNextMonthBinding::inflate), GoalView {
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var goal: GoalModel
 
+    private val jobs: ArrayList<Job> = arrayListOf()
+
     override fun initAfterBinding() {
-        goal = GoalModel(   //임시 목표 데이터
-            "2022년 2월",
-            arrayListOf(2, 3, 6),
-            UserGoalTime(20, 4)
-        )
+        GoalService.getNextMonthGoal(this)
 
-        initAdapter()  //어댑터 초기화
-
-        bind()
         setMyClickListener()
+    }
+
+    override fun onDestroyView() {
+        for (job in jobs) {
+            job.cancel()
+        }
+
+        super.onDestroyView()
     }
 
     private fun initAdapter() {
@@ -76,5 +82,22 @@ class GoalNextMonthFragment :
             val action = GoalNextMonthFragmentDirections.actionGoalNextMonthFragmentToGoalNextMonthUpdateFragment(Gson().toJson(goal))
             findNavController().navigate(action)
         }
+    }
+
+    override fun onGetGoalSuccess(goal: GoalModel) {
+        if (view!=null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                this@GoalNextMonthFragment.goal = goal
+            })
+
+            initAdapter()  //어댑터 초기화
+            bind()  //유저 데이터 바인딩
+        }
+    }
+
+    override fun onGoalFail(code: Int, message: String) {
+        jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+            showToast(getString(R.string.error_api_fail))
+        })
     }
 }

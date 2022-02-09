@@ -2,36 +2,41 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.graphics.Paint
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.model.UserGoalTime
+import com.footprint.footprint.data.remote.goal.GoalService
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.google.gson.Gson
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 class GoalThisMonthFragment :
-    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
+    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate), GoalView {
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var goal: GoalModel
 
+    private val jobs: ArrayList<Job> = arrayListOf()
+
     override fun initAfterBinding() {
-        goal = GoalModel(   //임시 목표 데이터
-            "2022년 2월",
-            arrayListOf(2, 3, 6),
-            UserGoalTime(20, 4),
-            false
-        )
+        GoalService.getThisMonthGoal(this)
 
-        initAdapter()  //어댑터 초기화
-
-        bind()  //유저 데이터 바인딩
-        binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
         setMyClickListener()
+        binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
+    }
+
+    override fun onDestroyView() {
+        for (job in jobs) {
+            job.cancel()
+        }
+
+        super.onDestroyView()
     }
 
     private fun initAdapter() {
@@ -107,4 +112,22 @@ class GoalThisMonthFragment :
             "${yearFormat.format(currentTime)}년 ${monthFormat.format(currentTime).toInt() + 1}월"
     }
 
+    override fun onGetGoalSuccess(goal: GoalModel) {
+        if (view!=null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                this@GoalThisMonthFragment.goal = goal
+            })
+
+            initAdapter()  //어댑터 초기화
+            bind()  //유저 데이터 바인딩
+        }
+    }
+
+    override fun onGoalFail(code: Int, message: String) {
+        if (view!=null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                showToast(getString(R.string.error_api_fail))
+            })
+        }
+    }
 }
