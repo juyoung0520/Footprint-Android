@@ -124,6 +124,8 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
                     3 -> setIndicator(3)
                     else -> setIndicator(3)
                 }
+            } else {
+                setIndicator(0)
             }
 
             binding.root.setOnClickListener {

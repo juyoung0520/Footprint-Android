@@ -137,11 +137,13 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private fun afterInitCalendar() {
         binding.calendarWalkCv.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
+                binding.calendarLoadingBgV.visibility = View.VISIBLE
+                binding.calendarLoadingPb.visibility = View.VISIBLE
+
+                currentMonth = p1.yearMonth
                 // Month API 호출
                 WalkService.getMonthWalks(this@CalendarFragment, p1.year, p1.month)
-
                 binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
-                currentMonth = p1.yearMonth
             }
         }
 
@@ -305,10 +307,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                calendarDayBinder.setCurrentMonthResults(monthResult)
+                binding.calendarWalkCv.notifyMonthChanged(currentMonth)
+
                 binding.calendarLoadingBgV.visibility = View.GONE
                 binding.calendarLoadingPb.visibility = View.GONE
-
-                calendarDayBinder.setCurrentMonthResults(monthResult)
             })
         }
     }
