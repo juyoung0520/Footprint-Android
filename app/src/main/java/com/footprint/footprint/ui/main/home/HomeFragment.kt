@@ -89,7 +89,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                 Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]}")
                 startActivity(intent)
             } else { //정보 없음
-                Toast.makeText(activity, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
             }
         }
 
