@@ -7,8 +7,8 @@ import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.footprint.Footprint
-import com.footprint.footprint.data.remote.walk.AcquiredBadge
 import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ActivityWalkAfterBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -16,6 +16,7 @@ import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.ui.dialog.MsgDialogFragment
+import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
 import com.google.gson.Gson
@@ -27,6 +28,7 @@ class WalkAfterActivity :
     BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), WalkAfterView {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var footprintDialogFragment: FootprintDialogFragment
+    private lateinit var newBadgeDialogFragment: NewBadgeDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
     private lateinit var walk: WalkModel    //WalkMpFragment 로부터 전달 받은 walk 데이터
 
@@ -34,11 +36,13 @@ class WalkAfterActivity :
     private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
 
     private val jobs: ArrayList<Job> = arrayListOf()
+    private val acquireBadges: ArrayList<BadgeInfo> = arrayListOf() //산책 저장 후 얻은 뱃지 리스트를 저장하는 전역 변수
 
     override fun initAfterBinding() {
         setMyClickListener()
         setActionDialog()
         initFootprintDialog()
+        initNewBadgeDialog()
 
         //WalkMpFragment 로부터 전달 받은 walk 데이터
         val walkStr = intent.getStringExtra("walk")
@@ -222,6 +226,28 @@ class WalkAfterActivity :
         actionDialogFragment.arguments = bundle
     }
 
+    private fun initNewBadgeDialog() {
+        newBadgeDialogFragment = NewBadgeDialogFragment()
+
+        newBadgeDialogFragment.setMyDialogCallback(object : NewBadgeDialogFragment.MyDialogCallback {
+            override fun confirm() {
+                if (acquireBadges.isEmpty())    //모든 뱃지를 보여주면 액티비티 종료
+                    finish()
+                else    //다음 뱃지 보여주기
+                    showNewBadgeDialog(acquireBadges.removeAt(0))
+            }
+
+        })
+    }
+
+    //NewBadgeDialog 에 얻은 뱃지를 저장해서 다이얼로그에 저장
+    private fun showNewBadgeDialog(badge: BadgeInfo) {
+        val bundle = Bundle()
+        bundle.putString("badge", Gson().toJson(badge))
+        newBadgeDialogFragment.arguments = bundle
+        newBadgeDialogFragment.show(supportFragmentManager, null)
+    }
+
     override fun onWalkAfterLoading() {
         if (this!=null) {
             jobs.add(lifecycleScope.launch {
@@ -239,16 +265,17 @@ class WalkAfterActivity :
         }
     }
 
-    override fun onWriteWalkSuccess(badgeList: List<AcquiredBadge>) {
+    override fun onWriteWalkSuccess(badgeList: List<BadgeInfo>) {
         if (this!=null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkAfterLoadingPb.visibility = View.INVISIBLE
-                showToast(getString(R.string.msg_save_walk_success))
 
-                if (badgeList.isEmpty())    //얻은 뱃지가 없을 때
+                if (badgeList.isEmpty()) {  //얻은 뱃지가 없을 때
+                    showToast(getString(R.string.msg_save_walk_success))
                     finish()
-                else {  //얻은 뱃지가 있을 때
-
+                } else {  //얻은 뱃지가 있을 때
+                    acquireBadges.addAll(badgeList) //전역 변수에 얻은 뱃지 리스트를 저장
+                    showNewBadgeDialog(acquireBadges.removeAt(0))   //NewBadgeDialog 띄우기
                 }
             })
         }
