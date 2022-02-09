@@ -264,8 +264,6 @@
     <!--다음달 목표-->
     <string name="title_goal_next_month">다음달 목표</string>
     <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--코스 추천-->
     <string name="title_comming_soon">~ Coming Soon ~</string>
