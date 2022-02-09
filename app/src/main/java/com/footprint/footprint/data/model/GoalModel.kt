@@ -13,3 +13,9 @@ data class UserGoalTime(
     var walkGoalTime: Int? = null,
     var walkTimeSlot: Int? = null
 ): Serializable
+
+data class UpdateGoalReqModel(
+    val dayIdx: ArrayList<Int> = arrayListOf(),
+    var walkGoalTime: Int? = null,
+    var walkTimeSlot: Int? = null
+)
