@@ -9,7 +9,7 @@ import retrofit2.*
 object BadgeService {
     private val badgeService = retrofit.create(BadgeRetrofitInterface::class.java)
 
-
+    /*뱃지 목록 조회 API*/
     fun getBadgeInfo(badgeView: BadgeView) {
         badgeView.onBadgeLoading()
 
@@ -34,6 +34,7 @@ object BadgeService {
         })
     }
 
+    /*대표 뱃지 변경 API*/
     fun changeRepresentativeBadge(badgeView: BadgeView, badgeIdx: Int) {
         badgeService.changeRepresentativeBadge(badgeIdx)
             .enqueue(object : Callback<ChangeRepresentativeBadgeResponse> {

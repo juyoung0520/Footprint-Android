@@ -5,14 +5,12 @@ import android.os.Handler
 import android.util.Log
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
+import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
-import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
-import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.removeJwt
@@ -78,7 +76,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     /*뱃지 API*/
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: MonthBadge?) {
+    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
         val intent = Intent(this, MainActivity::class.java)
         if(isBadgeExist)
             intent.putExtra("badge", monthBadge)

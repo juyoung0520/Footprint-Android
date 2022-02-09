@@ -6,8 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
-import com.footprint.footprint.data.model.UserModel
-import com.footprint.footprint.data.remote.badge.MonthBadge
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
