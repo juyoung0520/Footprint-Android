@@ -112,7 +112,7 @@
         android:id="@+id/goal_next_month_update_goal_day_rv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="29dp"
+        android:layout_marginHorizontal="26.5dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_goal_day_line_view"

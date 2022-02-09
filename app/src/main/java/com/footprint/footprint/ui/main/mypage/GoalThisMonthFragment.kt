@@ -24,7 +24,7 @@ class GoalThisMonthFragment :
             "2022년 2월",
             arrayListOf(2, 3, 6),
             UserGoalTime(20, 4),
-            true
+            false
         )
 
         initAdapter()  //어댑터 초기화
