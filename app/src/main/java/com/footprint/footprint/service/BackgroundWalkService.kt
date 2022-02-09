@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
 import com.footprint.footprint.ui.walk.WalkMapFragmentDirections
+import com.footprint.footprint.utils.GlobalApplication
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.*
@@ -85,10 +87,12 @@ class BackgroundWalkService : LifecycleService() {
 
                 locationActivate()
 
+                // 처음 아니면
                 if (isInit) {
                     startTimer()
                 }
             } else {
+                Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
                 locationDeactivate()
             }
         })
@@ -108,21 +112,26 @@ class BackgroundWalkService : LifecycleService() {
                     isWalking.postValue(false)
                 }
                 TRACKING_STOP -> {
-                    isWalking.postValue(false)
-                    stopSelf()
-
-                    isWalking.postValue(false)
-                    currentTime.postValue(0)
-                    currentLocation.postValue(null)
-                    paths.postValue(mutableListOf())
-                    totalDistance.postValue(0.0f)
-                    pauseWalk.postValue(false)
+                    stopWalk()
                 }
                 else -> null
             }
         }
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun stopWalk() {
+        Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
+        isWalking.postValue(false)
+        stopSelf()
+
+        isWalking.postValue(false)
+        currentTime.postValue(0)
+        currentLocation.postValue(null)
+        paths.postValue(mutableListOf())
+        totalDistance.postValue(0.0f)
+        pauseWalk.postValue(false)
     }
 
     private val locationCallback = object : LocationCallback() {
