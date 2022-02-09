@@ -56,7 +56,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageTodayProgressTv.text = "${userInfoAchieve.todayGoalRate}%"
         binding.mypageMonthPb.progress = userInfoAchieve.monthGoalRate
         binding.mypageMonthProgressTv.text = "${userInfoAchieve.monthGoalRate}%"
-        binding.mypageCountNumberTv.text = userInfoAchieve.userWalkCount.toString()
+        binding.mypageCountNumberTv.text = "${userInfoAchieve.userWalkCount}회"
 
         // 글자 색상
         val spanColorPrimary =
@@ -402,7 +402,11 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     private fun getMostWalkDay(list: List<String>): String {
-        return list[0]
+        if (list.size == 1) {
+            return list[0] + "요일"
+        } else {
+            return list.joinToString(",")
+        }
     }
 
     inner class XAxisFormatter(private val labels: ArrayList<String>) : ValueFormatter() {

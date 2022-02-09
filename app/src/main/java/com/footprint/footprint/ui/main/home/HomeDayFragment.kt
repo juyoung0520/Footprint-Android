@@ -44,7 +44,7 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
 
         //달성율 색 변경: 100(primary), 0(black_dark), else(secondary)
         val color =
-            if (TodayGoalRate == 100) " #4FB8E7" else if (TodayGoalRate == 0) "#241F20" else "#FFC01D"
+            if (TodayGoalRate == 100) "#4FB8E7" else if (TodayGoalRate == 0) "#241F20" else "#FFC01D"
         circleProgressBar.setProgressStartColor(Color.parseColor(color))
         circleProgressBar.setProgressEndColor(Color.parseColor(color))
         binding.homeDayProgressTv.setTextColor(Color.parseColor(color))

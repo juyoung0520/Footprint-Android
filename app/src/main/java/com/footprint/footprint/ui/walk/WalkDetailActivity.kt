@@ -39,6 +39,7 @@ class WalkDetailActivity :
     override fun initAfterBinding() {
         FootprintService.getFootprints(this, args.walkIdx)  //산책별 발자국 리스트 조회 API 요청
         WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청청
+        binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
 
         setMyClickListener()
         setActionDialog()
