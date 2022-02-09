@@ -2,7 +2,6 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import android.view.View
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeResponse
@@ -13,6 +12,7 @@ import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.loadSvg
 
 class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate), BadgeView {
 
@@ -32,7 +32,8 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
     //대표 뱃지 데이터 바인딩
     private fun bindRepresentativeBade(badge: BadgeInfo) {
-        Glide.with(this).load(badge.badgeUrl).into(binding.badgeRepresentativeBadgeIv)
+        binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
+//        Glide.with(this).load(badge.badgeUrl).into(binding.badgeRepresentativeBadgeIv)
         binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
     }
 

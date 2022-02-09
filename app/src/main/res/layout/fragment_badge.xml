@@ -39,11 +39,9 @@
     <View
         android:id="@+id/badge_representative_badge_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="288dp"
         android:background="@color/primary_light_30"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/badge_tb" />
 
@@ -93,8 +91,8 @@
 
     <ImageView
         android:id="@+id/badge_representative_badge_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="23dp"
         android:layout_marginBottom="13dp"
         app:layout_constraintBottom_toTopOf="@+id/badge_representative_badge_name_tv"
@@ -133,10 +131,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/primary"
-        app:layout_constraintTop_toTopOf="@+id/badge_badge_rv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/badge_badge_rv"
-        android:visibility="invisible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/badge_badge_rv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
