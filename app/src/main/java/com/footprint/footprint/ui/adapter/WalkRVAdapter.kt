@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.footprint.footprint.R
+import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<DayWalkResult>()
@@ -108,7 +110,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
         fun bind(position: Int) {
             val walk = walks[position].walk
-            binding.walkNthRecordTv.text = walk.walkIdx.toString()
+            binding.walkNthRecordTv.text = String.format("%d번째 산책", walk.walkIdx)
 
             binding.root.setOnClickListener {
                 mOnItemClickListener.onItemClick(walk)
@@ -123,8 +125,9 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
             Glide.with(context).load(walk.pathImageUrl).into(binding.walkPathIv)
 
             val hashtag = walks[position].hashtag
+            Log.d("$TAG/WALKRV", hashtag.toString())
             for (idx in hashtag.indices) {
-                when(idx) {
+                when(idx + 1) {
                     1 -> initTag(binding.walkTag1Tv, hashtag[idx])
                     2 -> initTag(binding.walkTag2Tv, hashtag[idx])
                     3 -> initTag(binding.walkTag3Tv, hashtag[idx])
@@ -136,7 +139,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
         private fun initTag(textView: TextView, tag: String) {
             if (currentTag != null && currentTag == tag) {
-                textView.background = getDrawable(context, R.color.primary_55)
+                textView.background = getDrawable(context, R.drawable.bg_primary_round_square)
             }
 
             textView.visibility = View.VISIBLE
