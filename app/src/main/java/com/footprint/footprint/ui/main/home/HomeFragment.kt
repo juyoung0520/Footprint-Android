@@ -41,7 +41,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    WeatherView, HomeView, HomeDayView, HomeMonthView {
+    WeatherView, HomeView, HomeDayView, HomeMonthView{
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter

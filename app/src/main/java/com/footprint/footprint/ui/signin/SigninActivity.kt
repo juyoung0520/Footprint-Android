@@ -27,6 +27,7 @@ import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.utils.*
+import com.google.gson.Gson
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
@@ -176,7 +177,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
         saveLoginStatus(this, socialUserModel.providerType)
-        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel.providerType")
+        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //2. STATUS에 따른 처리
         // ACTIVE: 가입된 회원 -> 뱃지 API 호출
@@ -202,7 +203,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
         val intent = Intent(this, MainActivity::class.java)
         if(isBadgeExist)
-            intent.putExtra("badge", monthBadge)
+            intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
         Log.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
     }

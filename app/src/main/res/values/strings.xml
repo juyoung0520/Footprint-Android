@@ -108,6 +108,7 @@
     <string name="error_register_info_nickname">닉네임은 최대 8자까지 가능해요</string>
 
     <!--홈-->
+    <string name="msg_badge">뱃지를 획득했어요!</string>
     <string name="msg_home_hello">안녕하세요, </string>
     <string name="msg_home_userunit">님!</string>
     <string name="msg_home_greetings">오늘도 발자국을 남겨볼까요?</string>

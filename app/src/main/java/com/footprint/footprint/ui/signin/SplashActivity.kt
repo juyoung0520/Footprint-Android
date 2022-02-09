@@ -14,6 +14,7 @@ import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.removeJwt
+import com.google.gson.Gson
 
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, MonthBadgeView {
@@ -79,7 +80,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
         val intent = Intent(this, MainActivity::class.java)
         if(isBadgeExist)
-            intent.putExtra("badge", monthBadge)
+            intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
         Log.d("SPLASH(BADGE)/API-SUCCESS", monthBadge.toString())
     }

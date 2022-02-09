@@ -63,7 +63,7 @@ class NewBadgeDialogFragment : DialogFragment() {
 
     private fun bindBadge(badge: BadgeInfo) {
         binding.newBadgeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
-        binding.newBadgeTitleTv.text = "'${badge.badgeName}'\n뱃지를 획득했어요!"
+        binding.newBadgeTitleTv.text = "'${badge.badgeName}'"
     }
 
     fun setMyDialogCallback(myDialogCallback: MyDialogCallback) {
