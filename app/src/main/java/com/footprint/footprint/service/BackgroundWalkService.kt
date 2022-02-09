@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
 typealias Path = MutableList<LatLng>
 typealias PathGroup = MutableList<Path>
 
-class WalkService : LifecycleService() {
+class BackgroundWalkService : LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private lateinit var lastLocation: Location

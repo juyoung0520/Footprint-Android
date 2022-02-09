@@ -21,7 +21,7 @@ import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
-import com.footprint.footprint.service.WalkService
+import com.footprint.footprint.service.BackgroundWalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
@@ -82,17 +82,21 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                         .commit()
                 }
 
+        // 지도 비동기 호출
         mapFragment.getMapAsync(this)
 
         return binding.root
     }
 
+    // 지도 콜백
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
         map = naverMap
+        // 지도 설정
         setMap()
 
-        sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
+        // 백그라운드 서비스
+        sendCommandToService(BackgroundWalkService.TRACKING_START_OR_RESUME)
 
         setObserver()
     }
@@ -116,11 +120,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         val midMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_middle_end)
         val endMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_end)
 
-        WalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
+        BackgroundWalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
             isWalking = state
+            // 산책 중이면
             if (isWalking) {
                 binding.walkmapMiddleIv.isSelected = true
-
+                // 발자국으로 인한 재시작이면
                 if (isFootprint) {
                     isFootprint = false
                 } else {
@@ -142,7 +147,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         })
 
-        WalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
+        BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
@@ -151,12 +156,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         })
 
-        WalkService.totalDistance.observe(viewLifecycleOwner, Observer { distance ->
+        BackgroundWalkService.totalDistance.observe(viewLifecycleOwner, Observer { distance ->
             binding.walkmapDistanceNumberTv.text =
                 String.format("%.1f", distance / 1000)
         })
 
-        WalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
+        BackgroundWalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
             if (location != null) {
                 if (!isInit) {
                     isInit = true
@@ -171,13 +176,13 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         })
 
-        WalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
+        BackgroundWalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
             this.currentTime = currentTime
 
             updateTime(1800)
         })
 
-        WalkService.pauseWalk.observe(viewLifecycleOwner, Observer { state ->
+        BackgroundWalkService.pauseWalk.observe(viewLifecycleOwner, Observer { state ->
             if (state) {
                 showStopWalkDialog()
             }
@@ -196,6 +201,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
                 val action = WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
                 findNavController().navigate(action)
+                // 산책 재시작
+                sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT)
             } else  //아직 9개가 안됐으면 -> 발자국 남기기 다이얼로그 화면 띄우기
                 footprintDialogFragment.show(requireActivity().supportFragmentManager, null)
         }
@@ -252,9 +259,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private fun setWalkState(isWalking: Boolean) {
         if (isWalking) {
-            sendCommandToService(WalkService.TRACKING_START_OR_RESUME)
+            sendCommandToService(BackgroundWalkService.TRACKING_START_OR_RESUME)
         } else {
-            sendCommandToService(WalkService.TRACKING_PAUSE)
+            sendCommandToService(BackgroundWalkService.TRACKING_PAUSE)
         }
     }
 
@@ -376,8 +383,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     // service
     private fun sendCommandToService(action: String) {
-        Log.d("Walk/WalkMap", "sendCommandToService")
-        val intent = Intent(context, WalkService::class.java)
+        val intent = Intent(context, BackgroundWalkService::class.java)
         intent.action = action
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -403,15 +409,16 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
             override fun sendFootprint(footprint: FootprintModel) {
-                sendCommandToService(WalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
                 initFootprintDialog()   //FootprintDialogFragment 초기화
 
                 //"발자국을 남겼어요." 다이얼로그 화면 띄우기
                 val action = WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.msg_leave_footprint))
                 findNavController().navigate(action)
+                sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
                 footprints.add(footprint)   //footprints 리스트에 발자국 추가
 
+                // 발자국 마크 추가
                 if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
                     putMarker(paths.last().last(), footprints.size)
                 }
@@ -425,7 +432,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     override fun onDestroyView() {
         super.onDestroyView()
-        sendCommandToService(WalkService.TRACKING_STOP)
+        sendCommandToService(BackgroundWalkService.TRACKING_STOP)
     }
 
 }
