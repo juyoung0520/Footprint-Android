@@ -173,6 +173,24 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         binding.settingPasswordSettingNextIv.setOnClickListener {
             startLockActivity("CHANGE")
         }
+
+        //개인정보처리방침 텍스트뷰 클릭 리스너
+        binding.settingPrivacyPolicyTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_user), getString(R.string.msg_agreement_user))
+            findNavController().navigate(action)
+        }
+
+        //이용약관 텍스트뷰 클릭 리스너
+        binding.settingTermsOfUserTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_use), getString(R.string.msg_agreement_use))
+            findNavController().navigate(action)
+        }
+
+        //위치서비스이용약관 텍스트뷰 클릭 리스너
+        binding.settingLocationTermsOfServiceTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_location), getString(R.string.msg_agreement_location))
+            findNavController().navigate(action)
+        }
     }
 
     private fun setActionDialogBundle(msg: String, desc: String, action: String) {

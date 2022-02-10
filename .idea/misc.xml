@@ -101,6 +101,7 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/drawable/selector_setting_switch_thumb.xml" value="0.15789473684210525" />
         <entry key="..\:/Footprint-Android/app/src/main/res/drawable/unselected_post_dialog_photo_indicator.xml" value="0.13645833333333332" />
         <entry key="..\:/Footprint-Android/app/src/main/res/drawable/unselected_post_photo_indicator.xml" value="0.26979166666666665" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_agree.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_badge.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_lock.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
@@ -111,6 +112,10 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_walk_detail.xml" value="0.2" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/em.xml" value="0.25364583333333335" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.264" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_agree.xml" value="0.21576576576576575" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_agree_location.xml" value="0.21576576576576575" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_agree_use.xml" value="0.168188202247191" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_agree_user.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_badge.xml" value="0.2100877192982456" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_calendar.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_calendar_blank.xml" value="0.13648648648648648" />
@@ -130,6 +135,7 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_register_goal.xml" value="0.22546296296296298" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_register_info.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_setting.xml" value="0.264" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_terms.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_walk_confirm.xml" value="0.2535760728218466" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_walk_detail.xml" value="0.15756578947368421" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_walk_dialog.xml" value="0.10572916666666667" />
