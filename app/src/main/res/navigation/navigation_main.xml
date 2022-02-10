@@ -69,6 +69,9 @@
             <action
                 android:id="@+id/action_settingFragment_to_signinActivity"
                 app:destination="@id/signinActivity" />
+            <action
+                android:id="@+id/action_settingFragment_to_lockActivity3"
+                app:destination="@id/LockActivity" />
         </fragment>
         <fragment
             android:id="@+id/myInfoFragment"
@@ -92,6 +95,14 @@
             android:id="@+id/signinActivity"
             android:name="com.footprint.footprint.ui.signin.SigninActivity"
             android:label="SigninActivity" />
+        <activity
+            android:id="@+id/LockActivity"
+            android:name="com.footprint.footprint.ui.lock.LockActivity"
+            android:label="LockActivity">
+            <argument
+                android:name="mode"
+                app:argType="string" />
+        </activity>
     </navigation>
     <fragment
         android:id="@+id/badgeFragment"
@@ -169,4 +180,26 @@
             app:destination="@id/goalNextMonthFragment"
             app:popUpTo="@id/goalThisMonthFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/calendarBlankFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.CalendarBlankFragment"
+        android:label="fragment_calendar_blank"
+        tools:layout="@layout/fragment_calendar_blank" >
+        <action
+            android:id="@+id/action_calendarBlankFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment"
+            app:popUpTo="@id/calendarBlankFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_calendarBlankFragment_to_lockActivity"
+            app:destination="@id/lockActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/lockActivity"
+        android:name="com.footprint.footprint.ui.lock.LockActivity"
+        android:label="LockActivity" >
+        <argument
+            android:name="mode"
+            app:argType="string" />
+    </activity>
 </navigation>

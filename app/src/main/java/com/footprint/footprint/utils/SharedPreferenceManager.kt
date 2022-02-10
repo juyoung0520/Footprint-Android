@@ -111,6 +111,21 @@ fun getPWDstatus(context: Context): String? {
     return spf.getString("pwdStatus", "DEFAULT")
 }
 
+//산책 일기 암호가 풀렸는지 - DEFAULT(NOTHING), SUCCESS(암호가 풀림), CANCEL(암호 풀려다 취소 ex.뒤로가기)
+fun saveCrackStatus(context: Context, isCrack: String) {
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+    val editor = spf.edit()
+
+    editor.putString("crackStatus", isCrack)
+    editor.apply()
+}
+
+fun getCrackStatus(context: Context): String? {
+    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+
+    return spf.getString("crackStatus", "NOTHING")
+}
+
 /*Notification: 앱 푸시 알림 - true(알림 on) false(알림 off)*/
 fun saveNotification(context: Context, status: Boolean){
     val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)

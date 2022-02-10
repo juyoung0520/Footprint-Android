@@ -1,14 +1,13 @@
 package com.footprint.footprint.ui.lock
 
-import android.content.Intent
 import android.util.Log
+import androidx.navigation.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityLockBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.LockRVAdapter
-import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,36 +24,37 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
     private var type: String? = null                    //type: SETTING, CHANGE, CHECKING, UNLOCK (함수별)
 
     override fun initAfterBinding() {
-        if (intent.hasExtra("mode")) {
-            mode = intent.getStringExtra("mode")
+        //SettingFragment 또는 CalendarBlankFragment 를 통해 현재 암호 모드를 전달 받는다.
+        val navArgs: LockActivityArgs by navArgs()
+        mode = navArgs.mode
 
-            /*화면 종류별*/
-            when (mode) {
-                "SETTING" -> { //1. 암호 설정
-                    pwdSettingUI()
-                    type = "SETTING"
-                }
-
-                "CHANGE" -> { //2. 암호 변경
-                    pwdUnlockUI("CHECK")
-                    type = "UNLOCK"
-                }
-
-                "UNLOCK" -> { //3. 잠금 해제
-                    pwdUnlockUI("DEFAULT")
-                    type = "UNLOCK"
-                }
+        /*화면 종류별*/
+        when (mode) {
+            "SETTING" -> { //1. 암호 설정
+                pwdSettingUI()
+                type = "SETTING"
             }
 
-            initRV()
-            initBackBtn()
+            "CHANGE" -> { //2. 암호 변경
+                pwdUnlockUI("CHECK")
+                type = "UNLOCK"
+            }
+
+            "UNLOCK" -> { //3. 잠금 해제
+                pwdUnlockUI("DEFAULT")
+                type = "UNLOCK"
+            }
         }
+
+        initRV()
+        initBackBtn()
     }
 
     /*화면 init*/
     //Back 버튼
     private fun initBackBtn() {
         binding.lockBackBtnIv.setOnClickListener {
+            saveCrackStatus(this, "CANCEL")
             finish()
         }
     }
@@ -207,15 +207,11 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                     //잠금 해제 성공
                     Log.d("LOCK/UNLOCK-SUCCESS", "잠금 해제에 성공하셨습니다.")
 
-                    if (mode == "CHANGE") {
-                        //암호 변경을 위한 잠금 해제 -> 암호 변경
+                    if (mode == "CHANGE") { //암호 변경을 위한 잠금 해제 -> 암호 변경
                         pwdChangeUI()
                         type = "CHANGE"
-                    } else {
-                        //그냥 잠금 해제 -> 요청 보낸 액티비티로 RESULT_OK(결과값), walkIdx 보내기
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra("walkIdx", this@LockActivity.intent.getIntExtra("walkIdx", 0))
-                        setResult(RESULT_OK, intent)
+                    } else {    //그냥 잠금 해제 -> SharedPreferences 에 암호가 풀렸음(SUCCESS)을 저장한다.
+                        saveCrackStatus(this, "SUCCESS")
                         finish()
                     }
                 } else {
@@ -298,5 +294,11 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
             "WRONG" -> binding.lockDescriptionTv.setText(R.string.msg_lock_unlock_wrong)
         }
         binding.lockTitleTv.setText(R.string.title_lock_unlock)
+    }
+
+    //뒤로가기 이벤트: SharedPreferences 에 LockActivity 에 들어왔다가 그냥 뒤로 나가 버린 것(CANCEL)을 저장한다.
+    override fun onBackPressed() {
+        saveCrackStatus(this, "CANCEL")
+        super.onBackPressed()
     }
 }
