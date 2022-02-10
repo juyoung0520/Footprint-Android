@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
@@ -50,20 +51,21 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private val endMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_end)
 
     private lateinit var footprintDialogFragment: FootprintDialogFragment
+    private lateinit var spannable: SpannableString
 
     private var isWalking: Boolean = false
     private var paths = mutableListOf<Path>()
     private var currentTime: Int = 0
     private var isInit = false
-    private var isFootprint = false
 
-    private lateinit var spannable: SpannableString
+    private var isFootprint = false
 
     private val footprints: ArrayList<FootprintModel> = arrayListOf() //지금까지 사용자가 기록한 총 데이터
     private val walkModel: WalkModel = WalkModel()  //산책 데이터
+    private lateinit var userInfo: UserModel
 
     override fun initAfterBinding() {
-        walkModel.walkTitle = "00번째 산책" //00번째 산책
+        walkModel.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
         //산책 시작 시간 데이터 저장
         val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
         walkModel.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
@@ -77,6 +79,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        userInfo = (activity as WalkActivity).userInfo!!
 
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
@@ -121,8 +125,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun setObserver() {
-        // argument 가져오기 몸무게, 목표시간
-
         BackgroundWalkService.isWalking.observe(viewLifecycleOwner, Observer { state ->
             isWalking = state
             // 산책 중이면
@@ -135,7 +137,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     initPath()
                 }
             } else { // 산책 중 아니면
-                Log.d("$TAG/WALKMAP", "ISWALKING - false")
+                //Log.d("$TAG/WALKMAP", "ISWALKING - false")
                 binding.walkmapMiddleIv.isSelected = false
                 locationOverlay.isVisible = false
 
@@ -153,7 +155,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
-            Log.d("$TAG/WALKMAP", paths.toString())
+           // Log.d("$TAG/WALKMAP", paths.toString())
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
                 currentPathOverlay.coords = paths.last()
@@ -184,7 +186,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         BackgroundWalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
             this.currentTime = currentTime
 
-            updateTime(1800)
+            updateTime(userInfo.goalWalkTime * 60)
         })
 
         BackgroundWalkService.pauseWalk.observe(viewLifecycleOwner, Observer { state ->
@@ -294,12 +296,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         map.moveCamera(CameraUpdate.scrollTo(position))
 
-        updateCalorie(50)
+        updateCalorie()
         updatePace(location.speed)
     }
 
-    private fun updateCalorie(weight: Int) {
-        val calConstant = 0.0525 * weight // 칼로리 상수 * 몸무게
+    private fun updateCalorie() {
+        val calConstant = 0.0525 * userInfo.weight // 칼로리 상수 * 몸무게
 
         binding.walkmapCalorieNumberTv.text =
             (calConstant * (currentTime / 60)).roundToInt().toString()
@@ -372,7 +374,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                         lifecycleScope.launch {
                             setWalkState(false)
                             delay(1000) // 딜레이 필요. 일단 이렇게!!
-                            containAllPaths() // 경로 모두 포함하도록 지도 카메라 이동
+                            // containAllPaths() // 경로 모두 포함하도록 지도 카메라 이동
 
                             map.takeSnapshot { bitmap ->    //산책 동선 사진
                                 walkModel.pathImg = getAbsolutePathByBitmap(requireContext(), bitmap)
@@ -445,6 +447,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
+                footprints.add(footprint)   //footprints 리스트에 발자국 추가
+
                 // 발자국 마크 추가
                 if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
                     val lastLang = paths.last().last()
@@ -452,8 +456,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     footprint.coordinate = listOf(lastLang.latitude, lastLang.longitude)
                     Log.d("$TAG/WALKMAP", footprint.coordinate.toString())
                 }
-
-                footprints.add(footprint)   //footprints 리스트에 발자국 추가
             }
 
             override fun sendUpdatedFootprint(footprint: FootprintModel) {

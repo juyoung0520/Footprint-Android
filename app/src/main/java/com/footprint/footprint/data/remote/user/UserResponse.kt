@@ -30,5 +30,6 @@ data class User(
     @SerializedName("age") val age: Int,              //나이
     @SerializedName("sex") val sex: String,           //성별(male, female)
     @SerializedName("height") val height: Int,        //키
-    @SerializedName("weight") val weight: Int         //몸무게
+    @SerializedName("weight") val weight: Int,         //몸무게
+    @SerializedName("walkNumber") val walkNumber: Int  //산책 횟수
 )

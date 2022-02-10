@@ -6,10 +6,13 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -48,7 +51,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
 
     //Walk 액티비티로 전달할 유저 정보
-    private var userInfo: Array<Int?> = arrayOf(0, null, null)  //목표 시간, 키, 몸무게
+    private var userInfo: Array<Int?> = arrayOf(0, null, null, null)  //목표 시간, 키, 몸무게, 삭책 횟수
 
     //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()
@@ -62,31 +65,37 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         setPermission()    //위치 정보 사용 요청
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
         //날씨 API
         requestLocation()
 
         //유저 조회 API
         UserService.getUser(this)
 
-        //일별, 월별 API
+        //일별
         AchieveService.getToday(this)
-        AchieveService.getTMonth(this)
+
+        return binding.root
     }
 
     private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
             //유저 정보가 다 채워져야 산책 시작 가능
-            if (userInfo[1] != null && userInfo[2] != null) {
+            if (userInfo[1] != null && userInfo[2] != null && userInfo[3] != null) {
                 val intent = Intent(activity, WalkActivity::class.java)
 
                 intent.putExtra("goalTime", userInfo[0])
                 intent.putExtra("height", userInfo[1])
                 intent.putExtra("weight", userInfo[2])
+                intent.putExtra("walkNumber", userInfo[3])
 
-                Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]}")
+                Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]} 산책횟수:  ${userInfo[3]}")
                 startActivity(intent)
             } else { //정보 없음
                 Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
@@ -353,6 +362,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //유저 정보 저장
         userInfo[1] = user.height
         userInfo[2] = user.weight
+        userInfo[3] = user.walkNumber
     }
 
     override fun onUserFailure(code: Int, message: String) {
@@ -381,6 +391,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         // -> HomeDayFragment
         (fragmentList[0] as HomeDayFragment).onTodaySuccess(today)
+
+        //월별 API
+        AchieveService.getTMonth(this)
     }
 
     override fun onTodayFailure(code: Int, message: String) {
