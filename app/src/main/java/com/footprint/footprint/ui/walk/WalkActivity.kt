@@ -35,27 +35,38 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
 
         //취소 텍스트뷰 클릭 리스너 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         binding.walkCancelTv.setOnClickListener {
-            val bundle: Bundle = Bundle()
-            bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
-
-            val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
-            actionDialogFragment.arguments = bundle
-
-            actionDialogFragment.show(supportFragmentManager, null)
-
-            actionDialogFragment.setMyDialogCallback(object :
-                ActionDialogFragment.MyDialogCallback {
-
-                //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
-                override fun action1(isAction: Boolean) {
-                    if (isAction)
-                        finish()
-                }
-
-                override fun action2(isAction: Boolean) {
-                }
-            })
+            showStopWalkDialog()
         }
+    }
+
+    //뒤로 가기 이벤트 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
+    override fun onBackPressed() {
+        showStopWalkDialog()
+    }
+
+    //실시간 기록을 중지할까요? 다이얼로그 띄우는 함수
+    private fun showStopWalkDialog() {
+        val bundle: Bundle = Bundle()
+        bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
+        bundle.putString("action", getString(R.string.action_stop))
+
+        val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
+        actionDialogFragment.arguments = bundle
+
+        actionDialogFragment.show(supportFragmentManager, null)
+
+        actionDialogFragment.setMyDialogCallback(object :
+            ActionDialogFragment.MyDialogCallback {
+
+            //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
+            override fun action1(isAction: Boolean) {
+                if (isAction)
+                    finish()
+            }
+
+            override fun action2(isAction: Boolean) {
+            }
+        })
     }
 
     private fun setToastMessage() {
