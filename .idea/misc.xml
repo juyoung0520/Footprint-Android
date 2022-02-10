@@ -104,12 +104,13 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_badge.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_lock.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.1296875" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_onboarding.xml" value="0.21576576576576575" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_register.xml" value="0.11388888888888889" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_walk_after.xml" value="0.14375" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/activity_walk_detail.xml" value="0.2" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/em.xml" value="0.25364583333333335" />
-        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.30092592592592593" />
+        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_badge.xml" value="0.2100877192982456" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_calendar.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_calendar_blank.xml" value="0.13648648648648648" />
