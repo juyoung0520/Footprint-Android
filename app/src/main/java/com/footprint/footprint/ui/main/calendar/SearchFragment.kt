@@ -11,11 +11,14 @@ import com.footprint.footprint.ui.main.MainActivity
 
 class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
     private lateinit var adapter: TagRVAdapter
-    private var isChanged = false
+    private var isChanged = false //변경 사항 검사
 
     override fun initAfterBinding() {
-        setBinding()
+        if(::adapter.isInitialized) {
+            return
+        }
 
+        setBinding()
         initTagAdapter()
     }
 
@@ -51,7 +54,6 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
             }
 
             binding.searchSearchBarEt.setText("")
-
             actionToSearchResultFragment("#$result")
         }
 

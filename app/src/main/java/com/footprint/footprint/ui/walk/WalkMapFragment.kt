@@ -65,22 +65,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private lateinit var userInfo: UserModel
 
     override fun initAfterBinding() {
-        walkModel.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
-        //산책 시작 시간 데이터 저장
-        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-        walkModel.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-        initFootprintDialog()   //FootprintDialogFragment 초기화
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-
-        userInfo = (activity as WalkActivity).userInfo!!
+        if (::map.isInitialized) {
+            return
+        }
 
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
@@ -96,7 +83,14 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         // 지도 비동기 호출
         mapFragment.getMapAsync(this)
 
-        return binding.root
+        userInfo = (activity as WalkActivity).userInfo!!
+        walkModel.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
+
+        //산책 시작 시간 데이터 저장
+        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
+        walkModel.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        initFootprintDialog()   //FootprintDialogFragment 초기화
     }
 
     // 지도 콜백
