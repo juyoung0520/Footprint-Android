@@ -62,12 +62,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         setPermission()    //위치 정보 사용 요청
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
         //날씨 API
         requestLocation()
 
@@ -76,8 +72,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //일별
         AchieveService.getToday(this)
-
-        return binding.root
     }
 
     private fun setClickListener() {
