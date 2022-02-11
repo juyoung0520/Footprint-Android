@@ -191,4 +191,54 @@ object WalkService {
 
         })
     }
+
+    // 캘린더 화면
+    fun deleteWalk(calendarView: CalendarView, walkIdx: Int) {
+        calendarView.onDayWalkLoading()
+
+        walkService.deleteWalk(walkIdx).enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                updateFootprintResponse: Response<BaseResponse>
+            ) {
+                val res = updateFootprintResponse.body()
+                Log.d("WalkService","\ndeleteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
+
+                if (res?.code == 1000)
+                    calendarView.onDeleteWalkSuccess()
+                else
+                    calendarView.onCalendarFailure(res?.code!!, res?.message!!)
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
+                calendarView.onCalendarFailure(5000, t.message.toString())
+            }
+        })
+    }
+
+    // 태그 검색 결과 화면
+    fun deleteWalk(searchResultView: SearchResultView, walkIdx: Int) {
+        searchResultView.onSearchReaultLoading()
+
+        walkService.deleteWalk(walkIdx).enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                updateFootprintResponse: Response<BaseResponse>
+            ) {
+                val res = updateFootprintResponse.body()
+                Log.d("WalkService","\ndeleteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
+
+                if (res?.code == 1000)
+                    searchResultView.onDeleteWalkSuccess()
+                else
+                    searchResultView.onSearchReaultFailure(res?.code!!, res?.message!!)
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
+                searchResultView.onSearchReaultFailure(5000, t.message.toString())
+            }
+        })
+    }
 }

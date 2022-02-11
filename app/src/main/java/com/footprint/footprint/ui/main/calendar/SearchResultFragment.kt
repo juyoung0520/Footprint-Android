@@ -103,10 +103,10 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
     override fun onSearchReaultFailure(code: Int, message: String) {
         when (code) {
             400 -> {
-                Log.d("$TAG/SEARCH-RESULT/API", "SEARCH-RESULT/$message")
+                Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/fail/$message")
             }
             else -> {
-                Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/$message")
+                Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/fail/$message")
             }
         }
 
@@ -118,7 +118,7 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
     }
 
     override fun onSearchResultSuccess(walkDates: List<WalkDateResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/success")
+        Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/WALK-DATES/success")
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -127,6 +127,16 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
                 binding.searchResultWalkDatesRv.visibility = View.VISIBLE
 
                 initAdapter(walkDates)
+            })
+        }
+    }
+
+    override fun onDeleteWalkSuccess() {
+        Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/DELETE-WALK/success")
+
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                WalkService.getTagWalkDates(this@SearchResultFragment, currentTag.drop(1))
             })
         }
     }

@@ -6,4 +6,5 @@ interface SearchResultView {
     fun onSearchReaultLoading()
     fun onSearchReaultFailure(code: Int, message: String)
     fun onSearchResultSuccess(walkDates: List<WalkDateResult>)
+    fun onDeleteWalkSuccess()
 }

@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main.calendar
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
@@ -46,17 +48,21 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             return
         }
 
-        // currentMonth 초기화 됐으면 이번달 API 호출
-        if (::currentMonth.isInitialized) {
-            WalkService.getMonthWalks(this, currentMonth.year, currentMonth.monthValue)
-        }
+        updateAll()
+    }
 
+    private fun updateAll() {
         // 선택된 날이 없으면 오늘 날짜 API 호출
         val date = calendarDayBinder.getSelectedDate() ?: LocalDate.now()
         WalkService.getDayWalks(
             this,
             String.format("%d-%02d-%02d", date.year, date.monthValue, date.dayOfMonth)
         )
+
+        // currentMonth 초기화 됐으면 이번달 API 호출
+        if (::currentMonth.isInitialized) {
+            WalkService.getMonthWalks(this, currentMonth.year, currentMonth.monthValue)
+        }
     }
 
     private fun setBinding() {
@@ -164,7 +170,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         binding.calendarWalkNumber2Tv.text = " ${walks.size}"
 
         val adapter = WalkRVAdapter(requireContext())
-        adapter.setFragmentManager(requireActivity().supportFragmentManager)
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
@@ -173,18 +178,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             }
         })
 
-        adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
-            override fun onItemRemoveClick() {
-                val itemCount = adapter.itemCount
-                if (itemCount == 0) {
-                    binding.calendarHintTv.visibility = View.VISIBLE
-                    binding.calendarWalkRv.visibility = View.GONE
-                } else {
-                    binding.calendarHintTv.visibility = View.GONE
-                    binding.calendarWalkRv.visibility = View.VISIBLE
-                }
-
-                binding.calendarWalkNumber2Tv.text = " $itemCount"
+        adapter.setOnItemRemoveListener(object : WalkRVAdapter.OnItemRemoveClickListener {
+            override fun onItemRemoveClick(walkIdx: Int) {
+                showRemoveDialog(walkIdx)
             }
         })
 
@@ -229,6 +225,28 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         }
     }
 
+    private fun showRemoveDialog(walkIdx: Int) {
+        val actionDialogFragment = ActionDialogFragment()
+
+        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
+            override fun action1(isAction: Boolean) {
+                if (isAction) {
+                    // remove API
+                    WalkService.deleteWalk(this@CalendarFragment, walkIdx)
+                }
+            }
+
+            override fun action2(isAction: Boolean) {
+            }
+        })
+
+        val bundle = Bundle()
+        bundle.putString("msg", "'${walkIdx}번째 산책' 을 삭제하시겠어요?")
+
+        actionDialogFragment.arguments = bundle
+        actionDialogFragment.show(childFragmentManager, null)
+    }
+
     //WalkDetailActivity 로 이동하는 함수
     fun goWalkDetailActivity(walkIdx: Int) {
         val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(walkIdx)   //날짜별 산책 데이터 조회 API 가 연결됐을 때 사용
@@ -257,7 +275,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         when (code) {
             // Month
             400 -> {
-                Log.d("$TAG/CALENDAR/API", "CALENDAR/MONTH/$message")
+                Log.d("$TAG/CALENDAR", "CALENDAR/MONTH/fail/$message")
                 if (view != null) {
                     jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                         binding.calendarLoadingBgV.visibility = View.GONE
@@ -266,16 +284,16 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 }
             }
             401 -> {
-                Log.d("$TAG/CALENDAR/API", "CALENDAR/DAY-WALK/$message")
+                Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/fail/$message")
             }
             else -> {
-                Log.d("$TAG/CALENDAR/", "CALENDAR/DAY-WALK/$message")
+                Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/fail/$message")
             }
         }
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/MONTH/success")
+        Log.d("$TAG/CALENDAR", "CALENDAR/MONTH/success")
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -289,7 +307,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "CALENDAR/DAY-WALK/success")
+        Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/success")
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -299,6 +317,15 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                     binding.calendarHintTv.visibility = View.GONE
                     binding.calendarWalkRv.visibility = View.VISIBLE
                 }
+            })
+        }
+    }
+
+    override fun onDeleteWalkSuccess() {
+        Log.d("$TAG/CALENDAR", "CALENDAR/DELETE-WALK/success")
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+               updateAll()
             })
         }
     }

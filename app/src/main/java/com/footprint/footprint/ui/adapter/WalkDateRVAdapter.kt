@@ -2,12 +2,17 @@ package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.data.remote.walk.WalkDateResult
+import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ItemWalkDateBinding
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.main.calendar.CalendarView
+import com.footprint.footprint.ui.main.calendar.SearchResultView
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
     private val walkDates = arrayListOf<WalkDateResult>()
@@ -70,6 +75,28 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
         return walkDates.size
     }
 
+    private fun showRemoveDialog(walkIdx: Int) {
+        val actionDialogFragment = ActionDialogFragment()
+
+        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
+            override fun action1(isAction: Boolean) {
+                if (isAction) {
+                    // remove API
+                    WalkService.deleteWalk(context as SearchResultView, walkIdx)
+                }
+            }
+
+            override fun action2(isAction: Boolean) {
+            }
+        })
+
+        val bundle = Bundle()
+        bundle.putString("msg", "'${walkIdx}번째 산책' 을 삭제하시겠어요?")
+
+        actionDialogFragment.arguments = bundle
+        actionDialogFragment.show(fragmentManager, null)
+    }
+
     inner class WalkDateViewHolder(val binding: ItemWalkDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -81,16 +108,15 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
             adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)
-            adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
-                override fun onItemRemoveClick() {
-                    if (adapter.itemCount == 0) {
-                        removeWalkDate(position)
-                        onWalkDateRemoveListener.onWalkDateRemove()
-                    }
+            adapter.setOnItemRemoveListener(object : WalkRVAdapter.OnItemRemoveClickListener {
+                override fun onItemRemoveClick(walkIdx: Int) {
+                    showRemoveDialog(walkIdx)
+//                    if (adapter.itemCount == 0) {
+//                        removeWalkDate(position)
+//                        onWalkDateRemoveListener.onWalkDateRemove()
+//                    }
                 }
-
             })
-            adapter.setFragmentManager(fragmentManager)
 
             binding.walkDateWalksRv.adapter = adapter
         }
