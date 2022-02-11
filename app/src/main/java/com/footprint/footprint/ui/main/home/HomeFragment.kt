@@ -29,6 +29,8 @@ import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
+import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.google.android.gms.location.*
 import com.google.android.material.tabs.TabLayoutMediator
@@ -97,7 +99,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         binding.homeSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
-
     }
 
     /*Function*/

@@ -1,10 +1,13 @@
 package com.footprint.footprint.ui.setting
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
@@ -21,6 +24,7 @@ import com.kakao.sdk.user.UserApiClient
 class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+
     private lateinit var loginStatus: String
 
     override fun initAfterBinding() {
@@ -38,11 +42,24 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
-        //산책기록 잠금 스위치버튼 <- ON/OFF 상태
-        if (getPWDstatus(requireContext()) == "ON") {
-            binding.settingLockFootprintSb.isChecked = true
-            setPwdSettingVisibility()
+
+        //산책기록 잠금 상태
+        when(getPWDstatus(requireContext())){
+            "ON" ->{
+                when(getCrackStatus(requireContext())){
+                    "SUCCESS" -> { //암호 해제
+                        binding.settingLockFootprintSb.isChecked = false
+                        savePWDstatus(requireContext(), "OFF")
+                        saveCrackStatus(requireContext(), "NOTHING")
+                    }
+                    else -> { // 암호 풀려다 실패 or 처음 들어옴
+                        binding.settingLockFootprintSb.isChecked = true
+                        saveCrackStatus(requireContext(), "NOTHING")
+                    }
+                }
+            }
         }
+        setPwdSettingVisibility()
 
         //알림 상태
         binding.settingNotificationSb.isChecked = getNotification(requireContext())
@@ -159,13 +176,20 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         //산책기록 잠금 스위치버튼 클릭 리스너
         binding.settingLockFootprintSb.setOnClickListener {
             val pwdStatus = getPWDstatus(requireContext())
-            if (pwdStatus == "DEFAULT") {
-                //DEFAULT: 암호 X, 암호 설정 액티비티(LockActivity)로 이동/SETTING 암호 설정
-                startLockActivity("SETTING")
-                binding.settingLockFootprintSb.isChecked = false
-            } else {
-                //SET, ON, OFF: 암호 변경 visibility 변경
-                setPwdSettingVisibility()
+            when(pwdStatus){
+                "DEFAULT" -> {
+                    binding.settingLockFootprintSb.isChecked = false
+                    startLockActivity("SETTING")
+                }
+                "ON" -> {
+                    binding.settingLockFootprintSb.isChecked = false
+                    startLockActivity("UNLOCK")
+                }
+                "OFF" -> {
+                    binding.settingLockFootprintSb.isChecked = true
+                    savePWDstatus(requireContext(), "ON")
+                    setPwdSettingVisibility()
+                }
             }
         }
 
@@ -204,19 +228,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     /*Function- 암호 */
     //암호 변경 visibility 변경
     private fun setPwdSettingVisibility() {
-        lateinit var pwdStatus: String
-        if (binding.settingLockFootprintSb.isChecked) {
+        if (binding.settingLockFootprintSb.isChecked) { //암호 ON
             binding.settingPasswordSettingIv.visibility = View.VISIBLE
             binding.settingPasswordSettingTv.visibility = View.VISIBLE
             binding.settingPasswordSettingNextIv.visibility = View.VISIBLE
-            pwdStatus = "ON"
-        } else {
+        } else { //암호 OFF
             binding.settingPasswordSettingIv.visibility = View.GONE
             binding.settingPasswordSettingTv.visibility = View.GONE
             binding.settingPasswordSettingNextIv.visibility = View.GONE
-            pwdStatus = "OFF"
         }
-        savePWDstatus(requireContext(), pwdStatus)
     }
 
     //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)

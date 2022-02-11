@@ -15,7 +15,9 @@ class GlobalApplication: Application() {
     companion object{
         const val X_ACCESS_TOKEN: String = "X-ACCESS-TOKEN"  // JWT Token Key
         const val TAG: String = "FOOTPRINT-APP"              // SharedPreference
-        const val BASE_URL: String = "https://dev.mysteps.shop/"
+        const val PROD_URL: String = "https://mysteps.shop/"
+        const val DEV_URL: String = "https://dev.mysteps.shop/"
+        const val BASE_URL: String = DEV_URL
 
         lateinit var retrofit: Retrofit
         lateinit var mSharedPreferences: SharedPreferences

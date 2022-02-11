@@ -28,11 +28,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         if (!::registerVPAdapter.isInitialized)
             initVP()
 
-        //soft Keyboard Up
-
-        getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-
-
         //Register 넘어옴
         val jwt = getJwt()
         Log.d("REGISTER", "TOKEN: $jwt")
@@ -77,23 +72,5 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
             Log.d("REGISTER/USER", newUser.toString())
         }
-    }
-
-    //빈 공간 클릭 시 키보드 자동으로 내려주는 함수
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        val focusView: View? = currentFocus
-        if (focusView != null) {
-            val rect = Rect()
-            focusView.getGlobalVisibleRect(rect)
-            val x = ev.x.toInt()
-            val y = ev.y.toInt()
-            if (!rect.contains(x, y)) {
-                val imm: InputMethodManager =
-                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(focusView.getWindowToken(), 0)
-                focusView.clearFocus()
-            }
-        }
-        return super.dispatchTouchEvent(ev)
     }
 }
