@@ -37,7 +37,7 @@ data class TMonth(
 data class TMonthDayRateRes(
     @SerializedName("day") val day: Int,        //산책한 날짜
     @SerializedName("rate") val rate: Float     //해당 날짜의 산책 달성률
-): Serializable
+)
 
 data class TMonthGoal(
     @SerializedName("monthTotalMin") val monthTotalMin: Int,            //이번달 총 산책 시간(분)

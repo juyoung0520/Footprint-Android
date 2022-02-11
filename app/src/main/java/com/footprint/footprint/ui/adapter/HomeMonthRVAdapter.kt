@@ -81,6 +81,8 @@ class HomeMonthRVAdapter(
             Log.d("CALENDAR", "date: $date dateInt: $dateInt")
             if ((position in firstDateIndex..lastDateIndex) && data == dateInt) {
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
+            }else{
+                binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_caption_12)
             }
 
             // 현재 월의 1일 이전, 현재 월의 마지막일 이후 값의 텍스트를 회색처리
@@ -88,6 +90,8 @@ class HomeMonthRVAdapter(
                 binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#E1E2E1"))
                 binding.itemHomeMonthDayTv.background = null
                 binding.itemHomeMonthDayPb.visibility = View.GONE
+            }else{
+                binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#241F20"))
             }
 
             /*달성율 반영*/
