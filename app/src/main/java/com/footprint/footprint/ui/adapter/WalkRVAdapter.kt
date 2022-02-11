@@ -14,6 +14,7 @@ import com.footprint.footprint.databinding.ItemWalkBinding
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.footprint.footprint.R
+import com.footprint.footprint.ui.main.calendar.CalendarFragment
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<DayWalkResult>()
@@ -46,7 +47,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
         mOnItemClickListener = listener
     }
 
-    fun setOnItemRemoveListener(listener: OnItemRemoveClickListener) {
+    fun setOnItemRemoveClickListener(listener: OnItemRemoveClickListener) {
         mOnItemRemoveClickListener = listener
     }
 
@@ -57,9 +58,6 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
         }
 
         walks.removeAt(position)
-
-        // 리스너한테 알림, 새로고침
-       // mOnItemRemoveListener.onItemRemove()
         notifyDataSetChanged()
     }
 
@@ -85,6 +83,11 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
             binding.root.setOnClickListener {
                 mOnItemClickListener.onItemClick(walk)
+            }
+
+            // 검색 결과 화면이면
+            if (currentTag != null) {
+                binding.walkRemoveTv.visibility = View.GONE
             }
 
             binding.walkRemoveTv.setOnClickListener {

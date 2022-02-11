@@ -53,7 +53,7 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
                 isChanged = true
             }
 
-            binding.searchSearchBarEt.setText("")
+            //binding.searchSearchBarEt.setText("")
             actionToSearchResultFragment("#$result")
         }
 

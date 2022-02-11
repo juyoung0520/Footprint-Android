@@ -178,7 +178,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             }
         })
 
-        adapter.setOnItemRemoveListener(object : WalkRVAdapter.OnItemRemoveClickListener {
+        adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
             override fun onItemRemoveClick(walkIdx: Int) {
                 showRemoveDialog(walkIdx)
             }

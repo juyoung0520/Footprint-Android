@@ -7,10 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.data.model.WalkModel
-import com.footprint.footprint.data.remote.walk.TagWalkDatesResponse
-import com.footprint.footprint.data.remote.walk.UserDateWalk
-import com.footprint.footprint.data.remote.walk.WalkDateResult
-import com.footprint.footprint.data.remote.walk.WalkService
+import com.footprint.footprint.data.remote.walk.*
 import com.footprint.footprint.databinding.FragmentSearchResultBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.WalkDateRVAdapter
@@ -21,7 +18,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(FragmentSearchResultBinding::inflate), SearchResultView{
+class SearchResultFragment() :
+    BaseFragment<FragmentSearchResultBinding>(FragmentSearchResultBinding::inflate),
+    SearchResultView {
     private var isInitialized = false
     private lateinit var currentTag: String
     private val jobs = arrayListOf<Job>()
@@ -62,27 +61,17 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
         val adapter = WalkDateRVAdapter(requireContext())
 
         adapter.setWalkDates(walkDates)
-        adapter.setFragmentManager(requireActivity().supportFragmentManager)
+
         if (::currentTag.isInitialized) {
             adapter.setCurrentTag(currentTag)
         }
 
-        adapter.setWalkDateRemoveListener(object : WalkDateRVAdapter.OnWalkDateRemoveListener {
-            override fun onWalkDateRemove() {
-                val itemCount = adapter.itemCount
-                if (itemCount == 0) {
-                    binding.searchResultHintTv.visibility = View.VISIBLE
-                    binding.searchResultWalkDatesRv.visibility = View.GONE
-                } else {
-                    binding.searchResultHintTv.visibility = View.GONE
-                    binding.searchResultWalkDatesRv.visibility = View.VISIBLE
-                }
-            }
-        })
-
         adapter.setWalkClickListener(object : WalkRVAdapter.OnItemClickListener {
             override fun onItemClick(walk: UserDateWalk) {
-                val action = SearchResultFragmentDirections.actionSearchResultFragmentToWalkDetailActivity(walk.walkIdx)
+                val action =
+                    SearchResultFragmentDirections.actionSearchResultFragmentToWalkDetailActivity(
+                        walk.walkIdx
+                    )
                 findNavController().navigate(action)
             }
         })
@@ -90,7 +79,7 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
         binding.searchResultWalkDatesRv.adapter = adapter
     }
 
-    override fun onSearchReaultLoading() {
+    override fun onSearchResultLoading() {
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.searchResultLoadingPb.visibility = View.VISIBLE
@@ -100,7 +89,7 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
         }
     }
 
-    override fun onSearchReaultFailure(code: Int, message: String) {
+    override fun onSearchResultFailure(code: Int, message: String) {
         when (code) {
             400 -> {
                 Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/fail/$message")
@@ -127,16 +116,6 @@ class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(Fragmen
                 binding.searchResultWalkDatesRv.visibility = View.VISIBLE
 
                 initAdapter(walkDates)
-            })
-        }
-    }
-
-    override fun onDeleteWalkSuccess() {
-        Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/DELETE-WALK/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                WalkService.getTagWalkDates(this@SearchResultFragment, currentTag.drop(1))
             })
         }
     }

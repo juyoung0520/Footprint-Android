@@ -18,14 +18,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
     private val walkDates = arrayListOf<WalkDateResult>()
     private lateinit var currentTag: String
 
-    private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
-
     private lateinit var onWalkClickListener: WalkRVAdapter.OnItemClickListener
-    private lateinit var fragmentManager: FragmentManager
-
-    interface OnWalkDateRemoveListener {
-        fun onWalkDateRemove()
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setWalkDates(walkDates: List<WalkDateResult>) {
@@ -43,24 +36,6 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
         onWalkClickListener = listener
     }
 
-    fun setWalkDateRemoveListener(listener: WalkDateRVAdapter.OnWalkDateRemoveListener) {
-        this.onWalkDateRemoveListener = listener
-    }
-
-    fun setFragmentManager(fragmentManager: FragmentManager) {
-        this.fragmentManager = fragmentManager
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun removeWalkDate(position: Int) {
-        if (walkDates.isEmpty() || position !in 0..walkDates.size) {
-            return
-        }
-
-        walkDates.removeAt(position)
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalkDateViewHolder {
         val binding =
             ItemWalkDateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -75,28 +50,6 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
         return walkDates.size
     }
 
-    private fun showRemoveDialog(walkIdx: Int) {
-        val actionDialogFragment = ActionDialogFragment()
-
-        actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun action1(isAction: Boolean) {
-                if (isAction) {
-                    // remove API
-                    WalkService.deleteWalk(context as SearchResultView, walkIdx)
-                }
-            }
-
-            override fun action2(isAction: Boolean) {
-            }
-        })
-
-        val bundle = Bundle()
-        bundle.putString("msg", "'${walkIdx}번째 산책' 을 삭제하시겠어요?")
-
-        actionDialogFragment.arguments = bundle
-        actionDialogFragment.show(fragmentManager, null)
-    }
-
     inner class WalkDateViewHolder(val binding: ItemWalkDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -108,15 +61,6 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
             adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)
-            adapter.setOnItemRemoveListener(object : WalkRVAdapter.OnItemRemoveClickListener {
-                override fun onItemRemoveClick(walkIdx: Int) {
-                    showRemoveDialog(walkIdx)
-//                    if (adapter.itemCount == 0) {
-//                        removeWalkDate(position)
-//                        onWalkDateRemoveListener.onWalkDateRemove()
-//                    }
-                }
-            })
 
             binding.walkDateWalksRv.adapter = adapter
         }
