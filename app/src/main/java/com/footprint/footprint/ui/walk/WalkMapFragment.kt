@@ -455,6 +455,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             override fun sendUpdatedFootprint(footprint: FootprintModel) {
             }
 
+            //다이얼로그 프래그먼트에서 취소를 누르거나 뒤로 나왔을 때 -> 타이머 재생
+            override fun cancel() {
+                sendCommandToService(BackgroundWalkService.TRACKING_START_OR_RESUME)
+            }
+
         })
     }
 

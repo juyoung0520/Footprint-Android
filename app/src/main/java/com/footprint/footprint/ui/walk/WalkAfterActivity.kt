@@ -151,6 +151,9 @@ class WalkAfterActivity :
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
+            override fun cancel() {
+            }
+
         })
     }
 

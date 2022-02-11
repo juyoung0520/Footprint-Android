@@ -139,6 +139,9 @@ class WalkDetailActivity :
                 )
             }
 
+            override fun cancel() {
+            }
+
         })
     }
 
