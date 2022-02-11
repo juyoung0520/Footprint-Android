@@ -207,13 +207,11 @@ class WalkDetailActivity :
                 if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
                     binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
                     binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
-                    binding.walkDetailAllDeleteTv.visibility = View.INVISIBLE
                 } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
                     binding.walkDetailSlidingUpPanelLayout.panelHeight =
                         (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
                     binding.walkDetailSlidedLayout.visibility = View.VISIBLE
                     binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
-                    binding.walkDetailAllDeleteTv.visibility = View.VISIBLE
 
                     initAdapter(footprints as ArrayList<Footprint>)
                 }
@@ -221,12 +219,11 @@ class WalkDetailActivity :
         }
     }
 
-    //삭제 요청이 성공적으로 응답하면 산책 정보랑 발자국 정보 다시 받아오기
+    //삭제 요청이 성공적으로 응답하면 액티비티 종료
     override fun onDeleteWalkSuccess() {
         if (this!=null) {
             jobs.add(lifecycleScope.launch {
-                FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)
-                WalkService.getWalk(this@WalkDetailActivity, args.walkIdx)
+                finish()
             })
         }
     }
