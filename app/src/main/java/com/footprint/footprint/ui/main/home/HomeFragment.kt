@@ -348,8 +348,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onUserSuccess(user: User) {
         Log.d("HOME(USER)/API-SUCCESS", user.toString())
 
-        //닉네임 바꿔주기
-        binding.homeTopUsernameTv.text = user.nickname
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                //닉네임 바꿔주기
+                binding.homeTopUsernameTv.text = user.nickname
+            })
+        }
 
         //유저 정보 저장
         userInfo[1] = user.height

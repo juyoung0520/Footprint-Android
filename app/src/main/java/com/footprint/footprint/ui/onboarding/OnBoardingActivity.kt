@@ -58,7 +58,7 @@ class OnBoardingActivity :
 
         //skip 버튼
         binding.onboardingSkipTv.setOnClickListener {
-            saveOnboarding(this, true)
+            saveOnboarding(true)
             startNextActivity(SigninActivity::class.java)
             finish()
         }
@@ -70,7 +70,7 @@ class OnBoardingActivity :
             binding.onboardingVp.setCurrentItem(current + 1, true)
         } else if (current == 3) { // 3 -> 로그인 액티비티로
             //1. spf 저장
-            saveOnboarding(this, true)
+            saveOnboarding(true)
 
             //2. -> Signin Activity
             startNextActivity(SigninActivity::class.java)

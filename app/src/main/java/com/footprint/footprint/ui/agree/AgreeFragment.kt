@@ -63,7 +63,7 @@ class AgreeFragment : BaseFragment<FragmentAgreeBinding>(FragmentAgreeBinding::i
         /*확인 버튼*/
         binding.agreeActionBtn.setOnClickListener{
             //1. 알림 동의 spf 기록
-            saveNotification(requireContext(), btnState[3])
+            saveNotification(btnState[3])
 
             //2. 정보 등록 액티비티로 이동
             val agreeActivity = activity as AgreeActivity

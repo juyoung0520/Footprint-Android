@@ -44,17 +44,17 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         super.onStart()
 
         //산책기록 잠금 상태
-        when(getPWDstatus(requireContext())){
+        when(getPWDstatus()){
             "ON" ->{
-                when(getCrackStatus(requireContext())){
+                when(getCrackStatus()){
                     "SUCCESS" -> { //암호 해제
                         binding.settingLockFootprintSb.isChecked = false
-                        savePWDstatus(requireContext(), "OFF")
-                        saveCrackStatus(requireContext(), "NOTHING")
+                        savePWDstatus("OFF")
+                        saveCrackStatus("NOTHING")
                     }
                     else -> { // 암호 풀려다 실패 or 처음 들어옴
                         binding.settingLockFootprintSb.isChecked = true
-                        saveCrackStatus(requireContext(), "NOTHING")
+                        saveCrackStatus("NOTHING")
                     }
                 }
             }
@@ -62,7 +62,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         setPwdSettingVisibility()
 
         //알림 상태
-        binding.settingNotificationSb.isChecked = getNotification(requireContext())
+        binding.settingNotificationSb.isChecked = getNotification()
     }
 
     private fun initLoginStatus() {
@@ -73,7 +73,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         //spf에서 로그인 상태 불러오기(kakao, google, null)
-        loginStatus = getLoginStatus(requireContext())
+        loginStatus = getLoginStatus()
         if (loginStatus == "kakao" || loginStatus == "google") {
             Log.d("AUTO-UNLINK/VALUE", "카카오/구글 로그인되었습니다\n" + "LoginStatus: ${loginStatus}")
         } else if (loginStatus == "null") {
@@ -132,7 +132,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                             Log.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
                             googleLogout()
                         }
-                        removeLoginStatus(requireContext())
+                        removeLoginStatus()
                         removeJwt()
                     }
                 }
@@ -160,7 +160,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                             Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
                             googleUnlink()
                         }
-                        removeLoginStatus(requireContext())
+                        removeLoginStatus()
                         removeJwt()
                     }
                 }
@@ -170,12 +170,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //알림 스위치버튼 클릭 리스너
         binding.settingNotificationSb.setOnClickListener {
-            saveNotification(requireContext(), binding.settingNotificationSb.isChecked)
+            saveNotification(binding.settingNotificationSb.isChecked)
         }
 
         //산책기록 잠금 스위치버튼 클릭 리스너
         binding.settingLockFootprintSb.setOnClickListener {
-            val pwdStatus = getPWDstatus(requireContext())
+            val pwdStatus = getPWDstatus()
             when(pwdStatus){
                 "DEFAULT" -> {
                     binding.settingLockFootprintSb.isChecked = false
@@ -187,7 +187,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 }
                 "OFF" -> {
                     binding.settingLockFootprintSb.isChecked = true
-                    savePWDstatus(requireContext(), "ON")
+                    savePWDstatus("ON")
                     setPwdSettingVisibility()
                 }
             }

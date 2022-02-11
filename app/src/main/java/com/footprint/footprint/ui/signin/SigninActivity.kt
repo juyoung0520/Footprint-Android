@@ -175,7 +175,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
-        saveLoginStatus(this, socialUserModel.providerType)
+        saveLoginStatus(socialUserModel.providerType)
         Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //2. STATUS에 따른 처리

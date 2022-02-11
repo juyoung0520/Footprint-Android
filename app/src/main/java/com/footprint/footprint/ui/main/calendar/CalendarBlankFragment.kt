@@ -17,17 +17,17 @@ class CalendarBlankFragment : BaseFragment<FragmentCalendarBlankBinding>(Fragmen
 
     /*잠금 상태 확인*/
     private fun lockUnlock() {
-        val pwdStatus = getPWDstatus(requireContext())
+        val pwdStatus = getPWDstatus()
         if (pwdStatus == "ON") {    //잠금 있을 때
-            when (getCrackStatus(requireContext())) {
+            when (getCrackStatus()) {
                 "SUCCESS" -> {  //LockActivity 에서 암호를 푼 상태 -> CalendarFragment 로 이동
                     Log.d("CalendarBlankFragment", "암호 풀림")
-                    saveCrackStatus(requireContext(), "NOTHING")
+                    saveCrackStatus("NOTHING")
                     findNavController().navigate(R.id.action_calendarBlankFragment_to_calendarFragment)
                 }
                 "CANCEL" -> {   //LockActivity 에서 암호를 풀려다가 뒤로가기로 나온 상태 -> CalendarBlankFragment 종료하고 이전 프래그먼트로 이동
                     Log.d("CalendarBlankFragment", "암호 풀려다 취소")
-                    saveCrackStatus(requireContext(), "NOTHING")
+                    saveCrackStatus("NOTHING")
                     findNavController().popBackStack()
                 }
                 else -> {   //처음 CalendarBlankFragment 에 들어온 상태 -> LockActivity 로 이동
