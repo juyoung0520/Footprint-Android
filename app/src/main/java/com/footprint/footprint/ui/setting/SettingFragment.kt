@@ -117,8 +117,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             requireActivity().onBackPressed()
         }
 
-        //내 정보 수정 다음 이미지뷰 클릭 리스너 -> 내 정보 조회 프래그먼트(MyInfoFragment)로 이동
-        binding.settingUpdateMyInfoNextIv.setOnClickListener {
+        //내 정보 뷰 클릭 리스너 -> 내 정보 조회 프래그먼트(MyInfoFragment)로 이동
+        binding.settingMyInfoView.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_myInfoFragment)
         }
 

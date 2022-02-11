@@ -82,7 +82,6 @@
         android:layout_height="40dp"
         android:layout_marginHorizontal="34dp"
         android:background="@drawable/selector_goal_setting_btn"
-        android:drawableRight="@drawable/ic_down_arrow"
         android:stateListAnimator="@null"
         android:text="@string/msg_set_goal_time"
         android:textAppearance="@style/tv_body_b_14"
@@ -93,6 +92,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_setting_goal_walk_time_tv"
         app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/goal_setting_goal_walk_time_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_down_arrow"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintTop_toTopOf="@+id/goal_setting_goal_walk_time_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_setting_goal_walk_time_btn"
+        app:layout_constraintEnd_toEndOf="@+id/goal_setting_goal_walk_time_btn"/>
 
     <View
         android:id="@+id/goal_setting_goal_walk_time_line_view"
@@ -122,7 +131,6 @@
         android:layout_height="40dp"
         android:layout_marginHorizontal="34dp"
         android:background="@drawable/selector_goal_setting_btn"
-        android:drawableRight="@drawable/ic_down_arrow"
         android:stateListAnimator="@null"
         android:text="@string/msg_set_slot"
         android:textAppearance="@style/tv_body_b_14"
@@ -133,6 +141,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goal_setting_walk_time_slot_tv"
         app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/goal_setting_goal_walk_slot_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_down_arrow"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintTop_toTopOf="@+id/goal_setting_walk_slot_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_setting_walk_slot_btn"
+        app:layout_constraintEnd_toEndOf="@+id/goal_setting_walk_slot_btn"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/register_goal_action_btn"

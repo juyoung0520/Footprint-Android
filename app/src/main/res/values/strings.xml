@@ -248,7 +248,6 @@
 
     <!--설정-->
     <string name="title_setting">설정</string>
-    <string name="title_update_my_info">내 정보 수정</string>
     <string name="title_notification">알림</string>
     <string name="title_lock_footprint">산책기록 잠금</string>
     <string name="title_password_setting">암호 변경</string>

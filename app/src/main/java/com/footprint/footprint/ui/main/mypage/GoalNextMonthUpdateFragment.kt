@@ -1,8 +1,6 @@
 package com.footprint.footprint.ui.main.mypage
 
 import android.view.View
-import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -104,22 +102,10 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         binding.goalNextMonthUpdateGoalWalkTimeBtn.setOnClickListener {
             if (binding.goalNextMonthUpdateGoalWalkTimeSv.visibility == View.GONE) {    //스크롤뷰가 GONE 상태면 스크롤뷰를 보여준다.
                 fadeIn(binding.goalNextMonthUpdateGoalWalkTimeSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_up_arrow),
-                    null
-                )
+                binding.goalNextMonthUpdateGoalWalkTimeIv.setImageResource(R.drawable.ic_up_arrow)
             } else {    //스크롤뷰가 VISIBLE 상태면 스크롤뷰를 감춘다.
                 fadeOut(binding.goalNextMonthUpdateGoalWalkTimeSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
+                binding.goalNextMonthUpdateGoalWalkTimeIv.setImageResource(R.drawable.ic_down_arrow)
             }
         }
 
@@ -127,38 +113,19 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         binding.goalNextMonthUpdateGoalWalkSlotBtn.setOnClickListener {
             if (binding.goalNextMonthUpdateWalkSlotSv.visibility == View.GONE) {    //스크롤뷰가 GONE 상태면 스크롤뷰를 보여준다.
                 fadeIn(binding.goalNextMonthUpdateWalkSlotSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_up_arrow),
-                    null
-                )
+                binding.goalNextMonthUpdateGoalWalkSlotIv.setImageResource(R.drawable.ic_up_arrow)
             } else {    //스크롤뷰가 VISIBLE 상태면 스크롤뷰를 감춘다.
                 fadeOut(binding.goalNextMonthUpdateWalkSlotSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
+                binding.goalNextMonthUpdateGoalWalkSlotIv.setImageResource(R.drawable.ic_down_arrow)
             }
         }
 
         //목표 산책 시간 라디오버튼 선택 리스너
         binding.goalNextMonthUpdateGoalWalkTimeRg.setOnCheckedChangeListener { radioGroup, i ->
             fadeOut(binding.goalNextMonthUpdateGoalWalkTimeSv)  //스크롤뷰를 감춘다.
+            binding.goalNextMonthUpdateGoalWalkTimeIv.setImageResource(R.drawable.ic_down_arrow)    //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
 
             binding.goalNextMonthUpdateGoalWalkTimeBtn.apply {
-                //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
-                setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
-
                 when (i) {  //사용자가 선택한 목표 시간대에 맞춰 UI 업데이트
                     binding.goalNextMonthUpdate15minRb.id -> {
                         text = binding.goalNextMonthUpdate15minRb.text.toString()
@@ -196,16 +163,9 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         //산책 시간대 라디오그룹 체크 리스너
         binding.goalNextMonthUpdateWalkSlotRg.setOnCheckedChangeListener { radioGroup, i ->
             fadeOut(binding.goalNextMonthUpdateWalkSlotSv)
+            binding.goalNextMonthUpdateGoalWalkSlotIv.setImageResource(R.drawable.ic_down_arrow)    //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
 
             binding.goalNextMonthUpdateGoalWalkSlotBtn.apply {
-                //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
-                setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
-
                 when (i) {  //사용자가 선택한 라디오버튼에 따라 UI 업데이트
                     binding.goalNextMonthUpdateEarlyMorningRb.id -> {
                         text = binding.goalNextMonthUpdateEarlyMorningRb.text.toString()
