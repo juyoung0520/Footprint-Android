@@ -39,8 +39,24 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        setBinding()
-        initCalendar()
+        // 캘린더 초기화 됐으면
+        if (!::calendarDayBinder.isInitialized) {
+            setBinding()
+            initCalendar()
+            return
+        }
+
+        // currentMonth 초기화 됐으면 이번달 API 호출
+        if (::currentMonth.isInitialized) {
+            WalkService.getMonthWalks(this, currentMonth.year, currentMonth.monthValue)
+        }
+
+        // 선택된 날이 없으면 오늘 날짜 API 호출
+        val date = calendarDayBinder.getSelectedDate() ?: LocalDate.now()
+        WalkService.getDayWalks(
+            this,
+            String.format("%d-%02d-%02d", date.year, date.monthValue, date.dayOfMonth)
+        )
     }
 
     private fun setBinding() {
@@ -85,9 +101,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         binding.calendarWalkCv.dayBinder = calendarDayBinder
 
+
         currentMonth = YearMonth.now()
-        val firstMonth = currentMonth.minusMonths(120)
-        val lastMonth = currentMonth.plusMonths(120)
+        val firstMonth = currentMonth.minusMonths(60)
+        val lastMonth = currentMonth.plusMonths(60)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
 
 

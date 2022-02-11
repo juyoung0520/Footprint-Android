@@ -73,13 +73,13 @@ class WalkAfterActivity :
     private fun setMyClickListener() {
         //취소 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
         binding.walkAfterCancelTv.setOnClickListener {
-            setWalkDialogBundle("'00번째 산책' 작성을 취소할까요?", getString(R.string.action_delete))
+            setWalkDialogBundle("'${walk.walkTitle}' 작성을 취소할까요?", getString(R.string.action_delete))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
         //저장 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
         binding.walkAfterSaveTv.setOnClickListener {
-            setWalkDialogBundle("'00번째 산책'을 저장할까요?", getString(R.string.action_save))
+            setWalkDialogBundle("'${walk.walkTitle}'을 저장할까요?", getString(R.string.action_save))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
@@ -156,7 +156,7 @@ class WalkAfterActivity :
 
     //산책 정보를 바인딩하는 함수
     private fun bindWalkData() {
-        binding.walkAfterTitleTv.text = "00번째 산책"   //산책 이름
+        binding.walkAfterTitleTv.text = walk.walkTitle   //산책 이름
         Glide.with(this).load(walk.pathImg).into(binding.walkAfterMapIv)    //산책 동선 이미지
         binding.walkAfterWalkTimeTv.text = walk.walkTime    //산책 시간
         binding.walkAfterCalorieTv.text = walk.calorie.toString()   //칼로리

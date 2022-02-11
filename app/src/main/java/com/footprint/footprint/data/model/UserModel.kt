@@ -12,7 +12,8 @@ data class UserModel(
     @SerializedName("weight") var weight: Int = 0,                          //몸무게: 0
     @SerializedName("dayIdx") var goalDay: ArrayList<Int> = arrayListOf(),  //목표 산책 요일
     @SerializedName("walkGoalTime") var goalWalkTime: Int = 0,              //목표 산책 시간(분)
-    @SerializedName("walkTimeSlot") var walkTimeSlot: Int = 0               //산책 시간대(1:이른오전/2:늦은오전/.../6:새벽/7:매번다름)
+    @SerializedName("walkTimeSlot") var walkTimeSlot: Int = 0,               //산책 시간대(1:이른오전/2:늦은오전/.../6:새벽/7:매번다름)
+    var walkNumber: Int ?= 0                                                       //산책 횟수
 )
 
 /*Simple User Model: 정보 수정 API*/

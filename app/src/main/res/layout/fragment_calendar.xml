@@ -17,7 +17,7 @@
             android:id="@+id/calendar_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00님의 발자국"
+            android:text="@string/title_walk_calendar"
             style="@style/tv_headline_eb_16"
             app:layout_constraintVertical_bias="0.72"
             app:layout_constraintTop_toTopOf="parent"

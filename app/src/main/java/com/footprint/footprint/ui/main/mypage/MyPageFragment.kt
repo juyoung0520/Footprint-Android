@@ -5,6 +5,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.footprint.footprint.data.remote.achieve.*
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
@@ -30,12 +32,21 @@ import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
     MyPageView {
+    private var isInitialized = false
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
+        // 초기화 검사
+        if (!isInitialized) {
+            setBinding()
+        }
+
+        // 사용자, 통계 API 호출
         UserService.getUser(this)
         AchieveService.getInfoDetail(this)
+    }
 
+    private fun setBinding() {
         binding.mypageInfoRightIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_badgeFragment)
         }
@@ -47,16 +58,37 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         binding.mypageSettingIv.setOnClickListener {
             findNavController().navigate(R.id.action_mypageFragment_to_navigation)
         }
+
+        initChart(binding.mypageStatisticsWeekChartBc)
+        binding.mypageStatisticsWeekChartBc.apply {
+            xAxis.apply {
+                textColor = requireContext().getColor(R.color.black)
+                valueFormatter =
+                    XAxisFormatter(arrayListOf<String>("일", "월", "화", "수", "목", "금", "토"))
+            }
+        }
+
+        initChart(binding.mypageStatisticsMonthCountChartLc)
+
+        initChart(binding.mypageStatisticsMonthRateChartBc)
+        binding.mypageStatisticsMonthRateChartBc.apply {
+            xAxis.apply {
+                textColor = requireContext().getColor(R.color.black_light)
+                valueFormatter = XAxisFormatter(getRecentMonths(true))
+            }
+        }
+
+        isInitialized = true
     }
 
-    private fun setBinding(result: AchieveDetailResult) {
+    private fun setAchieveDetailResult(result: AchieveDetailResult) {
         // 사용자 달성률
         val userInfoAchieve = result.userInfoAchieve
         binding.mypageTodayPb.progress = userInfoAchieve.todayGoalRate
         binding.mypageTodayProgressTv.text = "${userInfoAchieve.todayGoalRate}%"
         binding.mypageMonthPb.progress = userInfoAchieve.monthGoalRate
         binding.mypageMonthProgressTv.text = "${userInfoAchieve.monthGoalRate}%"
-        binding.mypageCountNumberTv.text = userInfoAchieve.userWalkCount.toString()
+        binding.mypageCountNumberTv.text = "${userInfoAchieve.userWalkCount}회"
 
         // 글자 색상
         val spanColorPrimary =
@@ -114,9 +146,12 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             spanColorSecondary
         )
 
-        // 그래프 적용
-        setBarCharts(userInfoStat)
-        setLineChart(userInfoStat.monthlyWalkCount)
+        // week 그래프 데이터 설정
+        setWeekChartData(userInfoStat.userWeekDayRate)
+        //월별 달성률 그래프 데이터 설정
+        setMonthRateChartData(userInfoStat.monthlyGoalRate)
+        // 월별 기록 횟수 데이터 설정
+        setMonthCountChartData(userInfoStat.monthlyWalkCount)
     }
 
     // 글자색 바꾸는 함수
@@ -150,35 +185,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         return spannableText
     }
 
-    private fun setBarCharts(userStatRes: InfoStatResult) {
-        // week 그래프 설정
-        initCharts(binding.mypageStatisticsWeekChartBc)
-
-        binding.mypageStatisticsWeekChartBc.apply {
-            xAxis.apply {
-                textColor = requireContext().getColor(R.color.black)
-                valueFormatter =
-                    XAxisFormatter(arrayListOf<String>("일", "월", "화", "수", "목", "금", "토"))
-            }
-        }
-        // week 그래프 데이터 설정
-        setWeekChartData(userStatRes.userWeekDayRate)
-
-        // 월별 달성률 그래프 설정
-        initCharts(binding.mypageStatisticsMonthRateChartBc)
-
-        binding.mypageStatisticsMonthRateChartBc.apply {
-            xAxis.apply {
-                textColor = requireContext().getColor(R.color.black_light)
-                valueFormatter = XAxisFormatter(getRecentMonths(true))
-            }
-        }
-
-        //월별 달성률 그래프 데이터 설정
-        setMonthRateChartData(userStatRes.monthlyGoalRate)
-    }
-
-    private fun initCharts(chart: BarChart) {
+    private fun initChart(chart: BarChart) {
         val colorGray = requireContext().getColor(R.color.white_caption)
 
         // 커스텀 막대 radius 설정
@@ -227,10 +234,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun setLineChart(monthCount: List<Int>) {
+    private fun initChart(chart: LineChart) {
         val colorGray = requireContext().getColor(R.color.white_caption)
 
-        binding.mypageStatisticsMonthCountChartLc.apply {
+        chart.apply {
             description.isEnabled = false
             legend.isEnabled = false
             axisRight.isEnabled = false
@@ -269,9 +276,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                 setDrawAxisLine(false)
             }
         }
-
-        // 월별 기록 횟수 데이터 설정
-        setMonthCountChartData(monthCount)
     }
 
     private fun setWeekChartData(weekRate: List<Double>) {
@@ -402,7 +406,11 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     private fun getMostWalkDay(list: List<String>): String {
-        return list[0]
+        return if (list.size == 1) {
+            list[0] + "요일"
+        } else {
+            list.joinToString(", ")
+        }
     }
 
     inner class XAxisFormatter(private val labels: ArrayList<String>) : ValueFormatter() {
@@ -424,7 +432,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.mypageLoadingPb.visibility = View.GONE
 
-                setBinding(achieveDetailResult)
+                setAchieveDetailResult(achieveDetailResult)
             })
         }
     }

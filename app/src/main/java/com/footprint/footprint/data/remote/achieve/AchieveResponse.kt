@@ -30,7 +30,7 @@ data class TMonthResponse(
 
 data class TMonth(
     @SerializedName("goalDayList") val goalDayList: ArrayList<String>,      //목표요일
-    @SerializedName("getDayRateRes")val getDayRateRes: ArrayList<TMonthDayRateRes>?,     //이번달 산책 날짜(&달성율)
+    @SerializedName("getDayRatesRes")val getDayRateRes: ArrayList<TMonthDayRateRes>?,     //이번달 산책 날짜(&달성율)
     @SerializedName("getMonthTotal")val getMonthTotal: TMonthGoal,     //이번달 목표 달성율
 )
 

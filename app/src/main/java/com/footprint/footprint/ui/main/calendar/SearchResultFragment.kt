@@ -22,13 +22,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SearchResultFragment() : BaseFragment<FragmentSearchResultBinding>(FragmentSearchResultBinding::inflate), SearchResultView{
+    private var isInitialized = false
     private lateinit var currentTag: String
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        currentTag = navArgs<SearchResultFragmentArgs>().value.tag
+        if (!isInitialized) {
+            currentTag = navArgs<SearchResultFragmentArgs>().value.tag
+            setBinding()
 
-        setBinding()
+            isInitialized = true
+        }
 
         // Tag API
         WalkService.getTagWalkDates(this, currentTag.drop(1))
