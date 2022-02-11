@@ -7,11 +7,17 @@
         android:menuCategory="secondary"
         android:title="@string/menu_home" />
     <item
-        android:id="@+id/calendarFragment"
+        android:id="@+id/calendarBlankFragment"
         android:enabled="true"
         android:icon="@drawable/selector_navi_note"
         android:menuCategory="secondary"
         android:title="@string/menu_calendar" />
+    <!--<item
+        android:id="@+id/calendarFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_note"
+        android:menuCategory="secondary"
+        android:title="@string/menu_calendar" />-->
     <item
         android:id="@+id/courseFragment"
         android:enabled="true"

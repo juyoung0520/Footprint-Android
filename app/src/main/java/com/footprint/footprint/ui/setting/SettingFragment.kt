@@ -10,7 +10,6 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.lock.LockActivity
 import com.footprint.footprint.ui.signin.SplashActivity
 import com.footprint.footprint.utils.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -202,9 +201,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)
     private fun startLockActivity(mode: String) {
-        val intent = Intent(requireContext(), LockActivity::class.java)
-        intent.putExtra("mode", mode)
-        startActivity(intent)
+        val action = SettingFragmentDirections.actionSettingFragmentToLockActivity3(mode)
+        findNavController().navigate(action)
     }
 
     /*Function - 로그아웃, 탈퇴*/
