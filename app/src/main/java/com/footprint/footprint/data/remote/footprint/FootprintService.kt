@@ -40,7 +40,12 @@ object FootprintService {
     }
 
     //발자국 데이터 수정
-    fun updateFootprint(walkDetailView: WalkDetailView, footprintIdx: Int, footprintMap: HashMap<String, Any>, footprintPhoto: List<String>?) {
+    fun updateFootprint(walkDetailView: WalkDetailView, walkIdx: Int, footprintIdx: Int, footprintMap: HashMap<String, Any>, footprintPhoto: List<String>?) {
+        Log.d("FootprintService", "updateFootprint walkIdx: $walkIdx")
+        Log.d("FootprintService", "updateFootprint footprintIdx: $footprintIdx")
+        Log.d("FootprintService", "updateFootprint footprintMap: $footprintMap")
+        Log.d("FootprintService", "updateFootprint footprintPhoto: $footprintPhoto")
+
         walkDetailView.onWalkDetailLoading()
 
         var partMap: HashMap<String, RequestBody> = HashMap()   //글이나 태그에 대한 수정이 없을 땐 Empty
@@ -61,7 +66,7 @@ object FootprintService {
         }
 
         //발자국 정보 수정 API 호출
-        footprintService.updateFootprint(footprintIdx, partMap, photos).enqueue(object : Callback<BaseResponse> {
+        footprintService.updateFootprint(walkIdx, footprintIdx, partMap, photos).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 val res = response.body()
                 Log.d("FootprintService","\nupdateFootprint3-RES\ncode: ${res?.code}\nbody: $res")

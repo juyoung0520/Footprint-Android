@@ -257,8 +257,6 @@ class FootprintRVAdapter() :
         notifyDataSetChanged()
     }
 
-    fun getDataDetailVer(): ArrayList<FootprintModel> = this.footprintsAfterVer!!
-
     fun addData(footprint: FootprintModel, position: Int) {
         if (this.footprintsAfterVer!!.size == position)
             this.footprintsAfterVer!!.add(footprint)

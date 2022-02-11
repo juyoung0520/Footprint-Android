@@ -13,8 +13,9 @@ interface FootprintRetrofitInterface {
 
     //발자국 정보 수정
     @Multipart
-    @PATCH("footprints/{footprintIdx}")
+    @PATCH("footprints/{walkIdx}/{footprintIdx}")
     fun updateFootprint(
+        @Path("walkIdx") walkIdx: Int,
         @Path("footprintIdx") footprintIdx: Int,
         @PartMap data: HashMap<String, RequestBody>?,
         @Part photos: List<MultipartBody.Part>?

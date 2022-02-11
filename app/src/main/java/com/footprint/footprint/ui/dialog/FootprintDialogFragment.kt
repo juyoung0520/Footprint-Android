@@ -54,7 +54,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
 
         override fun onPermissionDenied(deniedPermissions: List<String>) {
-
         }
     }
 
