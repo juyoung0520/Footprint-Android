@@ -41,6 +41,8 @@ class WalkDetailActivity :
         WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청청
         binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
 
+        binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
+
         setMyClickListener()
         setActionDialog()
         initFootprintDialog()
@@ -72,7 +74,7 @@ class WalkDetailActivity :
         //전체 삭제 텍스트뷰 클릭 리스너 -> 'OO번째 산책' 을 삭제하시겠어요? ActionDialog 띄우기
         binding.walkDetailAllDeleteTv.setOnClickListener {
             val bundle: Bundle = Bundle()
-            bundle.putString("msg", "'OO번째 산책' 을 삭제하시겠어요?")
+            bundle.putString("msg", "'${args.walkIdx}번째 산책' 을 삭제하시겠어요?")
             bundle.putString("desc", "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요")
             bundle.putString("action", getString(R.string.action_delete))
 

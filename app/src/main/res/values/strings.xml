@@ -24,7 +24,6 @@
     <string name="action_set">설정</string>
     <string name="action_update">수정</string>
     <string name="action_stop">중지</string>
-    <string name="action_withdrawal">회원탈퇴</string>
     <string name="error_api_fail">오류가 발생했습니다. 다시 시도해 주세요.</string>
 
     <!--액션-->
@@ -137,6 +136,7 @@
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
     <string name="title_hour">시간</string>
     <string name="title_minute">분</string>
+    <string name="action_withdrawal">탈퇴하기</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>

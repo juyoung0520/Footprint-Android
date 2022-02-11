@@ -99,7 +99,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //로그아웃 텍스트뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
         binding.settingLogoutTv.setOnClickListener {
-            setActionDialogBundle(getString(R.string.msg_logout))
+            setActionDialogBundle(getString(R.string.msg_logout), getString(R.string.msg_logout_desc), getString(R.string.title_logout))
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
@@ -125,7 +125,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
         binding.settingWithdrawalTv.setOnClickListener {
-            setActionDialogBundle(getString(R.string.msg_withdrawal))
+            setActionDialogBundle(getString(R.string.msg_withdrawal), getString(R.string.msg_withdrawal_desc), getString(R.string.action_withdrawal))
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
@@ -173,11 +173,31 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         binding.settingPasswordSettingNextIv.setOnClickListener {
             startLockActivity("CHANGE")
         }
+
+        //개인정보처리방침 텍스트뷰 클릭 리스너
+        binding.settingPrivacyPolicyTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_user), getString(R.string.msg_agreement_user))
+            findNavController().navigate(action)
+        }
+
+        //이용약관 텍스트뷰 클릭 리스너
+        binding.settingTermsOfUserTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_use), getString(R.string.msg_agreement_use))
+            findNavController().navigate(action)
+        }
+
+        //위치서비스이용약관 텍스트뷰 클릭 리스너
+        binding.settingLocationTermsOfServiceTv.setOnClickListener {
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_location), getString(R.string.msg_agreement_location))
+            findNavController().navigate(action)
+        }
     }
 
-    private fun setActionDialogBundle(msg: String) {
+    private fun setActionDialogBundle(msg: String, desc: String, action: String) {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", msg)
+        bundle.putString("desc", desc)
+        bundle.putString("action", action)
         actionDialogFragment.arguments = bundle
     }
 

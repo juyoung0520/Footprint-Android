@@ -67,7 +67,7 @@ class ActionDialogFragment() : DialogFragment() {
         binding.walkDialogActionTv.text = action
 
         if (desc.isBlank()) {
-            binding.walkDialogDescTv.visibility = View.INVISIBLE
+            binding.walkDialogDescTv.visibility = View.GONE
         } else {
             binding.walkDialogDescTv.visibility = View.VISIBLE
             binding.walkDialogDescTv.text = desc

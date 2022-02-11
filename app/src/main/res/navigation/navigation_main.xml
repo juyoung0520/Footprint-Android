@@ -70,6 +70,9 @@
                 android:id="@+id/action_settingFragment_to_signinActivity"
                 app:destination="@id/signinActivity" />
             <action
+                android:id="@+id/action_settingFragment_to_termsFragment"
+                app:destination="@id/termsFragment" />
+            <action
                 android:id="@+id/action_settingFragment_to_lockActivity3"
                 app:destination="@id/LockActivity" />
         </fragment>
@@ -95,6 +98,17 @@
             android:id="@+id/signinActivity"
             android:name="com.footprint.footprint.ui.signin.SigninActivity"
             android:label="SigninActivity" />
+        <fragment
+            android:id="@+id/termsFragment"
+            android:name="com.footprint.footprint.ui.setting.TermsFragment"
+            android:label="TermsFragment" >
+            <argument
+                android:name="title"
+                app:argType="string" />
+            <argument
+                android:name="content"
+                app:argType="string" />
+        </fragment>
         <activity
             android:id="@+id/LockActivity"
             android:name="com.footprint.footprint.ui.lock.LockActivity"
