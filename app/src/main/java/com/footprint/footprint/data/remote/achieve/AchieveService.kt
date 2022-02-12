@@ -12,7 +12,11 @@ import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 
 object AchieveService {
     private val achieveService = retrofit.create(AchieveRetrofitInterface::class.java)
+    private lateinit var homeView: HomeView
 
+    fun setHomeView(homeView: HomeView){
+        this.homeView = homeView
+    }
 
     /*일별 정보 API*/
     fun getToday(homeDayView: HomeDayView){
@@ -26,12 +30,12 @@ object AchieveService {
                         val result = body.result
                         homeDayView.onTodaySuccess(result!!)
                     }
-                    else -> homeDayView.onTodayFailure(body.code, body.message)
+                    else -> homeView.onHomeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<TodayResponse>, t: Throwable) {
-                homeDayView.onTodayFailure(213, t.message.toString())
+                homeView.onHomeFailure(213, t.message.toString())
                 Log.d("TODAY/API-FAILURE", t.message.toString())
             }
         })
@@ -53,13 +57,13 @@ object AchieveService {
                         val result = body.result
                         homeMonthView.onTMonthSuccess(result!!)
                     }
-                    else -> homeMonthView.onTMonthFailure(body.code, body.message)
+                    else -> homeView.onHomeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<TMonthResponse>, t: Throwable) {
                 Log.d("TMONTH/API-FAILURE", t.message.toString())
-                homeMonthView.onTMonthFailure(213, t.message.toString())
+                homeView.onHomeFailure(213, t.message.toString())
             }
 
         })

@@ -180,7 +180,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         BackgroundWalkService.currentTime.observe(viewLifecycleOwner, Observer { currentTime ->
             this.currentTime = currentTime
 
-            updateTime(userInfo.goalWalkTime * 60)
+            updateTime(userInfo.goalWalkTime!! * 60)
         })
 
         BackgroundWalkService.pauseWalk.observe(viewLifecycleOwner, Observer { state ->
@@ -295,7 +295,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun updateCalorie() {
-        val calConstant = 0.0525 * userInfo.weight // 칼로리 상수 * 몸무게
+        val calConstant = 0.0525 * userInfo.weight!! // 칼로리 상수 * 몸무게
 
         binding.walkmapCalorieNumberTv.text =
             (calConstant * (currentTime / 60)).roundToInt().toString()

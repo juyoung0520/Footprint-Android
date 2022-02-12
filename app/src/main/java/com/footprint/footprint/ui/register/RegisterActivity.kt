@@ -27,11 +27,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
         //TB, VP 세팅
         if (!::registerVPAdapter.isInitialized)
             initVP()
-
-        //Register 넘어옴
-        val jwt = getJwt()
-        Log.d("REGISTER", "TOKEN: $jwt")
-
     }
 
     override fun onBackPressed() {

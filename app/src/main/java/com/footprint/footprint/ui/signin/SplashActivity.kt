@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.signin
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
+import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.remote.badge.BadgeInfo
@@ -13,11 +14,14 @@ import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
+import com.footprint.footprint.utils.isNetworkAvailable
 import com.footprint.footprint.utils.removeJwt
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate), SplashView, MonthBadgeView {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate),
+    SplashView, MonthBadgeView {
 
     override fun initAfterBinding() {
         //온보딩 화면 O/X => 3초 후 실행
@@ -34,15 +38,14 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             } else {
                 autoLogin()
             }
-        }, 3000)
+        }, 1500)
     }
 
 
-    private fun autoLogin(){
-        Log.d("SPLASH", getJwt().toString())
-        if(getJwt() != null){ // O -> 자동로그인 API 호출
+    private fun autoLogin() {
+        if (getJwt() != null) { // O -> 자동로그인 API 호출
             AuthService.autoLogin(this)
-        }else{  // X -> 로그인 액티비티
+        } else {  // X -> 로그인 액티비티
             startNextActivity(SigninActivity::class.java)
             finish()
         }
@@ -51,12 +54,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     /*자동 로그인 API*/
     override fun onAutoLoginSuccess(result: Login?) {
-        if(result != null){
-            when(result.status) {
+        if (result != null) {
+            when (result.status) {
                 "ACTIVE" -> {   // 가입된 회원
                     if (result.checkMonthChanged) { // 첫 접속 -> 뱃지 API 호출
                         BadgeService.getMonthBadge(this)
-                    }else{ // -> 메인 액티비티
+                    } else { // -> 메인 액티비티
                         startMainActivity()
                     }
                 }
@@ -64,12 +67,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     startSignInActivity()
                 }
             }
-        }else{ // -> 로그인 액티비티
+        } else { // -> 로그인 액티비티
             removeJwt()
             startSignInActivity()
         }
 
-        Log.d("SPLASH/API-SUCCESS", "status: $result.status jwt: $result.jwtId")
+        Log.d("SPLASH/API-SUCCESS", "status: ${result!!.status}")
     }
 
     override fun onAutoLoginFailure(code: Int, message: String) {
@@ -79,7 +82,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     /*뱃지 API*/
     override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
         val intent = Intent(this, MainActivity::class.java)
-        if(isBadgeExist)
+        if (isBadgeExist)
             intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
         Log.d("SPLASH(BADGE)/API-SUCCESS", monthBadge.toString())

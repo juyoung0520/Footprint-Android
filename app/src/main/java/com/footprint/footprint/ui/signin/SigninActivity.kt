@@ -1,7 +1,10 @@
 package com.footprint.footprint.ui.signin
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import com.footprint.footprint.databinding.ActivitySigninBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -14,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -23,17 +27,21 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.utils.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
-    SignInView, MonthBadgeView {
+    SignInView, MonthBadgeView{
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var getResult: ActivityResultLauncher<Intent>
     private lateinit var socialUserModel: SocialUserModel
 
     override fun initAfterBinding() {
@@ -47,12 +55,17 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         }
 
         //구글 로그인
-        val getResult = googleClient()
         binding.signinGoogleloginBtnLayout.setOnClickListener {
             getResult.launch(mGoogleSignInClient.signInIntent)
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //구글 로그인 API Result 처리 부분
+        googleClient()
+    }
 
     /*Funtion-Kakao*/
     private fun setKakaoLogin() {
@@ -60,8 +73,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
+                signinErrorCheck("KAKAO")
             } else if (token != null) {
-                Log.i("KAKAO/API-SUCCESS", "카카오계정으로 로그인 성공 ${token.accessToken}")
+                Log.i("KAKAO/API-SUCCESS", "카카오계정으로 로그인 성공)")
                 getKakaoUser()
             }
         }
@@ -97,21 +111,14 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             if (error != null) {
                 Log.e("KAKAO/USER-FAILURE", "사용자 정보 요청 실패", error)
             } else if (user != null) {
-                Log.i(
-                    "KAKAO/USER-SUCCESS", "사용자 정보 요청 성공" +
-                            "\n회원번호: ${user.id}" +
-                            "\n이메일: ${user.kakaoAccount?.email}" +
-                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
-                )
+                Log.i("KAKAO/USER-SUCCESS", "사용자 정보 요청 성공")
 
                 val userId: String = user.id.toString()
-                val nickname: String? = user.kakaoAccount?.profile?.nickname
+                val nickname: String = user.kakaoAccount?.profile?.nickname!!
                 val email: String? = user.kakaoAccount?.email
 
                 //1. User 정보 등록
-                socialUserModel = SocialUserModel(userId, nickname!!, email!!, "kakao")
-                Log.d("KAKAO/USER", socialUserModel.toString())
+                socialUserModel = SocialUserModel(userId, nickname, email!!, "kakao")
 
                 //2. 로그인 API
                 callSignInAPI()
@@ -121,13 +128,13 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     /*Function - Google*/
-    private fun googleClient(): ActivityResultLauncher<Intent> {
+    private fun googleClient(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.google_login_server_id))
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        val getResult = registerForActivityResult(
+        getResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
@@ -136,9 +143,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 Log.d("GOOGLE/API-SUCCESS", "구글 로그인 성공")
                 getGoogleUser(task)
-            }
+            }else
+                signinErrorCheck("GOOGLE")
         }
-        return getResult
     }
     private fun getGoogleUser(completedTask: Task<GoogleSignInAccount>) {
         try {
@@ -150,7 +157,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             val userid = account.id.toString()
 
             socialUserModel = SocialUserModel(userid, username, useremail, "google")
-            Log.d("GOOGLE/USER", socialUserModel.toString())
 
             //2. 로그인 API
             callSignInAPI()
@@ -162,7 +168,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     /*로그인 API*/
     private fun callSignInAPI(){
-        Log.d("SIGNIN/API", socialUserModel.toString())
         AuthService.login(this, socialUserModel)
     }
 
@@ -176,7 +181,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
         saveLoginStatus(socialUserModel.providerType)
-        Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
+        Log.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //2. STATUS에 따른 처리
         // ACTIVE: 가입된 회원 -> 뱃지 API 호출
@@ -196,6 +201,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     override fun onSignInFailure(code: Int, message: String) {
         Log.d("SIGNIN/API-FAILURE", "code: $code message: $message")
+
+        signinErrorCheck("LOGIN")
     }
 
     /*이달의 뱃지 조회 API*/
@@ -204,13 +211,15 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         if(isBadgeExist)
             intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
+
         Log.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
     }
 
     override fun onMonthBadgeFailure(code: Int, message: String) {
-        Log.d("SIGNIN(BADGE)/API-FAILURE", code.toString() + message)
-    }
+        Log.d("SIGNIN(BADGE)/API-FAILURE", "code: $code message: $message")
 
+        signinErrorCheck("BADGE")
+    }
 
     /*액티비티 이동*/
     //Main Activity
@@ -223,5 +232,31 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     private fun startAgreeActivity() {
         startNextActivity(AgreeActivity::class.java)
         finish()
+    }
+
+    /*에러 체크*/
+    private fun signinErrorCheck(type: String){
+        val text = if(!isNetworkAvailable(this)){ //네트워크 에러
+            getString(R.string.error_network)
+        }else{ //나머지
+            getString(R.string.error_api_fail)
+        }
+
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+            when(type){
+                "KAKAO" -> {
+                    setKakaoLogin()
+                }
+                "GOOGLE" -> {
+                    getResult.launch(mGoogleSignInClient.signInIntent)
+                }
+                "LOGIN" -> {
+                    AuthService.login(this, socialUserModel)
+                }
+                "BADGE" -> {
+                    BadgeService.getMonthBadge(this)
+                }
+            }
+        }.show()
     }
 }

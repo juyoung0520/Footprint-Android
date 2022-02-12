@@ -16,11 +16,16 @@ import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.convertDpToSp
+import com.footprint.footprint.utils.getJwt
+import com.footprint.footprint.utils.isNetworkAvailable
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 import kotlin.math.floor
 
-class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate), MyInfoUpdateView {
+class MyInfoUpdateFragment :
+    BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate),
+    MyInfoUpdateView {
     private val args: MyInfoUpdateFragmentArgs by navArgs()
 
     private lateinit var animation: Animation   //EditText 애니메이션
@@ -29,12 +34,16 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        user = Gson().fromJson(args.user, SimpleUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
+        user = Gson().fromJson(
+            args.user,
+            SimpleUserModel::class.java
+        )    //MyInfoFragment 로부터 user 정보 전달받기
     }
 
     override fun initAfterBinding() {
         if (!::animation.isInitialized)
-            animation = AnimationUtils.loadAnimation(requireActivity(), R.anim.shake)   //EditText 애니메이션 초기화
+            animation =
+                AnimationUtils.loadAnimation(requireActivity(), R.anim.shake)   //EditText 애니메이션 초기화
 
         setUpdateUI(user)
         setMyEventListener()
@@ -53,17 +62,17 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             }
         }
 
-        if (user.birth != "1900-01-01")  {    //생년월일
+        if (user.birth != "1900-01-01") {    //생년월일
             val birthList = user.birth.split("-")
             binding.myInfoUpdateBirthYearEt.setText(birthList[0])
             binding.myInfoUpdateBirthMonthEt.setText(birthList[1])
             binding.myInfoUpdateBirthDayEt.setText(birthList[2])
         }
 
-        if (user.height!= 0)  //키
+        if (user.height != 0)  //키
             binding.myInfoUpdateHeightEt.setText(user.height.toString())
 
-        if (user.weight!= 0)  //몸무게
+        if (user.weight != 0)  //몸무게
             binding.myInfoUpdateWeightEt.setText(user.weight.toString())
     }
 
@@ -137,7 +146,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         //생년월일
         if (binding.myInfoUpdateBirthYearEt.text.isNotBlank() || binding.myInfoUpdateBirthMonthEt.text.isNotBlank() || binding.myInfoUpdateBirthDayEt.text.isNotBlank()) {    //생년월일 중 하나라도 입력돼 있으면 생년월일에 대한 유효성 검사 시작
 
-            if (binding.myInfoUpdateBirthYearEt.text.isBlank() || binding.myInfoUpdateBirthYearEt.text.toString().toInt() !in 1900 until 2022) {    //년도 데이터가 비어 있거나 1900~2022 년도 안에 있는 숫자가 아닐 경우
+            if (binding.myInfoUpdateBirthYearEt.text.isBlank() || binding.myInfoUpdateBirthYearEt.text.toString()
+                    .toInt() !in 1900 until 2022
+            ) {    //년도 데이터가 비어 있거나 1900~2022 년도 안에 있는 숫자가 아닐 경우
                 binding.myInfoUpdateBirthYearEt.startAnimation(animation)
                 binding.myInfoUpdateBirthYearUnitTv.setTextColor(Color.parseColor("#FFC01D"))
                 binding.myInfoUpdateBirthYearEt.isSelected = true
@@ -146,7 +157,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             } else  //유효성 검사를 통과한 년도 데이터일 경우
                 binding.myInfoUpdateBirthYearEt.isSelected = false
 
-            if (binding.myInfoUpdateBirthMonthEt.text.isBlank() || binding.myInfoUpdateBirthMonthEt.text.toString().toInt() !in 1..12) {    //월 데이터가 비어 있거나 1~12 사이에 있는 숫자가 아닐 경우
+            if (binding.myInfoUpdateBirthMonthEt.text.isBlank() || binding.myInfoUpdateBirthMonthEt.text.toString()
+                    .toInt() !in 1..12
+            ) {    //월 데이터가 비어 있거나 1~12 사이에 있는 숫자가 아닐 경우
                 binding.myInfoUpdateBirthMonthEt.startAnimation(animation)
                 binding.myInfoBirthUpdateMonthUnitTv.setTextColor(Color.parseColor("#FFC01D"))
                 binding.myInfoUpdateBirthMonthEt.isSelected = true
@@ -175,7 +188,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
                     }
 
                     "2" -> {    //2월 달의 경우 -> 윤달 이런거 생각 안하고 29 를 초과한 경우로만 생각했음.
-                        if (binding.myInfoUpdateBirthDayEt.text.toString().toInt() > 29) {    //29일을 초과한 데이터가 입력된 경우
+                        if (binding.myInfoUpdateBirthDayEt.text.toString()
+                                .toInt() > 29
+                        ) {    //29일을 초과한 데이터가 입력된 경우
                             binding.myInfoUpdateBirthDayEt.startAnimation(animation)
                             binding.myInfoUpdateBirthDayUnitTv.setTextColor(Color.parseColor("#FFC01D"))
                             binding.myInfoUpdateBirthDayEt.isSelected = true
@@ -186,7 +201,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
                     }
 
                     else -> {   //그외 -> 1. 31일까지 있는 월일 경우   2. 아직 월 데이터가 입력되지 않은 경우
-                        if (binding.myInfoUpdateBirthDayEt.text.toString().toInt() > 31) {    //31일을 초과한 데이터가 입력된 경우
+                        if (binding.myInfoUpdateBirthDayEt.text.toString()
+                                .toInt() > 31
+                        ) {    //31일을 초과한 데이터가 입력된 경우
                             binding.myInfoUpdateBirthDayEt.startAnimation(animation)
                             binding.myInfoUpdateBirthDayUnitTv.setTextColor(Color.parseColor("#FFC01D"))
                             binding.myInfoUpdateBirthDayEt.isSelected = true
@@ -204,7 +221,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         }
 
         //키
-        if (binding.myInfoUpdateHeightEt.text.isNotBlank() && binding.myInfoUpdateHeightEt.text.toString().toInt() !in 100..250) {  //키 데이터가 입력돼 있고, 100~250 사이 숫자가 아니면
+        if (binding.myInfoUpdateHeightEt.text.isNotBlank() && binding.myInfoUpdateHeightEt.text.toString()
+                .toInt() !in 100..250
+        ) {  //키 데이터가 입력돼 있고, 100~250 사이 숫자가 아니면
             binding.myInfoUpdateHeightEt.startAnimation(animation)
             binding.myInfoUpdateHeightUnitTv.setTextColor(Color.parseColor("#FFC01D"))
             binding.myInfoUpdateHeightEt.isSelected = true
@@ -214,7 +233,9 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
             binding.myInfoUpdateHeightEt.isSelected = false
 
         //몸무게
-        if (binding.myInfoUpdateWeightEt.text.isNotBlank() && binding.myInfoUpdateWeightEt.text.toString().toInt() !in 30..200) {   //몸무게 데이터가 입력돼 있고, 30~200 사이 숫자가 아니면
+        if (binding.myInfoUpdateWeightEt.text.isNotBlank() && binding.myInfoUpdateWeightEt.text.toString()
+                .toInt() !in 30..200
+        ) {   //몸무게 데이터가 입력돼 있고, 30~200 사이 숫자가 아니면
             binding.myInfoUpdateWeightEt.startAnimation(animation)
             binding.myInfoUpdateWeightUnitTv.setTextColor(Color.parseColor("#FFC01D"))
             binding.myInfoUpdateWeightEt.isSelected = true
@@ -241,6 +262,8 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
         if (binding.myInfoUpdateBirthYearEt.text.isNotBlank())    //생년월일
             user.birth =
                 "${binding.myInfoUpdateBirthYearEt.text}-${binding.myInfoUpdateBirthMonthEt.text}-${binding.myInfoUpdateBirthDayEt.text}"
+        else
+            user.birth = "1900-01-01"
 
         if (binding.myInfoUpdateHeightEt.text.isNotBlank())   //키
             user.height = binding.myInfoUpdateHeightEt.text.toString().toInt()
@@ -290,5 +313,15 @@ class MyInfoUpdateFragment : BaseFragment<FragmentMyInfoUpdateBinding>(FragmentM
 
     override fun onUpdateFailure(code: Int, message: String) {
         Log.d("INFOUPDATE/API-FAILURE", code.toString() + message)
+
+        val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
+            getString(R.string.error_network)
+        } else { //나머지
+            getString(R.string.error_api_fail)
+        }
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) {
+                UserService.updateUser(this, bindUser())
+            }.show()
     }
 }

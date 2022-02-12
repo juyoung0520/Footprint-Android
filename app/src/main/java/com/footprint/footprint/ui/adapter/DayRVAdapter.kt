@@ -66,6 +66,7 @@ class DayRVAdapter(private val size: Int) : RecyclerView.Adapter<DayRVAdapter.Da
 
     fun setUserGoalDay(userGoalDay: ArrayList<Int>) {
         this.userGoalDay.addAll(userGoalDay)
+        notifyDataSetChanged()
     }
 
     inner class DayViewHolder(itemView: ItemDayBinding) : RecyclerView.ViewHolder(itemView.root) {

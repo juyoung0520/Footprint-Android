@@ -13,24 +13,13 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
     private lateinit var today: Today
 
     override fun initAfterBinding() {
+        setLoadingBar(true)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (::today.isInitialized){
-            setDayFragment()
-            setLoadingBar(false)
-        }else{
-            setLoadingBar(true)
-        }
-
-    }
     override fun onTodaySuccess(today: Today) {
         this.today = today
-    }
-
-    override fun onTodayFailure(code: Int, message: String) {
-        Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
+        setDayFragment()
+        setLoadingBar(false)
     }
 
     private fun setDayFragment() {

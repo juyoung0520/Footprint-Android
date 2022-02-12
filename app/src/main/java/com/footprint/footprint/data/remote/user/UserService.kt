@@ -16,7 +16,6 @@ object UserService {
     /*초기 정보 등록 API*/
     fun registerInfos(registerView: RegisterView,  userModel: UserModel) {
 
-        registerView.onRegisterLoading()
         userService.registerUser(userModel).enqueue(object : Callback<UserRegisterResponse>{
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
@@ -55,12 +54,12 @@ object UserService {
                         val result = body.result
                         view.onUserSuccess(result!!)
                     }
-                    else -> view.onUserFailure(body.code, body.message)
+                    else -> view.onHomeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                view.onUserFailure(213, t.message.toString())
+                view.onHomeFailure(213, t.message.toString())
                 Log.d("USER/API-FAILURE", t.message.toString())
             }
         })
