@@ -7,6 +7,8 @@ import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.remote.auth.AuthService
+import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -15,6 +17,7 @@ import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.*
+import com.google.android.material.snackbar.Snackbar
 
 class RegisterGoalFragment() :
     BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate), RegisterView {
@@ -26,6 +29,11 @@ class RegisterGoalFragment() :
         initAdapter()
         initWalkTimeDialog()
         setMyEventListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dayRVAdapter.setUserGoalDay(userModel.goalDay)
     }
 
     private fun initAdapter() {
@@ -238,7 +246,6 @@ class RegisterGoalFragment() :
 
 
     /*정보 등록 API -> Response*/
-    override fun onRegisterLoading() {}
 
     override fun onRegisterSuccess(result: String?) {
         Log.d("REGISTER/API-SUCCESS", "성공" + result.toString())
@@ -251,6 +258,15 @@ class RegisterGoalFragment() :
 
     override fun onRegisterFailure(code: Int, message: String) {
         Log.d("REGISTER/API-FAILURE", "code: $code message: $message")
+
+        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
+            getString(R.string.error_network)
+        }else{ //나머지
+            getString(R.string.error_api_fail)
+        }
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+            UserService.registerInfos(this, userModel)
+        }.show()
     }
 
 }

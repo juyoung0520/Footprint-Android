@@ -6,5 +6,5 @@ import com.footprint.footprint.data.remote.user.User
 interface HomeView {
     /*유저 정보 받아오기*/
     fun onUserSuccess(user: User)
-    fun onUserFailure(code: Int, message: String)
+    fun onHomeFailure(code: Int, message: String)
 }

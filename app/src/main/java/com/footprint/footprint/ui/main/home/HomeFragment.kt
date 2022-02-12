@@ -6,13 +6,10 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -29,10 +26,10 @@ import com.footprint.footprint.data.remote.weather.*
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
-import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.walk.WalkActivity
+import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -73,6 +70,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         UserService.getUser(this)
 
         //일별
+        AchieveService.setHomeView(this)
         AchieveService.getToday(this)
     }
 
@@ -361,11 +359,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         userInfo[3] = user.walkNumber
     }
 
-    override fun onUserFailure(code: Int, message: String) {
-        Log.d("HOME(USER)/API-FAILURE", "code: $code message: $message")
-    }
-
-
     /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
@@ -390,10 +383,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //월별 API
         AchieveService.getTMonth(this)
-    }
-
-    override fun onTodayFailure(code: Int, message: String) {
-        Log.d("HOME(TODAY)/API-FAILURE", code.toString() + message)
     }
 
     /*월별 정보 조회 API*/
@@ -422,9 +411,23 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         (fragmentList[1] as HomeMonthFragment).onTMonthSuccess(tMonth)
     }
 
-    override fun onTMonthFailure(code: Int, message: String) {
-        Log.d("HOME(TMONTH)/API-FAILURE", code.toString() + message)
+    /*API-FAIL*/
+    override fun onHomeFailure(code: Int, message: String) {
+        Log.d("HOME/API-FAILURE", "code: $code message: $message")
+
+        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
+            getString(R.string.error_network)
+        }else{ //나머지
+            getString(R.string.error_api_fail)
+        }
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+            UserService.getUser(this)
+            AchieveService.getToday(this)
+            AchieveService.getTMonth(this)
+            requestLocation()
+        }.show()
     }
+
 
     override fun onDestroyView() {
         //등록된 jobs cancel -> binding error 막기 위해

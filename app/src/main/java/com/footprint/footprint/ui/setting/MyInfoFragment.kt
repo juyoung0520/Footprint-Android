@@ -6,12 +6,15 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
+import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.utils.convertDpToSp
+import com.footprint.footprint.utils.isNetworkAvailable
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 import kotlin.math.floor
@@ -209,7 +212,16 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         Log.d("MYINFO(USER)", this.user.toString())
     }
 
-    override fun onUserFailure(code: Int, message: String) {
+    override fun onHomeFailure(code: Int, message: String) {
         Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
+
+        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
+            getString(R.string.error_network)
+        }else{ //나머지
+            getString(R.string.error_api_fail)
+        }
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+            UserService.getUser(this)
+        }.show()
     }
 }

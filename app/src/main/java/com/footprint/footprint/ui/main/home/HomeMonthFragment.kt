@@ -39,10 +39,6 @@ class HomeMonthFragment() :
     override fun onTMonthSuccess(tMonth: TMonth) {
         this.tMonth = tMonth
     }
-
-    override fun onTMonthFailure(code: Int, message: String) {
-    }
-
     /*프래그먼트 설정*/
     private fun setMonthFragment(){
         //1. 목표 요일 설정

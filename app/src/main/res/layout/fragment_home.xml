@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_height="30dp"
-                android:text=""
+                android:text="발자국"
                 app:layout_constraintStart_toEndOf="@id/home_top_hello_tv"
                 app:layout_constraintTop_toTopOf="parent"/>
 
