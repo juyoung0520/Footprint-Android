@@ -43,7 +43,7 @@ class HomeMonthCalendar(date: Date) {
 
         currentMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) //month의 day까지
 
-        //이전 달
+        //첫 날
         prevTail = calendar.get(Calendar.DAY_OF_WEEK) - 1
         val prevDays = makePrevTail(calendar.clone() as Calendar)
 

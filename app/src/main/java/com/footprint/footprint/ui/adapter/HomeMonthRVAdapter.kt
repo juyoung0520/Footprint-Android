@@ -1,7 +1,6 @@
 package com.footprint.footprint.ui.adapter
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,9 +77,10 @@ class HomeMonthRVAdapter(
             /*스타일*/
             // 오늘 날짜 bold체로
             val dateInt = date.date
-            Log.d("CALENDAR", "date: $date dateInt: $dateInt")
             if ((position in firstDateIndex..lastDateIndex) && data == dateInt) {
                 binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_headline_eb_12)
+            }else{
+                binding.itemHomeMonthDayTv.setTextAppearance(R.style.tv_caption_12)
             }
 
             // 현재 월의 1일 이전, 현재 월의 마지막일 이후 값의 텍스트를 회색처리
@@ -88,12 +88,14 @@ class HomeMonthRVAdapter(
                 binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#E1E2E1"))
                 binding.itemHomeMonthDayTv.background = null
                 binding.itemHomeMonthDayPb.visibility = View.GONE
+            }else{
+                binding.itemHomeMonthDayTv.setTextColor(Color.parseColor("#241F20"))
             }
 
             /*달성율 반영*/
             if (userDatas != null && position in firstDateIndex..lastDateIndex) {
                 for (userData in userDatas!!) {
-                    if (userData.day == data) {
+                    if (userData.day == data && userData.rate > 0) {
                         //프로그레스 바 visibility -> VISIBLE
                         binding.itemHomeMonthDayPb.visibility = View.VISIBLE
 

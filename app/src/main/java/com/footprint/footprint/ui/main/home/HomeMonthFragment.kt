@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.remote.achieve.TMonth
+import com.footprint.footprint.data.remote.achieve.TMonthDayRateRes
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
@@ -57,12 +58,6 @@ class HomeMonthFragment() :
                 "SUN" -> binding.homeMonthSunBackgroundIv.visibility = View.VISIBLE
             }
         }
-
-        /*테스트 정보*/
-        /*val data1 = TMonthDayRateRes(20, 50f)
-        val data2 = TMonthDayRateRes(3, 20f)
-        val data3 = TMonthDayRateRes(15, 100f)
-        val dsr = arrayListOf<TMonthDayRateRes>(data1, data2, data3)*/
 
         //2. RVA 연결
         //현재 날짜 받아오기

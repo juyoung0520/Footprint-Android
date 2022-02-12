@@ -83,7 +83,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                         callback = callback
                     )
                 } else if (token != null) {
-                    Toast.makeText(this, "카카오톡 로그인 완료", Toast.LENGTH_SHORT).show()
                     Log.i("KAKAO/API-SUCCESS", "카카오톡으로 로그인 성공 ${token.accessToken}")
 
                     getKakaoUser()
@@ -176,7 +175,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
-        saveLoginStatus(this, socialUserModel.providerType)
+        saveLoginStatus(socialUserModel.providerType)
         Log.d("SIGNIN/API-SUCCESS", "status: $status jwt: $jwtId login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //2. STATUS에 따른 처리

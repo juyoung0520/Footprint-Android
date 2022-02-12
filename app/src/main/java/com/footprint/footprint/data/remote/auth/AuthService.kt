@@ -2,6 +2,7 @@ package com.footprint.footprint.data.remote.auth
 
 import android.util.Log
 import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.ui.setting.SettingView
 import com.footprint.footprint.ui.signin.SignInView
 import com.footprint.footprint.ui.signin.SplashView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
@@ -61,6 +62,35 @@ object AuthService {
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 signinView.onSignInFailure(213, t.message.toString())
                 Log.d("LOGIN/API-FAILURE", t.message.toString())
+            }
+
+        })
+    }
+
+    fun unregister(settingView: SettingView){
+        authService.unregister().enqueue(object : Callback<UnRegisterResponse>{
+            override fun onResponse(
+                call: Call<UnRegisterResponse>,
+                response: Response<UnRegisterResponse>
+            ) {
+                val body = response.body()
+
+                Log.d("UNREGISTER/API-SUCCESS", body.toString())
+                if(body!= null){
+                    when(body.code){
+                        1000 -> {
+                            settingView.onUnregisterSuccess(body)
+                        }
+                        else -> {
+                            settingView.onUnregisterFailure(body.code, body.message)
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UnRegisterResponse>, t: Throwable) {
+                Log.d("UNREGISTER/API-FAILURE", t.message.toString())
+                settingView.onUnregisterFailure(213, t.message.toString())
             }
 
         })

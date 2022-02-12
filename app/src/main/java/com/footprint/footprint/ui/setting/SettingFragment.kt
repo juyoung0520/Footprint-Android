@@ -1,12 +1,18 @@
 package com.footprint.footprint.ui.setting
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.auth.AuthService
+import com.footprint.footprint.data.remote.auth.UnRegisterResponse
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -18,9 +24,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.kakao.sdk.user.UserApiClient
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
+class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate),
+    SettingView {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+
     private lateinit var loginStatus: String
 
     override fun initAfterBinding() {
@@ -38,14 +46,27 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
-        //산책기록 잠금 스위치버튼 <- ON/OFF 상태
-        if (getPWDstatus(requireContext()) == "ON") {
-            binding.settingLockFootprintSb.isChecked = true
-            setPwdSettingVisibility()
+
+        //산책기록 잠금 상태
+        when (getPWDstatus()) {
+            "ON" -> {
+                when (getCrackStatus()) {
+                    "SUCCESS" -> { //암호 해제
+                        binding.settingLockFootprintSb.isChecked = false
+                        savePWDstatus("OFF")
+                        saveCrackStatus("NOTHING")
+                    }
+                    else -> { // 암호 풀려다 실패 or 처음 들어옴
+                        binding.settingLockFootprintSb.isChecked = true
+                        saveCrackStatus("NOTHING")
+                    }
+                }
+            }
         }
+        setPwdSettingVisibility()
 
         //알림 상태
-        binding.settingNotificationSb.isChecked = getNotification(requireContext())
+        binding.settingNotificationSb.isChecked = getNotification()
     }
 
     private fun initLoginStatus() {
@@ -56,7 +77,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         //spf에서 로그인 상태 불러오기(kakao, google, null)
-        loginStatus = getLoginStatus(requireContext())
+        loginStatus = getLoginStatus()
         if (loginStatus == "kakao" || loginStatus == "google") {
             Log.d("AUTO-UNLINK/VALUE", "카카오/구글 로그인되었습니다\n" + "LoginStatus: ${loginStatus}")
         } else if (loginStatus == "null") {
@@ -115,10 +136,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                             Log.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
                             googleLogout()
                         }
-                        removeLoginStatus(requireContext())
+                        removeLoginStatus()
                         removeJwt()
                     }
                 }
+
                 override fun action2(isAction: Boolean) {}
             })
         }
@@ -134,17 +156,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 //탈퇴
                 override fun action2(isAction: Boolean) {
                     if (isAction) {
-                        if (loginStatus == "kakao") {
-                            //Kakao Unlink
-                            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
-                            kakaoUnlink()
-                        } else if (loginStatus == "google") {
-                            //Google Unlink
-                            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
-                            googleUnlink()
-                        }
-                        removeLoginStatus(requireContext())
-                        removeJwt()
+                        //회원 탈퇴 API 호출
+                        AuthService.unregister(this@SettingFragment)
                     }
                 }
 
@@ -153,19 +166,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //알림 스위치버튼 클릭 리스너
         binding.settingNotificationSb.setOnClickListener {
-            saveNotification(requireContext(), binding.settingNotificationSb.isChecked)
+            saveNotification(binding.settingNotificationSb.isChecked)
         }
 
         //산책기록 잠금 스위치버튼 클릭 리스너
         binding.settingLockFootprintSb.setOnClickListener {
-            val pwdStatus = getPWDstatus(requireContext())
-            if (pwdStatus == "DEFAULT") {
-                //DEFAULT: 암호 X, 암호 설정 액티비티(LockActivity)로 이동/SETTING 암호 설정
-                startLockActivity("SETTING")
-                binding.settingLockFootprintSb.isChecked = false
-            } else {
-                //SET, ON, OFF: 암호 변경 visibility 변경
-                setPwdSettingVisibility()
+            val pwdStatus = getPWDstatus()
+            when (pwdStatus) {
+                "DEFAULT" -> {
+                    binding.settingLockFootprintSb.isChecked = false
+                    startLockActivity("SETTING")
+                }
+                "ON" -> {
+                    binding.settingLockFootprintSb.isChecked = false
+                    startLockActivity("UNLOCK")
+                }
+                "OFF" -> {
+                    binding.settingLockFootprintSb.isChecked = true
+                    savePWDstatus("ON")
+                    setPwdSettingVisibility()
+                }
             }
         }
 
@@ -204,19 +224,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     /*Function- 암호 */
     //암호 변경 visibility 변경
     private fun setPwdSettingVisibility() {
-        lateinit var pwdStatus: String
-        if (binding.settingLockFootprintSb.isChecked) {
+        if (binding.settingLockFootprintSb.isChecked) { //암호 ON
             binding.settingPasswordSettingIv.visibility = View.VISIBLE
             binding.settingPasswordSettingTv.visibility = View.VISIBLE
             binding.settingPasswordSettingNextIv.visibility = View.VISIBLE
-            pwdStatus = "ON"
-        } else {
+        } else { //암호 OFF
             binding.settingPasswordSettingIv.visibility = View.GONE
             binding.settingPasswordSettingTv.visibility = View.GONE
             binding.settingPasswordSettingNextIv.visibility = View.GONE
-            pwdStatus = "OFF"
         }
-        savePWDstatus(requireContext(), pwdStatus)
     }
 
     //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)
@@ -262,5 +278,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             startActivity(Intent(requireContext(), SplashActivity::class.java))
 
         }
+    }
+
+    override fun onUnregisterSuccess(result: UnRegisterResponse) {
+        Log.d("SETTING/API-SUCCESS", result.toString())
+        if (loginStatus == "kakao") {
+            //Kakao Unlink
+            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
+            kakaoUnlink()
+        } else if (loginStatus == "google") {
+            //Google Unlink
+            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
+            googleUnlink()
+        }
+        removeLoginStatus()
+        removeJwt()
+    }
+
+    override fun onUnregisterFailure(code: Int, message: String) {
+        Log.d("SETTING/API-FAILURE", "code: $code message: $message")
+
+        Toast.makeText(activity, "$code - 다시 시도해 주세요", Toast.LENGTH_SHORT).show()
     }
 }

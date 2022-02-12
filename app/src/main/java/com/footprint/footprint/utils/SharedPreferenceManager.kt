@@ -3,61 +3,51 @@ package com.footprint.footprint.utils
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
+import com.footprint.footprint.utils.GlobalApplication.Companion.eSharedPreferences
 import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
 import com.google.gson.reflect.TypeToken
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
-fun saveOnboarding(context: Context, onboardingStatus: Boolean){
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun saveOnboarding(onboardingStatus: Boolean){
+    val editor = mSharedPreferences.edit()
 
     editor.putBoolean("onboarding", onboardingStatus)
     editor.apply()
 }
 
-fun getOnboarding(context: Context): Boolean{
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-
-    return spf.getBoolean("onboarding", false)
-}
+fun getOnboarding() = mSharedPreferences.getBoolean("onboarding", false)
 
 
 /*Login Status - kakao, google, null*/
-fun saveLoginStatus(context: Context, loginStatus: String){
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun saveLoginStatus(loginStatus: String){
+    val editor = mSharedPreferences.edit()
 
     editor.putString("loginStatus", loginStatus)
     editor.apply()
 }
 
-fun getLoginStatus(context: Context): String{
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
+fun getLoginStatus(): String = mSharedPreferences.getString("loginStatus", "null")!!
 
-    return spf.getString("loginStatus", "null")!!
-}
 
-fun removeLoginStatus(context: Context){
-    val spf = context.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf!!.edit()
+fun removeLoginStatus(){
+    val editor = mSharedPreferences.edit()
 
     editor.remove("loginStatus")
     editor.apply()
 }
 
-
 /*JwtId - 로그인 API 호출 후, 서버에서 받아오는 JwtId & API 요청 시 사용하는 X-ACCESS-TOKEN*/
 fun saveJwt(jwtToken: String) {
-    val editor = mSharedPreferences.edit()
+    val editor = eSharedPreferences.edit()
     editor.putString(X_ACCESS_TOKEN, jwtToken)
 
     editor.apply()
 }
 
-fun getJwt(): String? = mSharedPreferences.getString(X_ACCESS_TOKEN, null)
+fun getJwt(): String? = eSharedPreferences.getString(X_ACCESS_TOKEN, null)
 
 fun removeJwt(){
-    val editor = mSharedPreferences.edit()
+    val editor = eSharedPreferences.edit()
 
     editor.remove(X_ACCESS_TOKEN)
     editor.apply()
@@ -82,61 +72,46 @@ fun getTags(context: Context): ArrayList<String>? {
 }
 
 /*Password: 산책 일기 암호*/
-fun savePWD(context: Context, password: String){
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun savePWD(password: String){
+    val editor = mSharedPreferences.edit()
 
     editor.putString("password", password)
     editor.apply()
 }
 
-fun getPWD(context: Context): String?{
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+fun getPWD(): String? =  mSharedPreferences.getString("password", null)
 
-    return spf.getString("password", null)
-}
 
 /*PWDstatus: 산책 일기 암호 상태 - DEFAULT(암호 X), ON(암호 ON), OFF(암호 OFF)*/
-fun savePWDstatus(context: Context, status: String){
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun savePWDstatus(status: String){
+    val editor = mSharedPreferences.edit()
 
     editor.putString("pwdStatus", status)
     editor.apply()
 }
 
-fun getPWDstatus(context: Context): String? {
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+fun getPWDstatus(): String? =  mSharedPreferences.getString("pwdStatus", "DEFAULT")
 
-    return spf.getString("pwdStatus", "DEFAULT")
-}
 
 //산책 일기 암호가 풀렸는지 - DEFAULT(NOTHING), SUCCESS(암호가 풀림), CANCEL(암호 풀려다 취소 ex.뒤로가기)
-fun saveCrackStatus(context: Context, isCrack: String) {
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun saveCrackStatus(isCrack: String) {
+    val editor = mSharedPreferences.edit()
 
     editor.putString("crackStatus", isCrack)
     editor.apply()
 }
 
-fun getCrackStatus(context: Context): String? {
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+fun getCrackStatus(): String? = mSharedPreferences.getString("crackStatus", "NOTHING")
 
-    return spf.getString("crackStatus", "NOTHING")
-}
 
 /*Notification: 앱 푸시 알림 - true(알림 on) false(알림 off)*/
-fun saveNotification(context: Context, status: Boolean){
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
-    val editor = spf.edit()
+fun saveNotification(status: Boolean){
+    val editor = mSharedPreferences.edit()
 
     editor.putBoolean("notification", status)
     editor.apply()
 }
 
-fun getNotification(context: Context): Boolean{
-    val spf = context.getSharedPreferences("app", AppCompatActivity.MODE_PRIVATE)
+fun getNotification(): Boolean =  mSharedPreferences.getBoolean("notification", false)
 
-    return spf.getBoolean("notification", false)
-}
+

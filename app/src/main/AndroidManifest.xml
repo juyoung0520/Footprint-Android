@@ -70,7 +70,7 @@
         <activity
             android:name=".ui.onboarding.OnBoardingActivity"
             android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".ui.register.RegisterActivity"
@@ -96,7 +96,7 @@
         <activity
             android:name=".ui.walk.WalkActivity"
             android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:exported="false"/>
 
         <activity
             android:name=".ui.walk.WalkDetailActivity"

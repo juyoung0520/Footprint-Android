@@ -122,9 +122,6 @@ dependencies {
     //GlideToVectorYou
     implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
 
-    //Lottie Animation
-    implementation 'com.airbnb.android:lottie:3.0.7'
-
     //그래프
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 

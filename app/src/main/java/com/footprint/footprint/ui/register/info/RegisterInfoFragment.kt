@@ -30,6 +30,7 @@ class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
     private lateinit var animation: Animation
+    private var scrollState: String = "DOWN" //UP, DOWN
 
     private var newUser: UserModel = UserModel()
     private var isNicknameCorrect = false
@@ -174,7 +175,9 @@ class RegisterInfoFragment() :
         yearEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) { // Focus
                 binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary))
-                scrollUp(isUp = true)
+                if(scrollState == "DOWN"){
+                    scrollUp(isUp = true)
+                }
             } else { // Focus X
                 if (yearEt.text.isEmpty()) {
                     binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.primary_light))
@@ -191,7 +194,9 @@ class RegisterInfoFragment() :
         val monthEt = binding.registerInfoBirthMonthEt
         monthEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) { // Focus
-                scrollUp(isUp = true)
+                if(scrollState == "DOWN"){
+                    scrollUp(isUp = true)
+                }
                 binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.primary))
             } else { // Focus X
                 if (monthEt.text.isEmpty()) {
@@ -208,7 +213,9 @@ class RegisterInfoFragment() :
         val dayEt = binding.registerInfoBirthDayEt
         dayEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) { // Focus
-                scrollUp(isUp = true)
+                if(scrollState == "DOWN"){
+                    scrollUp(isUp = true)
+                }
                 binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.primary))
             } else { // Focus X
                 if (dayEt.text.isEmpty()) {
@@ -290,21 +297,18 @@ class RegisterInfoFragment() :
         //하나라도 입력이 안됨!
         if (year == null) {
             yearEt.startAnimation(animation)
-            //yearEt.requestFocus()
             yearEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthYearUnitTv.setTextColor(resources.getColor(R.color.secondary))
         }
         if (month == null) {
             monthEt.startAnimation(animation)
-            //monthEt.requestFocus()
             monthEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthMonthUnitTv.setTextColor(resources.getColor(R.color.secondary))
         }
         if (day == null) {
             dayEt.startAnimation(animation)
-            //dayEt.requestFocus()
             dayEt.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.secondary))
             binding.registerInfoBirthDayUnitTv.setTextColor(resources.getColor(R.color.secondary))
@@ -319,7 +323,9 @@ class RegisterInfoFragment() :
         val heightUnit = binding.registerInfoHeightUnitTv
         heightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) { // Focus
-                scrollUp(isUp = true)
+                if(scrollState == "DOWN"){
+                    scrollUp(isUp = true)
+                }
                 heightUnit.setTextColor(resources.getColor(R.color.primary))
             } else {
                 if (heightEt.text.isEmpty()) {
@@ -354,7 +360,9 @@ class RegisterInfoFragment() :
         val weightUnit = binding.registerInfoWeightUnitTv
         weightEt.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) { // Focus
-                scrollUp(isUp = true)
+                if(scrollState == "DOWN"){
+                    scrollUp(isUp = true)
+                }
                 weightUnit.setTextColor(resources.getColor(R.color.primary))
             } else {
                 if (weightEt.text.isEmpty()) {
@@ -410,17 +418,10 @@ class RegisterInfoFragment() :
         //width = 200/2 중간 => 에서 0.3만큼 오른쪽으로 치우치게
         val xoff = Math.floor(200 / 2 + 200 * 0.3).toInt()
 
-
-        var keyboardStatus = false
         keyboardVisibilityUtils = KeyboardVisibilityUtils(requireActivity().getWindow(),
-            onShowKeyboard = { keyboardHeight ->
-                keyboardStatus = true
-                //if (balloon.isShowing) balloon.dismiss()
-            },
             onHideKeyboard = {
-                keyboardStatus = false
-               //if (balloon.isShowing) balloon.dismiss()
-                scrollUp(false)
+                if(scrollState == "UP")
+                    scrollUp(false)
             }
         )
 
@@ -440,10 +441,12 @@ class RegisterInfoFragment() :
                 500
             )
             binding.registerInfoScrollviewV.setScrollingEnabled(false)
+            scrollState = "UP"
         } else {
             binding.registerInfoScrollviewV.setScrollingEnabled(true)
             binding.registerInfoScrollviewV.smoothScrollTo(0, 0, 500)
             binding.registerInfoScrollviewV.setScrollingEnabled(false)
+            scrollState = "DOWN"
         }
     }
 

@@ -54,7 +54,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
     //Back 버튼
     private fun initBackBtn() {
         binding.lockBackBtnIv.setOnClickListener {
-            saveCrackStatus(this, "CANCEL")
+            saveCrackStatus("CANCEL")
             finish()
         }
     }
@@ -186,8 +186,8 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                 Log.d("LOCK/CHECK", "Type: $type Password: $password TmpPwd: $tmpPassword")
                 if (pwdCheckingFunction(tmpPassword!!)) {
                     //true -> spf에 저장
-                    savePWD(this@LockActivity, tmpPassword!!)
-                    savePWDstatus(this@LockActivity, "ON")
+                    savePWD( tmpPassword!!)
+                    savePWDstatus("ON")
 
                     //변경 or 설정 완료 -> 액티비티 종료
                     finish()
@@ -211,7 +211,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                         pwdChangeUI()
                         type = "CHANGE"
                     } else {    //그냥 잠금 해제 -> SharedPreferences 에 암호가 풀렸음(SUCCESS)을 저장한다.
-                        saveCrackStatus(this, "SUCCESS")
+                        saveCrackStatus("SUCCESS")
                         finish()
                     }
                 } else {
@@ -254,7 +254,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
     //잠금 해제 Function
     private fun pwdUnlockFunction(): Boolean {
         //password, spf password 일치하는지 확인
-        return password == getPWD(this)
+        return password == getPWD()
     }
 
 
@@ -298,7 +298,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
 
     //뒤로가기 이벤트: SharedPreferences 에 LockActivity 에 들어왔다가 그냥 뒤로 나가 버린 것(CANCEL)을 저장한다.
     override fun onBackPressed() {
-        saveCrackStatus(this, "CANCEL")
+        saveCrackStatus("CANCEL")
         super.onBackPressed()
     }
 }
