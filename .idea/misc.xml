@@ -134,14 +134,23 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/item_post.xml" value="0.4" />
         <entry key="..\:/Footprint-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="..\:/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint.xml" value="0.1" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1859375" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_primary_round_square.xml" value="0.21052631578947367" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_badge_representative_badge_round_view.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_gray_round_square.xml" value="0.22077922077922077" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_grayround.xml" value="0.22077922077922077" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_round.xml" value="0.22077922077922077" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_stroke_round.xml" value="0.22077922077922077" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_white_gradient.xml" value="0.22077922077922077" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_white_round_square.xml" value="0.22077922077922077" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_whiteround.xml" value="0.17039473684210527" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_logo_blue.xml" value="0.1859375" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_logo_white.xml" value="0.1859375" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_off.xml" value="0.22424242424242424" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_footprint_on.xml" value="0.22424242424242424" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1859375" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_launcher_footprint_foreground.xml" value="0.1859375" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_left.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_medal.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_no_badge.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_setting.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_settings_24.xml" value="0.2236842105263158" />
+        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_starter_badge.xml" value="0.2236842105263158" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_course.xml" value="0.21082251082251083" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.22424242424242424" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_note.xml" value="0.21082251082251083" />
@@ -174,7 +183,6 @@
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.1453804347826087" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_walk.xml" value="0.24682971014492755" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1974025974025974" />
-        <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint.xml" value="0.2" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/ic_course_off.xml" value="0.17314814814814813" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_33_user_off.xml" value="0.26205128205128203" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint/app/src/main/res/drawable/icon_36_footprint_off.xml" value="0.20925925925925926" />
@@ -239,6 +247,7 @@
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_footprint_on.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_launcher_footprint_background.xml" value="0.21510416666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_launcher_footprint_foreground.xml" value="0.12962962962962962" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_line16.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_line17.xml" value="0.23958333333333334" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/ic_note_off.xml" value="0.21510416666666668" />
@@ -267,6 +276,7 @@
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_day.xml" value="0.536" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.0" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_number.xml" value="0.536" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint.xml" value="0.1" />
       </map>
     </option>
   </component>
