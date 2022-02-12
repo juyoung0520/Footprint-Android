@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.footprint.footprint.R
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.*
 import com.footprint.footprint.databinding.FragmentSearchResultBinding
@@ -14,6 +15,8 @@ import com.footprint.footprint.ui.adapter.WalkDateRVAdapter
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.isNetworkAvailable
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -90,21 +93,33 @@ class SearchResultFragment() :
     }
 
     override fun onSearchResultFailure(code: Int, message: String) {
-        when (code) {
-            400 -> {
-                Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/fail/$message")
-            }
-            else -> {
-                Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/fail/$message")
-            }
-        }
-
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.searchResultLoadingPb.visibility = View.GONE
+                if (!isNetworkAvailable(requireContext())) {
+                    showSnackBar(getString(R.string.error_network))
+                } else {
+                    if (code == 2125) {
+                        // 검색결과 없으면
+                        binding.searchResultLoadingPb.visibility = View.GONE
+                    } else {
+                        showSnackBar(getString(R.string.error_api_fail))
+                    }
+                }
             })
         }
     }
+
+    private fun showSnackBar(errorMessage: String) {
+        Snackbar.make(
+            requireView(),
+            errorMessage,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(getString(R.string.action_retry)) {
+            // Tag API
+            WalkService.getTagWalkDates(this, currentTag.drop(1))
+        }.show()
+    }
+
 
     override fun onSearchResultSuccess(walkDates: List<WalkDateResult>) {
         Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/WALK-DATES/success")

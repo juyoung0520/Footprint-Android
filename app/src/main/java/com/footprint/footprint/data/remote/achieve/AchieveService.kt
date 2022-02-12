@@ -90,7 +90,6 @@ object AchieveService {
 
             override fun onFailure(call: Call<AchieveDetailResponse>, t: Throwable) {
                 myPageView.onMyPageFailure(400, t.message.toString())
-                Log.d("${GlobalApplication.TAG}/MYPAGE/API-FAILURE", t.message.toString())
             }
 
         })

@@ -83,7 +83,6 @@ object UserService {
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 view.onMyPageFailure(213, t.message.toString())
-                Log.d("USER/API-FAILURE", t.message.toString())
             }
         })
     }
