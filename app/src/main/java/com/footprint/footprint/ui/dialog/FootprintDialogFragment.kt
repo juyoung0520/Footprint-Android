@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -77,12 +78,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         initAdapter()   //뷰페이저 어댑터 설정
         setMyClickListener()    //클릭 리스너 설정
 
-        val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
-        if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
-            isUpdate = true
-            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
-        }
-
         return binding.root
     }
 
@@ -96,6 +91,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             0.9f,
             0.64f
         )
+
+        val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
+        if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
+            isUpdate = true
+            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
+        }
     }
 
     //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행

@@ -57,12 +57,13 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
                 visibility = View.VISIBLE
             }
 
-            //뱃지 클릭 리스너 활성화
-            holder.root.isEnabled = true
-
-            //대표 뱃지 변경
-            holder.root.setOnClickListener {
-                myItemClickListener.changeRepresentativeBadge(badge)
+            if (representativeBadge.badgeIdx==badge.badgeIdx) //대표 뱃지는 뱃지 클릭 리스너 비활성화
+                holder.root.isEnabled = false
+            else {
+                holder.root.isEnabled = true    //뱃지 클릭 리스너 활성화
+                holder.root.setOnClickListener {    //대표 뱃지 변경
+                    myItemClickListener.changeRepresentativeBadge(badge)
+                }
             }
         }
 

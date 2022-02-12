@@ -10,6 +10,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -95,9 +96,20 @@ class GoalNextMonthFragment :
         }
     }
 
-    override fun onGoalFail(code: Int, message: String) {
-        jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-            showToast(getString(R.string.error_api_fail))
-        })
+    override fun onGoalFail(code: Int?) {
+        if (view!=null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                when (code) {
+                    6000 -> showSnackBar(getString(R.string.error_network))   //네트워크 연결 문제
+                    else -> showSnackBar(getString(R.string.error_api_fail))   //그 이외 문제
+                }
+            })
+        }
+    }
+
+    private fun showSnackBar(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+            GoalService.getThisMonthGoal(this@GoalNextMonthFragment)
+        }.show()
     }
 }

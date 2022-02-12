@@ -6,6 +6,8 @@ import com.footprint.footprint.data.remote.walk.BaseResponse
 import com.footprint.footprint.ui.main.mypage.GoalNextMonthUpdateView
 import com.footprint.footprint.ui.main.mypage.GoalView
 import com.footprint.footprint.utils.GlobalApplication
+import com.footprint.footprint.utils.isNetworkAvailable
+import gun0912.tedimagepicker.util.ToastUtil.context
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,12 +21,19 @@ object GoalService {
                 val res = response.body()
                 Log.d("GoalService","\ngetThisMonthGoal-RES\ncode: ${res?.code}\nbody: $res")
 
-                goalView.onGetGoalSuccess(res?.result!!)
+                if (res?.code==1000)
+                    goalView.onGetGoalSuccess(res?.result!!)
+                else
+                    goalView.onGoalFail(res?.code)
             }
 
             override fun onFailure(call: Call<GetGoalResponse>, t: Throwable) {
                 Log.e("GoalService", "getThisMonthGoal-ERROR: ${t.message.toString()}")
-                goalView.onGoalFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    goalView.onGoalFail(5000)
+                else
+                    goalView.onGoalFail(6000)
             }
         })
     }
@@ -35,12 +44,19 @@ object GoalService {
                 val res = response.body()
                 Log.d("GoalService","\ngetNextMonthGoal-RES\ncode: ${res?.code}\nbody: $res")
 
-                goalView.onGetGoalSuccess(res?.result!!)
+                if (res?.code==1000)
+                    goalView.onGetGoalSuccess(res?.result!!)
+                else
+                    goalView.onGoalFail(res?.code)
             }
 
             override fun onFailure(call: Call<GetGoalResponse>, t: Throwable) {
                 Log.e("GoalService", "getNextMonthGoal-ERROR: ${t.message.toString()}")
-                goalView.onGoalFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    goalView.onGoalFail(5000)
+                else
+                    goalView.onGoalFail(6000)
             }
         })
     }
@@ -52,12 +68,19 @@ object GoalService {
                 val res = response.body()
                 Log.d("GoalService","\nupdateGoal-RES\ncode: ${res?.code}\nbody: $res")
 
-                goalView.onGoalNextMonthUpdateSuccess()
+                if (res?.code==1000)
+                    goalView.onGoalNextMonthUpdateSuccess()
+                else
+                    goalView.onGoalNextMonthUpdateFail(res?.code, goal)
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 Log.e("GoalService", "getNextMonthGoal-ERROR: ${t.message.toString()}")
-                goalView.onGoalNextMonthUpdateFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    goalView.onGoalNextMonthUpdateFail(6000, goal)
+                else
+                    goalView.onGoalNextMonthUpdateFail(5000, goal)
             }
 
         })
