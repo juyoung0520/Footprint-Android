@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
+import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
@@ -31,6 +32,7 @@ import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.*
@@ -47,7 +49,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
 
     //Walk 액티비티로 전달할 유저 정보
-    private var userInfo: Array<Int?> = arrayOf(0, null, null, null)  //목표 시간, 키, 몸무게, 삭책 횟수
+    private var userInfo =  UserModel()
 
     //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()
@@ -78,15 +80,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
             //유저 정보가 다 채워져야 산책 시작 가능
-            if (userInfo[1] != null && userInfo[2] != null && userInfo[3] != null) {
+            if (userInfo.height != null && userInfo.weight != null && userInfo.walkNumber != null) {
                 val intent = Intent(activity, WalkActivity::class.java)
 
-                intent.putExtra("goalTime", userInfo[0])
-                intent.putExtra("height", userInfo[1])
-                intent.putExtra("weight", userInfo[2])
-                intent.putExtra("walkNumber", userInfo[3])
+                val userInfoJson = Gson().toJson(userInfo)
+                intent.putExtra("userInfo", userInfoJson)
 
-                Log.d("userInfo", "목표 시간: ${userInfo[0]} 키: ${userInfo[1]} 몸무게: ${userInfo[2]} 산책횟수:  ${userInfo[3]}")
+                Log.d("userInfo", "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}")
                 startActivity(intent)
             } else { //정보 없음
                 Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
@@ -354,15 +354,16 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
 
         //유저 정보 저장
-        userInfo[1] = user.height
-        userInfo[2] = user.weight
-        userInfo[3] = user.walkNumber
+        userInfo.gender = user.sex
+        userInfo.height = user.height
+        userInfo.weight = user.weight
+        userInfo.walkNumber = user.walkNumber
     }
 
     /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
         Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
-        userInfo[0] = today.walkGoalTime
+        userInfo.goalWalkTime = today.walkGoalTime
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //목표 바꿔주기
@@ -393,7 +394,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //누적 산책시간
                 val monthTotalMin = tMonth.getMonthTotal.monthTotalMin
-                val color = if (monthTotalMin > userInfo[0]!!) "#FFC01D" else "#241F20"
+                val color = if (monthTotalMin > userInfo.walkNumber!!) "#FFC01D" else "#241F20"
                 binding.homeMonthGoalWalkTv.setTextColor(Color.parseColor(color))
                 binding.homeMonthGoalWalkTv.text = monthTotalMin.toString()
                 binding.homeMonthGoalWalkTv.isSelected = true
