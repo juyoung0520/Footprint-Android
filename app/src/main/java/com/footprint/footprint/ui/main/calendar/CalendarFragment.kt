@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.UserDateWalk
@@ -37,17 +38,19 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     CalendarView {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
+    private var isFromFragment = false
 
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        // 캘린더 초기화 됐으면
-        if (!::calendarDayBinder.isInitialized) {
+        // SearchFragment에서 오거나 처음 생성됐을 때
+        if (isFromFragment || !::currentMonth.isInitialized) {
             setBinding()
             initCalendar()
             return
         }
 
+        // API 호출
         updateAll()
     }
 
@@ -71,21 +74,25 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             findNavController().navigate(action)
         }
 
-        val localDate = LocalDate.now()
+        var date = LocalDate.now()
+        if (::calendarDayBinder.isInitialized && calendarDayBinder.getSelectedDate() != null) {
+            date = calendarDayBinder.getSelectedDate()
+        }
         binding.calendarMonthTitleTv.text =
-            String.format("%d.%d", localDate.year, localDate.monthValue)
+            String.format("%d.%d", date.year, date.monthValue)
         binding.calendarSelectedDayTv.text =
             String.format(
                 "%d.%d.%d %s",
-                localDate.year,
-                localDate.monthValue,
-                localDate.dayOfMonth,
-                changeDayOfWeek(localDate.dayOfWeek.toString())
+                date.year,
+                date.monthValue,
+                date.dayOfMonth,
+                changeDayOfWeek(date.dayOfWeek.toString())
             )
+
         //DayWalk API 호출
         WalkService.getDayWalks(
             this,
-            String.format("%d-%02d-%02d", localDate.year, localDate.monthValue, localDate.dayOfMonth)
+            String.format("%d-%02d-%02d", date.year, date.monthValue, date.dayOfMonth)
         )
     }
 
@@ -96,19 +103,23 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         binding.calendarWalkCv.daySize = Size(cellWidth, cellHeight)
 
-        calendarDayBinder = CalendarDayBinder(requireContext())
-        calendarDayBinder.setDayLayoutParams(cellWidth, cellHeight)
+        if (!::calendarDayBinder.isInitialized) {
+            calendarDayBinder = CalendarDayBinder(requireContext())
+            calendarDayBinder.setDayLayoutParams(cellWidth, cellHeight)
 
-        calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
-            override fun onDayClick(oldSelection: LocalDate?, selection: LocalDate) {
-                selectDate(oldSelection, selection)
-            }
-        })
+            calendarDayBinder.setOnDayClickListener(object : CalendarDayBinder.OnDayClickListener {
+                override fun onDayClick(oldSelection: LocalDate?, selection: LocalDate) {
+                    selectDate(oldSelection, selection)
+                }
+            })
+        }
 
         binding.calendarWalkCv.dayBinder = calendarDayBinder
 
 
-        currentMonth = YearMonth.now()
+        if (!::currentMonth.isInitialized) {
+            currentMonth = YearMonth.now()
+        }
         val firstMonth = currentMonth.minusMonths(60)
         val lastMonth = currentMonth.plusMonths(60)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
@@ -231,7 +242,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) {
-                    // remove API
+                    // deleteWalk API
                     WalkService.deleteWalk(this@CalendarFragment, walkIdx)
                 }
             }
@@ -242,6 +253,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
         val bundle = Bundle()
         bundle.putString("msg", "'${walkIdx}번째 산책' 을 삭제하시겠어요?")
+        bundle.putString("action", getString(R.string.action_delete))
 
         actionDialogFragment.arguments = bundle
         actionDialogFragment.show(childFragmentManager, null)
@@ -332,6 +344,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // SearchFragment 갈 때
+        isFromFragment = true
 
         jobs.map {
             it.cancel()

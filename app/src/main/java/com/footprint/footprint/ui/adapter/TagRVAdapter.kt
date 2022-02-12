@@ -20,8 +20,8 @@ class TagRVAdapter(val context: Context) : RecyclerView.Adapter<TagRVAdapter.Tag
     interface OnItemRemoveClickListener {
         fun onItemRemoveClick()
     }
-    private lateinit var mOnItemClickListener: OnItemClickListener
 
+    private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -36,6 +36,12 @@ class TagRVAdapter(val context: Context) : RecyclerView.Adapter<TagRVAdapter.Tag
         saveTags(context, tags)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun notifyAdapter() {
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun addTag(tag: String) {
         if (tags.contains(tag)) {
             tags.remove(tag)
@@ -50,7 +56,7 @@ class TagRVAdapter(val context: Context) : RecyclerView.Adapter<TagRVAdapter.Tag
         notifyDataSetChanged()
     }
 
-
+    @SuppressLint("NotifyDataSetChanged")
     private fun removeTag(position: Int) {
         if (tags.isEmpty() || position !in 0..tags.size) {
             return

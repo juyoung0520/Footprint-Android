@@ -32,14 +32,10 @@ import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
     MyPageView {
-    private var isInitialized = false
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        // 초기화 검사
-        if (!isInitialized) {
-            setBinding()
-        }
+        setBinding()
 
         // 사용자, 통계 API 호출
         UserService.getUser(this)
@@ -77,8 +73,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                 valueFormatter = XAxisFormatter(getRecentMonths(true))
             }
         }
-
-        isInitialized = true
     }
 
     private fun setAchieveDetailResult(result: AchieveDetailResult) {
