@@ -3,6 +3,7 @@ package com.footprint.footprint.data.remote.auth
 import com.footprint.footprint.data.model.SocialUserModel
 import retrofit2.*
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 
@@ -17,4 +18,6 @@ interface LoginRetrofitInterface {
     fun login(@Body socialUserData: SocialUserModel): Call<LoginResponse>
 
     //회원 탈퇴 API
+    @DELETE("users/unregister")
+    fun unregister(): Call<UnRegisterResponse>
 }

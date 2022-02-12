@@ -13,3 +13,10 @@ data class Login(
     @SerializedName("status") val status: String,
     @SerializedName("checkMonthChanged") val checkMonthChanged: Boolean
 )
+
+data class UnRegisterResponse(
+    @SerializedName("isSuccess") val isSuccess: Boolean,
+    @SerializedName ("code")val code: Int,
+    @SerializedName ("message")val message: String,
+    @SerializedName ("result")val result: String
+)

@@ -6,10 +6,13 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.auth.AuthService
+import com.footprint.footprint.data.remote.auth.UnRegisterResponse
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -21,7 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.kakao.sdk.user.UserApiClient
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
+class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate),
+    SettingView {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -44,9 +48,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         super.onStart()
 
         //산책기록 잠금 상태
-        when(getPWDstatus()){
-            "ON" ->{
-                when(getCrackStatus()){
+        when (getPWDstatus()) {
+            "ON" -> {
+                when (getCrackStatus()) {
                     "SUCCESS" -> { //암호 해제
                         binding.settingLockFootprintSb.isChecked = false
                         savePWDstatus("OFF")
@@ -136,6 +140,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                         removeJwt()
                     }
                 }
+
                 override fun action2(isAction: Boolean) {}
             })
         }
@@ -151,17 +156,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 //탈퇴
                 override fun action2(isAction: Boolean) {
                     if (isAction) {
-                        if (loginStatus == "kakao") {
-                            //Kakao Unlink
-                            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
-                            kakaoUnlink()
-                        } else if (loginStatus == "google") {
-                            //Google Unlink
-                            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
-                            googleUnlink()
-                        }
-                        removeLoginStatus()
-                        removeJwt()
+                        //회원 탈퇴 API 호출
+                        AuthService.unregister(this@SettingFragment)
                     }
                 }
 
@@ -176,7 +172,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         //산책기록 잠금 스위치버튼 클릭 리스너
         binding.settingLockFootprintSb.setOnClickListener {
             val pwdStatus = getPWDstatus()
-            when(pwdStatus){
+            when (pwdStatus) {
                 "DEFAULT" -> {
                     binding.settingLockFootprintSb.isChecked = false
                     startLockActivity("SETTING")
@@ -282,5 +278,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             startActivity(Intent(requireContext(), SplashActivity::class.java))
 
         }
+    }
+
+    override fun onUnregisterSuccess(result: UnRegisterResponse) {
+        Log.d("SETTING/API-SUCCESS", result.toString())
+        if (loginStatus == "kakao") {
+            //Kakao Unlink
+            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
+            kakaoUnlink()
+        } else if (loginStatus == "google") {
+            //Google Unlink
+            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
+            googleUnlink()
+        }
+        removeLoginStatus()
+        removeJwt()
+    }
+
+    override fun onUnregisterFailure(code: Int, message: String) {
+        Log.d("SETTING/API-FAILURE", "code: $code message: $message")
+
+        Toast.makeText(activity, "$code - 다시 시도해 주세요", Toast.LENGTH_SHORT).show()
     }
 }
