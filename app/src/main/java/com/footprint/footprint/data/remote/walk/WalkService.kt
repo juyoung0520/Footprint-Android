@@ -115,6 +115,10 @@ object WalkService {
             }
         }
 
+        Log.d("WalkService", "writeWalk saveWalkReq: $saveWalkReq")
+        Log.d("WalkService", "writeWalk footprintsReq: $footprintsReq")
+        Log.d("WalkService", "writeWalk photosReq: $photosReq")
+
         val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)   //산책 정보를 FormData 로 변환
         val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)    //발자국 정보를 FormData 로 변환
 

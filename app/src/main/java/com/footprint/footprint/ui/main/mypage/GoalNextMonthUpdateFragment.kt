@@ -34,6 +34,11 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
     override fun initAfterBinding() {
         goal = Gson().fromJson(args.goal, GoalModel::class.java)    //이전 화면(GoalThisMonthFragment, GoalNextMonthFragment 로부터 전달 받은 goal 데이터)
 
+        //수정할 데이터에 이번달 목표로 저장해놓기
+        updateGoal.dayIdx.addAll(goal.dayIdx)
+        updateGoal.walkGoalTime = goal.userGoalTime.walkGoalTime
+        updateGoal.walkTimeSlot = goal.userGoalTime.walkTimeSlot
+
         initAdapter()   //어댑터 초기화
         bind()  //데이터 바인딩
         setMyEventListener()    //이벤트 리스너 설정

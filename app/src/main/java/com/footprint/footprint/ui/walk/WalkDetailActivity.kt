@@ -113,9 +113,9 @@ class WalkDetailActivity :
 
                 //수정된 데이터만 모아서 요청하기
                 val reqMap: HashMap<String, Any> = HashMap()
-                if (footprint.write!=tempUpdateFootprint!!.write)   //글
+                if (footprint.write != tempUpdateFootprint!!.write)   //글
                     reqMap["write"] = footprint.write
-                if (footprint.hashtagList!=tempUpdateFootprint!!.tagList) { //해시태그
+                if (footprint.hashtagList != tempUpdateFootprint!!.tagList) { //해시태그
                     if (footprint.hashtagList!!.isEmpty()) {    //해시태그를 모두 삭제한 경우
                         reqMap["tagList"] = ""
                     } else {    //해시 태그를 모두 삭제하지 않은 경우
@@ -125,12 +125,18 @@ class WalkDetailActivity :
                     }
                 }
                 var photos: List<String>? = null    //사진 -> 수정된 사진이 없으면 null
-                if (footprint.photos!=tempUpdateFootprint!!.photoList) {
+                if (footprint.photos != tempUpdateFootprint!!.photoList) {
                     photos = footprint.photos
                 }
 
                 //발자국 수정 요청 API 호출
-                FootprintService.updateFootprint(this@WalkDetailActivity, tempUpdateFootprint!!.footprintIdx, reqMap, photos)
+                FootprintService.updateFootprint(
+                    this@WalkDetailActivity,
+                    args.walkIdx,
+                    tempUpdateFootprintPosition!! + 1,
+                    reqMap,
+                    photos
+                )
             }
 
         })
@@ -163,9 +169,16 @@ class WalkDetailActivity :
                 tempUpdateFootprintPosition = position
                 tempUpdateFootprint = footprint
 
-                //발자국 데이터와 함께 FootprintDialogFragment 호출
+                //발자국 데이터와 함께 FootprintDialogFragment 호출 -> FootprintDialogFragment 에 보내려면 Footprint -> FootprintModel 로 형 변환 필요
+                val footprintModel = FootprintModel(
+                    recordAt = footprint.recordAt,
+                    write = footprint.write,
+                    hashtagList = footprint.tagList,
+                    photos = footprint.photoList,
+                    isMarked = footprint.onWalk
+                )
                 val bundle: Bundle = Bundle()
-                bundle.putString("footprint", Gson().toJson(footprint))
+                bundle.putString("footprint", Gson().toJson(footprintModel))
                 footprintDialogFragment.arguments = bundle
                 footprintDialogFragment.show(supportFragmentManager, null)
             }
@@ -177,7 +190,7 @@ class WalkDetailActivity :
     }
 
     override fun onWalkDetailLoading() {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 INVISIBLE
             })
@@ -185,7 +198,7 @@ class WalkDetailActivity :
     }
 
     override fun onWalkDetailFail(code: Int, message: String) {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
                 showToast(getString(R.string.error_api_fail))
@@ -194,7 +207,7 @@ class WalkDetailActivity :
     }
 
     override fun onGetWalkSuccess(walk: WalkInfoResponse) {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
                 bindWalkInfo(walk)
             })
@@ -202,18 +215,16 @@ class WalkDetailActivity :
     }
 
     override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
                 if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
                     binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
                     binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
-                    binding.walkDetailAllDeleteTv.visibility = View.INVISIBLE
                 } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
                     binding.walkDetailSlidingUpPanelLayout.panelHeight =
                         (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
                     binding.walkDetailSlidedLayout.visibility = View.VISIBLE
                     binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
-                    binding.walkDetailAllDeleteTv.visibility = View.VISIBLE
 
                     initAdapter(footprints as ArrayList<Footprint>)
                 }
@@ -221,18 +232,17 @@ class WalkDetailActivity :
         }
     }
 
-    //삭제 요청이 성공적으로 응답하면 산책 정보랑 발자국 정보 다시 받아오기
+    //삭제 요청이 성공적으로 응답하면 액티비티 종료
     override fun onDeleteWalkSuccess() {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
-                FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)
-                WalkService.getWalk(this@WalkDetailActivity, args.walkIdx)
+                finish()
             })
         }
     }
 
     override fun onUpdateFootprintSuccess() {
-        if (this!=null) {
+        if (this != null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
 
