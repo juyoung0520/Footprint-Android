@@ -2,25 +2,23 @@ package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.data.remote.walk.WalkDateResult
+import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ItemWalkDateBinding
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.main.calendar.CalendarView
+import com.footprint.footprint.ui.main.calendar.SearchResultView
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
     private val walkDates = arrayListOf<WalkDateResult>()
     private lateinit var currentTag: String
 
-    private lateinit var onWalkDateRemoveListener: OnWalkDateRemoveListener
-
     private lateinit var onWalkClickListener: WalkRVAdapter.OnItemClickListener
-    private lateinit var fragmentManager: FragmentManager
-
-    interface OnWalkDateRemoveListener {
-        fun onWalkDateRemove()
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setWalkDates(walkDates: List<WalkDateResult>) {
@@ -36,24 +34,6 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
 
     fun setWalkClickListener(listener: WalkRVAdapter.OnItemClickListener) {
         onWalkClickListener = listener
-    }
-
-    fun setWalkDateRemoveListener(listener: WalkDateRVAdapter.OnWalkDateRemoveListener) {
-        this.onWalkDateRemoveListener = listener
-    }
-
-    fun setFragmentManager(fragmentManager: FragmentManager) {
-        this.fragmentManager = fragmentManager
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun removeWalkDate(position: Int) {
-        if (walkDates.isEmpty() || position !in 0..walkDates.size) {
-            return
-        }
-
-        walkDates.removeAt(position)
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalkDateViewHolder {
@@ -81,16 +61,6 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
             adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)
-            adapter.setOnItemRemoveClickListener(object : WalkRVAdapter.OnItemRemoveClickListener {
-                override fun onItemRemoveClick() {
-                    if (adapter.itemCount == 0) {
-                        removeWalkDate(position)
-                        onWalkDateRemoveListener.onWalkDateRemove()
-                    }
-                }
-
-            })
-            adapter.setFragmentManager(fragmentManager)
 
             binding.walkDateWalksRv.adapter = adapter
         }

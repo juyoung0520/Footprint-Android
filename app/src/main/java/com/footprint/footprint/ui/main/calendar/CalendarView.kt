@@ -9,4 +9,5 @@ interface CalendarView {
     fun onCalendarFailure(code: Int, message: String)
     fun onMonthSuccess(monthResult: List<DayResult>)
     fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>)
+    fun onDeleteWalkSuccess()
 }

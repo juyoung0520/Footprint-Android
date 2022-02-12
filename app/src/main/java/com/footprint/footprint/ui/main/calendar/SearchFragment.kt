@@ -14,12 +14,14 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
     private var isChanged = false //변경 사항 검사
 
     override fun initAfterBinding() {
-        if(::adapter.isInitialized) {
+        setBinding()
+
+        if(!::adapter.isInitialized) {
+            initTagAdapter()
             return
         }
 
-        setBinding()
-        initTagAdapter()
+        Log.d("search", "onStart")
     }
 
     private fun setBinding() {
@@ -41,20 +43,23 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
         binding.searchSearchIv.setOnClickListener {
             searchTag()
         }
+
+        if (::adapter.isInitialized) {
+            binding.searchTagRv.adapter = adapter
+        }
     }
 
     private fun searchTag() {
         val result = replaceText(binding.searchSearchBarEt.text.toString())
 
         if (result != "") {
-            adapter.addTag("#$result")
 
             if (!isChanged) {
                 isChanged = true
             }
 
-            binding.searchSearchBarEt.setText("")
             actionToSearchResultFragment("#$result")
+            adapter.addTag("#$result")
         }
 
         (activity as MainActivity).hideKeyboard(binding.searchSearchBarEt)
@@ -71,7 +76,8 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
 
         adapter.setOnItemClickListener(object : TagRVAdapter.OnItemClickListener {
             override fun onItemClick(tag: String) {
-               actionToSearchResultFragment(tag)
+                actionToSearchResultFragment(tag)
+                adapter.addTag(tag)
             }
         })
 
@@ -90,8 +96,14 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
         return text.replace(" ", "").replace(Regex("^#"),"")
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d("search", "onStop")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("search", "onDestroy")
 
         if (isChanged) {
             adapter.saveCurrentTags()

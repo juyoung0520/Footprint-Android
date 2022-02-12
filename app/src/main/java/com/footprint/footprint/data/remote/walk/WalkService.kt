@@ -61,7 +61,7 @@ object WalkService {
     }
 
     fun getTagWalkDates(searchResultView: SearchResultView, tag: String) {
-        searchResultView.onSearchReaultLoading()
+        searchResultView.onSearchResultLoading()
 
         walkService.getTagWalkDates(tag).enqueue(object : Callback<TagWalkDatesResponse>{
             override fun onResponse(
@@ -72,12 +72,12 @@ object WalkService {
 
                 when (resp.code) {
                     1000 -> searchResultView.onSearchResultSuccess(resp.result!!)
-                    else -> searchResultView.onSearchReaultFailure(resp.code, resp.message)
+                    else -> searchResultView.onSearchResultFailure(resp.code, resp.message)
                 }
             }
 
             override fun onFailure(call: Call<TagWalkDatesResponse>, t: Throwable) {
-                searchResultView.onSearchReaultFailure(400, t.message!!)
+                searchResultView.onSearchResultFailure(400, t.message!!)
             }
 
         })
@@ -189,6 +189,31 @@ object WalkService {
                 walkDetailView.onWalkDetailFail(5000, t.message.toString())
             }
 
+        })
+    }
+
+    // 캘린더 화면
+    fun deleteWalk(calendarView: CalendarView, walkIdx: Int) {
+        calendarView.onDayWalkLoading()
+
+        walkService.deleteWalk(walkIdx).enqueue(object : Callback<BaseResponse> {
+            override fun onResponse(
+                call: Call<BaseResponse>,
+                updateFootprintResponse: Response<BaseResponse>
+            ) {
+                val res = updateFootprintResponse.body()
+                Log.d("WalkService","\ndeleteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
+
+                if (res?.code == 1000)
+                    calendarView.onDeleteWalkSuccess()
+                else
+                    calendarView.onCalendarFailure(res?.code!!, res?.message!!)
+            }
+
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
+                calendarView.onCalendarFailure(5000, t.message.toString())
+            }
         })
     }
 }

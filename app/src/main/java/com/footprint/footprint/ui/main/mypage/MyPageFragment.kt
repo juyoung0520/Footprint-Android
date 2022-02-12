@@ -32,14 +32,10 @@ import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
     MyPageView {
-    private var isInitialized = false
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        // 초기화 검사
-        if (!isInitialized) {
-            setBinding()
-        }
+        setBinding()
 
         // 사용자, 통계 API 호출
         UserService.getUser(this)
@@ -77,8 +73,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                 valueFormatter = XAxisFormatter(getRecentMonths(true))
             }
         }
-
-        isInitialized = true
     }
 
     private fun setAchieveDetailResult(result: AchieveDetailResult) {
@@ -122,9 +116,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
         // 통계
         val userInfoStat = result.userInfoStat
-        val mostWalkDay = getMostWalkDay(userInfoStat.mostWalkDay)
-        if (mostWalkDay == getString(R.string.mst_no_walk_during_3_months)) {
-            binding.mypageStatisticsWeekResultTv.text = mostWalkDay
+        if (userInfoStat.mostWalkDay[0] == getString(R.string.mst_no_walk_during_3_months)) {
+            binding.mypageStatisticsWeekResultTv.text = userInfoStat.mostWalkDay[0]
         } else {
             binding.mypageStatisticsWeekResultTv.text = getSpannableString(
                 binding.mypageStatisticsWeekResultTv.text,
