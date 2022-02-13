@@ -211,7 +211,6 @@ object WalkService {
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
                 calendarView.onCalendarFailure(5000, t.message.toString())
             }
         })

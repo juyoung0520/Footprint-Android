@@ -17,6 +17,7 @@ import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.remote.achieve.*
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.utils.isNetworkAvailable
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -25,6 +26,7 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -99,14 +101,14 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
         binding.mypageGoalWeekTv.text =
             getSpannableString(
-                binding.mypageGoalWeekTv.text,
+                "주 회",
                 userGoalRes.dayIdx.size.toString(),
                 2,
                 spanColorPrimary
             )
         binding.mypageGoalDayTv.text =
             getSpannableString(
-                binding.mypageGoalDayTv.text,
+                "하루 분",
                 userGoalRes.userGoalTime.walkGoalTime!!.toString(),
                 3,
                 spanColorPrimary
@@ -120,20 +122,20 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             binding.mypageStatisticsWeekResultTv.text = userInfoStat.mostWalkDay[0]
         } else {
             binding.mypageStatisticsWeekResultTv.text = getSpannableString(
-                binding.mypageStatisticsWeekResultTv.text,
+                getString(R.string.msg_statistics_week_res),
                 getMostWalkDay(userInfoStat.mostWalkDay),
                 3,
                 spanColorSecondary
             )
         }
         binding.mypageStatisticsMonthCountResultTv.text = getSpannableString(
-            binding.mypageStatisticsMonthCountResultTv.text,
+            getString(R.string.msg_statistics_month_count_res),
             userInfoStat.thisMonthWalkCount.toString(),
             5,
             spanColorSecondary
         )
         binding.mypageStatisticsMonthRateResultTv.text = getSpannableString(
-            binding.mypageStatisticsMonthRateResultTv.text,
+            getString(R.string.msg_statistics_month_rate_res),
             userInfoStat.thisMonthGoalRate.toString(),
             5,
             spanColorSecondary
@@ -443,9 +445,26 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     override fun onMyPageFailure(code: Int, message: String) {
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageLoadingPb.visibility = View.GONE
+                if (!isNetworkAvailable(requireContext())) {
+                    showSnackBar(getString(R.string.error_network))
+                } else {
+                    showSnackBar(getString(R.string.error_api_fail))
+                }
             })
         }
+    }
+
+    private fun showSnackBar(errorMessage: String) {
+        Snackbar.make(
+            requireView(),
+            errorMessage,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(getString(R.string.action_retry)) {
+            // 유저 API 오류
+            UserService.getUser(this)
+            // 통계 API 오류
+            AchieveService.getInfoDetail(this)
+        }.show()
     }
 
     override fun onDestroyView() {

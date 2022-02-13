@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
+import com.footprint.footprint.data.remote.achieve.AchieveService
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.UserDateWalk
@@ -19,6 +21,8 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.isNetworkAvailable
+import com.google.android.material.snackbar.Snackbar
 import com.kizitonwose.calendarview.Completion
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthScrollListener
@@ -39,6 +43,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private var isFromFragment = false
+    private var currentDeleteWalkIdx: Int?= null
 
     private val jobs = arrayListOf<Job>()
 
@@ -244,6 +249,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 if (isAction) {
                     // deleteWalk API
                     WalkService.deleteWalk(this@CalendarFragment, walkIdx)
+                    currentDeleteWalkIdx = walkIdx
                 }
             }
 
@@ -284,24 +290,31 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onCalendarFailure(code: Int, message: String) {
-        when (code) {
-            // Month
-            400 -> {
-                Log.d("$TAG/CALENDAR", "CALENDAR/MONTH/fail/$message")
-                if (view != null) {
-                    jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                        binding.calendarLoadingBgV.visibility = View.GONE
-                        binding.calendarLoadingPb.visibility = View.GONE
-                    })
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+                if (!isNetworkAvailable(requireContext())) {
+                    showSnackBar(code, getString(R.string.error_network))
+                } else {
+                    showSnackBar(code, getString(R.string.error_api_fail))
                 }
-            }
-            401 -> {
-                Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/fail/$message")
-            }
-            else -> {
-                Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/fail/$message")
-            }
+            })
         }
+    }
+
+    private fun showSnackBar(code: Int, errorMessage: String) {
+        Snackbar.make(
+            requireView(),
+            errorMessage,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(getString(R.string.action_retry)) {
+            if (code == 5000) {
+                Log.d("calendar", "message")
+                // 삭제 API이면
+                WalkService.deleteWalk(this, currentDeleteWalkIdx!!)
+            } else {
+                updateAll()
+            }
+        }.show()
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
