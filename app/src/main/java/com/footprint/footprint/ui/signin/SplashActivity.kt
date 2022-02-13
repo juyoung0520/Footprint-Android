@@ -77,9 +77,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 removeJwt()
                 startSignInActivity()
             }
-            else -> {//그 외 에러
-                Toast.makeText(this, getString(R.string.error_api_fail), Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
