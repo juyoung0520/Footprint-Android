@@ -56,7 +56,7 @@ class WalkAfterActivity :
             if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)   //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
                 panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
             else {    //그렇지 않으면 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
-                setWalkDialogBundle(getString(R.string.msg_stop_walk), getString(R.string.action_delete))
+                setWalkDialogBundle("'${walk.walkTitle}' 작성을 취소할까요?", getString(R.string.action_delete))
                 actionDialogFragment.show(supportFragmentManager, null)
             }
         }
@@ -149,6 +149,9 @@ class WalkAfterActivity :
                 footprintRVAdapter.updateDataVerAfter(footprint, tempUpdateFootprintPosition!!) //수정된 발자국으로 어댑터 UI 업데이트
 
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
+            }
+
+            override fun cancel() {
             }
 
         })

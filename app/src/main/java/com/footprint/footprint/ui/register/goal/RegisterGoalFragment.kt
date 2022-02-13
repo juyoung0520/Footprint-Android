@@ -3,8 +3,6 @@ package com.footprint.footprint.ui.register.goal
 import android.content.Intent
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.data.remote.auth.AuthService
@@ -78,22 +76,10 @@ class RegisterGoalFragment() :
         binding.goalSettingGoalWalkTimeBtn.setOnClickListener {
             if (binding.goalSettingGoalWalkTimeSv.visibility == View.GONE) {
                 fadeIn(binding.goalSettingGoalWalkTimeSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_up_arrow),
-                    null
-                )
+                binding.goalSettingGoalWalkTimeIv.setImageResource(R.drawable.ic_up_arrow)
             } else {
                 fadeOut(binding.goalSettingGoalWalkTimeSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
+                binding.goalSettingGoalWalkTimeIv.setImageResource(R.drawable.ic_down_arrow)
             }
         }
 
@@ -101,40 +87,21 @@ class RegisterGoalFragment() :
         binding.goalSettingWalkSlotBtn.setOnClickListener {
             if (binding.goalSettingWalkSlotSv.visibility == View.GONE) {
                 fadeIn(binding.goalSettingWalkSlotSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_up_arrow),
-                    null
-                )
+                binding.goalSettingGoalWalkSlotIv.setImageResource(R.drawable.ic_up_arrow)
             } else {
                 fadeOut(binding.goalSettingWalkSlotSv)
-
-                (it as Button).setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
+                binding.goalSettingGoalWalkSlotIv.setImageResource(R.drawable.ic_down_arrow)
             }
         }
 
         //목표 산책 시간 라디오그룹 체크 리스너
         binding.goalSettingGoalWalkTimeRg.setOnCheckedChangeListener { radioGroup, i ->
             fadeOut(binding.goalSettingGoalWalkTimeSv)
+            binding.goalSettingGoalWalkTimeIv.setImageResource(R.drawable.ic_down_arrow)    //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
 
             binding.goalSettingGoalWalkTimeBtn.apply {
                 //버튼이 선택된 상태로 바꿈
                 isSelected = true
-                //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
-                setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
-
                 when (i) {
                     binding.goalSetting15minRb.id -> {
                         text = binding.goalSetting15minRb.text.toString()
@@ -177,17 +144,10 @@ class RegisterGoalFragment() :
         //산책 시간대 라디오그룹 체크 리스너
         binding.goalSettingWalkSlotRg.setOnCheckedChangeListener { radioGroup, i ->
             fadeOut(binding.goalSettingWalkSlotSv)
+            binding.goalSettingGoalWalkSlotIv.setImageResource(R.drawable.ic_down_arrow)    //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
 
             binding.goalSettingWalkSlotBtn.apply {
-                //버튼이 선택된 상태로 바꿈
-                isSelected = true
-                //스크롤뷰가 닫히니까 버튼의 화살표를 아래 방향으로 바꾸기
-                setCompoundDrawablesWithIntrinsicBounds(
-                    null,
-                    null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_down_arrow),
-                    null
-                )
+                isSelected = true   //버튼이 선택된 상태로 바꿈
 
                 when (i) {
                     binding.goalSettingEarlyMorningRb.id -> {

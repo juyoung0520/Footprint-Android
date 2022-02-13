@@ -35,6 +35,12 @@
         app:layout_constraintTop_toTopOf="@+id/setting_tb"
         app:layout_constraintVertical_bias="0.72" />
 
+    <View
+        android:id="@+id/setting_my_info_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/setting_tb"
+        app:layout_constraintBottom_toTopOf="@+id/setting_update_my_info_line_view" />
 
     <ImageView
         android:id="@+id/setting_update_my_info_iv"
@@ -47,18 +53,18 @@
         app:layout_constraintTop_toBottomOf="@+id/setting_tb" />
 
     <TextView
-        android:id="@+id/setting_update_my_info_tv"
+        android:id="@+id/setting_my_info_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="@string/title_update_my_info"
+        android:text="@string/title_my_info"
         android:textAppearance="@style/tv_subtitle_b_16"
         app:layout_constraintBottom_toBottomOf="@+id/setting_update_my_info_iv"
         app:layout_constraintStart_toEndOf="@+id/setting_update_my_info_iv"
         app:layout_constraintTop_toTopOf="@+id/setting_update_my_info_iv" />
 
     <ImageView
-        android:id="@+id/setting_update_my_info_next_iv"
+        android:id="@+id/setting_my_info_next_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -151,7 +157,7 @@
         android:id="@+id/setting_password_setting_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="39dp"
         android:src="@drawable/ic_question_mark"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/setting_lock_footprint_iv"
@@ -185,7 +191,7 @@
         android:id="@+id/setting_lock_line_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="25dp"
         android:background="@color/white_dark"
         app:layout_constraintTop_toBottomOf="@+id/setting_password_setting_iv" />
 
@@ -214,7 +220,7 @@
         android:id="@+id/setting_withdrawal_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="39dp"
         android:src="@drawable/ic_withdrawal"
         app:layout_constraintEnd_toEndOf="@+id/setting_logout_iv"
         app:layout_constraintStart_toStartOf="@+id/setting_logout_iv"
@@ -247,8 +253,8 @@
         android:layout_marginHorizontal="24dp"
         android:background="@color/white_dark"
         app:layout_constraintBottom_toBottomOf="@+id/setting_version_view"
-        app:layout_constraintTop_toTopOf="@+id/setting_version_view"
-        app:layout_constraintVertical_bias="0.64" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_tb"
+        app:layout_constraintVertical_bias="0.83" />
 
     <ImageView
         android:id="@+id/setting_app_icon_iv"
@@ -315,6 +321,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="center"
+        android:lineSpacingExtra="4dp"
         android:text="@string/title_version_copyright"
         android:textAppearance="@style/tv_overline_10"
         android:textColor="@color/black_light"

@@ -60,6 +60,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     interface MyDialogCallback {
         fun sendFootprint(footprint: FootprintModel)
         fun sendUpdatedFootprint(footprint: FootprintModel)
+        fun cancel()
     }
 
     override fun onCreateView(
@@ -95,6 +96,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             0.9f,
             0.64f
         )
+    }
+
+    //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행
+    override fun onDestroy() {
+        super.onDestroy()
+        myDialogCallback.cancel()
     }
 
     //TextWatcher
