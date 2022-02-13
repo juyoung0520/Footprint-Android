@@ -46,8 +46,15 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
     //대표 뱃지 데이터 바인딩
     private fun bindRepresentativeBade(badge: BadgeInfo) {
-        binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
-        binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
+        if (badge.badgeIdx==0) { //얻은 뱃지가 없어서 대표 뱃지가 없을 때
+            binding.badgeRepresentativeBadgeIv.visibility = View.INVISIBLE
+            binding.badgeRepresentativeBadgeNameTv.visibility = View.INVISIBLE
+        } else {    //대표 뱃지가 있을 때
+            binding.badgeRepresentativeBadgeIv.visibility = View.VISIBLE
+            binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
+            binding.badgeRepresentativeBadgeNameTv.visibility = View.VISIBLE
+            binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
+        }
     }
 
     private fun initAdapter(badgeInfo: BadgeResponse) {
