@@ -69,7 +69,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private lateinit var userInfo: UserModel
 
     override fun initAfterBinding() {
-        Log.d("walkMap", "onStart")
         if (::map.isInitialized) {
             return
         }
@@ -154,7 +153,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
-            Log.d("$TAG/WALKMAP", paths.toString())
+            //Log.d("$TAG/WALKMAP", paths.toString())
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
                 currentPathOverlay.coords = paths.last()
@@ -455,7 +454,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         }
 
-        Log.d("$TAG/WALKMAP", coordinate.toString())
+        //Log.d("$TAG/WALKMAP", coordinate.toString())
         return coordinate
     }
 
@@ -481,7 +480,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     val lastLang = paths.last().last()
                     putMarker(lastLang, footprints.size)
                     footprint.coordinate = listOf(lastLang.latitude, lastLang.longitude)
-                    Log.d("$TAG/WALKMAP", footprint.coordinate.toString())
+                    //Log.d("$TAG/WALKMAP", footprint.coordinate.toString())
                 }
             }
 

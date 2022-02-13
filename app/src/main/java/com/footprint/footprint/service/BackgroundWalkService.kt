@@ -91,7 +91,7 @@ class BackgroundWalkService : LifecycleService() {
                     startTimer()
                 }
             } else {
-                Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
+                //Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
                 locationDeactivate()
             }
         })
@@ -133,7 +133,7 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun stopWalk() {
-        Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
+        //Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
         isWalking.postValue(false)
         stopSelf()
 
