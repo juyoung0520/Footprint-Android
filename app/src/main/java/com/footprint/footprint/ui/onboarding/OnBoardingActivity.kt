@@ -12,7 +12,6 @@ import com.footprint.footprint.ui.signin.SigninActivity
 import com.footprint.footprint.utils.saveOnboarding
 import com.google.android.material.tabs.TabLayoutMediator
 
-
 class OnBoardingActivity :
     BaseActivity<ActivityOnboardingBinding>(ActivityOnboardingBinding::inflate) {
 

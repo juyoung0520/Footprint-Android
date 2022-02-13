@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -24,7 +23,6 @@ import com.skydoves.balloon.showAlignTop
 import java.lang.Integer.parseInt
 import java.time.LocalDate
 import java.time.ZoneId
-
 
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
@@ -65,7 +63,6 @@ class RegisterInfoFragment() :
 
             //ok -> 목표 프래그먼트 데이터 전달
             if (validatedBirth && validateHeight && validateWeight) {
-                Log.d("REGISTER-INFO/USER", newUser.toString())
                 (activity as RegisterActivity).changeNextFragment(newUser)
             }
         }
@@ -135,7 +132,6 @@ class RegisterInfoFragment() :
                 } else {
                     if (nicknameEt.text.isNotEmpty()) { //닉네임에 반영
                         newUser.nickname = nicknameEt.text.toString()
-                        Log.d("REGISTER-INFO/NICKNAME-WATCHER", newUser.toString())
                         nicknameEt.backgroundTintList =
                             ColorStateList.valueOf(resources.getColor(R.color.primary))
                         binding.registerInfoNicknameErrorTv.visibility = View.GONE
@@ -160,7 +156,6 @@ class RegisterInfoFragment() :
                 R.id.register_info_gender_male_btn -> newUser.gender = "male"
                 R.id.register_info_gender_none_btn -> newUser.gender = "null"
             }
-            Log.d("REGISTER-INFO/GENDER", newUser.toString())
             isGenderCorrect = true
             checkBtnState()
         })

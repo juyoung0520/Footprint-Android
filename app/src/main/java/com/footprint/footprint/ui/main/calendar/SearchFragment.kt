@@ -1,8 +1,5 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.util.Log
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.databinding.FragmentSearchBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -20,8 +17,6 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
             initTagAdapter()
             return
         }
-
-        Log.d("search", "onStart")
     }
 
     private fun setBinding() {
@@ -96,14 +91,8 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
         return text.replace(" ", "").replace(Regex("^#"),"")
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d("search", "onStop")
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("search", "onDestroy")
 
         if (isChanged) {
             adapter.saveCurrentTags()

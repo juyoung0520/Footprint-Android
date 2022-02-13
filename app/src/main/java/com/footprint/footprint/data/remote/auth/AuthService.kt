@@ -1,6 +1,5 @@
 package com.footprint.footprint.data.remote.auth
 
-import android.util.Log
 import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.ui.setting.SettingView
 import com.footprint.footprint.ui.signin.SignInView
@@ -19,7 +18,6 @@ object AuthService {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
 
-                Log.d("AUTOLOGIN/API-SUCCESS", body.toString())
                 if(body!= null){
                     when(body.code){
                         1000 -> {
@@ -32,7 +30,6 @@ object AuthService {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.d("AUTOLOGIN/API-FAILURE", t.message.toString())
                 splashView.onAutoLoginFailure(213, t.message.toString())
             }
 
@@ -47,7 +44,6 @@ object AuthService {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
 
-                Log.d("LOGIN/API-SUCCESS", body.toString())
                 if(body!= null){
                     when(body.code){
                         1000 -> {
@@ -61,7 +57,6 @@ object AuthService {
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 signinView.onSignInFailure(213, t.message.toString())
-                Log.d("LOGIN/API-FAILURE", t.message.toString())
             }
 
         })
@@ -75,7 +70,6 @@ object AuthService {
             ) {
                 val body = response.body()
 
-                Log.d("UNREGISTER/API-SUCCESS", body.toString())
                 if(body!= null){
                     when(body.code){
                         1000 -> {
@@ -89,7 +83,6 @@ object AuthService {
             }
 
             override fun onFailure(call: Call<UnRegisterResponse>, t: Throwable) {
-                Log.d("UNREGISTER/API-FAILURE", t.message.toString())
                 settingView.onUnregisterFailure(213, t.message.toString())
             }
 

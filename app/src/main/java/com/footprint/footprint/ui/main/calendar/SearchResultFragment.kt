@@ -1,23 +1,18 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.data.remote.walk.*
 import com.footprint.footprint.databinding.FragmentSearchResultBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.WalkDateRVAdapter
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
-import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -122,8 +117,6 @@ class SearchResultFragment() :
 
 
     override fun onSearchResultSuccess(walkDates: List<WalkDateResult>) {
-        Log.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/WALK-DATES/success")
-
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.searchResultLoadingPb.visibility = View.GONE

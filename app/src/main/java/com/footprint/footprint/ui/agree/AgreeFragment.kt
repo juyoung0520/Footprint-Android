@@ -6,9 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentAgreeBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.register.RegisterActivity
-import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.saveNotification
 
 class AgreeFragment : BaseFragment<FragmentAgreeBinding>(FragmentAgreeBinding::inflate){

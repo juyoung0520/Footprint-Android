@@ -2,17 +2,11 @@ package com.footprint.footprint.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.data.remote.walk.WalkDateResult
-import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.ItemWalkDateBinding
-import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.main.calendar.CalendarView
-import com.footprint.footprint.ui.main.calendar.SearchResultView
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
     private val walkDates = arrayListOf<WalkDateResult>()

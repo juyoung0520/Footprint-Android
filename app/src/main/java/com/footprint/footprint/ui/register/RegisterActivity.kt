@@ -1,9 +1,5 @@
 package com.footprint.footprint.ui.register
 
-import android.graphics.Color
-import android.graphics.Rect
-import android.util.Log
-import android.view.WindowManager
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.ActivityRegisterBinding
@@ -11,11 +7,7 @@ import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.RegisterViewpagerAdapter
 import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 import com.footprint.footprint.ui.register.info.RegisterInfoFragment
-import com.footprint.footprint.utils.getJwt
 import com.google.android.material.tabs.TabLayoutMediator
-import android.view.MotionEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
@@ -52,7 +44,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
     /*뷰페이저 이동*/
     fun changeNextFragment(user: UserModel) {
-        Log.d("CHANGE", "OK")
         val current = binding.registerVp.currentItem
         if (current == 0) {
             //Info 프래그먼트: 1. Goal 프래그먼트로 넘기기 2. user 정보 업데이트
@@ -64,8 +55,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterB
 
             registerVPAdapter.sendUserToGoalFrag(newUser)   //GoalFragment 로 newUser 전달
             binding.registerVp.setCurrentItem(1, true)  //GoalFragment 로 화면 이동
-
-            Log.d("REGISTER/USER", newUser.toString())
         }
     }
 }

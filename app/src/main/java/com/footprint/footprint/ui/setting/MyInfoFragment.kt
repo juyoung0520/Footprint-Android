@@ -1,12 +1,10 @@
 package com.footprint.footprint.ui.setting
 
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
-import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
@@ -199,8 +197,6 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
-        Log.d("MYINFO(USER)/API-SUCCESS", user.toString())
-
         this.user = SimpleUserModel(user.nickname, user.sex, user.birth, user.height, user.weight)
 
         binding.myInfoDayLoadingBgV.visibility = View.GONE
@@ -208,13 +204,9 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
         setMyEventListener()
         setHelpBalloon()    //툴팁
-
-        Log.d("MYINFO(USER)", this.user.toString())
     }
 
     override fun onHomeFailure(code: Int, message: String) {
-        Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
-
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)
         }else{ //나머지

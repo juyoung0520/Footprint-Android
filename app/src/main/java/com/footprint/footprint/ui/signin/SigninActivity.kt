@@ -2,9 +2,6 @@ package com.footprint.footprint.ui.signin
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import com.footprint.footprint.databinding.ActivitySigninBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
@@ -13,11 +10,9 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -27,10 +22,8 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.model.SocialUserModel
-import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
-import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.utils.*
 import com.google.android.material.snackbar.Snackbar
@@ -72,10 +65,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //카카오 계정으로 로그인
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
-                Log.e("KAKAO/API-FAILURE", "카카오계정으로 로그인 실패", error)
                 signinErrorCheck("KAKAO")
             } else if (token != null) {
-                Log.i("KAKAO/API-SUCCESS", "카카오계정으로 로그인 성공)")
                 getKakaoUser()
             }
         }
@@ -84,8 +75,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this@SigninActivity)) {
             UserApiClient.instance.loginWithKakaoTalk(this@SigninActivity) { token, error ->
                 if (error != null) {
-                    Log.e("KAKAO/API-FAILURE", "카카오톡으로 로그인 실패", error)
-
                     // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
                     if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                         return@loginWithKakaoTalk
@@ -97,8 +86,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                         callback = callback
                     )
                 } else if (token != null) {
-                    Log.i("KAKAO/API-SUCCESS", "카카오톡으로 로그인 성공 ${token.accessToken}")
-
                     getKakaoUser()
                 }
             }
@@ -108,11 +95,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
     private fun getKakaoUser() {
         UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e("KAKAO/USER-FAILURE", "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                Log.i("KAKAO/USER-SUCCESS", "사용자 정보 요청 성공")
-
+            if (error==null && user != null) {
                 val userId: String = user.id.toString()
                 val nickname: String = user.kakaoAccount?.profile?.nickname!!
                 val email: String? = user.kakaoAccount?.email
@@ -141,7 +124,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 //구글 로그인 성공
                 val task: Task<GoogleSignInAccount> =
                     GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                Log.d("GOOGLE/API-SUCCESS", "구글 로그인 성공")
                 getGoogleUser(task)
             }else
                 signinErrorCheck("GOOGLE")
@@ -162,7 +144,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             callSignInAPI()
 
         } catch (e: ApiException) {
-            Log.w("GOOGLE/SIGNUP-FAILURE", "signInResult:failed code=" + e.statusCode)
         }
     }
 
@@ -181,7 +162,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
         saveLoginStatus(socialUserModel.providerType)
-        Log.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //2. STATUS에 따른 처리
         // ACTIVE: 가입된 회원 -> 뱃지 API 호출
@@ -200,8 +180,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     override fun onSignInFailure(code: Int, message: String) {
-        Log.d("SIGNIN/API-FAILURE", "code: $code message: $message")
-
         signinErrorCheck("LOGIN")
     }
 
@@ -211,13 +189,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         if(isBadgeExist)
             intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
-
-        Log.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
     }
 
     override fun onMonthBadgeFailure(code: Int, message: String) {
-        Log.d("SIGNIN(BADGE)/API-FAILURE", "code: $code message: $message")
-
         signinErrorCheck("BADGE")
     }
 

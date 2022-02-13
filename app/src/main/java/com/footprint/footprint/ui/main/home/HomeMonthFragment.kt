@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.data.remote.achieve.TMonth
-import com.footprint.footprint.data.remote.achieve.TMonthDayRateRes
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter

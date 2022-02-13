@@ -1,14 +1,11 @@
 package com.footprint.footprint.ui.main.calendar
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.achieve.AchieveService
-import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.data.remote.walk.DayWalkResult
 import com.footprint.footprint.data.remote.walk.UserDateWalk
@@ -308,7 +305,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             if (code == 5000) {
-                Log.d("calendar", "message")
                 // 삭제 API이면
                 WalkService.deleteWalk(this, currentDeleteWalkIdx!!)
             } else {
@@ -318,8 +314,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
-        Log.d("$TAG/CALENDAR", "CALENDAR/MONTH/success")
-
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 calendarDayBinder.setCurrentMonthResults(monthResult)
@@ -332,8 +326,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        Log.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/success")
-
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 initWalkAdapter(dayWalkResult)
@@ -347,7 +339,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onDeleteWalkSuccess() {
-        Log.d("$TAG/CALENDAR", "CALENDAR/DELETE-WALK/success")
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                updateAll()

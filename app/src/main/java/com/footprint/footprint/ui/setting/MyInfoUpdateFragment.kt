@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -16,7 +15,6 @@ import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.convertDpToSp
-import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -307,13 +305,10 @@ class MyInfoUpdateFragment :
 
     /*정보 수정 API*/
     override fun onUpdateSuccess(result: UserRegisterResponse) {
-        Log.d("INFOUPDATE/API-SUCCESS", result.toString())
         (requireActivity()).onBackPressed()
     }
 
     override fun onUpdateFailure(code: Int, message: String) {
-        Log.d("INFOUPDATE/API-FAILURE", code.toString() + message)
-
         val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
             getString(R.string.error_network)
         } else { //나머지

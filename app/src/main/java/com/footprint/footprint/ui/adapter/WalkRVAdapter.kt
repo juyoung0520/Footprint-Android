@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.footprint.footprint.data.remote.walk.DayWalkResult
@@ -14,7 +13,6 @@ import com.footprint.footprint.databinding.ItemWalkBinding
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.footprint.footprint.R
-import com.footprint.footprint.ui.main.calendar.CalendarFragment
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
     private val walks = arrayListOf<DayWalkResult>()

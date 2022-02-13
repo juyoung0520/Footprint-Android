@@ -5,7 +5,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
-
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.BarBuffer;
 import com.github.mikephil.charting.data.BarData;

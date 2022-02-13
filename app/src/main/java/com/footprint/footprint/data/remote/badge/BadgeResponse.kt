@@ -1,7 +1,6 @@
 package com.footprint.footprint.data.remote.badge
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 data class GetBadgeResponse(
     val isSuccess: Boolean,
