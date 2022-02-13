@@ -77,6 +77,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         initAdapter()   //뷰페이저 어댑터 설정
         setMyClickListener()    //클릭 리스너 설정
 
+        val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
+        if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
+            isUpdate = true
+            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
+        }
+
         return binding.root
     }
 
@@ -90,12 +96,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             0.9f,
             0.64f
         )
+    }
 
-        val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
-        if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
-            isUpdate = true
-            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
-        }
+    //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행
+    override fun onDestroyView() {
+        myDialogCallback.cancel()
+        super.onDestroyView()
     }
 
     //TextWatcher
@@ -118,12 +124,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
     override fun afterTextChanged(p0: Editable?) {
 
-    }
-
-    //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행
-    override fun onDestroyView() {
-        myDialogCallback.cancel()
-        super.onDestroyView()
     }
 
     //카메라, 저장소 퍼미션 확인
@@ -158,17 +158,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             .startMultiImage { uriList ->
                 imgList.clear()
 
-                if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면 -> 사진 추가하기 텍스트뷰 보여주기
-                    setDeletePhotoUI()
-                } else {    //이미지를 선택했다면 -> 사진 삭제하기 텍스트뷰 보여주기, 사진 뷰페이저&인디케이터 VISIBLE
-                    binding.postDialogPhotoVp.visibility = View.VISIBLE
-                    binding.postDialogPhotoIndicator.visibility = View.VISIBLE
-                    binding.postDialogAddPhotoTv.text = getString(R.string.action_delete_photo)
-                }
-
                 uriList.forEach {
                     if (it.toString().startsWith("https://")) {   //원래 저장돼 있던 이미지: url -> Bitmap 변환(비동기 방식)
-
                         Glide.with(this@FootprintDialogFragment).asBitmap().load(it).into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 imgList.add(getAbsolutePathByBitmap(requireContext(), resource))
@@ -183,14 +174,21 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                             override fun onLoadCleared(placeholder: Drawable?) {
                             }
                         })
-                    } else {    //새로 저장할 이미지
+                    } else    //새로 저장할 이미지
                         imgList.add(getAbsolutePathByBitmap(requireContext(), uriToBitmap(requireContext(), it)))
+                }
 
-                        if (imgList.size==uriList.size) {
-                            photoRVAdapter.addImgList(imgList)
-                            binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
-                        }
-                    }
+                if (imgList.size==uriList.size) {
+                    photoRVAdapter.addImgList(imgList)
+                    binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
+                }
+
+                if (uriList.isEmpty()) {    //이미지를 선택하지 않았으면 -> 사진 추가하기 텍스트뷰 보여주기
+                    setDeletePhotoUI()
+                } else {    //이미지를 선택했다면 -> 사진 삭제하기 텍스트뷰 보여주기, 사진 뷰페이저&인디케이터 VISIBLE
+                    binding.postDialogPhotoVp.visibility = View.VISIBLE
+                    binding.postDialogPhotoIndicator.visibility = View.VISIBLE
+                    binding.postDialogAddPhotoTv.text = getString(R.string.action_delete_photo)
                 }
             }
     }
