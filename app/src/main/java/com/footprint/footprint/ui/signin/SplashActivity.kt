@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.signin
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
@@ -24,14 +25,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     SplashView, MonthBadgeView {
 
     override fun initAfterBinding() {
-        //온보딩 화면 O/X => 3초 후 실행
+        //온보딩 화면 O/X => 1.5
         val handler = Handler()
         handler.postDelayed({
             //1. 온보딩 실행 여부 spf에서 받아오기
-            var onboardingStatus = getOnboarding()
-            Log.d("ONBOARDING", onboardingStatus.toString())
-
-            if (!onboardingStatus) {
+            if (!getOnboarding()) {
                 //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
                 startNextActivity(OnBoardingActivity::class.java)
                 finish()
@@ -67,9 +65,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     startSignInActivity()
                 }
             }
-        } else { // -> 로그인 액티비티
-            removeJwt()
-            startSignInActivity()
         }
 
         Log.d("SPLASH/API-SUCCESS", "status: ${result!!.status}")
@@ -77,6 +72,15 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     override fun onAutoLoginFailure(code: Int, message: String) {
         Log.d("SPLASH/API-FAILURE", "code: $code message: $message")
+        when(code){
+            2001, 2002, 2003, 2004 -> { // JWT 관련 오류 -> 로그인 액티비티,
+                removeJwt()
+                startSignInActivity()
+            }
+            else -> {//그 외 에러
+                Toast.makeText(this, getString(R.string.error_api_fail), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /*뱃지 API*/
