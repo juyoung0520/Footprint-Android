@@ -18,9 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.widget.NestedScrollView
-import com.footprint.footprint.R
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
-import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream

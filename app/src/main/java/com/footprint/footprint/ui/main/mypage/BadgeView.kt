@@ -5,7 +5,8 @@ import com.footprint.footprint.data.remote.badge.BadgeResponse
 
 interface BadgeView {
     fun onBadgeLoading()
-    fun onBadgeFail(code: Int, message: String)
     fun onGetBadgeSuccess(badgeInfo: BadgeResponse)
-    fun onChangeRepresentativeBadge(representativeBadge: BadgeInfo)
+    fun onChangeRepresentativeBadgeSuccess(representativeBadge: BadgeInfo)
+    fun onGetBadgeFail(code: Int?)
+    fun onChangeRepresentativeBadgeFail(code: Int?, badgeIdx: Int)
 }

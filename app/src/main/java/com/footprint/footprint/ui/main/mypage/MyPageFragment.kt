@@ -5,11 +5,9 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -17,6 +15,7 @@ import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.remote.achieve.*
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.utils.loadSvg
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
@@ -437,7 +436,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.mypageNickNameTv.text = user.nickname
 
-                Glide.with(requireContext()).load(user.badgeUrl).into(binding.mypageRepBadgeIv)
+                if (user.badgeUrl==null)    //대표 뱃지가 없을 경우
+                    binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
+                else    //대표 뱃지가 있을 경우
+                    binding.mypageRepBadgeIv.loadSvg(requireContext(), user.badgeUrl)
             })
         }
     }

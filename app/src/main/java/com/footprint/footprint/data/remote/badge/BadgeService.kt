@@ -4,6 +4,8 @@ import android.util.Log
 import com.footprint.footprint.ui.main.mypage.BadgeView
 import com.footprint.footprint.ui.signin.MonthBadgeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import com.footprint.footprint.utils.isNetworkAvailable
+import gun0912.tedimagepicker.util.ToastUtil.context
 import retrofit2.*
 
 object BadgeService {
@@ -23,13 +25,17 @@ object BadgeService {
 
                 when (val code = res?.code) {
                     1000 -> badgeView.onGetBadgeSuccess(res?.result)
-                    else -> badgeView.onBadgeFail(code!!, res?.message)
+                    else -> badgeView.onGetBadgeFail(code)
                 }
             }
 
             override fun onFailure(call: Call<GetBadgeResponse>, t: Throwable) {
                 Log.e("BadgeService", "getBadgeInfo-ERROR: ${t.message.toString()}")
-                badgeView.onBadgeFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    badgeView.onGetBadgeFail(6000)
+                else
+                    badgeView.onGetBadgeFail(5000)
             }
         })
     }
@@ -43,14 +49,11 @@ object BadgeService {
                     response: Response<ChangeRepresentativeBadgeResponse>
                 ) {
                     val res = response.body()
-                    Log.d(
-                        "BadgeService",
-                        "\nchangeRepresentativeBadge-RES\ncode: ${res?.code}\nbody: $res"
-                    )
+                    Log.d("BadgeService", "\nchangeRepresentativeBadge-RES\ncode: ${res?.code}\nbody: $res")
 
                     when (val code = res?.code) {
-                        1000 -> badgeView.onChangeRepresentativeBadge(res?.result)
-                        else -> badgeView.onBadgeFail(code!!, res?.message)
+                        1000 -> badgeView.onChangeRepresentativeBadgeSuccess(res?.result)
+                        else -> badgeView.onChangeRepresentativeBadgeFail(code, badgeIdx)
                     }
                 }
 
@@ -58,11 +61,12 @@ object BadgeService {
                     call: Call<ChangeRepresentativeBadgeResponse>,
                     t: Throwable
                 ) {
-                    Log.e(
-                        "BadgeService",
-                        "changeRepresentativeBadge-ERROR: ${t.message.toString()}"
-                    )
-                    badgeView.onBadgeFail(5000, t.message.toString())
+                    Log.e("BadgeService", "changeRepresentativeBadge-ERROR: ${t.message.toString()}")
+
+                    if (!isNetworkAvailable(context))
+                        badgeView.onChangeRepresentativeBadgeFail(6000, badgeIdx)
+                    else
+                        badgeView.onChangeRepresentativeBadgeFail(5000, badgeIdx)
                 }
 
             })

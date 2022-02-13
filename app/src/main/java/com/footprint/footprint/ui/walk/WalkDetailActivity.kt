@@ -19,6 +19,7 @@ import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.ui.dialog.MsgDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.Job
@@ -180,6 +181,7 @@ class WalkDetailActivity :
                     photos = footprint.photoList,
                     isMarked = footprint.onWalk
                 )
+
                 val bundle: Bundle = Bundle()
                 bundle.putString("footprint", Gson().toJson(footprintModel))
                 footprintDialogFragment.arguments = bundle
@@ -195,16 +197,7 @@ class WalkDetailActivity :
     override fun onWalkDetailLoading() {
         if (this != null) {
             jobs.add(lifecycleScope.launch {
-                binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 INVISIBLE
-            })
-        }
-    }
-
-    override fun onWalkDetailFail(code: Int, message: String) {
-        if (this != null) {
-            jobs.add(lifecycleScope.launch {
-                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
-                showToast(getString(R.string.error_api_fail))
+                binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 VISIBLE
             })
         }
     }
@@ -257,6 +250,80 @@ class WalkDetailActivity :
                 msgDialogFragment.show(supportFragmentManager, null)
 
                 FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)  //수정된 발자국 정보로 업데이트 하기 위해 다시 발자국 데이터 조회 요청 보내기
+            })
+        }
+    }
+
+    override fun onWalkDetailGETFail(code: Int?, walkIdx: Int) {
+        if (this != null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+
+                when (code) {
+                    6000 -> {   //네트워크 연결 문제
+                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.getWalk(this@WalkDetailActivity, walkIdx)
+                            FootprintService.getFootprints(this@WalkDetailActivity, walkIdx)
+                        }.show()
+                    }
+
+                    else -> {   //그 이외 문제
+                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.getWalk(this@WalkDetailActivity, walkIdx)
+                            FootprintService.getFootprints(this@WalkDetailActivity, walkIdx)
+                        }.show()
+                    }
+                }
+            })
+        }
+    }
+
+    override fun onWalkDeleteFail(code: Int?, walkIdx: Int) {
+        if (this != null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+
+                when (code) {
+                    6000 -> {   //네트워크 연결 문제
+                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.deleteWalk(this@WalkDetailActivity, walkIdx)
+                        }.show()
+                    }
+
+                    else -> {   //그 이외 문제
+                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.deleteWalk(this@WalkDetailActivity, walkIdx)
+                        }.show()
+                    }
+                }
+            })
+        }
+    }
+
+    override fun onFootprintUpdateFail(
+        code: Int?,
+        walkIdx: Int,
+        footprintIdx: Int,
+        footprintMap: HashMap<String, Any>,
+        footprintPhoto: List<String>?
+    ) {
+        if (this != null) {
+            jobs.add(lifecycleScope.launch {
+                binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+
+                when (code) {
+                    6000 -> {   //네트워크 연결 문제
+                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            FootprintService.updateFootprint(this@WalkDetailActivity, walkIdx, footprintIdx, footprintMap, footprintPhoto)
+                        }.show()
+                    }
+
+                    else -> {   //그 이외 문제
+                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            FootprintService.updateFootprint(this@WalkDetailActivity, walkIdx, footprintIdx, footprintMap, footprintPhoto)
+                        }.show()
+                    }
+                }
             })
         }
     }

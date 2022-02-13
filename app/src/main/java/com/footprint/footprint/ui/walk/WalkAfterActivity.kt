@@ -19,6 +19,7 @@ import com.footprint.footprint.ui.dialog.MsgDialogFragment
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.coroutines.Job
@@ -259,11 +260,24 @@ class WalkAfterActivity :
         }
     }
 
-    override fun onWalkAfterFail(code: Int, message: String) {
+    override fun onWalkAfterFail(code: Int?, walk: WalkModel) {
         if (this!=null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkAfterLoadingPb.visibility = View.INVISIBLE
-                showToast(getString(R.string.error_api_fail))
+
+                when (code) {
+                    6000 -> {   //네트워크 연결 문제
+                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.writeWalk(this@WalkAfterActivity, walk)
+                        }.show()
+                    }
+
+                    else -> {   //그 이외 문제
+                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                            WalkService.writeWalk(this@WalkAfterActivity, walk)
+                        }.show()
+                    }
+                }
             })
         }
     }

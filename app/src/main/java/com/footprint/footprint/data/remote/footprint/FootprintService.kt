@@ -5,6 +5,8 @@ import com.footprint.footprint.data.remote.walk.BaseResponse
 import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication
+import com.footprint.footprint.utils.isNetworkAvailable
+import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,13 +29,17 @@ object FootprintService {
 
                 when (val code = res?.code) {
                     1000, 2221 -> walkDetailView.onGetFootprintsSuccess(res?.result)    //2221: 해당 산책에 발자국 데이터가 존재하지 않음.
-                    else -> walkDetailView.onWalkDetailFail(code!!, res?.message)
+                    else -> walkDetailView.onWalkDetailGETFail(code, walkIdx)
                 }
             }
 
             override fun onFailure(call: Call<GetFootprintsResponse>, t: Throwable) {
                 Log.e("FootprintService", "getFootprints-ERROR: ${t.message.toString()}")
-                walkDetailView.onWalkDetailFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    walkDetailView.onWalkDetailGETFail(6000, walkIdx)
+                else
+                    walkDetailView.onWalkDetailGETFail(5000, walkIdx)
             }
 
         })
@@ -74,12 +80,16 @@ object FootprintService {
                 if (res?.code==1000)
                     walkDetailView.onUpdateFootprintSuccess()
                 else
-                    walkDetailView.onWalkDetailFail(res?.code!!, res?.message)
+                    walkDetailView.onFootprintUpdateFail(res?.code, walkIdx, footprintIdx, footprintMap, footprintPhoto)
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                walkDetailView.onWalkDetailFail(5000, t.message.toString())
                 Log.e("FootprintService", "updateFootprint3-ERROR: ${t.message.toString()}")
+
+                if (!isNetworkAvailable(context))
+                    walkDetailView.onFootprintUpdateFail(6000, walkIdx, footprintIdx, footprintMap, footprintPhoto)
+                else
+                    walkDetailView.onFootprintUpdateFail(5000, walkIdx, footprintIdx, footprintMap, footprintPhoto)
             }
 
         })

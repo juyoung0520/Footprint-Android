@@ -105,7 +105,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
-        android:text="발자국 스타터"
         android:textAppearance="@style/tv_subtitle_b_16"
         android:textColor="@color/black_light"
         app:layout_constraintBottom_toBottomOf="@+id/badge_representative_badge_view"

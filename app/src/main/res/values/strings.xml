@@ -24,6 +24,7 @@
     <string name="action_set">설정</string>
     <string name="action_update">수정</string>
     <string name="action_stop">중지</string>
+    <string name="action_retry">재시도</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -47,8 +48,6 @@
     <string name="error_network">네트워크에 연결할 수 없습니다.</string>
     <string name="error_api_fail">오류가 발생했습니다. 다시 시도해 주세요.</string>
     <string name="error_gps_none">GPS를 사용할 수 없습니다.</string>
-    <string name="action_retry">재시도</string>
-
 
     <!--화면 별-->
     <!--온보딩-->

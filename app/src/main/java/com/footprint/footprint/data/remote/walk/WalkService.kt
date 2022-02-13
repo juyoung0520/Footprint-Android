@@ -8,6 +8,8 @@ import com.footprint.footprint.ui.main.calendar.CalendarView
 import com.footprint.footprint.ui.main.calendar.SearchResultView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import com.footprint.footprint.utils.isNetworkAvailable
+import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -133,13 +135,17 @@ object WalkService {
 
                 when (val code = res?.code) {
                     1000 -> walkAfterView.onWriteWalkSuccess(res?.result!!)
-                    else -> walkAfterView.onWalkAfterFail(code!!, res?.message.toString())
+                    else -> walkAfterView.onWalkAfterFail(code, walk)
                 }
             }
 
             override fun onFailure(call: Call<WriteWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "writeWalk-ERROR: ${t.message.toString()}")
-                walkAfterView.onWalkAfterFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    walkAfterView.onWalkAfterFail(6000, walk)
+                else
+                    walkAfterView.onWalkAfterFail(5000, walk)
             }
         })
     }
@@ -157,12 +163,16 @@ object WalkService {
                 if (res?.code==1000)
                     walkDetailView.onGetWalkSuccess(res?.result)
                 else
-                    walkDetailView.onWalkDetailFail(res?.code!!, res?.message)
+                    walkDetailView.onWalkDetailGETFail(res?.code, walkIdx)
             }
 
             override fun onFailure(call: Call<GetWalkResponse>, t: Throwable) {
                 Log.e("WalkService", "getWalk-ERROR: ${t.message.toString()}")
-                walkDetailView.onWalkDetailFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    walkDetailView.onWalkDetailGETFail(6000, walkIdx)
+                else
+                    walkDetailView.onWalkDetailGETFail(5000, walkIdx)
             }
 
         })
@@ -181,12 +191,16 @@ object WalkService {
                 if (res?.code==1000)
                     walkDetailView.onDeleteWalkSuccess()
                 else
-                    walkDetailView.onWalkDetailFail(res?.code!!, res?.message!!)
+                    walkDetailView.onWalkDeleteFail(res?.code, walkIdx)
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 Log.e("WalkService", "\ndeleteWalk-ERROR: ${t.message.toString()}")
-                walkDetailView.onWalkDetailFail(5000, t.message.toString())
+
+                if (!isNetworkAvailable(context))
+                    walkDetailView.onWalkDeleteFail(6000, walkIdx)
+                else
+                    walkDetailView.onWalkDeleteFail(5000, walkIdx)
             }
 
         })
