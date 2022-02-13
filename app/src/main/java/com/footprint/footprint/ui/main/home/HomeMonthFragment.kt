@@ -21,7 +21,6 @@ class HomeMonthFragment() :
     private lateinit var calRVAdapter: HomeMonthRVAdapter
 
     override fun initAfterBinding() {
-
     }
 
     override fun onResume() {
@@ -32,7 +31,6 @@ class HomeMonthFragment() :
         }else{
             setLoadingBar(true)
         }
-
     }
 
     /*일별 정보 조회 API*/

@@ -1,25 +1,44 @@
 package com.footprint.footprint.ui.main.home
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.footprint.footprint.data.remote.achieve.Today
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate),
     HomeDayView {
 
     private lateinit var today: Today
+    private lateinit var job: Job
 
     override fun initAfterBinding() {
-        setLoadingBar(true)
+        setLoadingBar(true) //초기 상태
     }
 
+    override fun onResume() {
+        super.onResume()
+        //프래그먼트 다시 돌아왔을 때 ex. 산책 액티비티에서 메인으로 다시 돌아옴
+        if(::today.isInitialized){
+            setDayFragment()
+            setLoadingBar(false)
+        }else{
+            setLoadingBar(true)
+        }
+    }
+
+    /*API-SUCCESS*/
     override fun onTodaySuccess(today: Today) {
         this.today = today
-        setDayFragment()
-        setLoadingBar(false)
+        if(view != null){
+            job = viewLifecycleOwner.lifecycleScope.launch{
+                setDayFragment()
+                setLoadingBar(false)
+            }
+        }
     }
 
     private fun setDayFragment() {
@@ -62,5 +81,11 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
             binding.homeDayLoadingPb.visibility = View.GONE
             binding.homeDayLoadingBgV.visibility = View.GONE
         }
+    }
+
+    override fun onDestroyView() {
+        if(::job.isInitialized)
+            job.cancel()
+        super.onDestroyView()
     }
 }
