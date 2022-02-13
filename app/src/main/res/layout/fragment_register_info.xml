@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/register_info_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--Top: 정보를 입력해 주세요-->
+    <TextView
+        android:id="@+id/register_info_title_tv"
+        style="@style/tv_title_b_24"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/title_register_info"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/register_info_description_tv"
+        style="@style/tv_body_b_12"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="14dp"
+        android:text="@string/msg_register_info"
+        android:textColor="@color/black_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_info_title_tv" />
+
+    <!--Middle: 정보 입력-->
+    <com.footprint.footprint.utils.LockableNestedScrollView
+        android:id="@+id/register_info_scrollview_v"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintBottom_toTopOf="@id/register_info_action_btn"
+        app:layout_constraintTop_toBottomOf="@id/register_info_description_tv">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/register_info_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--닉네임, 성별-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/register_info_nickname_and_gender_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/register_info_birth_and_wheight_layout"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/register_info_nickname_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    app:layout_constraintBottom_toTopOf="@id/register_info_gender_layout"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/register_info_nickname_title_tv"
+                        style="@style/tv_headline_eb_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_register_info_nickname"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/msg_asterisk"
+                        android:textColor="@color/primary"
+                        app:layout_constraintStart_toEndOf="@+id/register_info_nickname_title_tv"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/register_info_nickname_et"
+                        style="@style/tv_body_b_14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+
+                        android:background="@drawable/selector_my_info_et_null"
+                        android:hint="@string/title_register_info_nickname_hint"
+
+                        android:includeFontPadding="true"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
+                        android:paddingBottom="10dp"
+
+                        android:textColorHint="@color/white_dark"
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_nickname_title_tv" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/register_info_nickname_error_tv"
+                    style="@style/tv_button_b_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/error_register_info_nickname"
+                    android:textColor="@color/secondary"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="@id/register_info_nickname_layout"
+                    app:layout_constraintTop_toBottomOf="@id/register_info_nickname_layout" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/register_info_gender_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/register_info_nickname_layout">
+
+                    <TextView
+                        android:id="@+id/register_info_gender_title_tv"
+                        style="@style/tv_headline_eb_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_register_info_gender"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/msg_asterisk"
+                        android:textColor="@color/primary"
+                        app:layout_constraintStart_toEndOf="@+id/register_info_gender_title_tv"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <RadioGroup
+                        android:id="@+id/register_info_gender_radiogrp_grp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_gender_title_tv">
+
+                        <RadioButton
+                            android:id="@+id/register_info_gender_female_btn"
+                            style="@style/tv_body_b_14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_weight="1"
+
+                            android:background="@color/transparent"
+                            android:button="@null"
+                            android:drawableEnd="@drawable/btn_radiobtn"
+                            android:drawablePadding="4dp"
+
+                            android:text="@string/title_register_info_gender_f"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/register_info_gender_male_btn"
+                            style="@style/tv_body_b_14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_weight="2"
+
+                            android:background="@color/transparent"
+                            android:button="@null"
+                            android:drawableEnd="@drawable/btn_radiobtn"
+                            android:drawablePadding="4dp"
+
+
+                            android:text="@string/title_register_info_gender_m"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/register_info_gender_none_btn"
+                            style="@style/tv_body_b_14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="3"
+
+                            android:background="@color/transparent"
+                            android:button="@null"
+                            android:drawableEnd="@drawable/btn_radiobtn"
+                            android:drawablePadding="4dp"
+
+                            android:text="@string/title_register_info_gender_n"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black" />
+                    </RadioGroup>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--회색 line-->
+            <ImageView
+                android:id="@+id/register_info_grayline_iv"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_signup_grayline"
+                app:layout_constraintTop_toBottomOf="@id/register_info_nickname_and_gender_layout"
+                app:layout_constraintBottom_toTopOf="@id/register_info_birth_and_wheight_layout"/>
+
+            <!--생년월일, 키, 몸무게-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/register_info_birth_and_wheight_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="-7dp"
+                app:layout_constraintBottom_toTopOf="@id/register_info_blank_v"
+                app:layout_constraintTop_toBottomOf="@id/register_info_nickname_and_gender_layout">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/register_info_birth_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/register_info_wheight_layout">
+
+                    <TextView
+                        android:id="@+id/register_info_birth_title_tv"
+                        style="@style/tv_headline_eb_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_register_info_birth"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!--년-->
+                    <EditText
+                        android:id="@+id/register_info_birth_year_et"
+                        style="@style/tv_body_b_14"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+
+                        android:background="@drawable/selector_my_info_et_null"
+                        android:hint="@string/title_register_info_birth_year_hint"
+
+                        android:includeFontPadding="true"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:maxLines="1"
+                        android:paddingBottom="10dp"
+
+                        android:textColorHint="@color/white_dark"
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+
+                        app:layout_constraintEnd_toStartOf="@id/register_info_birth_month_et"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_birth_title_tv" />
+
+                    <TextView
+                        android:id="@+id/register_info_birth_year_unit_tv"
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="end"
+                        android:text="@string/msg_year_unit"
+                        android:textColor="@color/primary_light"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_birth_year_et"
+                        app:layout_constraintEnd_toEndOf="@id/register_info_birth_year_et" />
+
+                    <!--월-->
+                    <EditText
+                        android:id="@+id/register_info_birth_month_et"
+                        style="@style/tv_body_b_14"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+
+                        android:background="@drawable/selector_my_info_et_null"
+                        android:hint="@string/title_register_info_birth_month_hint"
+                        android:includeFontPadding="true"
+
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:maxLines="1"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/white_dark"
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+
+                        app:layout_constraintEnd_toStartOf="@id/register_info_birth_day_et"
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toEndOf="@id/register_info_birth_year_et"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_birth_title_tv" />
+
+                    <TextView
+                        android:id="@+id/register_info_birth_month_unit_tv"
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="end"
+                        android:text="@string/msg_month_unit"
+                        android:textColor="@color/primary_light"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_birth_month_et"
+                        app:layout_constraintEnd_toEndOf="@id/register_info_birth_month_et" />
+
+                    <!--일-->
+                    <EditText
+                        android:id="@+id/register_info_birth_day_et"
+                        style="@style/tv_body_b_14"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+
+                        android:background="@drawable/selector_my_info_et_null"
+                        android:hint="@string/title_register_info_birth_day_hint"
+                        android:includeFontPadding="true"
+
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:maxLines="1"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/white_dark"
+
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+                        app:layout_constraintEnd_toEndOf="parent"
+
+
+                        app:layout_constraintHorizontal_weight="1"
+                        app:layout_constraintStart_toEndOf="@id/register_info_birth_month_et"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_birth_title_tv" />
+
+                    <TextView
+                        android:id="@+id/register_info_birth_day_unit_tv"
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="end"
+                        android:text="@string/msg_day_unit"
+                        android:textColor="@color/primary_light"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_birth_day_et"
+                        app:layout_constraintEnd_toEndOf="@id/register_info_birth_day_et" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/register_info_wheight_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginEnd="34dp"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintTop_toBottomOf="@id/register_info_birth_layout"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/register_info_wheight_title_tv"
+                        style="@style/tv_headline_eb_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_register_info_wheight"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/register_info_weight_help_iv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:src="@drawable/ic_hint"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_wheight_title_tv"
+                        app:layout_constraintStart_toEndOf="@id/register_info_wheight_title_tv"
+                        app:layout_constraintTop_toTopOf="@id/register_info_wheight_title_tv" />
+
+                    <EditText
+                        android:id="@+id/register_info_height_et"
+                        style="@style/tv_body_b_14"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+
+                        android:background="@drawable/selector_my_info_et_null"
+                        android:hint="@string/title_register_info_height_hint"
+
+                        android:includeFontPadding="true"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:maxLines="1"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/white_dark"
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+
+                        app:layout_constraintEnd_toStartOf="@id/register_info_weight_et"
+
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_wheight_title_tv" />
+
+                    <TextView
+                        android:id="@+id/register_info_height_unit_tv"
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="end"
+                        android:text="@string/msg_height_unit"
+                        android:textColor="@color/primary_light"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_height_et"
+                        app:layout_constraintEnd_toEndOf="@id/register_info_height_et"
+                        app:layout_constraintHorizontal_chainStyle="packed" />
+
+                    <EditText
+                        android:id="@+id/register_info_weight_et"
+                        style="@style/tv_body_b_14"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/selector_my_info_et_null"
+
+                        android:hint="@string/title_register_info_weight_hint"
+                        android:includeFontPadding="true"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:maxLines="1"
+
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/white_dark"
+
+                        android:textCursorDrawable="@drawable/bg_edittext_cursor"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toEndOf="@id/register_info_height_et"
+                        app:layout_constraintTop_toBottomOf="@id/register_info_wheight_title_tv" />
+
+                    <TextView
+                        android:id="@+id/register_info_weight_unit_tv"
+                        style="@style/tv_subtitle_b_16"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="end"
+                        android:text="@string/msg_weight_unit"
+                        android:textColor="@color/primary_light"
+                        app:layout_constraintBottom_toBottomOf="@id/register_info_weight_et"
+                        app:layout_constraintEnd_toEndOf="@id/register_info_weight_et" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--빈 뷰-->
+            <View
+                android:id="@+id/register_info_blank_v"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/register_info_birth_and_wheight_layout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.footprint.footprint.utils.LockableNestedScrollView>
+
+    <!--Btn-->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/register_info_action_btn"
+        style="@style/tv_headline_eb_18"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/selector_register_action_btn"
+        android:backgroundTint="@null"
+        android:enabled="false"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:stateListAnimator="@null"
+        android:text="@string/action_next"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

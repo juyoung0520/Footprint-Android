@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/photo_photo_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/photo_go_gallery_view"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="9dp"
+        android:background="@drawable/bg_item_photo_go_gallery_view"
+        app:layout_constraintStart_toStartOf="@+id/photo_photo_iv"
+        app:layout_constraintTop_toTopOf="@+id/photo_photo_iv" />
+
+    <ImageView
+        android:id="@+id/photo_edit_photo_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_edit_photo"
+        app:layout_constraintBottom_toBottomOf="@+id/photo_go_gallery_view"
+        app:layout_constraintEnd_toEndOf="@+id/photo_go_gallery_view"
+        app:layout_constraintStart_toStartOf="@+id/photo_go_gallery_view"
+        app:layout_constraintTop_toTopOf="@+id/photo_go_gallery_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

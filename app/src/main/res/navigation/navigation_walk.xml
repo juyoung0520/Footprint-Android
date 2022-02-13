@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_walk"
+    app:startDestination="@id/walkMapFragment">
+
+    <fragment
+        android:id="@+id/walkMapFragment"
+        android:name="com.footprint.footprint.ui.walk.WalkMapFragment"
+        android:label="walkMapFragment">
+        <argument
+            android:name="msg"
+            app:argType="string" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/msgDialogFragment"
+        android:name="com.footprint.footprint.ui.dialog.MsgDialogFragment"
+        android:label="fragment_msg_dialog"
+        tools:layout="@layout/fragment_msg_dialog">
+        <argument
+            android:name="msg"
+            app:argType="string" />
+    </dialog>
+
+    <action
+        android:id="@+id/action_global_msgDialogFragment"
+        app:destination="@id/msgDialogFragment" />
+
+</navigation>

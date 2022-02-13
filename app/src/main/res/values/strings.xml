@@ -1,0 +1,290 @@
+<resources>
+    <string name="app_name">발자국</string>
+
+    <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
+    <string name="google_login_server_id" translatable="false">275484626544-npc9k2gt2qmh36o90slhb73bmdgatrnk.apps.googleusercontent.com</string>
+    <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
+    <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
+
+    <!--공통-->
+    <!--메뉴-->
+    <string name="menu_home">홈</string>
+    <string name="menu_calendar">산책기록</string>
+    <string name="menu_course">코스추천</string>
+    <string name="menu_mypage">마이페이지</string>
+
+    <!--액션-->
+    <string name="action_cancel">취소</string>
+    <string name="action_edit">편집</string>
+    <string name="action_save">저장</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_next">다음</string>
+    <string name="action_complete">완료</string>
+    <string name="action_set">설정</string>
+    <string name="action_update">수정</string>
+    <string name="action_stop">중지</string>
+    <string name="action_retry">재시도</string>
+
+    <!--액션-->
+    <string name="action_startwalk">산책 시작</string>
+
+    <!--설명-->
+    <string name="msg_distacnce_unit">km</string>
+    <string name="msg_calroie_unit">kcal</string>
+    <string name="msg_avr_calroie_unit">kcal/day</string>
+    <string name="msg_pace_unit">걸음/분</string>
+    <string name="msg_min_eng_unit">min</string>
+    <string name="msg_min_ko_unit">분</string>
+    <string name="msg_height_unit">cm</string>
+    <string name="msg_weight_unit">kg</string>
+    <string name="msg_year_unit">년</string>
+    <string name="msg_month_unit">월</string>
+    <string name="msg_day_unit">일</string>
+    <string name="msg_temp_unit">°C</string>
+    <string name="msg_default">-</string>
+
+    <!--에러-->
+    <string name="error_network">네트워크에 연결할 수 없습니다.</string>
+    <string name="error_api_fail">오류가 발생했습니다. 다시 시도해 주세요.</string>
+    <string name="error_gps_none">GPS를 사용할 수 없습니다.</string>
+
+    <!--화면 별-->
+    <!--온보딩-->
+    <string name="msg_skip">skip ></string>
+    <string name="action_start">시작하기</string>
+    <string name="title_onboarding1">반가워요</string>
+    <string name="msg_onboarding1">산책하러 오셨군요! 발자국에 오신걸 환영합니다</string>
+    <string name="msg_img_onboarding1">산책은 가벼운 운동으로 제격인 동시에\n생각을 정리하거나 기분 전환에 좋은 활동이에요</string>
+    <string name="title_onboarding2">산책 목표 설정하기</string>
+    <string name="msg_onboarding2">산책할 요일과 목표 산책 시간을 선택해\n나만의 산책 목표를 세워 산책을 습관화할 수 있어요</string>
+    <string name="title_onboarding3">산책 기록하기</string>
+    <string name="msg_onboarding3">실시간 산책 동선을 기록하면서\n자유롭게 사진을 찍고 떠오른 생각을 남겨보아요</string>
+    <string name="title_onboarding4">산책 일기 확인하기</string>
+    <string name="msg_onboarding4">그동안의 산책과 생각들을 추억할 수 있어요</string>
+
+    <!--약관 동의-->
+    <string name="title_agree">약관동의</string>
+    <string name="msg_agree_description">서비스 이용을 위해서 약관 동의가 필요해요</string>
+    <string name="title_agree_use">이용약관 (필수)</string>
+    <string name="title_agree_location">위치서비스 이용약관 (필수)</string>
+    <string name="title_agree_user">개인정보 수집 이용 (필수)</string>
+    <string name="title_agree_notification">앱 푸시 알림 수신 동의 (선택)</string>
+    <string name="title_agree_all">모두 동의합니다</string>
+
+
+    <string name="title_agreement_use">이용약관</string>
+    <string name="title_agreement_location">위치 서비스 이용약관</string>
+    <string name="title_agreement_user">개인정보 처리방침</string>
+    <string name="msg_agreement_use">@string/agreement_use</string>
+    <string name="msg_agreement_location">@string/agreement_location</string>
+    <string name="msg_agreement_user">@string/agreement_user</string>
+
+
+    <!--로그인-->
+    <string name="title_login">로그인</string>
+    <string name="msg_catchphrase">길위에 남기는 나만의 기록</string>
+    <string name="msg_login_description">소셜 계정으로 간편하게 로그인할 수 있어요</string>
+    <string name="title_kakaologin">카카오계정으로 로그인</string>
+    <string name="title_googlelogin">구글계정으로 로그인</string>
+    <string name="msg_nologin"><u>나중에 로그인할래요</u></string>
+    <string name="msg_copyright">© 2021. 발자국 all right reserved.</string>
+
+    <!--정보 등록-->
+    <string name="title_register_info">정보를 입력해 주세요</string>
+    <string name="msg_register_info">정보를 입력하면 더 정확한 서비스를 제공받을 수 있어요</string>
+    <string name="msg_asterisk">*</string>
+    <string name="title_register_info_nickname">닉네임</string>
+    <string name="title_register_info_nickname_hint">닉네임을 입력해 주세요 (최대 8자)</string>
+    <string name="title_register_info_gender">성별</string>
+    <string name="title_register_info_gender_f">여</string>
+    <string name="title_register_info_gender_m">남</string>
+    <string name="title_register_info_gender_n">선택안함</string>
+    <string name="title_register_info_birth">생년월일</string>
+    <string name="title_register_info_birth_year_hint">1999</string>
+    <string name="title_register_info_birth_month_hint">12</string>
+    <string name="title_register_info_birth_day_hint">31</string>
+    <string name="title_register_info_wheight">키/몸무게</string>
+    <string name="title_register_info_height_hint">170</string>
+    <string name="title_register_info_weight_hint">50</string>
+    <string name="error_register_info_nickname">닉네임은 최대 8자까지 가능해요</string>
+
+    <!--홈-->
+    <string name="msg_badge">뱃지를 획득했어요!</string>
+    <string name="msg_home_hello">안녕하세요, </string>
+    <string name="msg_home_userunit">님!</string>
+    <string name="msg_home_greetings">오늘도 발자국을 남겨볼까요?</string>
+    <string name="title_home_achieve">달성률</string>
+    <string name="title_home_goal">오늘 목표</string>
+    <string name="title_mon">Mon</string>
+    <string name="title_tue">Tue</string>
+    <string name="title_wed">Wed</string>
+    <string name="title_thu">Thu</string>
+    <string name="title_fri">Fri</string>
+    <string name="title_sat">Sat</string>
+    <string name="title_sun">Sun</string>
+
+    <!--실시간 기록-->
+    <string name="title_realtime_record">실시간 기록</string>
+    <string name="title_walktime">산책시간</string>
+    <string name="title_distance">거리</string>
+    <string name="title_calorie">칼로리</string>
+    <string name="title_pace">페이스</string>
+    <string name="title_sum_walktime">누적 산책시간</string>
+    <string name="title_sum_distance">누적 거리</string>
+    <string name="title_avr_calorie">평균 칼로리</string>
+    <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
+
+    <!--다이얼로그 프래그먼트-->
+    <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
+    <string name="title_hour">시간</string>
+    <string name="title_minute">분</string>
+    <string name="action_withdrawal">탈퇴하기</string>
+    <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
+    <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
+    <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
+    <string name="msg_stop_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
+    <string name="msg_stop_realtime_record">실시간 기록을 중지할까요?</string>
+    <string name="msg_add_photo_or_writing">사진이나 글을 추가해주세요.</string>
+    <string name="msg_leave_footprint">발자국을 남겼어요.</string>
+    <string name="msg_update_footprint">발자국을 수정했어요.</string>
+    <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
+    <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
+    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
+    <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
+    <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
+    <string name="msg_success_update_goal">다음달 목표를 변경했어요</string>
+    <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
+    <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
+    <string name="error_no_updating_goal">변경된 목표가 없어요</string>
+
+    <!--산책중지-->
+    <string name="title_walk_time">산책시간</string>
+    <string name="title_record">기록</string>
+    <string name="title_calorie_unit">kcal</string>
+    <string name="title_distance_unit">km</string>
+    <string name="title_record_unit">회</string>
+    <string name="title_view_more">더보기</string>
+    <string name="title_view_short">간략히 보기</string>
+    <string name="msg_save_walk_success">산책 정보가 저장되었어요.</string>
+
+    <!--글 작성하기-->
+    <string name="title_leave_footprint">발자국 남기기</string>
+    <string name="action_add_photo">사진 추가하기</string>
+    <string name="action_delete_photo">사진 삭제하기</string>
+    <string name="msg_input_tag">본문에 #을 이용해 태그를 입력해보세요! (최대 5개)</string>
+    <string name="msg_save_post">기록이 저장되었습니다.</string>
+    <string name="error_photo_cnt_exceeded">사진 첨부는 최대 5개까지 가능해요.</string>
+    <string name="error_permission_denied">사진 촬영과 첨부를 위해 [설정>권한]에서 카메라 및 저장공간 권한을 허용해주세요.</string>
+    <string name="error_blank_content">내용을 입력해주세요.</string>
+
+    <!--산책일기-->
+    <string name="title_walk_calendar">산책 일기</string>
+    <string name="msg_no_walk">산책기록이 없어요!</string>
+    <string name="action_today">TODAY</string>
+    <string name="error_hashtag_exceed_cnt">해시태그는 5개까지 작성할 수 있어요.</string>
+    <string name="msg_total">총</string>
+    <string name="msg_total_count">회</string>
+
+    <!--개별 산책 화면-->
+    <string name="msg_no_footprint">산책기록이 없어요!</string>
+    <string name="action_all_delete">전체삭제</string>
+
+    <!--마이페이지-->
+    <string name="title_mypage">마이페이지</string>
+
+    <!--코스추천-->
+    <string name="title_course">코스추천</string>
+
+    <!--목표 설정 화면-->
+    <string name="msg_set_goal">목표를 설정해 주세요</string>
+    <string name="msg_set_gaol_desc">월 기준으로 목표를 설정할 수 있어요</string>
+    <string name="title_goal_day">목표 요일</string>
+    <string name="title_goal_walk_time">목표 산책 시간</string>
+    <string name="msg_set_goal_time">목표시간을 선택해 주세요</string>
+    <string name="title_goal_walk_slot">산책 시간대</string>
+    <string name="msg_set_slot">시간대를 선택해 주세요</string>
+    <string name="title_15_min">15분</string>
+    <string name="title_30_min">30분</string>
+    <string name="title_60_min">1시간</string>
+    <string name="title_90_min">1시간반</string>
+    <string name="title_direct_setting">직접설정</string>
+    <string name="title_early_morning">이른 오전(5-8)</string>
+    <string name="title_late_morning">늦은 오전(9-12)</string>
+    <string name="title_early_afternoon">이른 오후(13-16)</string>
+    <string name="title_late_afternoon">늦은 오후(17-20)</string>
+    <string name="title_night">밤(21-0)</string>
+    <string name="title_dawn">새벽(1-4)</string>
+    <string name="title_different_every_time">매번 다름</string>
+
+    <!--마이페이지-->
+    <string name="msg_nick_name_unit">님</string>
+    <string name="msg_today">오늘</string>
+    <string name="msg_this_month">이번달</string>
+    <string name="title_this_month_goal">이번달 목표</string>
+    <string name="msg_this_month_goal_week">주 회</string>
+    <string name="msg_this_month_goal_day">하루 분</string>
+    <string name="msg_walk_count">산책 횟수</string>
+    <string name="title_statistics">통계</string>
+    <string name="msg_last_three_month">*이전 3달 기준</string>
+    <string name="msg_statistics_week_res">주로 에 산책을 가장 많이 나가요</string>
+    <string name="mst_no_walk_during_3_months">최근 3개월간 산책을 하지 않았어요</string>
+    <string name="msg_statistics_month_count_res">이번달엔 회 기록했어요</string>
+    <string name="msg_statistics_month_rate_res">이번달엔 %달성했어요</string>
+    <string name="msg_percent_unit">(%)</string>
+    <string name="msg_count_unit">(회)</string>
+    <string name="title_statistics_month_count_res">월별 기록 횟수</string>
+    <string name="title_statistics_month_rate_res">월별 달성률</string>
+
+    <!--뱃지-->
+    <string name="title_achievement_badge">달성 뱃지</string>
+    <string name="title_representative_badge">대표 뱃지</string>
+
+    <!--태그 검색-->
+    <string name="msg_search_hint">원하는 #태그를 검색해 보세요</string>
+    <string name="title_recent_search">최근 검색</string>
+
+    <!--태그 검색 결과-->
+    <string name="msg_no_search_result">검색 결과가 없어요!</string>
+
+    <!--설정-->
+    <string name="title_setting">설정</string>
+    <string name="title_notification">알림</string>
+    <string name="title_lock_footprint">산책기록 잠금</string>
+    <string name="title_password_setting">암호 변경</string>
+    <string name="title_logout">로그아웃</string>
+    <string name="title_withdrawal">회원 탈퇴</string>
+    <string name="title_version_copyright">버전 1.0.0\nⓒ 2021. 발자국 all rights reserved.</string>
+    <string name="title_privacy_policy">개인정보처리방침</string>
+    <string name="title_terms_of_user">이용약관</string>
+    <string name="title_location_terms_of_service">위치서비스이용약관</string>
+
+    <!--내 정보-->
+    <string name="title_my_info">내 정보</string>
+
+    <!--이번달 목표-->
+    <string name="title_goal_this_month">이번달 목표</string>
+    <string name="msg_not_edit_goal_this_month">이번달 목표는 수정할 수 없어요</string>
+    <string name="msg_change_goal_next_month">다음달부터 목표를 변경할래요 ></string>
+    <string name="msg_see_goal_next_month">다음달 목표 보기 ></string>
+
+    <!--다음달 목표-->
+    <string name="title_goal_next_month">다음달 목표</string>
+    <string name="msg_goal_next_month">목표를 수정하면 다음 달부터 적용돼요</string>
+
+    <!--코스 추천-->
+    <string name="title_comming_soon">~ Coming Soon ~</string>
+    <string name="msg_prepare_service">서비스를 준비중이에요.\n조금만 기다려주세요!</string>
+
+    <!--암호-->
+    <string name="title_lock_setting">암호 설정</string>
+    <string name="msg_lock_setting">암호를 입력해 주세요</string>
+    <string name="title_lock_checking">암호 확인</string>
+    <string name="msg_lock_checking">암호를 다시한번 입력해 주세요</string>
+    <string name="msg_lock_resetting">암호가 일치하지 않습니다\n처음부터 다시 시도해 주세요</string>
+    <string name="title_lock_change">암호 변경</string>
+    <string name="msg_lock_change">새로운 암호를 입력해 주세요</string>
+    <string name="title_lock_unlock">잠금 해제</string>
+    <string name="msg_lock_unlock">기존의 암호를 입력해 주세요</string>
+    <string name="msg_lock_unlock_wrong">잘못된 암호를 입력하였습니다</string>
+</resources>

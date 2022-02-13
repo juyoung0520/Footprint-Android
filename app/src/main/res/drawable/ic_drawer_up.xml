@@ -1,0 +1,25 @@
+<!-- activity_walk_after.xml walk_after_up_iv -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="25dp"
+    android:height="9dp"
+    android:viewportWidth="25"
+    android:viewportHeight="9">
+  <path
+      android:strokeWidth="1"
+      android:pathData="M0.5,0.5L24.5,0.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#717172"
+      android:strokeLineCap="round"/>
+  <path
+      android:strokeWidth="1"
+      android:pathData="M0.5,4.5L24.5,4.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#717172"
+      android:strokeLineCap="round"/>
+  <path
+      android:strokeWidth="1"
+      android:pathData="M0.5,8.5L24.5,8.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#717172"
+      android:strokeLineCap="round"/>
+</vector>

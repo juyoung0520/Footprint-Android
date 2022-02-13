@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.setting.MyInfoFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/my_info_tb"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/my_info_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_info_title_tv" />
+
+    <TextView
+        android:id="@+id/my_info_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_my_info"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_tb"
+        app:layout_constraintStart_toStartOf="@+id/my_info_tb"
+        app:layout_constraintTop_toTopOf="@+id/my_info_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <TextView
+        android:id="@+id/my_info_update_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/action_update"
+        android:textAppearance="@style/tv_headline_eb_16"
+        android:textColor="@color/white_light"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_title_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_info_title_tv" />
+
+    <TextView
+        android:id="@+id/my_info_nickname_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_register_info_nickname"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintVertical_bias="0.15" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_asterisk"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toEndOf="@+id/my_info_nickname_title_tv"
+        app:layout_constraintTop_toTopOf="@+id/my_info_nickname_title_tv" />
+
+    <EditText
+        android:id="@+id/my_info_nickname_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="37dp"
+        android:layout_marginTop="27dp"
+        android:background="@drawable/bg_my_info_et_primary"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/my_info_nickname_title_tv" />
+
+    <TextView
+        android:id="@+id/my_info_gender_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_register_info_gender"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintVertical_bias="0.62" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_asterisk"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        android:textColor="@color/primary"
+        app:layout_constraintStart_toEndOf="@+id/my_info_gender_title_tv"
+        app:layout_constraintTop_toTopOf="@+id/my_info_gender_title_tv" />
+
+    <RadioGroup
+        android:id="@+id/my_info_gender_rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="44dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_gender_title_tv">
+
+        <RadioButton
+            android:id="@+id/my_info_gender_female_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_weight="0.5"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:drawableEnd="@drawable/btn_radiobtn"
+            android:drawablePadding="4dp"
+            android:enabled="false"
+            android:text="@string/title_register_info_gender_f"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/tv_body_b_14"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:id="@+id/my_info_gender_male_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_weight="2"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:drawableEnd="@drawable/btn_radiobtn"
+            android:drawablePadding="4dp"
+            android:enabled="false"
+            android:text="@string/title_register_info_gender_m"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/tv_body_b_14"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:id="@+id/my_info_gender_none_rb"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_weight="3"
+            android:background="@color/transparent"
+            android:button="@null"
+            android:drawableEnd="@drawable/btn_radiobtn"
+            android:drawablePadding="4dp"
+            android:enabled="false"
+            android:text="@string/title_register_info_gender_n"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/tv_body_b_14"
+            android:textColor="@color/black" />
+    </RadioGroup>
+
+    <View
+        android:id="@+id/my_info_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_tb"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/my_info_birth_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_register_info_birth"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <EditText
+        android:id="@+id/my_info_birth_year_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="9dp"
+        android:background="@drawable/selector_my_info_et"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_birth_month_et"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_birth_title_tv" />
+
+    <TextView
+        android:id="@+id/my_info_birth_year_unit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_year_unit"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_birth_year_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_birth_year_et" />
+
+    <EditText
+        android:id="@+id/my_info_birth_month_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="9dp"
+        android:background="@drawable/selector_my_info_et"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_birth_year_et"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_birth_day_et"
+        app:layout_constraintStart_toEndOf="@+id/my_info_birth_year_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_birth_year_et" />
+
+    <TextView
+        android:id="@+id/my_info_birth_month_unit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_month_unit"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@id/my_info_birth_month_et"
+        app:layout_constraintTop_toTopOf="@id/my_info_birth_month_et" />
+
+    <EditText
+        android:id="@+id/my_info_birth_day_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="37dp"
+        android:background="@drawable/selector_my_info_et"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_birth_month_et"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/my_info_birth_month_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_birth_month_et" />
+
+    <TextView
+        android:id="@+id/my_info_birth_day_unit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_day_unit"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_birth_day_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_birth_day_et" />
+
+    <TextView
+        android:id="@+id/my_info_weight_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_register_info_wheight"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_line_view"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/my_info_weight_help_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6.5dp"
+        android:src="@drawable/ic_hint"
+        app:layout_constraintBottom_toBottomOf="@id/my_info_weight_title_tv"
+        app:layout_constraintStart_toEndOf="@id/my_info_weight_title_tv"
+        app:layout_constraintTop_toTopOf="@id/my_info_weight_title_tv" />
+
+    <EditText
+        android:id="@+id/my_info_height_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="41dp"
+        android:background="@drawable/selector_my_info_et"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/my_info_weight_et"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_info_weight_title_tv" />
+
+    <TextView
+        android:id="@+id/my_info_height_unit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_height_unit"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_height_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_height_et" />
+
+    <EditText
+        android:id="@+id/my_info_weight_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="37dp"
+        android:background="@drawable/selector_my_info_et"
+        android:enabled="false"
+        android:paddingBottom="8dp"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/my_info_height_et"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/my_info_height_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_height_et" />
+
+    <TextView
+        android:id="@+id/my_info_weight_unit_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_weight_unit"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@+id/my_info_weight_et"
+        app:layout_constraintTop_toTopOf="@+id/my_info_weight_et" />
+
+    <View
+        android:id="@+id/my_info_day_loading_bg_v"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white_light"
+        app:layout_constraintTop_toBottomOf="@id/my_info_tb"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/my_info_day_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

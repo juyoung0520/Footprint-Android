@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <!-- 공통-->
+    <color name="primary">#4FB8E7</color>
+    <color name="primary_dark">#3387AD</color>
+    <color name="primary_light">#B9E2F4</color>
+    <color name="primary_62">#9E4FB8E7</color>
+    <color name="primary_55">#8C4FB8E7</color>
+    <color name="primary_light_30">#4DB9E2F4</color>
+
+    <color name="secondary">#FFC01D</color>
+    <color name="secondary_dark">#7C602A</color>
+    <color name="secondary_light">#E2B96C</color>
+
+    <color name="black">#4D4D4F</color>
+    <color name="black_80">#CC4D4D4F</color>
+    <color name="black_dark">#241F20</color>
+    <color name="black_light">#717172</color>
+    <color name="black_light_55">#8C717172</color>
+
+    <color name="white">#F5F5F6</color>
+    <color name="white_dark">#E1E2E1</color>
+    <color name="white_light">#FFFFFF</color>
+    <color name="white_light_79">#C9FFFFFF</color>
+    <color name="white_underline">#C4C4C4</color>
+    <color name="white_caption">#CECECE</color>
+
+    <color name="transparent">#00ff0000</color>
+
+    <!--TedImagePicker(갤러리 라이브러리) 숫자뷰 배경색-->
+    <color name="ted_image_picker_primary">#4FBBE7</color>
+
+    <color name="gray">#C4C4C4</color>
+</resources>
