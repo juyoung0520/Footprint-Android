@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Extra Bold  -->
+    <style name="tv_headline_eb_48" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">48dp</item>
+    </style>
+
+    <style name="tv_headline_eb_40" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">40dp</item>
+    </style>
+
+    <style name="tv_headline_eb_28" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">28dp</item>
+    </style>
+
+    <style name="tv_headline_eb_24" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+
+    <style name="tv_headline_eb_20" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="tv_headline_eb_18" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="tv_headline_eb_16" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="tv_headline_eb_14" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="tv_headline_eb_12" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="tv_headline_eb_10" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_extra_bold</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <!-- Bold  -->
+    <style name="tv_title_b_24" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">24dp</item>
+    </style>
+
+    <style name="tv_subtitle_b_18" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="tv_subtitle_b_16" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="tv_body_b_14" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="tv_body_b_12" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="tv_body_b_11" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="tv_button_b_10" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround_bold</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <!-- normal  -->
+    <style name="tv_overline_16" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="tv_caption_14" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="tv_caption_12" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">12dp</item>
+    </style>
+
+    <style name="tv_overline_10" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/namusquareround</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <!--목표 설정 NumberPicker style-->
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">@color/primary</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textAppearance">@style/tv_subtitle_b_16</item>
+    </style>
+</resources>

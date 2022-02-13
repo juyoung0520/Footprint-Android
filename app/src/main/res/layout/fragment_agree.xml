@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--Middle: 이미지 & 설명-->
+    <ImageView
+        android:id="@+id/agree_image_iv"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_agreement"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/agree_description_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_agree_description"
+        style="@style/tv_caption_14"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_image_iv"
+        app:layout_constraintBottom_toTopOf="@id/agree_use_cb"/>
+
+    <!--동의-->
+    <CheckBox
+        android:id="@+id/agree_use_cb"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/selector_checkbox"
+        android:button="@null"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_description_tv"
+        app:layout_constraintBottom_toTopOf="@id/agree_location_cb"/>
+    <TextView
+        android:id="@+id/agree_use_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_agree_use"
+        style="@style/tv_subtitle_b_16"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/agree_use_cb"
+        app:layout_constraintTop_toTopOf="@id/agree_use_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_use_cb" />
+    <ImageView
+        android:id="@+id/agree_use_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_more_white1"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/agree_use_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_use_cb" />
+
+    <CheckBox
+        android:id="@+id/agree_location_cb"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/selector_checkbox"
+        android:button="@null"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_use_cb"
+        app:layout_constraintBottom_toTopOf="@id/agree_user_cb"/>
+    <TextView
+        android:id="@+id/agree_location_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_agree_location"
+        style="@style/tv_subtitle_b_16"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/agree_location_cb"
+        app:layout_constraintTop_toTopOf="@id/agree_location_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_location_cb" />
+    <ImageView
+        android:id="@+id/agree_location_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_more_white1"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/agree_location_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_location_cb" />
+
+    <CheckBox
+        android:id="@+id/agree_user_cb"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/selector_checkbox"
+        android:button="@null"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_location_cb"
+        app:layout_constraintBottom_toTopOf="@id/agree_notification_cb"/>
+    <TextView
+        android:id="@+id/agree_user_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_agree_user"
+        style="@style/tv_subtitle_b_16"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/agree_user_cb"
+        app:layout_constraintTop_toTopOf="@id/agree_user_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_user_cb" />
+    <ImageView
+        android:id="@+id/agree_user_iv"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_more_white1"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/agree_user_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_user_cb" />
+
+    <CheckBox
+        android:id="@+id/agree_notification_cb"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/selector_checkbox"
+        android:button="@null"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_user_cb"
+        app:layout_constraintBottom_toTopOf="@id/agree_grayline_iv"/>
+    <TextView
+        android:id="@+id/agree_notification_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_agree_notification"
+        style="@style/tv_overline_16"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/agree_notification_cb"
+        app:layout_constraintTop_toTopOf="@id/agree_notification_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_notification_cb" />
+
+
+    <ImageView
+        android:id="@+id/agree_grayline_iv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bg_grayline_375x1"
+        app:layout_constraintStart_toStartOf="@id/agree_use_cb"
+        app:layout_constraintEnd_toEndOf="@id/agree_use_iv"
+        app:layout_constraintTop_toBottomOf="@id/agree_notification_cb"
+        app:layout_constraintBottom_toTopOf="@id/agree_all_checkbox_cb" />
+
+    <CheckBox
+        android:id="@+id/agree_all_checkbox_cb"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@drawable/selector_checkbox"
+        android:button="@null"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/agree_grayline_iv"
+        app:layout_constraintBottom_toTopOf="@id/agree_action_btn"/>
+    <TextView
+        android:id="@+id/agree_all_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_agree_all"
+        style="@style/tv_subtitle_b_16"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/agree_all_checkbox_cb"
+        app:layout_constraintTop_toTopOf="@id/agree_all_checkbox_cb"
+        app:layout_constraintBottom_toBottomOf="@id/agree_all_checkbox_cb" />
+
+
+    <!--Btn-->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/agree_action_btn"
+        style="@style/tv_headline_eb_18"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@drawable/selector_register_action_btn"
+        android:backgroundTint="@null"
+        android:enabled="false"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:stateListAnimator="@null"
+        android:text="@string/action_confirm"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

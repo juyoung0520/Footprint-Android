@@ -1,0 +1,130 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.footprint.footprint"
+        minSdk 26
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+// Java 8 사용을 위한 build.gradle 설정
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //Sliding Up Panel
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
+
+    //CircleIndicator
+    implementation 'me.relex:circleindicator:2.1.6'
+
+    //TedImagePicker
+    implementation 'io.github.ParkSangGwon:tedimagepicker:1.2.7'
+
+    //TedPermission-Normal
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+
+    //TextMatcher(EditText 해시태그 감지)
+    implementation 'com.github.santalu:textmatcher:1.0.6'
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //Naver Map SDK
+    implementation "com.naver.maps:map-sdk:$map_version"
+
+    //CircleProgressBar
+    implementation 'com.dinuscxj:circleprogressbar:1.3.0'
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
+
+    // dependencies for lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    //GPS API
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    //Calendar
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+
+    //Hashtag Helper
+    implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
+
+    //카카오 로그인 & 구글 로그인 
+    implementation "com.kakao.sdk:v2-user:2.8.4"
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+
+    //툴팁
+    implementation "com.github.skydoves:balloon:1.4.1"
+
+    //Switch Button
+    implementation 'com.kyleduo.switchbutton:library:2.1.0'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    //GlideToVectorYou
+    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+
+    //그래프
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.8.9'
+}

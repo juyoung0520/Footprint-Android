@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.mypage.GoalThisMonthFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/goal_this_month_tb"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/goal_this_month_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_this_month_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/goal_this_month_title_tv" />
+
+    <TextView
+        android:id="@+id/goal_this_month_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_goal_this_month"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintEnd_toEndOf="@+id/goal_this_month_tb"
+        app:layout_constraintStart_toStartOf="@+id/goal_this_month_tb"
+        app:layout_constraintTop_toTopOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <TextView
+        android:id="@+id/goal_this_month_year_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/tv_headline_eb_18"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_line_view"
+        app:layout_constraintEnd_toStartOf="@+id/goal_this_month_month_tv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.32" />
+
+    <TextView
+        android:id="@+id/goal_this_month_month_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/tv_headline_eb_18"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_this_month_year_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/goal_this_month_year_tv"
+        app:layout_constraintTop_toTopOf="@+id/goal_this_month_year_tv" />
+
+    <TextView
+        android:id="@+id/goal_this_month_msg_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/msg_not_edit_goal_this_month"
+        android:textAppearance="@style/tv_body_b_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_month_tv" />
+
+    <View
+        android:id="@+id/goal_this_month_line_view"
+        android:layout_width="wrap_content"
+        android:layout_height="7dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.17" />
+
+    <TextView
+        android:id="@+id/goal_this_month_goal_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_day"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_day_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_line_view"
+        app:layout_constraintVertical_bias="0.17" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/goal_this_month_goal_day_rv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26.5dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_day_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_line_view"
+        app:layout_constraintVertical_bias="0.57"
+        tools:itemCount="7"
+        tools:listitem="@layout/item_day" />
+
+    <View
+        android:id="@+id/goal_this_month_goal_day_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/goal_this_month_goal_walk_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_walk_time"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_day_line_view"
+        app:layout_constraintVertical_bias="0.18" />
+
+    <Button
+        android:id="@+id/goal_this_month_goal_walk_time_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:enabled="false"
+        android:stateListAnimator="@null"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_day_line_view"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <View
+        android:id="@+id/goal_this_month_goal_walk_time_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_tb"
+        app:layout_constraintVertical_bias="0.63" />
+
+    <TextView
+        android:id="@+id/goal_next_month_walk_time_slot_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_walk_slot"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.12" />
+
+    <Button
+        android:id="@+id/goal_this_month_goal_walk_slot_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:enabled="false"
+        android:stateListAnimator="@null"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.39" />
+
+    <TextView
+        android:id="@+id/goal_this_month_change_goal_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_this_month_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.69" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

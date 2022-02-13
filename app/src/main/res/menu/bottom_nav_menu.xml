@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_footprint"
+        android:menuCategory="secondary"
+        android:title="@string/menu_home" />
+    <item
+        android:id="@+id/calendarBlankFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_note"
+        android:menuCategory="secondary"
+        android:title="@string/menu_calendar" />
+    <!--<item
+        android:id="@+id/calendarFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_note"
+        android:menuCategory="secondary"
+        android:title="@string/menu_calendar" />-->
+    <item
+        android:id="@+id/courseFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_course"
+        android:menuCategory="secondary"
+        android:title="@string/menu_course" />
+    <item
+        android:id="@+id/mypageFragment"
+        android:enabled="true"
+        android:icon="@drawable/selector_navi_user"
+        android:menuCategory="secondary"
+        android:title="@string/menu_mypage" />
+</menu>

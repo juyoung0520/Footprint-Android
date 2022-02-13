@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.mypage.GoalNextMonthUpdateFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/goal_next_month_update_tb"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_cancel_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/action_cancel"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_title_tv" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_goal_next_month"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintEnd_toEndOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintStart_toStartOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_save_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/action_save"
+        android:textAppearance="@style/tv_headline_eb_16"
+        android:textColor="@color/white_light"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_title_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_title_tv" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_year_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2021년"
+        android:textAppearance="@style/tv_headline_eb_18"
+        app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_line_view"
+        app:layout_constraintEnd_toStartOf="@+id/goal_next_month_update_month_tv"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintVertical_bias="0.32" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_month_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" 12월"
+        android:textAppearance="@style/tv_headline_eb_18"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_year_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/goal_next_month_update_year_tv"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_year_tv" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_msg_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/msg_goal_next_month"
+        android:textAppearance="@style/tv_body_b_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_month_tv" />
+
+    <View
+        android:id="@+id/goal_next_month_update_line_view"
+        android:layout_width="wrap_content"
+        android:layout_height="7dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintVertical_bias="0.17" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_goal_day_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_day"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_goal_day_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_line_view"
+        app:layout_constraintVertical_bias="0.17" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/goal_next_month_update_goal_day_rv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="26.5dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_goal_day_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_line_view"
+        app:layout_constraintVertical_bias="0.57"
+        tools:itemCount="7"
+        tools:listitem="@layout/item_day" />
+
+    <View
+        android:id="@+id/goal_next_month_update_goal_day_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_goal_walk_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_walk_time"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_goal_walk_time_line_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_day_line_view"
+        app:layout_constraintVertical_bias="0.18" />
+
+    <Button
+        android:id="@+id/goal_next_month_update_goal_walk_time_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:stateListAnimator="@null"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/goal_next_month_update_goal_walk_time_line_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_day_line_view"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <ImageView
+        android:id="@+id/goal_next_month_update_goal_walk_time_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_down_arrow"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_goal_walk_time_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_goal_walk_time_btn"
+        app:layout_constraintEnd_toEndOf="@+id/goal_next_month_update_goal_walk_time_btn"/>
+
+    <View
+        android:id="@+id/goal_next_month_update_goal_walk_time_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_tb"
+        app:layout_constraintVertical_bias="0.63" />
+
+    <TextView
+        android:id="@+id/goal_next_month_update_walk_time_slot_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:text="@string/title_goal_walk_slot"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.12" />
+
+    <Button
+        android:id="@+id/goal_next_month_update_goal_walk_slot_btn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="34dp"
+        android:background="@drawable/bg_goal_setting_btn_enabled"
+        android:stateListAnimator="@null"
+        android:textAppearance="@style/tv_body_b_14"
+        android:textColor="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_walk_time_line_view"
+        app:layout_constraintVertical_bias="0.39" />
+
+    <ImageView
+        android:id="@+id/goal_next_month_update_goal_walk_slot_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_down_arrow"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintTop_toTopOf="@+id/goal_next_month_update_goal_walk_slot_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/goal_next_month_update_goal_walk_slot_btn"
+        app:layout_constraintEnd_toEndOf="@+id/goal_next_month_update_goal_walk_slot_btn"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/goal_next_month_update_goal_walk_time_sv"
+        android:layout_width="0dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="4dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_goal_setting_sv_view"
+        android:overScrollMode="never"
+        android:scrollbarSize="4dp"
+        android:scrollbarThumbVertical="@color/white_dark"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/goal_next_month_update_goal_walk_time_btn"
+        app:layout_constraintStart_toStartOf="@+id/goal_next_month_update_goal_walk_time_btn"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_walk_time_btn">
+
+        <RadioGroup
+            android:id="@+id/goal_next_month_update_goal_walk_time_rg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_15min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_15_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_30min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_30_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_60min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_60_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_90min_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_90_min"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_direct_setting_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_direct_setting"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+        </RadioGroup>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/goal_next_month_update_walk_slot_sv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="4dp"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/bg_goal_setting_sv_view"
+        android:overScrollMode="never"
+        android:scrollbarSize="4dp"
+        android:scrollbarThumbVertical="@color/white_dark"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/goal_next_month_update_goal_walk_slot_btn"
+        app:layout_constraintStart_toStartOf="@+id/goal_next_month_update_goal_walk_slot_btn"
+        app:layout_constraintTop_toBottomOf="@+id/goal_next_month_update_goal_walk_slot_btn">
+
+        <RadioGroup
+            android:id="@+id/goal_next_month_update_walk_slot_rg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_early_morning_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_early_morning"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_late_morning_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_late_morning"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_early_afternoon_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_early_afternoon"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_late_afternoon_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_late_afternoon"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_night_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_night"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_dawn_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_dawn"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+
+            <RadioButton
+                android:id="@+id/goal_next_month_update_different_every_time_rb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/title_different_every_time"
+                android:textAppearance="@style/tv_body_b_14"
+                android:textColor="@drawable/selector_goal_setting_rb_text" />
+        </RadioGroup>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

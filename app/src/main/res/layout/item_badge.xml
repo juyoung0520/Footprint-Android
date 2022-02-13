@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_badge_badge_iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="7dp"
+        android:layout_marginTop="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_badge_badge_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="7dp"
+        android:text="프로발자국러"
+        android:textAppearance="@style/tv_caption_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/item_badge_badge_iv"
+        app:layout_constraintStart_toStartOf="@+id/item_badge_badge_iv"
+        app:layout_constraintTop_toBottomOf="@+id/item_badge_badge_iv" />
+
+    <View
+        android:id="@+id/item_badge_representative_badge_view"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bg_item_badge_representative_badge_view"
+        app:layout_constraintBottom_toBottomOf="@+id/item_badge_badge_iv"
+        app:layout_constraintEnd_toEndOf="@+id/item_badge_badge_iv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

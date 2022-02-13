@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.footprint.footprint.ui.main.home.HomeFragment"
+        android:label="homeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/navigation" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.CalendarFragment"
+        android:label="calendarFragment">
+        <action
+            android:id="@+id/action_calendarFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_calendarFragment_to_walkDetailActivity2"
+            app:destination="@id/walkDetailActivity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/courseFragment"
+        android:name="com.footprint.footprint.ui.main.course.CourseFragment"
+        android:label="courseFragment" />
+
+    <fragment
+        android:id="@+id/mypageFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.MyPageFragment"
+        android:label="mypageFragment" >
+        <action
+            android:id="@+id/action_mypageFragment_to_badgeFragment"
+            app:destination="@id/badgeFragment" />
+        <action
+            android:id="@+id/action_mypageFragment_to_goalThisMonthFragment"
+            app:destination="@id/goalThisMonthFragment" />
+        <action
+            android:id="@+id/action_mypageFragment_to_navigation"
+            app:destination="@id/navigation" />
+    </fragment>
+
+    <activity
+        android:id="@+id/walkDetailActivity"
+        android:name="com.footprint.footprint.ui.walk.WalkDetailActivity"
+        android:label="activity_walk_detail"
+        tools:layout="@layout/activity_walk_detail" >
+        <argument
+            android:name="walkIdx"
+            app:argType="integer" />
+    </activity>
+
+    <navigation android:id="@+id/navigation"
+        app:startDestination="@id/settingFragment">
+        <fragment
+            android:id="@+id/settingFragment"
+            android:name="com.footprint.footprint.ui.setting.SettingFragment"
+            android:label="fragment_setting"
+            tools:layout="@layout/fragment_setting">
+            <action
+                android:id="@+id/action_settingFragment_to_myInfoFragment"
+                app:destination="@id/myInfoFragment" />
+            <action
+                android:id="@+id/action_settingFragment_to_signinActivity"
+                app:destination="@id/signinActivity" />
+            <action
+                android:id="@+id/action_settingFragment_to_termsFragment"
+                app:destination="@id/termsFragment" />
+            <action
+                android:id="@+id/action_settingFragment_to_lockActivity3"
+                app:destination="@id/LockActivity" />
+        </fragment>
+        <fragment
+            android:id="@+id/myInfoFragment"
+            android:name="com.footprint.footprint.ui.setting.MyInfoFragment"
+            android:label="fragment_my_info"
+            tools:layout="@layout/fragment_my_info">
+            <action
+                android:id="@+id/action_myInfoFragment_to_myInfoUpdateFragment"
+                app:destination="@id/myInfoUpdateFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/myInfoUpdateFragment"
+            android:name="com.footprint.footprint.ui.setting.MyInfoUpdateFragment"
+            android:label="fragment_my_info_update"
+            tools:layout="@layout/fragment_my_info_update">
+            <argument
+                android:name="user"
+                app:argType="string" />
+        </fragment>
+        <activity
+            android:id="@+id/signinActivity"
+            android:name="com.footprint.footprint.ui.signin.SigninActivity"
+            android:label="SigninActivity" />
+        <fragment
+            android:id="@+id/termsFragment"
+            android:name="com.footprint.footprint.ui.setting.TermsFragment"
+            android:label="TermsFragment" >
+            <argument
+                android:name="title"
+                app:argType="string" />
+            <argument
+                android:name="content"
+                app:argType="string" />
+        </fragment>
+        <activity
+            android:id="@+id/LockActivity"
+            android:name="com.footprint.footprint.ui.lock.LockActivity"
+            android:label="LockActivity">
+            <argument
+                android:name="mode"
+                app:argType="string" />
+        </activity>
+    </navigation>
+    <fragment
+        android:id="@+id/badgeFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
+        android:label="fragment_badge"
+        tools:layout="@layout/fragment_badge" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.SearchFragment"
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.SearchResultFragment"
+        android:label="SearchResultFragment" >
+        <argument
+            android:name="tag"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_walkDetailActivity"
+            app:destination="@id/walkDetailActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/goalThisMonthFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.GoalThisMonthFragment"
+        android:label="fragment_goal_this_month"
+        tools:layout="@layout/fragment_goal_this_month" >
+        <action
+            android:id="@+id/action_goalThisMonthFragment_to_goalNextMonthFragment"
+            app:destination="@id/goalNextMonthFragment" />
+        <action
+            android:id="@+id/action_goalThisMonthFragment_to_goalNextMonthUpdateFragment"
+            app:destination="@id/goalNextMonthUpdateFragment" />
+        <argument
+            android:name="goal"
+            app:argType="com.footprint.footprint.data.model.GoalModel" />
+    </fragment>
+    <fragment
+        android:id="@+id/goalNextMonthFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.GoalNextMonthFragment"
+        android:label="fragment_goal_next_month"
+        tools:layout="@layout/fragment_goal_next_month" >
+        <action
+            android:id="@+id/action_goalNextMonthFragment_to_goalNextMonthUpdateFragment"
+            app:destination="@id/goalNextMonthUpdateFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/goalNextMonthUpdateFragment"
+        android:name="com.footprint.footprint.ui.main.mypage.GoalNextMonthUpdateFragment"
+        android:label="fragment_goal_next_month_update"
+        tools:layout="@layout/fragment_goal_next_month_update" >
+        <argument
+            android:name="goal"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_goalNextMonthUpdateFragment_to_msgDialogFragment2"
+            app:destination="@id/msgDialogFragment2" />
+    </fragment>
+    <dialog
+        android:id="@+id/msgDialogFragment2"
+        android:name="com.footprint.footprint.ui.dialog.MsgDialogFragment"
+        android:label="fragment_msg_dialog"
+        tools:layout="@layout/fragment_msg_dialog" >
+        <argument
+            android:name="msg"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_msgDialogFragment2_to_goalNextMonthFragment"
+            app:destination="@id/goalNextMonthFragment"
+            app:popUpTo="@id/goalThisMonthFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/calendarBlankFragment"
+        android:name="com.footprint.footprint.ui.main.calendar.CalendarBlankFragment"
+        android:label="fragment_calendar_blank"
+        tools:layout="@layout/fragment_calendar_blank" >
+        <action
+            android:id="@+id/action_calendarBlankFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment"
+            app:popUpTo="@id/calendarBlankFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_calendarBlankFragment_to_lockActivity"
+            app:destination="@id/lockActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/lockActivity"
+        android:name="com.footprint.footprint.ui.lock.LockActivity"
+        android:label="LockActivity" >
+        <argument
+            android:name="mode"
+            app:argType="string" />
+    </activity>
+</navigation>
