@@ -99,12 +99,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         }
     }
 
-    //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행
-    override fun onDestroy() {
-        super.onDestroy()
-        myDialogCallback.cancel()
-    }
-
     //TextWatcher
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -125,6 +119,12 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
     override fun afterTextChanged(p0: Editable?) {
 
+    }
+
+    //다이얼로그가 종료되면 WalkMapFragment 에서 타이머를 재시작 할 수 있도록 cancel 콜백 함수 실행
+    override fun onDestroyView() {
+        myDialogCallback.cancel()
+        super.onDestroyView()
     }
 
     //카메라, 저장소 퍼미션 확인
