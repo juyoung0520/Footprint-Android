@@ -7,30 +7,28 @@ import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.google.gson.Gson
 import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
-    var userInfo: UserModel?= null // WalkMapFragment에서 사용
+    var userInfo: UserModel?= null
     override fun initAfterBinding() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setToastMessage()
-        // -> 사용자 정보 받아오기
-        if(intent.hasExtra("goalTime") && intent.hasExtra("height") && intent.hasExtra("weight") && intent.hasExtra("walkNumber")) {
-            userInfo = UserModel()
-            userInfo!!.apply {
-                goalWalkTime = intent.getIntExtra("goalTime", 0)
-                height = intent.getIntExtra("height", 0)
-                weight = intent.getIntExtra("weight", 0)
-                walkNumber = intent.getIntExtra("walkNumber", 0)
-            }
 
-            Log.d("userInfo_walk", "목표 시간" + intent.getIntExtra("goalTime", 0))
-            Log.d("userInfo_walk", "키" + intent.getIntExtra("height", 0))
-            Log.d("userInfo_walk", "몸무게" + intent.getIntExtra("weight", 0))
-            Log.d("userInfo_walk", "산책횟수" + intent.getIntExtra("walkNumber", 0))
+        setToastMessage()
+
+        // -> 사용자 정보 받아오기
+        if (intent.hasExtra("userInfo")) {
+            val userInfoJson = intent.getStringExtra("userInfo")
+            userInfo = Gson().fromJson(userInfoJson, UserModel::class.java)
+
+            if (userInfo!!.weight == 0) {
+                userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
+            }
+            Log.d("userInfo", userInfo.toString())
         }
 
         //취소 텍스트뷰 클릭 리스너 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기

@@ -33,12 +33,11 @@
         android:layout_height="70dp"
         android:background="@color/white_light"
         app:labelVisibilityMode="unlabeled"
-        app:itemIconSize="36dp"
+        app:itemIconSize="30dp"
         app:itemRippleColor="@color/white_light"
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_divider_v"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

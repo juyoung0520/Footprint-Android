@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.util.Log
@@ -15,10 +16,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.footprint.footprint.R
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
-import com.footprint.footprint.ui.walk.WalkMapFragmentDirections
 import com.footprint.footprint.utils.GlobalApplication
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
@@ -34,7 +32,7 @@ class BackgroundWalkService : LifecycleService() {
     private var totalTimeMillis = 0L
 
     private var stopCountJob: Job? = null
-    private var isInit = false
+    private var firstLocationCome = false
     private var isFootprint = false
 
     companion object {
@@ -44,6 +42,7 @@ class BackgroundWalkService : LifecycleService() {
         val paths = NonNullMutableLiveData<PathGroup>(mutableListOf())
         val totalDistance = NonNullMutableLiveData(0.0f)
         val pauseWalk = NonNullMutableLiveData(false)
+        val gpsStatus = NonNullMutableLiveData(true)
 
         const val NOTIFICATION_ID = 10
         const val NOTIFICATION_CHANNEL_ID = "primary_notification_channel"
@@ -88,11 +87,11 @@ class BackgroundWalkService : LifecycleService() {
                 locationActivate()
 
                 // 처음 아니면
-                if (isInit) {
+                if (firstLocationCome) {
                     startTimer()
                 }
             } else {
-                Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
+                //Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
                 locationDeactivate()
             }
         })
@@ -102,11 +101,23 @@ class BackgroundWalkService : LifecycleService() {
         if (intent != null) {
             when (intent.action) {
                 TRACKING_START_OR_RESUME -> {
-                    isWalking.postValue(true)
+                    if (!checkNoGPS()) {
+                        isWalking.postValue(true)
+
+                        if (!gpsStatus.value) {
+                            gpsStatus.postValue(true)
+                        }
+                    }
                 }
                 TRACKING_RESUME_BY_FOOTPRINT-> {
-                    isFootprint = true
-                    isWalking.postValue(true)
+                    if (!checkNoGPS()) {
+                        isFootprint = true
+                        isWalking.postValue(true)
+
+                        if (!gpsStatus.value) {
+                            gpsStatus.postValue(true)
+                        }
+                    }
                 }
                 TRACKING_PAUSE -> {
                     isWalking.postValue(false)
@@ -122,7 +133,7 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun stopWalk() {
-        Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
+        //Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
         isWalking.postValue(false)
         stopSelf()
 
@@ -146,8 +157,8 @@ class BackgroundWalkService : LifecycleService() {
                 pauseWalkCheck(it)
 
                 currentLocation.postValue(it)
-                if (!isInit) {
-                    isInit = true
+                if (!firstLocationCome) {
+                    firstLocationCome = true
                     startTimer()
                 }
 
@@ -221,6 +232,15 @@ class BackgroundWalkService : LifecycleService() {
         )
     }
 
+    private fun checkNoGPS(): Boolean {
+        val locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            gpsStatus.postValue(false)
+            return true
+        }
+        return false
+    }
+
     private fun locationDeactivate() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
@@ -236,6 +256,11 @@ class BackgroundWalkService : LifecycleService() {
                     lapTime = System.currentTimeMillis() - startTime
 
                     if (totalTimeMillis + lapTime >= lastSecondTimeMillis + 1000L) {
+                        // 산책 중 gps 확인
+                        if (checkNoGPS()) {
+                            isWalking.postValue(false)
+                        }
+
                         currentTime.postValue(currentTime.value + 1)
                         lastSecondTimeMillis += 1000L
                     }
@@ -248,6 +273,16 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun addEmptyPath() {
+        if (paths.value.isNotEmpty()) {
+            when(paths.value.last().size) {
+                0 -> return
+                1 -> {
+                    // 좌표 한개면 복사
+                    paths.value.last().add(paths.value.last().last())
+                }
+            }
+        }
+
         paths.value.apply {
             add(mutableListOf())
             paths.postValue(this)
