@@ -1,7 +1,5 @@
 package com.footprint.footprint.data.remote.weather
 
-import android.graphics.Point
-
 /* TransLocalPoint.kt
 * 날씨 api에 좌표(nx,ny) 보내기 위해
 * 위경도 -> 좌표로 바꾸어주는 함수*/

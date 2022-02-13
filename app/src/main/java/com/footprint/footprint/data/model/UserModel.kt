@@ -1,7 +1,6 @@
 package com.footprint.footprint.data.model
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 /*User Model: 초기 정보 등록 API*/
 data class UserModel(

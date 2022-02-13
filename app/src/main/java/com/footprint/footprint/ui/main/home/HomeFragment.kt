@@ -158,7 +158,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         val permissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 //허용 시
-                //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
                 LogUtils.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
@@ -174,7 +173,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         }
                     }.show()
-                //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
                 LogUtils.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }
