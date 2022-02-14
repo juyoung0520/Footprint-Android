@@ -160,7 +160,6 @@
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
-    <string name="title_record">기록</string>
     <string name="title_calorie_unit">kcal</string>
     <string name="title_distance_unit">km</string>
     <string name="title_record_unit">회</string>
