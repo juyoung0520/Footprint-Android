@@ -38,6 +38,7 @@
         android:focusableInTouchMode="true"
         app:layout_constraintBottom_toTopOf="@id/register_info_action_btn"
         app:layout_constraintTop_toBottomOf="@id/register_info_description_tv">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/register_info_constraint_layout"
             android:layout_width="match_parent"
@@ -143,6 +144,7 @@
                         android:id="@+id/register_info_gender_radiogrp_grp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="9dp"
                         android:layout_marginTop="22dp"
                         android:gravity="center"
                         android:orientation="horizontal"
@@ -152,52 +154,47 @@
 
                         <RadioButton
                             android:id="@+id/register_info_gender_female_btn"
-                            style="@style/tv_body_b_14"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
-                            android:layout_weight="1"
-
+                            android:layout_gravity="start"
                             android:background="@color/transparent"
                             android:button="@null"
-                            android:drawableEnd="@drawable/btn_radiobtn"
-                            android:drawablePadding="4dp"
-
+                            android:drawableRight="@drawable/btn_radiobtn"
+                            android:drawablePadding="15dp"
+                            android:layoutDirection="rtl"
                             android:text="@string/title_register_info_gender_f"
-                            android:textAlignment="textEnd"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/tv_body_b_14"
                             android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/register_info_gender_male_btn"
-                            style="@style/tv_body_b_14"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
-                            android:layout_weight="2"
-
+                            android:layout_gravity="start"
                             android:background="@color/transparent"
                             android:button="@null"
-                            android:drawableEnd="@drawable/btn_radiobtn"
-                            android:drawablePadding="4dp"
-
-
+                            android:drawableRight="@drawable/btn_radiobtn"
+                            android:drawablePadding="15dp"
+                            android:layoutDirection="rtl"
                             android:text="@string/title_register_info_gender_m"
-                            android:textAlignment="textEnd"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/tv_body_b_14"
                             android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/register_info_gender_none_btn"
-                            style="@style/tv_body_b_14"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="3"
-
+                            android:layout_gravity="start"
                             android:background="@color/transparent"
                             android:button="@null"
-                            android:drawableEnd="@drawable/btn_radiobtn"
-                            android:drawablePadding="4dp"
-
+                            android:drawableRight="@drawable/btn_radiobtn"
+                            android:drawablePadding="15dp"
+                            android:layoutDirection="rtl"
                             android:text="@string/title_register_info_gender_n"
-                            android:textAlignment="textEnd"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/tv_body_b_14"
                             android:textColor="@color/black" />
                     </RadioGroup>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -210,8 +207,8 @@
                 android:layout_height="7dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/bg_signup_grayline"
-                app:layout_constraintTop_toBottomOf="@id/register_info_nickname_and_gender_layout"
-                app:layout_constraintBottom_toTopOf="@id/register_info_birth_and_wheight_layout"/>
+                app:layout_constraintBottom_toTopOf="@id/register_info_birth_and_wheight_layout"
+                app:layout_constraintTop_toBottomOf="@id/register_info_nickname_and_gender_layout" />
 
             <!--생년월일, 키, 몸무게-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -228,8 +225,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/register_info_wheight_layout">
+                    app:layout_constraintBottom_toTopOf="@id/register_info_wheight_layout"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/register_info_birth_title_tv"
@@ -365,9 +362,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginEnd="34dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintTop_toBottomOf="@id/register_info_birth_layout"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/register_info_birth_layout">
 
                     <TextView
                         android:id="@+id/register_info_wheight_title_tv"
