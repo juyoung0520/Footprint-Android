@@ -249,9 +249,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             LogUtils.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
             googleLogout()
         }
-        removeLoginStatus()
-        removeJwt()
-        removePWD()
+        reset()
     }
 
     private fun googleUnlink() {
@@ -307,9 +305,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             LogUtils.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
             googleUnlink()
         }
-        removeLoginStatus()
-        removeJwt()
-        removePWD()
+        reset()
     }
 
     override fun onUnregisterFailure(code: Int, message: String) {

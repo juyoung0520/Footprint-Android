@@ -122,4 +122,17 @@ fun saveNotification(status: Boolean){
 
 fun getNotification(): Boolean =  mSharedPreferences.getBoolean("notification", false)
 
+fun removeNotification(){
+    val editor = mSharedPreferences.edit()
 
+    editor.remove("notification")
+    editor.apply()
+}
+
+/*초기화: loginStatus, PWD, JWT, Notification 초기화 */
+fun reset(){
+    removeLoginStatus()
+    removePWD()
+    removeJwt()
+    removeNotification()
+}

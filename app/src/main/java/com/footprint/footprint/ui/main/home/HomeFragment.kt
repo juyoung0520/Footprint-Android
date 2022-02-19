@@ -28,6 +28,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
@@ -36,13 +37,12 @@ import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    WeatherView, HomeView, HomeDayView, HomeMonthView{
+    HomeView, HomeDayView, HomeMonthView{
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -66,7 +66,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onStart() {
         super.onStart()
         //날씨 API
-        requestLocation()
+        callWeatherAPI()
 
         //유저 조회 API
         UserService.getUser(this)
@@ -188,47 +188,16 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             .check()
     }
 
-    /*상단 날씨 받아오기: nx, ny, time*/
-    private fun setWeather(nx: Int, ny: Int) {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
-        var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
-        var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
-        val base_time = getTime(time)
-        LogUtils.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
+   //날씨 API 호출
+    private fun callWeatherAPI() {
 
-        if (base_time >= "2000") {
-            cal.add(Calendar.DATE, -1).toString()
-            base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
-        }
-        LogUtils.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
-
-        (WeatherService(this@HomeFragment)).getWeather(base_date, base_time, nx.toString(), ny.toString())
-    }
-
-    //시간 결정 함수(time)
-    private fun getTime(time: String): String {
-        return when (time) {
-            in "00".."02" -> "2000" // 00~02
-            in "03".."05" -> "2300" // 03~05
-            in "06".."08" -> "0200" // 06~08
-            in "09".."11" -> "0500" // 09~11
-            in "12".."14" -> "0800" // 12~14
-            in "16".."18" -> "1100" // 15~17
-            in "18".."20" -> "1400" // 18~20
-            else -> "1700"
-        }
-    }
-
-    //GPS로 위치 받아오는 함수(nx, ny)
-    private fun requestLocation() {
+       //현재 위치 불러오기
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        LogUtils.d("WEATHER/LOCATION-REQUEST", "service 요청")
         try {
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                interval = 60 * 60 * 1000 //요청 간격 1hour
-                LogUtils.d("WEATHER/LOCATION-REQUEST-OK", "위치 request")
+                interval = 60 * 60 * 60 //1시간마다 위치 불러옴
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -239,13 +208,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            LogUtils.d("WEATHER/LOCATION-RESULT-LL", "위경도 " + location.toString())
-                            LogUtils.d(
-                                "WEATHER/LOCATION-RESULT-XY",
-                                "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}"
-                            )
 
-                            setWeather(rs.x.toInt(), rs.y.toInt())
+                            LogUtils.d("WEATHER/API-READY", "rs: ${rs.x.toInt()}, ${rs.y.toInt()}")
+                            //날씨 api 호출
+                            WeatherService().getWeather(this@HomeFragment, rs.x.toInt().toString(), rs.y.toInt().toString())
                         }
                     }
 
@@ -262,89 +228,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
     }
 
-    //하늘 상태 결정해 주는 함수
-    private fun getWeatherValue(rainType: String, sky: String, wind: Int): String {
-        val result: String
-        if (wind > 13) {
-            result = "바람"
-        } else {
-            result = when (rainType) {
-                "0" -> {
-                    when (sky) {
-                        "1" -> "맑음"
-                        "3" -> "구름 많음"
-                        "4" -> "흐림"
-                        else -> "null"
-                    }
-                }
-                "1" -> "비"
-                "2" -> "비 또는 눈"
-                "3" -> "눈"
-                "4" -> "소나기"
-                else -> "null"
-            }
-        }
-
-        return result
-    }
-
-
-    /*날씨 API*/
-    override fun onWeatherSuccess(items: List<ITEM>) {
-        LogUtils.d("WEATHER/API-SUCCESS", items.toString())
-
-        val size = items.size
-        var tmp: String = "0"
-        var pty: String = "0"
-        var sky: String = "0"
-        var wsd: Int = 0
-        for (i in 0 until size) {
-            when (items[i].category) {
-                "TMP" -> tmp = items[i].fcstValue
-                "PTY" -> pty = items[i].fcstValue
-                "SKY" -> sky = items[i].fcstValue
-                "WSD" -> sky = items[i].fcstValue
-            }
-        }
-        val weatherValue = getWeatherValue(pty, sky, wsd)
-
-        //UI 변경
-        LogUtils.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {//visibility 조절
-                binding.homeTopLineIv.visibility = View.VISIBLE
-                binding.homeTopWeatherIv.visibility = View.VISIBLE
-                binding.homeWeatherTempTv.visibility = View.VISIBLE
-                binding.homeWeatherUnitTv.visibility = View.VISIBLE
-                binding.homeWeatherConTv.visibility = View.VISIBLE
-
-                binding.homeWeatherTempTv.text = tmp
-                binding.homeWeatherConTv.text = weatherValue
-                val imgRes = when (weatherValue) {
-                    "맑음" -> R.drawable.ic_weather_sunny
-                    "구름 많음" -> R.drawable.ic_weather_clounmany
-                    "흐림" -> R.drawable.ic_weather_cloud
-                    "소나기" -> R.drawable.ic_weather_shower
-                    "비" -> R.drawable.ic_weather_rain
-                    "눈" -> R.drawable.ic_weather_snowy
-                    "비 또는 눈" -> R.drawable.ic_weather_snoworrain
-                    "바람" -> R.drawable.ic_weather_windy
-                    else -> R.drawable.ic_weather_sunny
-                }
-                binding.homeTopWeatherIv.setImageResource(imgRes)
-            })
-        }
-
-    }
-
-    override fun onWeatherFailure(code: Int, message: String) {
-        LogUtils.d("WEATHER/API-FAILURE", "code: $code message: $message")
-    }
-
     /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
-        LogUtils.d("HOME(USER)/API-SUCCESS", user.toString())
-
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 //닉네임 바꿔주기
@@ -359,9 +244,38 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         userInfo.walkNumber = user.walkNumber
     }
 
+    /*날씨 조회 API*/
+    override fun onWeatherSuccess(weather: Weather) {
+        //UI 변경
+        LogUtils.d("HOME(WEATHER)/API-SUCCESS", weather.toString())
+        if (view != null) {
+            jobs.add(viewLifecycleOwner.lifecycleScope.launch {//visibility 조절
+                binding.homeTopLineIv.visibility = View.VISIBLE
+                binding.homeTopWeatherIv.visibility = View.VISIBLE
+                binding.homeWeatherTempTv.visibility = View.VISIBLE
+                binding.homeWeatherUnitTv.visibility = View.VISIBLE
+                binding.homeWeatherConTv.visibility = View.VISIBLE
+
+                binding.homeWeatherTempTv.text = weather.temperature
+                binding.homeWeatherConTv.text = weather.weather
+                val imgRes = when (weather.weather) {
+                    "바람" -> R.drawable.ic_weather_windy
+                    "맑음" -> R.drawable.ic_weather_sunny
+                    "구름 많음" -> R.drawable.ic_weather_clounmany
+                    "흐림" -> R.drawable.ic_weather_cloud
+                    "비" -> R.drawable.ic_weather_rain
+                    "비/눈" -> R.drawable.ic_weather_snoworrain
+                    "눈" -> R.drawable.ic_weather_snowy
+                    "소나기" -> R.drawable.ic_weather_shower
+                    else -> R.drawable.ic_weather_sunny
+                }
+                binding.homeTopWeatherIv.setImageResource(imgRes)
+            })
+        }
+    }
+
     /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
-        LogUtils.d("HOME(TODAY)/API-SUCCESS", today.toString())
         userInfo.goalWalkTime = today.walkGoalTime
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -424,7 +338,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             UserService.getUser(this)
             AchieveService.getToday(this)
             AchieveService.getTMonth(this)
-            requestLocation()
+            callWeatherAPI()
         }.show()
     }
 
