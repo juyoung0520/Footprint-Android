@@ -307,6 +307,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
+
         //UI 변경
         LogUtils.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
         if (view != null) {

@@ -81,6 +81,14 @@ fun savePWD(password: String){
 
 fun getPWD(): String? =  mSharedPreferences.getString("password", null)
 
+fun removePWD(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("password")
+    editor.apply()
+
+    savePWDstatus("DEFAULT")
+}
 
 /*PWDstatus: 산책 일기 암호 상태 - DEFAULT(암호 X), ON(암호 ON), OFF(암호 OFF)*/
 fun savePWDstatus(status: String){
