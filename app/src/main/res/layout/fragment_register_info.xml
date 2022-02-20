@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/register_info_title_tv" />
 
     <!--Middle: 정보 입력-->
-    <com.footprint.footprint.utils.LockableNestedScrollView
+    <com.footprint.footprint.classes.custom.LockableNestedScrollView
         android:id="@+id/register_info_scrollview_v"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -473,7 +473,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/register_info_birth_and_wheight_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.footprint.footprint.utils.LockableNestedScrollView>
+    </com.footprint.footprint.classes.custom.LockableNestedScrollView>
 
     <!--Btn-->
     <androidx.appcompat.widget.AppCompatButton

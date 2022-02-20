@@ -1,9 +1,9 @@
 package com.footprint.footprint.data.remote.badge
 
-import android.util.Log
 import com.footprint.footprint.ui.main.mypage.BadgeView
 import com.footprint.footprint.ui.signin.MonthBadgeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.isNetworkAvailable
 import gun0912.tedimagepicker.util.ToastUtil.context
 import retrofit2.*
@@ -21,7 +21,7 @@ object BadgeService {
                 response: Response<GetBadgeResponse>
             ) {
                 val res = response.body()
-                Log.d("BadgeService", "\ngetBadgeInfo-RES\ncode: ${res?.code}\nbody: $res")
+                LogUtils.d("BadgeService", "\ngetBadgeInfo-RES\ncode: ${res?.code}\nbody: $res")
 
                 when (val code = res?.code) {
                     1000 -> badgeView.onGetBadgeSuccess(res?.result)
@@ -30,7 +30,7 @@ object BadgeService {
             }
 
             override fun onFailure(call: Call<GetBadgeResponse>, t: Throwable) {
-                Log.e("BadgeService", "getBadgeInfo-ERROR: ${t.message.toString()}")
+                LogUtils.e("BadgeService", "getBadgeInfo-ERROR: ${t.message.toString()}")
 
                 if (!isNetworkAvailable(context))
                     badgeView.onGetBadgeFail(6000)
@@ -49,7 +49,7 @@ object BadgeService {
                     response: Response<ChangeRepresentativeBadgeResponse>
                 ) {
                     val res = response.body()
-                    Log.d("BadgeService", "\nchangeRepresentativeBadge-RES\ncode: ${res?.code}\nbody: $res")
+                    LogUtils.d("BadgeService", "\nchangeRepresentativeBadge-RES\ncode: ${res?.code}\nbody: $res")
 
                     when (val code = res?.code) {
                         1000 -> badgeView.onChangeRepresentativeBadgeSuccess(res?.result)
@@ -61,7 +61,7 @@ object BadgeService {
                     call: Call<ChangeRepresentativeBadgeResponse>,
                     t: Throwable
                 ) {
-                    Log.e("BadgeService", "changeRepresentativeBadge-ERROR: ${t.message.toString()}")
+                    LogUtils.e("BadgeService", "changeRepresentativeBadge-ERROR: ${t.message.toString()}")
 
                     if (!isNetworkAvailable(context))
                         badgeView.onChangeRepresentativeBadgeFail(6000, badgeIdx)
@@ -86,19 +86,19 @@ object BadgeService {
                         //요청 성공
                         val result = body.result
                         monthBadgeView.onMonthBadgeSuccess(true, result)
-                        Log.d("MBADGE/API-SUCCESS", body.toString())
+                        LogUtils.d("MBADGE/API-SUCCESS", body.toString())
                     }
                     3030 -> {
                         //이번 달에 획득한 뱃지가 없습니다. (PRO, LOVER, MASTER)
                         monthBadgeView.onMonthBadgeSuccess(false, null)
-                        Log.d("MBADGE/API-SUCCESS", "이번 달에 획득한 뱃지가 없습니다.")
+                        LogUtils.d("MBADGE/API-SUCCESS", "이번 달에 획득한 뱃지가 없습니다.")
                     }
                     else -> monthBadgeView.onMonthBadgeFailure(body.code, body.message)
                 }
             }
 
             override fun onFailure(call: Call<MonthBadgeResponse>, t: Throwable) {
-                Log.d("MBADGE/API-FAILURE", t.message.toString())
+                LogUtils.d("MBADGE/API-FAILURE", t.message.toString())
                 monthBadgeView.onMonthBadgeFailure(213, t.message.toString())
             }
         })

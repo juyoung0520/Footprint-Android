@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -28,6 +27,7 @@ import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
 import com.footprint.footprint.ui.walk.WalkActivity
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
@@ -86,7 +86,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                 val userInfoJson = Gson().toJson(userInfo)
                 intent.putExtra("userInfo", userInfoJson)
 
-                Log.d("userInfo", "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}")
+                LogUtils.d("userInfo", "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}")
                 startActivity(intent)
             } else { //정보 없음
                 Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
@@ -159,7 +159,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             override fun onPermissionGranted() {
                 //허용 시
                 //Toast.makeText(activity, "권한 허용", Toast.LENGTH_SHORT).show()
-                Log.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
+                LogUtils.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -175,7 +175,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                         }
                     }.show()
                 //Toast.makeText(activity, "권한 거절", Toast.LENGTH_SHORT).show()
-                Log.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
+                LogUtils.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
             }
         }
 
@@ -196,13 +196,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         var base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time) //date
         var time = SimpleDateFormat("HH", Locale.KOREA).format(cal.time) //hour
         val base_time = getTime(time)
-        Log.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
+        LogUtils.d("WEATHER/DATE-BEFORE", "날짜: ${base_date} 시간: ${time}")
 
         if (base_time >= "2000") {
             cal.add(Calendar.DATE, -1).toString()
             base_date = SimpleDateFormat("yyyyMMdd", Locale.KOREA).format(cal.time)
         }
-        Log.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
+        LogUtils.d("WEATHER/DATE-AFTER", "최종날짜: ${base_date} 최종시간: ${base_time}")
 
         (WeatherService(this@HomeFragment)).getWeather(base_date, base_time, nx.toString(), ny.toString())
     }
@@ -224,13 +224,13 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     //GPS로 위치 받아오는 함수(nx, ny)
     private fun requestLocation() {
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        Log.d("WEATHER/LOCATION-REQUEST", "service 요청")
+        LogUtils.d("WEATHER/LOCATION-REQUEST", "service 요청")
         try {
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
                 interval = 60 * 60 * 1000 //요청 간격 1hour
-                Log.d("WEATHER/LOCATION-REQUEST-OK", "위치 request")
+                LogUtils.d("WEATHER/LOCATION-REQUEST-OK", "위치 request")
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -241,8 +241,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                                 location.latitude,
                                 location.longitude
                             )
-                            Log.d("WEATHER/LOCATION-RESULT-LL", "위경도 " + location.toString())
-                            Log.d(
+                            LogUtils.d("WEATHER/LOCATION-RESULT-LL", "위경도 " + location.toString())
+                            LogUtils.d(
                                 "WEATHER/LOCATION-RESULT-XY",
                                 "변환된 좌표 rs.x: ${rs.x} rs.y: ${rs.y}"
                             )
@@ -293,7 +293,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     /*날씨 API*/
     override fun onWeatherSuccess(items: List<ITEM>) {
-        Log.d("WEATHER/API-SUCCESS", items.toString())
+        LogUtils.d("WEATHER/API-SUCCESS", items.toString())
 
         val size = items.size
         var tmp: String = "0"
@@ -310,7 +310,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
         val weatherValue = getWeatherValue(pty, sky, wsd)
         //UI 변경
-        Log.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
+        LogUtils.d("WEATHERVALUE", "tmp: ${tmp} weatherValue: ${weatherValue}")
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {//visibility 조절
                 binding.homeTopLineIv.visibility = View.VISIBLE
@@ -339,12 +339,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun onWeatherFailure(code: Int, message: String) {
-        Log.d("WEATHER/API-FAILURE", "code: $code message: $message")
+        LogUtils.d("WEATHER/API-FAILURE", "code: $code message: $message")
     }
 
     /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
-        Log.d("HOME(USER)/API-SUCCESS", user.toString())
+        LogUtils.d("HOME(USER)/API-SUCCESS", user.toString())
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -362,7 +362,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     /*일별 정보 조회 API*/
     override fun onTodaySuccess(today: Today) {
-        Log.d("HOME(TODAY)/API-SUCCESS", today.toString())
+        LogUtils.d("HOME(TODAY)/API-SUCCESS", today.toString())
         userInfo.goalWalkTime = today.walkGoalTime
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -388,7 +388,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     /*월별 정보 조회 API*/
     override fun onTMonthSuccess(tMonth: TMonth) {
-        Log.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
+        LogUtils.d("HOME(TMONTH)/API-SUCCESS", tMonth.toString())
 
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
@@ -414,7 +414,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     /*API-FAIL*/
     override fun onHomeFailure(code: Int, message: String) {
-        Log.d("HOME/API-FAILURE", "code: $code message: $message")
+        LogUtils.d("HOME/API-FAILURE", "code: $code message: $message")
 
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)

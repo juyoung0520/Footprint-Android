@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
@@ -20,7 +19,10 @@ import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.register.RegisterActivity
-import com.footprint.footprint.utils.*
+import com.footprint.footprint.utils.KeyboardVisibilityUtils
+import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.convertDpToSp
+import com.footprint.footprint.utils.setHeight
 import com.skydoves.balloon.ArrowOrientation
 import com.skydoves.balloon.Balloon
 import com.skydoves.balloon.BalloonAnimation
@@ -82,7 +84,7 @@ class RegisterInfoFragment() :
 
             //ok -> 목표 프래그먼트 데이터 전달
             if (validatedBirth && validateHeight && validateWeight) {
-                Log.d("REGISTER-INFO/USER", newUser.toString())
+                LogUtils.d("REGISTER-INFO/USER", newUser.toString())
                 (activity as RegisterActivity).changeNextFragment(newUser)
             }
         }
@@ -153,7 +155,7 @@ class RegisterInfoFragment() :
                 } else {
                     if (nicknameEt.text.isNotEmpty()) { //닉네임에 반영
                         newUser.nickname = nicknameEt.text.toString()
-                        Log.d("REGISTER-INFO/NICKNAME-WATCHER", newUser.toString())
+                        LogUtils.d("REGISTER-INFO/NICKNAME-WATCHER", newUser.toString())
                         nicknameEt.backgroundTintList =
                             ColorStateList.valueOf(resources.getColor(R.color.primary))
                         binding.registerInfoNicknameErrorTv.visibility = View.GONE
@@ -178,7 +180,7 @@ class RegisterInfoFragment() :
                 R.id.register_info_gender_male_btn -> newUser.gender = "male"
                 R.id.register_info_gender_none_btn -> newUser.gender = "null"
             }
-            Log.d("REGISTER-INFO/GENDER", newUser.toString())
+            LogUtils.d("REGISTER-INFO/GENDER", newUser.toString())
             isGenderCorrect = true
             checkBtnState()
         })

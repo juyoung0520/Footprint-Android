@@ -1,10 +1,10 @@
 package com.footprint.footprint.data.remote.footprint
 
-import android.util.Log
 import com.footprint.footprint.data.remote.walk.BaseResponse
 import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.isNetworkAvailable
 import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MediaType
@@ -25,7 +25,7 @@ object FootprintService {
                 response: Response<GetFootprintsResponse>
             ) {
                 val res = response.body()
-                Log.d("FootprintService","\ngetFootprints-RES\ncode: ${res?.code}\nbody: $res")
+                LogUtils.d("FootprintService","\ngetFootprints-RES\ncode: ${res?.code}\nbody: $res")
 
                 when (val code = res?.code) {
                     1000, 2221 -> walkDetailView.onGetFootprintsSuccess(res?.result)    //2221: 해당 산책에 발자국 데이터가 존재하지 않음.
@@ -34,7 +34,7 @@ object FootprintService {
             }
 
             override fun onFailure(call: Call<GetFootprintsResponse>, t: Throwable) {
-                Log.e("FootprintService", "getFootprints-ERROR: ${t.message.toString()}")
+                LogUtils.e("FootprintService", "getFootprints-ERROR: ${t.message.toString()}")
 
                 if (!isNetworkAvailable(context))
                     walkDetailView.onWalkDetailGETFail(6000, walkIdx)
@@ -47,10 +47,10 @@ object FootprintService {
 
     //발자국 데이터 수정
     fun updateFootprint(walkDetailView: WalkDetailView, walkIdx: Int, footprintIdx: Int, footprintMap: HashMap<String, Any>, footprintPhoto: List<String>?) {
-        Log.d("FootprintService", "updateFootprint walkIdx: $walkIdx")
-        Log.d("FootprintService", "updateFootprint footprintIdx: $footprintIdx")
-        Log.d("FootprintService", "updateFootprint footprintMap: $footprintMap")
-        Log.d("FootprintService", "updateFootprint footprintPhoto: $footprintPhoto")
+        LogUtils.d("FootprintService", "updateFootprint walkIdx: $walkIdx")
+        LogUtils.d("FootprintService", "updateFootprint footprintIdx: $footprintIdx")
+        LogUtils.d("FootprintService", "updateFootprint footprintMap: $footprintMap")
+        LogUtils.d("FootprintService", "updateFootprint footprintPhoto: $footprintPhoto")
 
         walkDetailView.onWalkDetailLoading()
 
@@ -75,7 +75,7 @@ object FootprintService {
         footprintService.updateFootprint(walkIdx, footprintIdx, partMap, photos).enqueue(object : Callback<BaseResponse> {
             override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 val res = response.body()
-                Log.d("FootprintService","\nupdateFootprint3-RES\ncode: ${res?.code}\nbody: $res")
+                LogUtils.d("FootprintService","\nupdateFootprint3-RES\ncode: ${res?.code}\nbody: $res")
 
                 if (res?.code==1000)
                     walkDetailView.onUpdateFootprintSuccess()
@@ -84,7 +84,7 @@ object FootprintService {
             }
 
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-                Log.e("FootprintService", "updateFootprint3-ERROR: ${t.message.toString()}")
+                LogUtils.e("FootprintService", "updateFootprint3-ERROR: ${t.message.toString()}")
 
                 if (!isNetworkAvailable(context))
                     walkDetailView.onFootprintUpdateFail(6000, walkIdx, footprintIdx, footprintMap, footprintPhoto)

@@ -1,4 +1,4 @@
-package com.footprint.footprint.utils
+package com.footprint.footprint.classes.custom
 
 import android.content.Context
 import android.util.AttributeSet

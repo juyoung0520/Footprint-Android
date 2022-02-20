@@ -1,13 +1,12 @@
 package com.footprint.footprint.data.remote.achieve
 
-import android.util.Log
 import com.footprint.footprint.ui.main.home.HomeDayView
 import com.footprint.footprint.ui.main.home.HomeMonthView
 import retrofit2.*
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.main.mypage.MyPageView
-import com.footprint.footprint.utils.GlobalApplication
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import com.footprint.footprint.utils.LogUtils
 
 
 object AchieveService {
@@ -24,7 +23,7 @@ object AchieveService {
             override fun onResponse(call: Call<TodayResponse>, response: Response<TodayResponse>) {
                 val body = response.body()
 
-                Log.d("TODAY/API-SUCCESS", body.toString())
+                LogUtils.d("TODAY/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
@@ -36,7 +35,7 @@ object AchieveService {
 
             override fun onFailure(call: Call<TodayResponse>, t: Throwable) {
                 homeView.onHomeFailure(213, t.message.toString())
-                Log.d("TODAY/API-FAILURE", t.message.toString())
+                LogUtils.d("TODAY/API-FAILURE", t.message.toString())
             }
         })
     }
@@ -51,7 +50,7 @@ object AchieveService {
             ) {
                 val body = response.body()
 
-                Log.d("TMONTH/API-SUCCESS", body.toString())
+                LogUtils.d("TMONTH/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
@@ -62,7 +61,7 @@ object AchieveService {
             }
 
             override fun onFailure(call: Call<TMonthResponse>, t: Throwable) {
-                Log.d("TMONTH/API-FAILURE", t.message.toString())
+                LogUtils.d("TMONTH/API-FAILURE", t.message.toString())
                 homeView.onHomeFailure(213, t.message.toString())
             }
 

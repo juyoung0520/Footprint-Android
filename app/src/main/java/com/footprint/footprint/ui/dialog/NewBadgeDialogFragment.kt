@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.bumptech.glide.Glide
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.databinding.FragmentNewBadgeDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils

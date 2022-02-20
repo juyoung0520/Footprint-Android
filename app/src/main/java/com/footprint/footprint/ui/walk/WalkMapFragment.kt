@@ -135,7 +135,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     initPath()
                 }
             } else { // 산책 중 아니면
-                //Log.d("$TAG/WALKMAP", "ISWALKING - false")
+                //LogUtils.d("$TAG/WALKMAP", "ISWALKING - false")
                 binding.walkmapMiddleIv.isSelected = false
                 locationOverlay.isVisible = false
 
@@ -153,7 +153,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
-            //Log.d("$TAG/WALKMAP", paths.toString())
+            //LogUtils.d("$TAG/WALKMAP", paths.toString())
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
                 currentPathOverlay.coords = paths.last()
@@ -454,7 +454,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         }
 
-        //Log.d("$TAG/WALKMAP", coordinate.toString())
+        //LogUtils.d("$TAG/WALKMAP", coordinate.toString())
         return coordinate
     }
 
@@ -480,7 +480,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     val lastLang = paths.last().last()
                     putMarker(lastLang, footprints.size)
                     footprint.coordinate = listOf(lastLang.latitude, lastLang.longitude)
-                    //Log.d("$TAG/WALKMAP", footprint.coordinate.toString())
+                    //LogUtils.d("$TAG/WALKMAP", footprint.coordinate.toString())
                 }
             }
 

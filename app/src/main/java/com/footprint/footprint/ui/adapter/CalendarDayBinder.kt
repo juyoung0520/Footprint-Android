@@ -1,17 +1,12 @@
 package com.footprint.footprint.ui.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.databinding.ItemCalendarDayBinding
-import com.footprint.footprint.ui.main.MainActivity
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
