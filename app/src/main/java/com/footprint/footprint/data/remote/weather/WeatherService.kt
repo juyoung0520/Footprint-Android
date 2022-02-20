@@ -1,8 +1,7 @@
 package com.footprint.footprint.data.remote.weather
 
-import android.util.Log
-import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.main.home.WeatherView
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkModule.Companion.getWeatherRetrofit
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,7 +23,7 @@ class WeatherService(private val view: WeatherView) {
                 ) {
                     val header = response.body()!!.response.header
 
-                    Log.d("WEATHER/API-ASYNC", "Onresponse, resultCode는 ${header.resultCode} resultMsg는 ${header.resultMsg}")
+                    LogUtils.d("WEATHER/API-ASYNC", "Onresponse, resultCode는 ${header.resultCode} resultMsg는 ${header.resultMsg}")
                     when (header.resultCode) {
                         0 -> {
                             val it: List<ITEM> = response.body()!!.response.body.items.item
@@ -37,7 +36,7 @@ class WeatherService(private val view: WeatherView) {
 
                 override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
                     view.onWeatherFailure(213, t.message.toString())
-                    Log.d("WEATHER/API-ERROR", t.message.toString())
+                    LogUtils.d("WEATHER/API-ERROR", t.message.toString())
                 }
 
             })

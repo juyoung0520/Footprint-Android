@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -19,23 +18,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
-import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.footprint.footprint.utils.uriToBitmap
 import com.google.gson.Gson
-import gun0912.tedimagepicker.builder.TedImagePicker
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.santalu.textmatcher.rule.HashtagRule
 import com.santalu.textmatcher.style.HashtagStyle
+import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var binding: FragmentFootprintDialogBinding

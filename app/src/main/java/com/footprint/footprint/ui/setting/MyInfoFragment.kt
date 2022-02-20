@@ -1,7 +1,6 @@
 package com.footprint.footprint.ui.setting
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -15,6 +14,7 @@ import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.home.HomeView
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
@@ -214,7 +214,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
-        Log.d("MYINFO(USER)/API-SUCCESS", user.toString())
+        LogUtils.d("MYINFO(USER)/API-SUCCESS", user.toString())
 
         this.user = SimpleUserModel(user.nickname, user.sex, user.birth, user.height, user.weight)
 
@@ -224,11 +224,11 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         setMyEventListener()
         setHelpBalloon()    //툴팁
 
-        Log.d("MYINFO(USER)", this.user.toString())
+        LogUtils.d("MYINFO(USER)", this.user.toString())
     }
 
     override fun onHomeFailure(code: Int, message: String) {
-        Log.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
+        LogUtils.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
 
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)

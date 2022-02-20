@@ -1,21 +1,13 @@
 package com.footprint.footprint.ui.setting
 
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.UnRegisterResponse
-import com.footprint.footprint.data.remote.badge.BadgeService
-import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -83,9 +75,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         //spf에서 로그인 상태 불러오기(kakao, google, null)
         loginStatus = getLoginStatus()
         if (loginStatus == "kakao" || loginStatus == "google") {
-            Log.d("AUTO-UNLINK/VALUE", "카카오/구글 로그인되었습니다\n" + "LoginStatus: ${loginStatus}")
+            LogUtils.d("AUTO-UNLINK/VALUE", "카카오/구글 로그인되었습니다\n" + "LoginStatus: ${loginStatus}")
         } else if (loginStatus == "null") {
-            Log.d("AUTO-UNLINK/NULL", "LoginStatus: ${loginStatus}")
+            LogUtils.d("AUTO-UNLINK/NULL", "LoginStatus: ${loginStatus}")
         }
 
     }
@@ -238,11 +230,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun logout(){
         if (loginStatus == "kakao") {
             //Kakao Logout
-            Log.d("AUTO-LOGOUT/KAKAO", "Kakao 계정에서 로그아웃 하셨습니다.")
+            LogUtils.d("AUTO-LOGOUT/KAKAO", "Kakao 계정에서 로그아웃 하셨습니다.")
             kakaoLogout()
         } else if (loginStatus == "google") {
             //Google Logout
-            Log.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
+            LogUtils.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
             googleLogout()
         }
         removeLoginStatus()
@@ -252,7 +244,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun googleUnlink() {
         mGoogleSignInClient.revokeAccess()
             .addOnCompleteListener(OnCompleteListener<Void?> {
-                Log.i("GOOGLE/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
+                LogUtils.i("GOOGLE/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
                 startActivity(Intent(requireContext(), SplashActivity::class.java))
             })
     }
@@ -260,7 +252,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun googleLogout() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(OnCompleteListener<Void?> {
-                Log.i("GOOGLE/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                LogUtils.i("GOOGLE/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
                 startActivity(Intent(requireContext(), SplashActivity::class.java))
             })
     }
@@ -268,11 +260,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun kakaoUnlink() {
         UserApiClient.instance.unlink { error ->
             if (error != null) {
-                Log.e("KAKAO/UNLINK-FAILURE", "탈퇴 실패.", error)
+                LogUtils.e("KAKAO/UNLINK-FAILURE", "탈퇴 실패.", error)
                 settingErrorCheck("LOGOUT-K")
             }
             else
-                Log.i("KAKAO/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
+                LogUtils.i("KAKAO/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
             startActivity(Intent(requireContext(), SplashActivity::class.java))
 
         }
@@ -281,25 +273,25 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun kakaoLogout() {
         UserApiClient.instance.logout { error ->
             if (error != null){
-                Log.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패.", error)
+                LogUtils.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패.", error)
                 settingErrorCheck("LOGOUT-K")
             }
             else
-                Log.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                LogUtils.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
             startActivity(Intent(requireContext(), SplashActivity::class.java))
 
         }
     }
 
     override fun onUnregisterSuccess(result: UnRegisterResponse) {
-        Log.d("SETTING/API-SUCCESS", result.toString())
+        LogUtils.d("SETTING/API-SUCCESS", result.toString())
         if (loginStatus == "kakao") {
             //Kakao Unlink
-            Log.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
+            LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
             kakaoUnlink()
         } else if (loginStatus == "google") {
             //Google Unlink
-            Log.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
+            LogUtils.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
             googleUnlink()
         }
         removeLoginStatus()
@@ -307,7 +299,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     }
 
     override fun onUnregisterFailure(code: Int, message: String) {
-        Log.d("SETTING/API-FAILURE", "code: $code message: $message")
+        LogUtils.d("SETTING/API-FAILURE", "code: $code message: $message")
 
         settingErrorCheck("UNREGISTER")
     }

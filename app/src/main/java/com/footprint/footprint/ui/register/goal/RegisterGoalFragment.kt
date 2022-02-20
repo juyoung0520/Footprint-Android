@@ -1,12 +1,9 @@
 package com.footprint.footprint.ui.register.goal
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
-import com.footprint.footprint.data.remote.auth.AuthService
-import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -186,7 +183,7 @@ class RegisterGoalFragment() :
 
         //완료 버튼 클릭 리스너
         binding.registerGoalActionBtn.setOnClickListener {
-            Log.d("RegisterGoalFragment", "완료! -> $userModel")
+            LogUtils.d("RegisterGoalFragment", "완료! -> $userModel")
 
             //정보 등록 API 호출
             UserService.registerInfos(this, userModel)
@@ -208,7 +205,7 @@ class RegisterGoalFragment() :
     /*정보 등록 API -> Response*/
 
     override fun onRegisterSuccess(result: String?) {
-        Log.d("REGISTER/API-SUCCESS", "성공" + result.toString())
+        LogUtils.d("REGISTER/API-SUCCESS", "성공" + result.toString())
 
             //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
             val intent = Intent(requireActivity(), MainActivity::class.java)
@@ -217,7 +214,7 @@ class RegisterGoalFragment() :
     }
 
     override fun onRegisterFailure(code: Int, message: String) {
-        Log.d("REGISTER/API-FAILURE", "code: $code message: $message")
+        LogUtils.d("REGISTER/API-FAILURE", "code: $code message: $message")
 
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)

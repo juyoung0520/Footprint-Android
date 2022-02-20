@@ -2,7 +2,6 @@ package com.footprint.footprint.ui.adapter
 
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.databinding.ItemFootprintBinding
+import com.footprint.footprint.utils.LogUtils
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
 import java.util.regex.Matcher
@@ -230,7 +230,7 @@ class FootprintRVAdapter() :
         val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
         while (matcher.find() && hashTagCnt < 5) {
             hashTagCnt++    //5개까지만
-            Log.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
+            LogUtils.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
 
             hashtagInContent.setSpan(
                 ForegroundColorSpan(ContextCompat.getColor(binding.root.context, R.color.primary)),

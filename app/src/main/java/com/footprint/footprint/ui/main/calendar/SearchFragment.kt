@@ -1,13 +1,11 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.util.Log
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.databinding.FragmentSearchBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.TagRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.utils.LogUtils
 
 class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
     private lateinit var adapter: TagRVAdapter
@@ -21,7 +19,7 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
             return
         }
 
-        Log.d("search", "onStart")
+        LogUtils.d("search", "onStart")
     }
 
     private fun setBinding() {
@@ -98,12 +96,12 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
 
     override fun onStop() {
         super.onStop()
-        Log.d("search", "onStop")
+        LogUtils.d("search", "onStop")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("search", "onDestroy")
+        LogUtils.d("search", "onDestroy")
 
         if (isChanged) {
             adapter.saveCurrentTags()
