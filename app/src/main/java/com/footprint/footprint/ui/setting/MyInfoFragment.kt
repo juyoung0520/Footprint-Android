@@ -1,12 +1,15 @@
 package com.footprint.footprint.ui.setting
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
-import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
@@ -23,8 +26,19 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
     HomeView {
 
     private lateinit var user: SimpleUserModel
+    private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
-    override fun initAfterBinding() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener {
+            val extraWidth = binding.myInfoGenderRg.measuredWidth - (binding.myInfoGenderFemaleRb.measuredWidth + binding.myInfoGenderMaleRb.measuredWidth + binding.myInfoGenderNoneRb.measuredWidth)
+            binding.myInfoGenderMaleRb.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(extraWidth!! / 2, 0, extraWidth!! / 2, 0)
+            }
+
+            requireView().viewTreeObserver.removeOnGlobalLayoutListener(rgPositionListener)
+        }
     }
 
     override fun onStart() {
@@ -34,6 +48,9 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         UserService.getUser(this)
     }
 
+    override fun initAfterBinding() {
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
+    }
 
     //내 정보 "조회" 화면
     private fun setLookUI(user: SimpleUserModel) {
@@ -96,9 +113,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
         //수정 텍스트뷰 클릭 리스너 -> user 데이터를 전달하면서 MyInfoUpdateFragment 로 이동
         binding.myInfoUpdateTv.setOnClickListener {
-            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(
-                Gson().toJson(user)
-            )
+            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(Gson().toJson(user))
             findNavController().navigate(action)
         }
     }

@@ -2,15 +2,19 @@ package com.footprint.footprint.ui.register.info
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.View.OnFocusChangeListener
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RadioGroup
+import androidx.core.view.updateLayoutParams
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
@@ -25,16 +29,29 @@ import java.lang.Integer.parseInt
 import java.time.LocalDate
 import java.time.ZoneId
 
-
 class RegisterInfoFragment() :
     BaseFragment<FragmentRegisterInfoBinding>(FragmentRegisterInfoBinding::inflate) {
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
     private lateinit var animation: Animation
-    private var scrollState: String = "DOWN" //UP, DOWN
+    private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
+    private var scrollState: String = "DOWN" //UP, DOWN
     private var newUser: UserModel = UserModel()
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener {
+            val extraWidth = binding.registerInfoGenderRadiogrpGrp.measuredWidth - (binding.registerInfoGenderFemaleBtn.measuredWidth + binding.registerInfoGenderMaleBtn.measuredWidth + binding.registerInfoGenderNoneBtn.measuredWidth)
+            binding.registerInfoGenderMaleBtn.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(extraWidth!! / 2, 0, extraWidth!! / 2, 0)
+            }
+
+            requireView().viewTreeObserver.removeOnGlobalLayoutListener(rgPositionListener)
+        }
+    }
 
     override fun initAfterBinding() {
 
@@ -70,6 +87,7 @@ class RegisterInfoFragment() :
             }
         }
 
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
     }
 
     //스크롤뷰 초기화 함수
