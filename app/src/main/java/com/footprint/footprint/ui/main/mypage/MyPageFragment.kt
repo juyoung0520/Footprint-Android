@@ -40,9 +40,14 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        if (isFromFragment && !isInitialized) {
+        if (isFromFragment || !isInitialized) {
             setBinding()
-            isInitialized = true
+
+            if (!isInitialized) {
+                isInitialized = true
+            } else {
+                isFromFragment = false
+            }
         }
 
         // 사용자, 통계 API 호출
