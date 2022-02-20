@@ -130,7 +130,6 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_msg_dailog.xml" value="0.25364583333333335" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_msg_dialog.xml" value="0.4" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_my_info.xml" value="0.264" />
-        <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_my_info_update.xml" value="0.536" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.14723590585659552" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_post_dialog.xml" value="0.34684684684684686" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/fragment_register_goal.xml" value="0.22546296296296298" />
@@ -252,7 +251,7 @@
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.33101851851851855" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.264" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.4" />
-        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.19947916666666668" />
+        <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.45860566448801743" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.0" />
       </map>
     </option>

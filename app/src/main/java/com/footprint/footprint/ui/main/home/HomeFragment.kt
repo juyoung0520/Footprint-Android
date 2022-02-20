@@ -179,7 +179,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //권한 설정
         TedPermission.create().setPermissionListener(permissionListener)
-            .setRationaleMessage("정확한 날씨 정보를 위해 권한을 허용해 주세요")
+            .setRationaleMessage("정확한 날씨 정보를 위해 위치 권한을 허용해 주세요")
             .setDeniedMessage("권한을 거부하셨습니다. [앱 설정] -> [권한]에서 허용해 주세요.")
             .setPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,

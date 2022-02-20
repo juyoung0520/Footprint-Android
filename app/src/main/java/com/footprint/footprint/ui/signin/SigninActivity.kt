@@ -23,19 +23,12 @@ import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
-import com.footprint.footprint.databinding.ActivitySigninBinding
-import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.agree.AgreeActivity
-import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.*
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
     SignInView, MonthBadgeView{
@@ -189,11 +182,11 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     //-> Response
     override fun onSignInSuccess(result: Login) {
-        LogUtils.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
-        
         val jwtId = result.jwtId
         val status = result.status
         val checkMonthChanged = result.checkMonthChanged
+
+        LogUtils.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
 
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
