@@ -1,10 +1,12 @@
 package com.footprint.footprint.ui.main.mypage
 
 import android.os.Build
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -33,10 +35,15 @@ import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
     MyPageView {
+    private var isInitialized = false
+    private var isFromFragment = false
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        setBinding()
+        if (isFromFragment && !isInitialized) {
+            setBinding()
+            isInitialized = true
+        }
 
         // 사용자, 통계 API 호출
         UserService.getUser(this)
@@ -395,6 +402,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             4 -> "늦은 오후"
             5 -> "밤"
             6 -> "새벽"
+            7 -> "매번 다름"
             else -> ""
         }
     }
@@ -471,6 +479,9 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // 다른 Fragment 갈 때
+        isFromFragment = true
 
         jobs.map {
             it.cancel()
