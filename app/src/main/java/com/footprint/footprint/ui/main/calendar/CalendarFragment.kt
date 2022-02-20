@@ -50,6 +50,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         if (isFromFragment || !::currentMonth.isInitialized) {
             setBinding()
             initCalendar()
+
+            if (isFromFragment) isFromFragment = false
             return
         }
 
