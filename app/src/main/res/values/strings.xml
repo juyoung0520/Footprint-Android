@@ -187,7 +187,6 @@
 
     <!--개별 산책 화면-->
     <string name="msg_no_footprint">산책기록이 없어요!</string>
-    <string name="action_all_delete">전체삭제</string>
 
     <!--마이페이지-->
     <string name="title_mypage">마이페이지</string>

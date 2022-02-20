@@ -156,7 +156,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             .buttonTextColor(R.color.primary)
             .showTitle(false)
             .backButton(R.drawable.ic_cancel)
-            .savedDirectoryName("Footprint")
+            .savedDirectoryName("발자국")
             .max(5, R.string.error_photo_cnt_exceeded)
             .startMultiImage { uriList ->
                 imgList.clear()

@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:text="@string/action_all_delete"
+            android:text="@string/action_delete"
             android:textAppearance="@style/tv_headline_eb_14"
             android:textColor="@color/primary"
             app:layout_constraintBottom_toBottomOf="@+id/walk_detail_walk_date_tv"
