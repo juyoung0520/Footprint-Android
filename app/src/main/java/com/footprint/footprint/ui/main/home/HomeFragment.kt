@@ -28,7 +28,6 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
