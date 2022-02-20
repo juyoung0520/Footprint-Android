@@ -7,15 +7,12 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,14 +20,12 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.data.model.WalkModel
-import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
 import com.footprint.footprint.service.BackgroundWalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -120,6 +115,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             anchor = PointF(0.5f, 0.5f)
             subIcon = null
         }
+
     }
 
     private fun setObserver() {
@@ -295,7 +291,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         }
     }
 
-    private fun containAllPaths() {
+    private fun containPaths() {
         if (paths.isNotEmpty()) {
             var latLngBounds = LatLngBounds.from(paths[0])
             if (paths.size > 1) {
@@ -303,7 +299,30 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     latLngBounds = latLngBounds.union(LatLngBounds.from(paths[index]))
                 }
             }
-            map.moveCamera(CameraUpdate.fitBounds(latLngBounds))
+
+            val cameraUpdate = CameraUpdate.fitBounds(latLngBounds)
+                .animate(CameraAnimation.Fly, 2000)
+                .finishCallback {
+                    takeSnapshotMap()
+                }
+
+            map.moveCamera(cameraUpdate)
+        } else {
+            takeSnapshotMap()
+        }
+    }
+
+    private fun takeSnapshotMap() {
+        map.takeSnapshot { bitmap ->    //산책 동선 사진
+            walkModel.pathImg =
+                getAbsolutePathByBitmap(requireContext(), bitmap)
+            bindWalkModel()
+
+            val intent: Intent =
+                Intent(requireActivity(), WalkAfterActivity::class.java)
+            intent.putExtra("walk", Gson().toJson(walkModel))    //산책 정보 전달
+            startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+            (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
         }
     }
 
@@ -394,20 +413,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     if (view != null) {
                         lifecycleScope.launch {
                             setWalkState(false)
-                            containAllPaths() // 경로 모두 포함하도록 지도 카메라 이동
-                            delay(1000) // 딜레이 필요. 일단 이렇게!!
-
-                            map.takeSnapshot { bitmap ->    //산책 동선 사진
-                                walkModel.pathImg =
-                                    getAbsolutePathByBitmap(requireContext(), bitmap)
-                                bindWalkModel()
-
-                                val intent: Intent =
-                                    Intent(requireActivity(), WalkAfterActivity::class.java)
-                                intent.putExtra("walk", Gson().toJson(walkModel))    //산책 정보 전달
-                                startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-                                (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-                            }
+                            //delay(1000)
+                            containPaths() // 경로 모두 포함하도록 지도 카메라 이동
                         }
                     }
                 }
