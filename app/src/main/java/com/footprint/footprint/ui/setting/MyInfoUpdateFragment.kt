@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
@@ -14,6 +17,7 @@ import com.footprint.footprint.data.remote.user.UserRegisterResponse
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
@@ -24,18 +28,26 @@ import kotlin.math.floor
 class MyInfoUpdateFragment :
     BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate),
     MyInfoUpdateView {
+
     private val args: MyInfoUpdateFragmentArgs by navArgs()
 
     private lateinit var animation: Animation   //EditText 애니메이션
     private lateinit var user: SimpleUserModel
+    private lateinit var rgPositionListener: ViewTreeObserver.OnGlobalLayoutListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        user = Gson().fromJson(
-            args.user,
-            SimpleUserModel::class.java
-        )    //MyInfoFragment 로부터 user 정보 전달받기
+        user = Gson().fromJson(args.user, SimpleUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
+
+        rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener() {
+            val extraWidth = binding.myInfoUpdateGenderRg.measuredWidth - (binding.myInfoUpdateGenderFemaleRb.measuredWidth + binding.myInfoUpdateGenderMaleRb.measuredWidth + binding.myInfoUpdateGenderNoneRb.measuredWidth)
+            binding.myInfoUpdateGenderMaleRb.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(extraWidth!! / 2, 0, extraWidth!! / 2, 0)
+            }
+
+            requireView().viewTreeObserver.removeOnGlobalLayoutListener(rgPositionListener)
+        }
     }
 
     override fun initAfterBinding() {
@@ -46,6 +58,8 @@ class MyInfoUpdateFragment :
         setUpdateUI(user)
         setMyEventListener()
         setHelpBalloon()    //툴팁
+
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
     }
 
     //내 정보 "수정" 화면
@@ -305,10 +319,13 @@ class MyInfoUpdateFragment :
 
     /*정보 수정 API*/
     override fun onUpdateSuccess(result: UserRegisterResponse) {
+        LogUtils.d("INFOUPDATE/API-SUCCESS", result.toString())
         (requireActivity()).onBackPressed()
     }
 
     override fun onUpdateFailure(code: Int, message: String) {
+        LogUtils.d("INFOUPDATE/API-FAILURE", code.toString() + message)
+
         val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
             getString(R.string.error_network)
         } else { //나머지

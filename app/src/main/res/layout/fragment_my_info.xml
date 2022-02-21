@@ -106,11 +106,10 @@
         android:id="@+id/my_info_gender_rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginHorizontal="39dp"
         android:gravity="center"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/my_info_line_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_info_gender_title_tv">
@@ -118,45 +117,45 @@
         <RadioButton
             android:id="@+id/my_info_gender_female_rb"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:background="@color/transparent"
             android:button="@null"
-            android:drawableEnd="@drawable/btn_radiobtn"
-            android:drawablePadding="4dp"
-            android:enabled="false"
+            android:drawableRight="@drawable/btn_radiobtn"
+            android:drawablePadding="15dp"
+            android:layoutDirection="rtl"
             android:text="@string/title_register_info_gender_f"
-            android:textAlignment="textEnd"
+            android:textAlignment="textStart"
             android:textAppearance="@style/tv_body_b_14"
             android:textColor="@color/black" />
 
         <RadioButton
             android:id="@+id/my_info_gender_male_rb"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:background="@color/transparent"
             android:button="@null"
-            android:drawableEnd="@drawable/btn_radiobtn"
-            android:drawablePadding="4dp"
-            android:enabled="false"
+            android:drawableRight="@drawable/btn_radiobtn"
+            android:drawablePadding="15dp"
+            android:layoutDirection="rtl"
             android:text="@string/title_register_info_gender_m"
-            android:textAlignment="textEnd"
+            android:textAlignment="textStart"
             android:textAppearance="@style/tv_body_b_14"
             android:textColor="@color/black" />
 
         <RadioButton
             android:id="@+id/my_info_gender_none_rb"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:background="@color/transparent"
             android:button="@null"
-            android:drawableEnd="@drawable/btn_radiobtn"
-            android:drawablePadding="4dp"
-            android:enabled="false"
+            android:drawableRight="@drawable/btn_radiobtn"
+            android:drawablePadding="15dp"
+            android:layoutDirection="rtl"
             android:text="@string/title_register_info_gender_n"
-            android:textAlignment="textEnd"
+            android:textAlignment="textStart"
             android:textAppearance="@style/tv_body_b_14"
             android:textColor="@color/black" />
     </RadioGroup>
@@ -338,17 +337,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white_light"
-        app:layout_constraintTop_toBottomOf="@id/my_info_tb"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_info_tb" />
 
     <ProgressBar
         android:id="@+id/my_info_day_loading_pb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@color/primary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="visible"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

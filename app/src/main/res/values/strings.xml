@@ -160,7 +160,6 @@
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
-    <string name="title_record">기록</string>
     <string name="title_calorie_unit">kcal</string>
     <string name="title_distance_unit">km</string>
     <string name="title_record_unit">회</string>
@@ -188,7 +187,6 @@
 
     <!--개별 산책 화면-->
     <string name="msg_no_footprint">산책기록이 없어요!</string>
-    <string name="action_all_delete">전체삭제</string>
 
     <!--마이페이지-->
     <string name="title_mypage">마이페이지</string>

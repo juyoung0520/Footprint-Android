@@ -10,10 +10,12 @@ import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.utils.getOnboarding
 import com.footprint.footprint.utils.removeJwt
 import com.google.gson.Gson
+
 
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate),
     SplashView, MonthBadgeView {
@@ -60,9 +62,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 }
             }
         }
+
+        LogUtils.d("SPLASH/API-SUCCESS", "status: ${result!!.status}")
     }
 
     override fun onAutoLoginFailure(code: Int, message: String) {
+        LogUtils.d("SPLASH/API-FAILURE", "code: $code message: $message")
         when(code){
             2001, 2002, 2003, 2004 -> { // JWT 관련 오류 -> 로그인 액티비티,
                 removeJwt()
@@ -77,9 +82,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         if (isBadgeExist)
             intent.putExtra("badge", Gson().toJson(monthBadge))
         startActivity(intent)
+        LogUtils.d("SPLASH(BADGE)/API-SUCCESS", monthBadge.toString())
     }
 
     override fun onMonthBadgeFailure(code: Int, message: String) {
+        LogUtils.d("SPLASH(BADGE)/API-FAILURE", code.toString() + message)
     }
 
     /*액티비티 이동*/

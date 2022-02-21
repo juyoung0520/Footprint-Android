@@ -1,11 +1,13 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
+import android.util.Log
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.utils.LogUtils
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 
@@ -27,6 +29,7 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
             if (userInfo!!.weight == 0) {
                 userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
             }
+            LogUtils.d("userInfo", userInfo.toString())
         }
 
         //취소 텍스트뷰 클릭 리스너 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기

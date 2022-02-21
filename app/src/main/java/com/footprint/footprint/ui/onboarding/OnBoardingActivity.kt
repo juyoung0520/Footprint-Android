@@ -73,6 +73,9 @@ class OnBoardingActivity :
 
             //2. -> Signin Activity
             startNextActivity(SigninActivity::class.java)
+
+            //3. 온보딩 액티비티 종료
+            finish()
         }
     }
 

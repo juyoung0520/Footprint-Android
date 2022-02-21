@@ -18,7 +18,9 @@ import androidx.lifecycle.lifecycleScope
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 typealias Path = MutableList<LatLng>
 typealias PathGroup = MutableList<Path>
@@ -89,7 +91,7 @@ class BackgroundWalkService : LifecycleService() {
                     startTimer()
                 }
             } else {
-                //Log.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
+                //LogUtils.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
                 locationDeactivate()
             }
         })
@@ -131,7 +133,7 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun stopWalk() {
-        //Log.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
+        //LogUtils.d("${GlobalApplication.TAG}/BACKGROUND", "TRACKING_STOP")
         isWalking.postValue(false)
         stopSelf()
 

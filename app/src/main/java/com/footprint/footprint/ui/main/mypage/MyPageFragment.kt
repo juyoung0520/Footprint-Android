@@ -33,10 +33,20 @@ import kotlin.collections.ArrayList
 
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
     MyPageView {
+    private var isInitialized = false
+    private var isFromFragment = false
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        setBinding()
+        if (isFromFragment || !isInitialized) {
+            setBinding()
+
+            if (!isInitialized) {
+                isInitialized = true
+            } else {
+                isFromFragment = false
+            }
+        }
 
         // 사용자, 통계 API 호출
         UserService.getUser(this)
@@ -395,6 +405,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             4 -> "늦은 오후"
             5 -> "밤"
             6 -> "새벽"
+            7 -> "매번 다름"
             else -> ""
         }
     }
@@ -471,6 +482,9 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // 다른 Fragment 갈 때
+        isFromFragment = true
 
         jobs.map {
             it.cancel()
