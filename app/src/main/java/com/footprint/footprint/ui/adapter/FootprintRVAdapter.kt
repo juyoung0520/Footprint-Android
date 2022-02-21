@@ -68,11 +68,19 @@ class FootprintRVAdapter() :
         val lineMargin = convertDpToPx(binding.root.context, 5)
         if (position == 0){
             holder.postStartIv.visibility = View.VISIBLE
+            holder.postEndIv.visibility = View.INVISIBLE
             holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 setMargins(lineMargin, lineMargin, lineMargin, 0)
             }
+        } else if (position == itemCount-1) {
+            holder.postStartIv.visibility = View.INVISIBLE
+            holder.postEndIv.visibility = View.VISIBLE
+            holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(lineMargin, 0, lineMargin, lineMargin)
+            }
         } else {
             holder.postStartIv.visibility = View.INVISIBLE
+            holder.postEndIv.visibility = View.INVISIBLE
             holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 setMargins(lineMargin, 0, lineMargin, 0)
             }
@@ -301,5 +309,6 @@ class FootprintRVAdapter() :
         val plusTv: TextView = itemView.itemFootprintPlusTv
         val plusLine: View = itemView.itemFootprintPlusLineView
         val editTv: TextView = itemView.itemFootprintEditTv
+        val postEndIv: ImageView = itemView.itemFootprintPostEndIv
     }
 }
