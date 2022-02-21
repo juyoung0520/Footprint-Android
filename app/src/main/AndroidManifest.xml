@@ -51,7 +51,7 @@
             android:exported="true"/>
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="unspecified"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
