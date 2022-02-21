@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
@@ -15,6 +16,7 @@ import com.footprint.footprint.data.model.FootprintModel
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.databinding.ItemFootprintBinding
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.convertDpToPx
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
 import java.util.regex.Matcher
@@ -63,10 +65,18 @@ class FootprintRVAdapter() :
 
     override fun onBindViewHolder(holder: FootprintRVAdapter.PostViewHolder, position: Int) {
         //첫 번째 기록에서만 맨 위에 동그라미 뷰 보여주기
-        if (position == 0)
+        val lineMargin = convertDpToPx(binding.root.context, 5)
+        if (position == 0){
             holder.postStartIv.visibility = View.VISIBLE
-        else
+            holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(lineMargin, lineMargin, lineMargin, 0)
+            }
+        } else {
             holder.postStartIv.visibility = View.INVISIBLE
+            holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(lineMargin, 0, lineMargin, 0)
+            }
+        }
 
         if (footprintsAfterVer==null)
             bindDetailVer(holder, position, footprintsDetailVer!![position])
@@ -281,6 +291,7 @@ class FootprintRVAdapter() :
     inner class PostViewHolder(itemView: ItemFootprintBinding) :
         RecyclerView.ViewHolder(itemView.root) {
         val postStartIv: ImageView = itemView.itemFootprintPostStartIv
+        val lineView: View = itemView.itemFootprintLineView
         val postTimeTv: TextView = itemView.itemFootprintPostTimeTv
         val photoVp: ViewPager2 = itemView.itemFootprintPhotoVp
         val photoIndicator: CircleIndicator3 = itemView.itemFootprintPhotoIndicator
