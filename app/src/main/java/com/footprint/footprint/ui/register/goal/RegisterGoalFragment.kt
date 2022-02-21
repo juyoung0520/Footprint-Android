@@ -183,6 +183,8 @@ class RegisterGoalFragment() :
 
         //완료 버튼 클릭 리스너
         binding.registerGoalActionBtn.setOnClickListener {
+            LogUtils.d("RegisterGoalFragment", "완료! -> $userModel")
+
             //정보 등록 API 호출
             UserService.registerInfos(this, userModel)
         }
@@ -203,6 +205,8 @@ class RegisterGoalFragment() :
     /*정보 등록 API -> Response*/
 
     override fun onRegisterSuccess(result: String?) {
+        LogUtils.d("REGISTER/API-SUCCESS", "성공" + result.toString())
+
             //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
             val intent = Intent(requireActivity(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -210,6 +214,8 @@ class RegisterGoalFragment() :
     }
 
     override fun onRegisterFailure(code: Int, message: String) {
+        LogUtils.d("REGISTER/API-FAILURE", "code: $code message: $message")
+
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)
         }else{ //나머지

@@ -10,7 +10,6 @@ import com.footprint.footprint.data.remote.achieve.TMonthDayRateRes
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import com.footprint.footprint.ui.main.home.HomeMonthCalendar
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HomeMonthRVAdapter(
     private val date: Date,

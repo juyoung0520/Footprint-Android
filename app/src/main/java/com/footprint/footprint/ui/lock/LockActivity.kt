@@ -176,10 +176,13 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                 tmpPassword = pwdSettingFunction()
                 pwdCheckingUI()
                 type = "CHECKING"
+
+                LogUtils.d("LOCK/SET", "Type: $type Password: $password TmpPwd: $tmpPassword")
             }
 
             "CHECKING" -> {
                 //tmp_pwd와 비교
+                LogUtils.d("LOCK/CHECK", "Type: $type Password: $password TmpPwd: $tmpPassword")
                 if (pwdCheckingFunction(tmpPassword!!)) {
                     //true -> spf에 저장
                     savePWD( tmpPassword!!)
@@ -187,16 +190,22 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
 
                     //변경 or 설정 완료 -> 액티비티 종료
                     finish()
+
+                    LogUtils.d("LOCK/CHECK-SUCCESS", "암호 등록에 성공하셨습니다.")
                 } else {
                     //재설정
                     pwdResettingUI(mode!!)
                     type = "SETTING"
+
+                    LogUtils.d("LOCK/CHECK-FAILURE", "암호 등록에 실패하셨습니다.")
                 }
             }
 
             "UNLOCK" -> {
                 if (pwdUnlockFunction()) {
                     //잠금 해제 성공
+                    LogUtils.d("LOCK/UNLOCK-SUCCESS", "잠금 해제에 성공하셨습니다.")
+
                     if (mode == "CHANGE") { //암호 변경을 위한 잠금 해제 -> 암호 변경
                         pwdChangeUI()
                         type = "CHANGE"
@@ -206,6 +215,7 @@ class LockActivity() : BaseActivity<ActivityLockBinding>(ActivityLockBinding::in
                     }
                 } else {
                     //잠금 해제 실패
+                    LogUtils.d("LOCK/UNLOCK-FAILURE", "잠금 해제에 실패하셨습니다.")
                     pwdUnlockUI("WRONG")
                 }
             }

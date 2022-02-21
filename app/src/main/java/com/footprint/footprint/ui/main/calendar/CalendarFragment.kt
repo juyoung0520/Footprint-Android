@@ -16,6 +16,7 @@ import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.utils.isNetworkAvailable
@@ -49,6 +50,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         if (isFromFragment || !::currentMonth.isInitialized) {
             setBinding()
             initCalendar()
+
+            if (isFromFragment) isFromFragment = false
             return
         }
 
@@ -305,6 +308,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             if (code == 5000) {
+                LogUtils.d("calendar", "message")
                 // 삭제 API이면
                 WalkService.deleteWalk(this, currentDeleteWalkIdx!!)
             } else {
@@ -314,6 +318,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onMonthSuccess(monthResult: List<DayResult>) {
+        LogUtils.d("$TAG/CALENDAR", "CALENDAR/MONTH/success")
+
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 calendarDayBinder.setCurrentMonthResults(monthResult)
@@ -326,6 +332,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
+        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/success")
+
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 initWalkAdapter(dayWalkResult)
@@ -339,6 +347,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     override fun onDeleteWalkSuccess() {
+        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DELETE-WALK/success")
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                updateAll()

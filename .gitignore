@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/release/app-release.apk
+/app/release/output-metadata.json
+/app/client_secret_275484626544-ole4irq6eqhlli36b70iujpubhsijpgh.apps.googleusercontent.com.json

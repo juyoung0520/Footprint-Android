@@ -1,15 +1,21 @@
 package com.footprint.footprint.ui.setting
 
+import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.data.remote.weather.Weather
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.home.HomeView
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
@@ -21,8 +27,19 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
     HomeView {
 
     private lateinit var user: SimpleUserModel
+    private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
-    override fun initAfterBinding() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener {
+            val extraWidth = binding.myInfoGenderRg.measuredWidth - (binding.myInfoGenderFemaleRb.measuredWidth + binding.myInfoGenderMaleRb.measuredWidth + binding.myInfoGenderNoneRb.measuredWidth)
+            binding.myInfoGenderMaleRb.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(extraWidth!! / 2, 0, extraWidth!! / 2, 0)
+            }
+
+            requireView().viewTreeObserver.removeOnGlobalLayoutListener(rgPositionListener)
+        }
     }
 
     override fun onStart() {
@@ -32,6 +49,9 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         UserService.getUser(this)
     }
 
+    override fun initAfterBinding() {
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
+    }
 
     //내 정보 "조회" 화면
     private fun setLookUI(user: SimpleUserModel) {
@@ -94,9 +114,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
         //수정 텍스트뷰 클릭 리스너 -> user 데이터를 전달하면서 MyInfoUpdateFragment 로 이동
         binding.myInfoUpdateTv.setOnClickListener {
-            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(
-                Gson().toJson(user)
-            )
+            val action = MyInfoFragmentDirections.actionMyInfoFragmentToMyInfoUpdateFragment(Gson().toJson(user))
             findNavController().navigate(action)
         }
     }
@@ -197,6 +215,8 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     /*유저 정보 조회 API*/
     override fun onUserSuccess(user: User) {
+        LogUtils.d("MYINFO(USER)/API-SUCCESS", user.toString())
+
         this.user = SimpleUserModel(user.nickname, user.sex, user.birth, user.height, user.weight)
 
         binding.myInfoDayLoadingBgV.visibility = View.GONE
@@ -204,9 +224,16 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
         setMyEventListener()
         setHelpBalloon()    //툴팁
+
+        LogUtils.d("MYINFO(USER)", this.user.toString())
+    }
+
+    override fun onWeatherSuccess(weather: Weather) {
     }
 
     override fun onHomeFailure(code: Int, message: String) {
+        LogUtils.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
+
         val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
             getString(R.string.error_network)
         }else{ //나머지

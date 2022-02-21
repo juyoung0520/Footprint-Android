@@ -74,6 +74,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //spf에서 로그인 상태 불러오기(kakao, google, null)
         loginStatus = getLoginStatus()
+
     }
 
     private fun initActionDialog() {
@@ -110,7 +111,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //로그아웃 텍스트뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
         binding.settingLogoutTv.setOnClickListener {
-            setActionDialogBundle(getString(R.string.msg_logout), getString(R.string.msg_logout_desc), getString(R.string.title_logout))
+            setActionDialogBundle(
+                getString(R.string.msg_logout),
+                getString(R.string.msg_logout_desc),
+                getString(R.string.title_logout)
+            )
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
@@ -126,7 +131,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
         binding.settingWithdrawalTv.setOnClickListener {
-            setActionDialogBundle(getString(R.string.msg_withdrawal), getString(R.string.msg_withdrawal_desc), getString(R.string.action_withdrawal))
+            setActionDialogBundle(
+                getString(R.string.msg_withdrawal),
+                getString(R.string.msg_withdrawal_desc),
+                getString(R.string.action_withdrawal)
+            )
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
@@ -175,19 +184,28 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         //개인정보처리방침 텍스트뷰 클릭 리스너
         binding.settingPrivacyPolicyTv.setOnClickListener {
-            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_user), getString(R.string.msg_agreement_user))
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(
+                getString(R.string.title_agreement_user),
+                getString(R.string.msg_agreement_user)
+            )
             findNavController().navigate(action)
         }
 
         //이용약관 텍스트뷰 클릭 리스너
         binding.settingTermsOfUserTv.setOnClickListener {
-            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_use), getString(R.string.msg_agreement_use))
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(
+                getString(R.string.title_agreement_use),
+                getString(R.string.msg_agreement_use)
+            )
             findNavController().navigate(action)
         }
 
         //위치서비스이용약관 텍스트뷰 클릭 리스너
         binding.settingLocationTermsOfServiceTv.setOnClickListener {
-            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(getString(R.string.title_agreement_location), getString(R.string.msg_agreement_location))
+            val action = SettingFragmentDirections.actionSettingFragmentToTermsFragment(
+                getString(R.string.title_agreement_location),
+                getString(R.string.msg_agreement_location)
+            )
             findNavController().navigate(action)
         }
     }
@@ -221,88 +239,106 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     }
 
     /*Function - 로그아웃, 탈퇴*/
-    private fun logout(){
+    private fun logout() {
         if (loginStatus == "kakao") {
             //Kakao Logout
+            LogUtils.d("AUTO-LOGOUT/KAKAO", "Kakao 계정에서 로그아웃 하셨습니다.")
             kakaoLogout()
         } else if (loginStatus == "google") {
             //Google Logout
+            LogUtils.d("AUTO-LOGOUT/GOOGLE", "Google 계정에서 로그아웃하였습니다.")
             googleLogout()
         }
-        removeLoginStatus()
-        removeJwt()
+        reset()
     }
 
     private fun googleUnlink() {
         mGoogleSignInClient.revokeAccess()
             .addOnCompleteListener(OnCompleteListener<Void?> {
+                LogUtils.i("GOOGLE/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
                 startActivity(Intent(requireContext(), SplashActivity::class.java))
+                startSplashActivity()
             })
     }
 
     private fun googleLogout() {
         mGoogleSignInClient.signOut()
             .addOnCompleteListener(OnCompleteListener<Void?> {
-                startActivity(Intent(requireContext(), SplashActivity::class.java))
+                LogUtils.i("GOOGLE/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                startSplashActivity()
             })
     }
 
     private fun kakaoUnlink() {
         UserApiClient.instance.unlink { error ->
             if (error != null) {
+                LogUtils.e("KAKAO/UNLINK-FAILURE", "탈퇴 실패.", error)
                 settingErrorCheck("LOGOUT-K")
+            } else {
+                LogUtils.i("KAKAO/UNLINK-SUCCESS", "탈퇴 성공. SDK에서 토큰 삭제됨")
+                startSplashActivity()
             }
-            else
-                startActivity(Intent(requireContext(), SplashActivity::class.java))
-
         }
     }
 
     private fun kakaoLogout() {
         UserApiClient.instance.logout { error ->
-            if (error != null){
+            if (error != null) {
+                LogUtils.e("KAKAO/LOGOUT-FAILURE", "로그아웃 실패.", error)
                 settingErrorCheck("LOGOUT-K")
+            } else {
+                startSplashActivity()
+                LogUtils.i("KAKAO/LOGOUT-SUCCESS", "로그아웃 성공. SDK에서 토큰 삭제됨")
             }
-            else
-                startActivity(Intent(requireContext(), SplashActivity::class.java))
 
         }
     }
 
     override fun onUnregisterSuccess(result: UnRegisterResponse) {
+        LogUtils.d("SETTING/API-SUCCESS", result.toString())
         if (loginStatus == "kakao") {
             //Kakao Unlink
+            LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
             kakaoUnlink()
         } else if (loginStatus == "google") {
             //Google Unlink
+            LogUtils.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
             googleUnlink()
         }
-        removeLoginStatus()
-        removeJwt()
+        reset()
     }
 
     override fun onUnregisterFailure(code: Int, message: String) {
+        LogUtils.d("SETTING/API-FAILURE", "code: $code message: $message")
         settingErrorCheck("UNREGISTER")
     }
 
-    private fun settingErrorCheck(type: String){
-        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
+    private fun settingErrorCheck(type: String) {
+        val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
             getString(R.string.error_network)
-        }else{ //나머지
+        } else { //나머지
             getString(R.string.error_api_fail)
         }
-        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-            when(type){
-                "UNREGISTER" -> {
-                    AuthService.unregister(this)
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) {
+                when (type) {
+                    "UNREGISTER" -> {
+                        AuthService.unregister(this)
+                    }
+                    "UNLINK-K" -> {
+                        kakaoUnlink()
+                    }
+                    "LOGOUT-K" -> {
+                        kakaoLogout()
+                    }
                 }
-                "UNLINK-K" -> {
-                    kakaoUnlink()
-                }
-                "LOGOUT-K" -> {
-                    kakaoLogout()
-                }
-            }
-        }.show()
+            }.show()
+    }
+
+    /*Splash Activity로 이동*/
+    fun startSplashActivity(){
+        val intent = Intent(requireContext(), SplashActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 }

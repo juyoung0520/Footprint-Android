@@ -115,6 +115,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             anchor = PointF(0.5f, 0.5f)
             subIcon = null
         }
+
     }
 
     private fun setObserver() {
@@ -130,7 +131,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     initPath()
                 }
             } else { // 산책 중 아니면
-                //Log.d("$TAG/WALKMAP", "ISWALKING - false")
+                //LogUtils.d("$TAG/WALKMAP", "ISWALKING - false")
                 binding.walkmapMiddleIv.isSelected = false
                 locationOverlay.isVisible = false
 
@@ -148,7 +149,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
-            //Log.d("$TAG/WALKMAP", paths.toString())
+            //LogUtils.d("$TAG/WALKMAP", paths.toString())
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
                 currentPathOverlay.coords = paths.last()
@@ -290,7 +291,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         }
     }
 
-    private fun containAllPaths() {
+    private fun containPaths() {
         if (paths.isNotEmpty()) {
             var latLngBounds = LatLngBounds.from(paths[0])
             if (paths.size > 1) {
@@ -298,7 +299,30 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     latLngBounds = latLngBounds.union(LatLngBounds.from(paths[index]))
                 }
             }
-            map.moveCamera(CameraUpdate.fitBounds(latLngBounds))
+
+            val cameraUpdate = CameraUpdate.fitBounds(latLngBounds)
+                .animate(CameraAnimation.Fly, 2000)
+                .finishCallback {
+                    takeSnapshotMap()
+                }
+
+            map.moveCamera(cameraUpdate)
+        } else {
+            takeSnapshotMap()
+        }
+    }
+
+    private fun takeSnapshotMap() {
+        map.takeSnapshot { bitmap ->    //산책 동선 사진
+            walkModel.pathImg =
+                getAbsolutePathByBitmap(requireContext(), bitmap)
+            bindWalkModel()
+
+            val intent: Intent =
+                Intent(requireActivity(), WalkAfterActivity::class.java)
+            intent.putExtra("walk", Gson().toJson(walkModel))    //산책 정보 전달
+            startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+            (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
         }
     }
 
@@ -389,20 +413,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     if (view != null) {
                         lifecycleScope.launch {
                             setWalkState(false)
-                            containAllPaths() // 경로 모두 포함하도록 지도 카메라 이동
-                            delay(1000) // 딜레이 필요. 일단 이렇게!!
-
-                            map.takeSnapshot { bitmap ->    //산책 동선 사진
-                                walkModel.pathImg =
-                                    getAbsolutePathByBitmap(requireContext(), bitmap)
-                                bindWalkModel()
-
-                                val intent: Intent =
-                                    Intent(requireActivity(), WalkAfterActivity::class.java)
-                                intent.putExtra("walk", Gson().toJson(walkModel))    //산책 정보 전달
-                                startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-                                (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-                            }
+                            //delay(1000)
+                            containPaths() // 경로 모두 포함하도록 지도 카메라 이동
                         }
                     }
                 }
@@ -449,7 +461,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
         }
 
-        //Log.d("$TAG/WALKMAP", coordinate.toString())
+        //LogUtils.d("$TAG/WALKMAP", coordinate.toString())
         return coordinate
     }
 
@@ -475,7 +487,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                     val lastLang = paths.last().last()
                     putMarker(lastLang, footprints.size)
                     footprint.coordinate = listOf(lastLang.latitude, lastLang.longitude)
-                    //Log.d("$TAG/WALKMAP", footprint.coordinate.toString())
+                    //LogUtils.d("$TAG/WALKMAP", footprint.coordinate.toString())
                 }
             }
 

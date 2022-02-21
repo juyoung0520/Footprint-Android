@@ -23,8 +23,21 @@ class WalkTimeDialogFragment() : DialogFragment() {
     private lateinit var binding: FragmentWalkTimeDialogBinding
     private lateinit var myDialogCallback: MyDialogCallback
 
-    private val hourNumList = (0..23).toList().map { it.toString() }
-    private val minNumList = listOf<String>("0", "10", "20", "30", "40", "50")
+    private val hourNumList = (0..4).toList().map { it.toString() }
+    private var minNumList = listOf<String>("0", "10", "20", "30", "40", "50")
+
+    //시간 NumberPicker 변경 리스너 -> 4시 이면 선택할 수 있는 분은 0분 딱 하나
+    private val hourNpListener = NumberPicker.OnValueChangeListener { numberPicker, i, i2 ->
+        binding.walkTimeMinuteNp.maxValue = 0
+
+        minNumList = if (hourNumList[i2].toInt()==4)
+            listOf<String>("0")
+        else
+            listOf<String>("0", "10", "20", "30", "40", "50")
+
+        binding.walkTimeMinuteNp.displayedValues = minNumList.toTypedArray()
+        binding.walkTimeMinuteNp.maxValue = minNumList.size - 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +77,7 @@ class WalkTimeDialogFragment() : DialogFragment() {
         binding.walkTimeHourNp.maxValue = hourNumList.size - 1
         binding.walkTimeHourNp.wrapSelectorWheel = true
         binding.walkTimeHourNp.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+        binding.walkTimeHourNp.setOnValueChangedListener(hourNpListener)
 
         binding.walkTimeMinuteNp.displayedValues = minNumList.toTypedArray()
         binding.walkTimeMinuteNp.minValue = 0

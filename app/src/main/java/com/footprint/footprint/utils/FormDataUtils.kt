@@ -2,9 +2,9 @@ package com.footprint.footprint.utils
 
 import com.google.gson.Gson
 import okhttp3.MediaType
-import java.io.File
-import okhttp3.RequestBody
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 
 //FormData 로 변환하는 유틸 객체
 object FormDataUtils {

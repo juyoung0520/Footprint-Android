@@ -1,5 +1,6 @@
 package com.footprint.footprint.data.remote.user
 
+import android.util.Log
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.ui.main.home.HomeView
@@ -7,6 +8,7 @@ import com.footprint.footprint.ui.main.mypage.MyPageView
 import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.ui.setting.MyInfoUpdateView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
+import com.footprint.footprint.utils.LogUtils
 import retrofit2.*
 
 object UserService {
@@ -25,11 +27,17 @@ object UserService {
                         }
                         else -> registerView.onRegisterFailure(body.code, body.message)
                     }
+                    LogUtils.d("REGISTER/API-SUCCESS", body.toString())
+                }else{
+                    LogUtils.d("REGISTER/NULL", body.toString())
                 }
+
+
             }
 
             override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
                 registerView.onRegisterFailure(213, t.message.toString())
+                LogUtils.d("REGISTER/API-FAILURE", t.message.toString())
             }
 
         })
@@ -41,6 +49,7 @@ object UserService {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 val body = response.body()
 
+                LogUtils.d("USER/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
@@ -52,6 +61,7 @@ object UserService {
 
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 view.onHomeFailure(213, t.message.toString())
+                LogUtils.d("USER/API-FAILURE", t.message.toString())
             }
         })
     }
@@ -62,6 +72,7 @@ object UserService {
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 val body = response.body()
 
+                LogUtils.d("USER/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
@@ -84,6 +95,7 @@ object UserService {
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
 
+                LogUtils.d("UPDATE/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
                         view.onUpdateSuccess(body)
@@ -94,6 +106,7 @@ object UserService {
 
             override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
                 view.onUpdateFailure(213, t.message.toString())
+                LogUtils.d("UPDATE/API-FAILURE", t.message.toString())
             }
 
         })

@@ -20,7 +20,7 @@
         android:id="@+id/item_footprint_post_start_iv"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@drawable/ic_post_start"
+        android:src="@drawable/ic_start_point"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_footprint_post_view" />
 
@@ -144,5 +144,13 @@
         app:layout_constraintEnd_toEndOf="@+id/item_footprint_post_view"
         app:layout_constraintStart_toStartOf="@+id/item_footprint_post_view"
         app:layout_constraintTop_toBottomOf="@+id/item_footprint_post_view" />
+
+    <ImageView
+        android:id="@+id/item_footprint_post_end_iv"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/ic_start_point"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

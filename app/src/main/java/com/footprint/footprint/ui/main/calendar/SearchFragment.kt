@@ -5,6 +5,7 @@ import com.footprint.footprint.databinding.FragmentSearchBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.TagRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.utils.LogUtils
 
 class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBinding::inflate) {
     private lateinit var adapter: TagRVAdapter
@@ -17,6 +18,8 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
             initTagAdapter()
             return
         }
+
+        LogUtils.d("search", "onStart")
     }
 
     private fun setBinding() {
@@ -91,8 +94,14 @@ class SearchFragment(): BaseFragment<FragmentSearchBinding>(FragmentSearchBindin
         return text.replace(" ", "").replace(Regex("^#"),"")
     }
 
+    override fun onStop() {
+        super.onStop()
+        LogUtils.d("search", "onStop")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        LogUtils.d("search", "onDestroy")
 
         if (isChanged) {
             adapter.saveCurrentTags()

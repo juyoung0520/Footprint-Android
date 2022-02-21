@@ -11,6 +11,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.WalkDateRVAdapter
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
@@ -117,6 +118,8 @@ class SearchResultFragment() :
 
 
     override fun onSearchResultSuccess(walkDates: List<WalkDateResult>) {
+        LogUtils.d("$TAG/SEARCH-RESULT", "SEARCH-RESULT/WALK-DATES/success")
+
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.searchResultLoadingPb.visibility = View.GONE

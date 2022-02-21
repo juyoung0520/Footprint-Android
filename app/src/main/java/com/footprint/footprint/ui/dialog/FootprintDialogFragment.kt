@@ -18,23 +18,23 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
-import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.footprint.footprint.utils.uriToBitmap
 import com.google.gson.Gson
-import gun0912.tedimagepicker.builder.TedImagePicker
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.santalu.textmatcher.rule.HashtagRule
 import com.santalu.textmatcher.style.HashtagStyle
+import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.*
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var binding: FragmentFootprintDialogBinding
@@ -80,7 +80,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
         if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
-            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
+            footprint = Gson().fromJson(footprintStr, FootprintModel::class.java)
+            setUI(footprint)
         }
 
         return binding.root
@@ -143,7 +144,10 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private fun goGallery() {
         val selectedUri: ArrayList<Uri> = arrayListOf()
         imgList.forEach {
-            selectedUri.add(Uri.parse(it))
+            if (it.startsWith("https://"))  //발자국 수정일 때 사진 재선택하기
+                selectedUri.add(Uri.parse(it))
+            else    //발자국 추가일 때 사진 재선택하기
+                selectedUri.add(Uri.fromFile(File(it)))
         }
 
         TedImagePicker.with(requireContext())
@@ -153,7 +157,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             .buttonTextColor(R.color.primary)
             .showTitle(false)
             .backButton(R.drawable.ic_cancel)
-            .savedDirectoryName("Footprint")
+            .savedDirectoryName("발자국")
             .max(5, R.string.error_photo_cnt_exceeded)
             .startMultiImage { uriList ->
                 imgList.clear()
