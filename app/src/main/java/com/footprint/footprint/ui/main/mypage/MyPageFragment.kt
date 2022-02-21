@@ -1,12 +1,10 @@
 package com.footprint.footprint.ui.main.mypage
 
 import android.os.Build
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController

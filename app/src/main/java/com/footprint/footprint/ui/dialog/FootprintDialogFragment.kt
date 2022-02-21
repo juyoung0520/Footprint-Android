@@ -80,7 +80,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
         if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
-            setUI(Gson().fromJson(footprintStr, FootprintModel::class.java))
+            footprint = Gson().fromJson(footprintStr, FootprintModel::class.java)
+            setUI(footprint)
         }
 
         return binding.root
