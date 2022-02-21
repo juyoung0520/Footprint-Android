@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

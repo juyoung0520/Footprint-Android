@@ -81,6 +81,14 @@ fun savePWD(password: String){
 
 fun getPWD(): String? =  mSharedPreferences.getString("password", null)
 
+fun removePWD(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("password")
+    editor.apply()
+
+    savePWDstatus("DEFAULT")
+}
 
 /*PWDstatus: 산책 일기 암호 상태 - DEFAULT(암호 X), ON(암호 ON), OFF(암호 OFF)*/
 fun savePWDstatus(status: String){
@@ -114,4 +122,17 @@ fun saveNotification(status: Boolean){
 
 fun getNotification(): Boolean =  mSharedPreferences.getBoolean("notification", false)
 
+fun removeNotification(){
+    val editor = mSharedPreferences.edit()
 
+    editor.remove("notification")
+    editor.apply()
+}
+
+/*초기화: loginStatus, PWD, JWT, Notification 초기화 */
+fun reset(){
+    removeLoginStatus()
+    removePWD()
+    removeJwt()
+    removeNotification()
+}

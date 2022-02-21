@@ -1,4 +1,5 @@
 package com.footprint.footprint.ui.onboarding
+
 import com.footprint.footprint.databinding.FragmentOnboardingFourthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.autoScrollToBottom

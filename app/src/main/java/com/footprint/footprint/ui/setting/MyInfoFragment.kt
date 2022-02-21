@@ -11,6 +11,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.data.remote.weather.Weather
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.main.home.HomeView
@@ -225,6 +226,9 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         setHelpBalloon()    //툴팁
 
         LogUtils.d("MYINFO(USER)", this.user.toString())
+    }
+
+    override fun onWeatherSuccess(weather: Weather) {
     }
 
     override fun onHomeFailure(code: Int, message: String) {

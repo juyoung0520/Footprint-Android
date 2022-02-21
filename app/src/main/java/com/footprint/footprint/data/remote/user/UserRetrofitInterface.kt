@@ -1,6 +1,5 @@
 package com.footprint.footprint.data.remote.user
 
-
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
 import retrofit2.*

@@ -12,7 +12,6 @@ import com.footprint.footprint.ui.signin.SigninActivity
 import com.footprint.footprint.utils.saveOnboarding
 import com.google.android.material.tabs.TabLayoutMediator
 
-
 class OnBoardingActivity :
     BaseActivity<ActivityOnboardingBinding>(ActivityOnboardingBinding::inflate) {
 
@@ -74,6 +73,9 @@ class OnBoardingActivity :
 
             //2. -> Signin Activity
             startNextActivity(SigninActivity::class.java)
+
+            //3. 온보딩 액티비티 종료
+            finish()
         }
     }
 

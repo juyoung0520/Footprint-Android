@@ -1,45 +1,38 @@
 package com.footprint.footprint.data.remote.weather
 
-import com.footprint.footprint.ui.main.home.WeatherView
+import android.util.Log
+import com.footprint.footprint.ui.main.home.HomeView
+import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.NetworkModule.Companion.getWeatherRetrofit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WeatherService(private val view: WeatherView) {
+class WeatherService() {
+    fun getWeather(homeView: HomeView, nx: String, ny:String){
+        val weatherService = retrofit.create(WeatherRetrofitInterface::class.java)
 
-    fun getWeather(base_date: String,base_time: String, nx: String, ny: String ) {
-        val weatherService = getWeatherRetrofit()?.create(WeatherRetrofitInterface::class.java)
+        weatherService.getWeather(nx, ny).enqueue(object : Callback<WeatherResponse>{
+            override fun onResponse(
+                call: Call<WeatherResponse>,
+                response: Response<WeatherResponse>
+            ) {
+                val body = response.body()
 
-        val key =
-            "V+1MlI+ZLP5u0ofnxvGVJTDzfOdPeQJLx1HCCC93OAP/McupiIw1U/+7E1OUAeVqcFEkqwgkdSRHiMReIf8zVA=="
-
-        weatherService?.getWeather(key, 100, 1, "JSON", base_date, base_time, nx, ny)
-            ?.enqueue(object : Callback<WeatherResponse> {
-                override fun onResponse(
-                    call: Call<WeatherResponse>,
-                    response: Response<WeatherResponse>
-                ) {
-                    val header = response.body()!!.response.header
-
-                    LogUtils.d("WEATHER/API-ASYNC", "Onresponse, resultCode는 ${header.resultCode} resultMsg는 ${header.resultMsg}")
-                    when (header.resultCode) {
-                        0 -> {
-                            val it: List<ITEM> = response.body()!!.response.body.items.item
-                            view.onWeatherSuccess(it)
-                        }
-                        else -> view.onWeatherFailure(header.resultCode, header.resultMsg)
+                if(body != null) {
+                    when (body.code) {
+                        1000 -> homeView.onWeatherSuccess(body.result)
+                        else -> homeView.onHomeFailure(body.code, body.message)
                     }
-
                 }
 
-                override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
-                    view.onWeatherFailure(213, t.message.toString())
-                    LogUtils.d("WEATHER/API-ERROR", t.message.toString())
-                }
 
-            })
+            }
+
+            override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
+                homeView.onHomeFailure(213, t.message.toString())
+            }
+
+        })
     }
-
 }

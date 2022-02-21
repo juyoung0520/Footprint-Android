@@ -1,8 +1,6 @@
 package com.footprint.footprint.data.remote.achieve
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
-
 
 /*일별 정보 조회*/
 data class TodayResponse(
