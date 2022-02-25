@@ -17,6 +17,23 @@ fun saveOnboarding(onboardingStatus: Boolean){
 
 fun getOnboarding() = mSharedPreferences.getBoolean("onboarding", false)
 
+fun saveBackgroundGPS(backgroundGPSStatus: Boolean) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putBoolean("backgroundGPS", backgroundGPSStatus)
+    editor.apply()
+}
+
+fun getBackgroundGPS() = mSharedPreferences.getBoolean("backgroundGPS", false)
+
+fun saveFirstBackgroundGPSCheck(isFirst: Boolean) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putBoolean("firstBackgroundGPSCheck", isFirst)
+    editor.apply()
+}
+
+fun getFirstBackgroundGPSCheck() = mSharedPreferences.getBoolean("firstBackgroundGPSCheck", false)
 
 /*Login Status - kakao, google, null*/
 fun saveLoginStatus(loginStatus: String){

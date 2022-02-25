@@ -1,15 +1,14 @@
 package com.footprint.footprint.ui.main.home
 
 import android.Manifest
-import android.app.AlertDialog
-import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Looper
-import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -27,8 +26,7 @@ import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
 import com.footprint.footprint.ui.walk.WalkActivity
-import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.utils.*
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -45,7 +43,21 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
+    private lateinit var gpsDescDialog: AlertDialog
+    private lateinit var backgroundGPSDialog: AlertDialog
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
+    private val gpsBackgroundPermissionListener = object : PermissionListener {
+        override fun onPermissionGranted() {
+            //허용 시
+            LogUtils.d("WEATHER/PERMISSION-OK", "user GPS Background permission 허용")
+            backgroundGPSDialog.dismiss()
+        }
+
+        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+            LogUtils.d("WEATHER/PERMISSION-NO", "user GPS Background permission 거절")
+            backgroundGPSDialog.dismiss()
+        }
+    }
 
     //Walk 액티비티로 전달할 유저 정보
     private var userInfo =  UserModel()
@@ -54,12 +66,47 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
+        gpsDescDialog = this?.let {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            builder.apply {
+                setTitle(getString(R.string.title_notification))
+                setMessage(getString(R.string.msg_gps))
+                setPositiveButton(R.string.action_agree) { dialog, id ->
+                    setPermission()    //위치 정보 사용 요청(포그라운드)
+                }
+                setNegativeButton(R.string.action_not_agree) { dialog, id ->
+                    showGPSDeniedDialog(getString(R.string.msg_denied_foreground_gps))  //거부 관련 다이얼로그 띄우기
+                }
+            }
+            builder.create()
+        }
+
+        //백그라운드 위치 권한 관련 다이얼로그
+        backgroundGPSDialog = this?.let {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            builder.apply {
+                setMessage(getString(R.string.msg_background_gps))
+                setPositiveButton(R.string.action_change_gps_access) { dialog, id ->
+                    TedPermission.create().setPermissionListener(gpsBackgroundPermissionListener)
+                        .setPermissions(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        .check()
+                }
+                setNegativeButton(R.string.action_maintain_gps_access, null)
+            }
+            builder.create()
+        }
+
         //Initialize
         initTB()
         initDate()
 
+        if (!getBackgroundGPS()) {  //첫 사용자에게 위치 서비스 사용에 대한 안내 다이얼로그 띄우기
+            saveBackgroundGPS(true)
+            gpsDescDialog.show()
+        } else
+            setPermission()    //위치 정보 사용 요청
+
         setClickListener() //클릭 이벤트 설정
-        setPermission()    //위치 정보 사용 요청
     }
 
     override fun onStart() {
@@ -78,6 +125,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
+
+                return@setOnClickListener
+            }
+
             //유저 정보가 다 채워져야 산책 시작 가능
             if (userInfo.height != null && userInfo.weight != null && userInfo.walkNumber != null) {
                 val intent = Intent(activity, WalkActivity::class.java)
@@ -152,34 +205,29 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         )
     }
 
-    //위치 정보 권한 허용 함수
+    //위치 정보 권한 허용 함수(포그라운드)
     private fun setPermission() {
-        val permissionListener = object : PermissionListener {
+        val gpsForegroundPermissionListener = object : PermissionListener {
             override fun onPermissionGranted() {
                 //허용 시
                 LogUtils.d("WEATHER/PERMISSION-OK", "user GPS permission 허용")
+
+                if (!getFirstBackgroundGPSCheck()) {    //처음 들어온 사용자 -> 백그라운드 위치 권한 다이얼로그 띄우기
+                    saveFirstBackgroundGPSCheck(true)
+                    backgroundGPSDialog.show()
+                }
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                //거절 시
-                AlertDialog.Builder(activity).setMessage("권한 거절로 일부 기능이 제한됩니다.")
-                    .setPositiveButton("권한 설정하러 가기") { dialog, which ->
-                        try {
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                .setData(Uri.parse("package:com.footprint.footprint"))
-                        } catch (e: ActivityNotFoundException) {
-                            e.printStackTrace()
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        }
-                    }.show()
                 LogUtils.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
+
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    showGPSDeniedDialog(getString(R.string.msg_denied_foreground_gps))
             }
         }
 
         //권한 설정
-        TedPermission.create().setPermissionListener(permissionListener)
-            .setRationaleMessage("정확한 날씨 정보를 위해 위치 권한을 허용해 주세요")
-            .setDeniedMessage("권한을 거부하셨습니다. [앱 설정] -> [권한]에서 허용해 주세요.")
+        TedPermission.create().setPermissionListener(gpsForegroundPermissionListener)
             .setPermissions(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -187,10 +235,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             .check()
     }
 
-   //날씨 API 호출
+    //날씨 API 호출
     private fun callWeatherAPI() {
 
-       //현재 위치 불러오기
+        //현재 위치 불러오기
         val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         try {
             val locationRequest = LocationRequest.create()
@@ -224,6 +272,19 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             )
         } catch (e: SecurityException) {
             e.printStackTrace()
+        }
+    }
+
+    private fun showGPSDeniedDialog(msg: String) {
+        val gpsDeniedDialog: AlertDialog = this?.let {
+            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            builder.apply {
+                setTitle(getString(R.string.title_notification))
+                setMessage(msg)
+                setPositiveButton(getString(R.string.action_confirm), null)
+            }
+            builder.create()
+            builder.show()
         }
     }
 

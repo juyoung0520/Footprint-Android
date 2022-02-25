@@ -137,7 +137,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
-            .check();
+            .check()
     }
 
     //TedImagePicker 라이브러리를 활용해 갤러리 화면으로 이동하기
