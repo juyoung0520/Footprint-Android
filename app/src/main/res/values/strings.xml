@@ -25,6 +25,10 @@
     <string name="action_update">수정</string>
     <string name="action_stop">중지</string>
     <string name="action_retry">재시도</string>
+    <string name="action_not_agree">동의 안함</string>
+    <string name="action_agree">동의</string>
+    <string name="action_maintain_gps_access">위치 정보 권한 유지</string>
+    <string name="action_change_gps_access">권한 변경</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -154,6 +158,10 @@
     <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
     <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="msg_success_update_goal">다음달 목표를 변경했어요</string>
+    <string name="msg_gps">발자국은 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 정확한 날씨 정보 제공 기능과 산책 중 이동 경로 표시, 실시간 산책 기록 기능을 지원합니다.</string>
+    <string name="msg_background_gps">발자국의 위치 액세스 권한을 항상 허용으로 변경하시면 앱이 종료되었거나 사용 중이 아닐 때도 실시간 산책 관련 기능을 지원합니다. 변경하시겠습니까?</string>
+    <string name="msg_denied_foreground_gps">위치 권한 거절로 위치 정보를 활용하는 일부 기능이 제한됩니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
+    <string name="msg_denied_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
