@@ -9,6 +9,7 @@ import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.ui.setting.MyInfoUpdateView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.NetworkUtils
 import retrofit2.*
 
 object UserService {
@@ -17,7 +18,9 @@ object UserService {
     /*초기 정보 등록 API*/
     fun registerInfos(registerView: RegisterView,  userModel: UserModel) {
 
-        userService.registerUser(userModel).enqueue(object : Callback<UserRegisterResponse>{
+        val encryptedData = NetworkUtils.encrypt(userModel)
+
+        userService.registerUser(encryptedData).enqueue(object : Callback<UserRegisterResponse>{
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
                 if(body != null){
@@ -53,7 +56,7 @@ object UserService {
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
-                        view.onUserSuccess(result!!)
+                        view.onUserSuccess(NetworkUtils.decrypt(result, User::class.java))
                     }
                     else -> view.onHomeFailure(body.code, body.message)
                 }
@@ -76,7 +79,7 @@ object UserService {
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
-                        view.onUserSuccess(result!!)
+                        view.onUserSuccess(NetworkUtils.decrypt(result, User::class.java))
                     }
                     else -> view.onMyPageFailure(body.code, body.message)
                 }
@@ -91,7 +94,10 @@ object UserService {
 
     /*유저 정보 업데이트 API*/
     fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
-        userService.updateUser(user).enqueue(object : Callback<UserRegisterResponse>{
+
+        val encryptedData = NetworkUtils.encrypt(user)
+
+        userService.updateUser(encryptedData).enqueue(object : Callback<UserRegisterResponse>{
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
 

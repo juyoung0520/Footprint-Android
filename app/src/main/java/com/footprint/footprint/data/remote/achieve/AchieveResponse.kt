@@ -7,7 +7,7 @@ data class TodayResponse(
     @SerializedName("isSuccess") val isSuccess: Boolean,
     @SerializedName("code")val code: Int,
     @SerializedName("message")val message: String,
-    @SerializedName("result")val result: Today?
+    @SerializedName("result")val result: String
 )
 
 data class Today(
@@ -23,7 +23,7 @@ data class TMonthResponse(
     @SerializedName("isSuccess") val isSuccess: Boolean,
     @SerializedName("code")val code: Int,
     @SerializedName("message")val message: String,
-    @SerializedName("result")val result: TMonth?
+    @SerializedName("result")val result: String
 )
 
 data class TMonth(

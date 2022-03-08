@@ -12,10 +12,9 @@ interface LoginRetrofitInterface {
     @GET("users/autologin")
     fun autoLogin(): Call<LoginResponse>
 
-
     //로그인 API
     @POST("users/auth/login")
-    fun login(@Body socialUserData: SocialUserModel): Call<LoginResponse>
+    fun login(@Body socialUserData: String): Call<LoginResponse>
 
     //회원 탈퇴 API
     @DELETE("users/unregister")

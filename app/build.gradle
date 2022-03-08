@@ -99,7 +99,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
 
     //Okhttp3
-    implementation "com.squareup.okhttp3:okhttp:4.2.2"
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
 
     // dependencies for lombok
     compileOnly 'org.projectlombok:lombok:1.18.12'

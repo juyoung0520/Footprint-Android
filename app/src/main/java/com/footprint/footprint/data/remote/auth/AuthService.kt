@@ -27,7 +27,7 @@ object AuthService {
                     when(body.code){
                         1000 -> {
                             val result = body.result
-                            splashView.onAutoLoginSuccess(result)
+                            splashView.onAutoLoginSuccess(NetworkUtils.decrypt(result, Login::class.java))
                         }
                         else -> splashView.onAutoLoginFailure(body.code, body.message)
                     }
@@ -51,7 +51,10 @@ object AuthService {
 //                AES128(BuildConfig.encrypt_key).decrypt(encrypt)
 //        LogUtils.d("encrypt", NetworkUtils.decrypt(decrypt, SocialUserModel::class.java).toString())
 
-        authService.login(socialUserData).enqueue(object : Callback<LoginResponse>{
+        val encryptedData = NetworkUtils.encrypt(socialUserData)
+        LogUtils.d("kakao-user", encryptedData)
+
+        authService.login(encryptedData).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
 
@@ -60,7 +63,7 @@ object AuthService {
                     when(body.code){
                         1000 -> {
                             val result = body.result
-                            signinView.onSignInSuccess(result)
+                            signinView.onSignInSuccess(NetworkUtils.decrypt(result, Login::class.java))
                         }
                         else -> signinView.onSignInFailure(body.code, body.message)
                     }

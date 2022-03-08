@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">발자국</string>
 
-    <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
-    <string name="google_login_server_id" translatable="false">275484626544-npc9k2gt2qmh36o90slhb73bmdgatrnk.apps.googleusercontent.com</string>
-    <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
-    <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
+    <string name="naver_map_sdk_client_id" translatable="false">zmsxdf9302</string>
+    <string name="google_login_server_id" translatable="false">275484626544-dst0jhcq15rhntot3eljkfjb386tuaol.apps.googleusercontent.com</string>
+    <string name="kakao_login_native_key" translatable="false">1eaf5aeccf28b86349ea6ed27533b577</string>
+    <string name="kakao_login_native_key_kakao" translatable="false">kakao1eaf5aeccf28b86349ea6ed27533b577</string>
 
     <!--공통-->
     <!--메뉴-->
