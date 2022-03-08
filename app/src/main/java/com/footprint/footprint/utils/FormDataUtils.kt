@@ -12,20 +12,22 @@ object FormDataUtils {
         val partMap: HashMap<String, RequestBody> = HashMap()
 
         for (v in value) {
-            val requestBody: RequestBody = RequestBody.create(MediaType.parse("text/plain"), v.value.toString())
-            partMap[v.key] = requestBody
+//            val requestBody: RequestBody = RequestBody.create(MediaType.parse("text/plain"), v.value.toString())
+//            partMap[v.key] = requestBody
         }
 
         return partMap
     }
 
-    fun getJsonBody(value: Any): RequestBody {
-        return MultipartBody.create(MediaType.parse("application/json"), Gson().toJson(value))
+    fun getJsonBody(value: Any): RequestBody? {
+       // return MultipartBody.create(MediaType.parse("application/json"), Gson().toJson(value))
+        return null
     }
 
-    fun prepareFilePart(key: String, fileUri: String): MultipartBody.Part {
+    fun prepareFilePart(key: String, fileUri: String): MultipartBody.Part? {
         val file: File = File(fileUri)
-        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/jpg"), file)
-        return MultipartBody.Part.createFormData(key, file.name, requestFile)
+//        val requestFile: RequestBody = RequestBody.create(MediaType.parse("image/jpg"), file)
+//        return MultipartBody.Part.createFormData(key, file.name, requestFile)
+        return null
     }
  }

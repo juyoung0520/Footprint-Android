@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
 import com.footprint.footprint.utils.GlobalApplication.Companion.eSharedPreferences
 import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
@@ -74,7 +75,7 @@ fun removeJwt(){
 fun saveTags(context: Context,tags: ArrayList<String>) {
     val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
     val editor = spf.edit()
-    val json = gson.toJson(tags)
+    val json = Gson().toJson(tags)
 
     editor.putString("tags", json)
     editor.apply()
@@ -85,7 +86,7 @@ fun getTags(context: Context): ArrayList<String>? {
     val json = spf.getString("tags", null)
     val type = object : TypeToken<ArrayList<String>>() {}.type
 
-    return gson.fromJson(json, type)
+    return Gson().fromJson(json, type)
 }
 
 /*Password: 산책 일기 암호*/
