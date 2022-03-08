@@ -1,11 +1,14 @@
 package com.footprint.footprint.data.remote.auth
 
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.ui.setting.SettingView
 import com.footprint.footprint.ui.signin.SignInView
 import com.footprint.footprint.ui.signin.SplashView
+import com.footprint.footprint.utils.AES128
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.NetworkUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,6 +45,11 @@ object AuthService {
 
     /*로그인 API*/
     fun login(signinView: SignInView, socialUserData: SocialUserModel){
+//        val encrypt = NetworkUtils.encrypt(socialUserData)
+//        LogUtils.d("encrypt", encrypt)
+//        val decrypt =
+//                AES128(BuildConfig.encrypt_key).decrypt(encrypt)
+//        LogUtils.d("encrypt", NetworkUtils.decrypt(decrypt, SocialUserModel::class.java).toString())
 
         authService.login(socialUserData).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {

@@ -4,6 +4,9 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdk 31
 
@@ -15,6 +18,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "encrypt_key", properties.getProperty("encrypt.key"))
     }
 
     buildTypes {
@@ -92,6 +97,9 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
+
+    //Okhttp3
+    implementation "com.squareup.okhttp3:okhttp:4.2.2"
 
     // dependencies for lombok
     compileOnly 'org.projectlombok:lombok:1.18.12'
