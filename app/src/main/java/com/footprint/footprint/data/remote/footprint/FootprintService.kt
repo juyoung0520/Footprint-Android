@@ -62,13 +62,13 @@ object FootprintService {
 
         if (footprintPhoto!=null && footprintPhoto.isNotEmpty()) {  //사진을 추가할 경우 -> 각 자신을 MultipartBody.Part 객체로 변경
             photos = arrayListOf()
-            for (photo in footprintPhoto)
-                photos!!.add(FormDataUtils.prepareFilePart("photos", photo))
+//            for (photo in footprintPhoto)
+//                photos!!.add(FormDataUtils.prepareFilePart("photos", photo))
         } else if (footprintPhoto!=null && footprintPhoto.isEmpty()) {  //사진을 모두 삭제할 경우 -> 빈 파일로 MultipartBody 객체를 생성(key 만 보내고 value 는 빈 리스트)
             photos = arrayListOf()
 
-            val attachmentEmpty = RequestBody.create(MediaType.parse("image/jpg"), "")
-            photos.add(MultipartBody.Part.createFormData("photos", "", attachmentEmpty))
+//            val attachmentEmpty = RequestBody.create(MediaType.parse("image/jpg"), "")
+//            photos.add(MultipartBody.Part.createFormData("photos", "", attachmentEmpty))
         }
 
         //발자국 정보 수정 API 호출
