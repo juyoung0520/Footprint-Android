@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.footprint.footprint.R
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.config.XAccessTokenInterceptor
 import com.kakao.sdk.common.KakaoSdk
 import okhttp3.OkHttpClient
@@ -30,7 +30,7 @@ class GlobalApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        KakaoSdk.init(this, getString(R.string.kakao_login_native_key))
+        KakaoSdk.init(this, BuildConfig.kakao_login_native_key)
 
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(30000, TimeUnit.MILLISECONDS)

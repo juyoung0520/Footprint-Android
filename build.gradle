@@ -19,7 +19,6 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-
     }
 }
 

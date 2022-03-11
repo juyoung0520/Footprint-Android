@@ -67,7 +67,13 @@ class FootprintRVAdapter() :
         //첫 번째 기록에서만 맨 위에 동그라미 뷰 보여주기
         val lineMargin = convertDpToPx(binding.root.context, 5)
 
-        if ((footprintsAfterVer==null && footprintsDetailVer!!.size==1) || (footprintsAfterVer!!.size==1 && footprintsDetailVer==null)) {
+        if (footprintsAfterVer==null && footprintsDetailVer!!.size==1)/* || (footprintsAfterVer!!.size==1 && footprintsDetailVer==null)*/ {
+            holder.postStartIv.visibility = View.VISIBLE
+            holder.postEndIv.visibility = View.VISIBLE
+            holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(lineMargin, lineMargin, lineMargin, lineMargin)
+            }
+        } else if (footprintsDetailVer==null && footprintsAfterVer!!.size==1) {
             holder.postStartIv.visibility = View.VISIBLE
             holder.postEndIv.visibility = View.VISIBLE
             holder.lineView.updateLayoutParams<ViewGroup.MarginLayoutParams> {

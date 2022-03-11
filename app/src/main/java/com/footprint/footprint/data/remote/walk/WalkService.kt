@@ -92,7 +92,7 @@ object WalkService {
         val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()    //서버에 전달할 이미지 리스트
         val saveWalkReq: SaveWalk = SaveWalk(startAt = walk.startAt, endAt = walk.endAt, distance = walk.distance, coordinates = walk.coordinate, calorie = walk.calorie)   //서버에 전달할 산책 정보 객체
 
-        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg))    //산책 동선 사진을 이미지 리스트에 추가
+        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg)!!)    //산책 동선 사진을 이미지 리스트에 추가
 
         val footprintsReq: ArrayList<SaveFootprint> = arrayListOf() //서버에 전달할 발자국 데이터
         for (footprint in walk.footprints) {
@@ -106,14 +106,14 @@ object WalkService {
             footprintsReq.add(data)
 
             //산책 정보의 photoMatchNumList 데이터 가공(각 발자국 별 저장된 이미지 갯수를 저장)
-            if (footprint.photos.isEmpty())
+            if (footprint.photos.isEmpty()) {
                 saveWalkReq.photoMatchNumList.add(0)
-            else {
+            } else {
                 saveWalkReq.photoMatchNumList.add(footprint.photos.size)
 
                 //이미지를 MultipartBody.Part 객체로 생성
                 for (photo in footprint.photos)
-                    photosReq.add(FormDataUtils.prepareFilePart("photos", photo))
+                    photosReq.add(FormDataUtils.prepareFilePart("photos", photo)!!)
             }
         }
 
@@ -121,8 +121,8 @@ object WalkService {
         LogUtils.d("WalkService", "writeWalk footprintsReq: $footprintsReq")
         LogUtils.d("WalkService", "writeWalk photosReq: $photosReq")
 
-        val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)   //산책 정보를 FormData 로 변환
-        val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)    //발자국 정보를 FormData 로 변환
+        val walkFormData = FormDataUtils.getJsonBody(saveWalkReq)!!   //산책 정보를 FormData 로 변환
+        val footprintListFormData = FormDataUtils.getJsonBody(footprintsReq)!!    //발자국 정보를 FormData 로 변환
 
         //산책 저장 API 호출
         walkService.writeWalk(walkFormData, footprintListFormData, photosReq).enqueue(object : Callback<WriteWalkResponse> {

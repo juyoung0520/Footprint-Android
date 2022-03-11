@@ -4,6 +4,11 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def kakao_login_native_key_kakao = properties.getProperty('kakao.login.native.key.kakao')
+def naver_map_sdk_client_id = properties.getProperty('naver.map.sdk.client.id')
+
 android {
     compileSdk 31
 
@@ -11,10 +16,17 @@ android {
         applicationId "com.footprint.footprint"
         minSdk 26
         targetSdk 31
-        versionCode 5
+        versionCode 6
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "encrypt_key", properties.getProperty("encrypt.key"))
+        buildConfigField("String", "google_login_server_id", properties.getProperty("google.login.server.id"))
+        buildConfigField("String", "kakao_login_native_key", properties.getProperty("kakao.login.native.key"))
+
+        manifestPlaceholders["kakao_login_native_key_kakao"] = kakao_login_native_key_kakao
+        manifestPlaceholders["naver_map_sdk_client_id"] = naver_map_sdk_client_id
     }
 
     buildTypes {
@@ -92,6 +104,10 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
+
+    //Okhttp3
+    implementation "com.squareup.okhttp3:okhttp:4.2.2"
+    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.4.31"
 
     // dependencies for lombok
     compileOnly 'org.projectlombok:lombok:1.18.12'

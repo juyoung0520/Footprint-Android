@@ -15,6 +15,7 @@ import com.kakao.sdk.user.UserApiClient
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.footprint.footprint.BuildConfig
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
@@ -129,7 +130,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     /*Function - Google*/
     private fun googleClient(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_login_server_id))
+            .requestIdToken(BuildConfig.google_login_server_id)
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
