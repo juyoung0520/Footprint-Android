@@ -30,7 +30,7 @@
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="@string/naver_map_sdk_client_id" />
+            android:value="${naver_map_sdk_client_id}" />
 
         <!--splash-->
         <activity
@@ -62,7 +62,7 @@
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
                 <data
                     android:host="oauth"
-                    android:scheme="@string/kakao_login_native_key_kakao" />
+                    android:scheme="${kakao_login_native_key_kakao}" />
             </intent-filter>
         </activity>
 

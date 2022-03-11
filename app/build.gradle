@@ -6,6 +6,8 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def kakao_login_native_key_kakao = properties.getProperty('kakao.login.native.key.kakao')
+def naver_map_sdk_client_id = properties.getProperty('naver.map.sdk.client.id')
 
 android {
     compileSdk 31
@@ -20,6 +22,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "encrypt_key", properties.getProperty("encrypt.key"))
+        buildConfigField("String", "google_login_server_id", properties.getProperty("google.login.server.id"))
+        buildConfigField("String", "kakao_login_native_key", properties.getProperty("kakao.login.native.key"))
+
+        manifestPlaceholders["kakao_login_native_key_kakao"] = kakao_login_native_key_kakao
+        manifestPlaceholders["naver_map_sdk_client_id"] = naver_map_sdk_client_id
     }
 
     buildTypes {
