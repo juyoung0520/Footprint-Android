@@ -149,7 +149,7 @@
     <string name="msg_update_footprint">발자국을 수정했어요.</string>
     <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
     <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
-    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
+    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요\n(로그아웃이 정상적으로 이뤄지지 않을 경우\n앱을 지우고 다시 다운로드해주세요.)</string>
     <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
     <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="msg_success_update_goal">다음달 목표를 변경했어요</string>
