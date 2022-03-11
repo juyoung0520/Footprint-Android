@@ -100,6 +100,7 @@ dependencies {
 
     //Okhttp3
     implementation "com.squareup.okhttp3:okhttp:4.2.2"
+    implementation "org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.4.31"
 
     // dependencies for lombok
     compileOnly 'org.projectlombok:lombok:1.18.12'
