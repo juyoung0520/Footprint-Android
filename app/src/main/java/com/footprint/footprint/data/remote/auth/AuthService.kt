@@ -1,14 +1,14 @@
 package com.footprint.footprint.data.remote.auth
 
-import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.data.model.SocialUserModel
 import com.footprint.footprint.ui.setting.SettingView
 import com.footprint.footprint.ui.signin.SignInView
 import com.footprint.footprint.ui.signin.SplashView
-import com.footprint.footprint.utils.AES128
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -45,16 +45,21 @@ object AuthService {
 
     /*로그인 API*/
     fun login(signinView: SignInView, socialUserData: SocialUserModel){
-//        val encrypt = NetworkUtils.encrypt(socialUserData)
-//        LogUtils.d("encrypt", encrypt)
-//        val decrypt =
-//                AES128(BuildConfig.encrypt_key).decrypt(encrypt)
-//        LogUtils.d("encrypt", NetworkUtils.decrypt(decrypt, SocialUserModel::class.java).toString())
 
         val encryptedData = NetworkUtils.encrypt(socialUserData)
-        LogUtils.d("kakao-user", encryptedData)
+        LogUtils.d("kakao-user", "암호화 후 데이터: ${encryptedData}")
 
-        authService.login(encryptedData).enqueue(object : Callback<LoginResponse>{
+        //MediaType.parse("application/json; charset=utf-8")
+
+        //val data = encryptedData.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        //val data = encryptedData.toRequestBody("application/json".toMediaTypeOrNull())
+
+        //val data = encryptedData.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val data = encryptedData.toRequestBody("application/json".toMediaType())
+
+        LogUtils.d("data", data.toString())
+
+        authService.login(data).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
 
