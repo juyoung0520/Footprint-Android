@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.walk
 import android.os.Bundle
 import android.util.Log
 import com.footprint.footprint.R
+import com.footprint.footprint.data.model.UserInfoModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -12,7 +13,7 @@ import com.google.gson.Gson
 import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
-    var userInfo: UserModel?= null
+    var userInfo: UserInfoModel?= null
     override fun initAfterBinding() {
     }
 
@@ -24,7 +25,7 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         // -> 사용자 정보 받아오기
         if (intent.hasExtra("userInfo")) {
             val userInfoJson = intent.getStringExtra("userInfo")
-            userInfo = Gson().fromJson(userInfoJson, UserModel::class.java)
+            userInfo = Gson().fromJson(userInfoJson, UserInfoModel::class.java)
 
             if (userInfo!!.weight == 0) {
                 userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56

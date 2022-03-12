@@ -1,8 +1,11 @@
 package com.footprint.footprint.data.remote.weather
 
+import com.footprint.footprint.data.model.LocationModel
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.NetworkUtils
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,6 +14,9 @@ class WeatherService() {
     fun getWeather(homeView: HomeView, nx: String, ny:String){
         val weatherService = retrofit.create(WeatherRetrofitInterface::class.java)
 
+//        val location = LocationModel(nx, ny)
+//        val encryptedData = NetworkUtils.encrypt(location)
+//        val data = encryptedData.toRequestBody("application/json".toMediaType())
         val encryptedNx = NetworkUtils.encrypt(nx)
         val encryptedNy = NetworkUtils.encrypt(ny)
 

@@ -1,6 +1,5 @@
 package com.footprint.footprint.data.remote.user
 
-import android.util.Log
 import com.footprint.footprint.data.model.SimpleUserModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.ui.main.home.HomeView
@@ -10,6 +9,8 @@ import com.footprint.footprint.ui.setting.MyInfoUpdateView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.*
 
 object UserService {
@@ -19,8 +20,10 @@ object UserService {
     fun registerInfos(registerView: RegisterView,  userModel: UserModel) {
 
         val encryptedData = NetworkUtils.encrypt(userModel)
+        LogUtils.d("REGISTER/API-DATA(E)", encryptedData)
+        val data = encryptedData.toRequestBody("application/json".toMediaType())
 
-        userService.registerUser(encryptedData).enqueue(object : Callback<UserRegisterResponse>{
+        userService.registerUser(data).enqueue(object : Callback<UserRegisterResponse>{
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
                 if(body != null){
@@ -96,8 +99,10 @@ object UserService {
     fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
 
         val encryptedData = NetworkUtils.encrypt(user)
+        val data = encryptedData.toRequestBody("application/json".toMediaType())
+        LogUtils.d("UPDATE/API-DATA(E)", encryptedData)
 
-        userService.updateUser(encryptedData).enqueue(object : Callback<UserRegisterResponse>{
+        userService.updateUser(data).enqueue(object : Callback<UserRegisterResponse>{
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
                 val body = response.body()
 

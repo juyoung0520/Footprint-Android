@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
+import com.footprint.footprint.data.model.UserInfoModel
 import com.footprint.footprint.data.model.UserModel
 import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.achieve.TMonth
@@ -60,7 +61,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     //Walk 액티비티로 전달할 유저 정보
-    private var userInfo =  UserModel()
+    private var userInfo =  UserInfoModel()
 
     //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()

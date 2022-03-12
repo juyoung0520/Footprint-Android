@@ -18,7 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.model.UserInfoModel
 import com.footprint.footprint.data.model.WalkModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
@@ -61,7 +61,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private val footprints: ArrayList<FootprintModel> = arrayListOf() //지금까지 사용자가 기록한 총 데이터
     private val walkModel: WalkModel = WalkModel()  //산책 데이터
-    private lateinit var userInfo: UserModel
+    private lateinit var userInfo: UserInfoModel
 
     override fun initAfterBinding() {
         if (::map.isInitialized) {

@@ -47,17 +47,8 @@ object AuthService {
     fun login(signinView: SignInView, socialUserData: SocialUserModel){
 
         val encryptedData = NetworkUtils.encrypt(socialUserData)
-        LogUtils.d("kakao-user", "암호화 후 데이터: ${encryptedData}")
-
-        //MediaType.parse("application/json; charset=utf-8")
-
-        //val data = encryptedData.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        //val data = encryptedData.toRequestBody("application/json".toMediaTypeOrNull())
-
-        //val data = encryptedData.toRequestBody("application/json; charset=utf-8".toMediaType())
         val data = encryptedData.toRequestBody("application/json".toMediaType())
-
-        LogUtils.d("data", data.toString())
+        LogUtils.d("LOGIN/API-DATA(E)", encryptedData)
 
         authService.login(data).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -68,6 +59,7 @@ object AuthService {
                     when(body.code){
                         1000 -> {
                             val result = body.result
+                            LogUtils.d("body", result)
                             signinView.onSignInSuccess(NetworkUtils.decrypt(result, Login::class.java))
                         }
                         else -> signinView.onSignInFailure(body.code, body.message)
