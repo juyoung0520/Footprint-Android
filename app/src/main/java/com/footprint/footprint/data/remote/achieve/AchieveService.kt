@@ -82,7 +82,7 @@ object AchieveService {
                 val resp = response.body()!!
 
                 when(resp.code) {
-                    1000 -> myPageView.onMyPageSuccess(resp.result)
+                    1000 -> myPageView.onMyPageSuccess(NetworkUtils.decrypt(resp.result, AchieveDetailResult::class.java))
                     else -> myPageView.onMyPageFailure(resp.code, resp.message)
                 }
             }

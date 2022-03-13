@@ -8,12 +8,17 @@ import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.NetworkUtils
 import com.footprint.footprint.utils.isNetworkAvailable
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 object WalkService {
     private val walkService = retrofit.create(WalkRetrofitInterface::class.java)
@@ -27,12 +32,16 @@ object WalkService {
                 val resp= response.body()!!
 
                 when (resp.code) {
-                    1000 -> calendarView.onMonthSuccess(resp.result)
+                    1000 -> {
+                        val listType = object : TypeToken<List<DayResult>>() {}.type
+                        calendarView.onMonthSuccess(NetworkUtils.decrypt(resp.result, listType))
+                    }
                     else -> calendarView.onCalendarFailure(resp.code, resp.message)
                 }
             }
 
             override fun onFailure(call: Call<MonthResponse>, t: Throwable) {
+                LogUtils.d("WALKSERVICE/MONTH", t.message.toString())
                 calendarView.onCalendarFailure(400, t.message.toString())
             }
 
@@ -48,14 +57,19 @@ object WalkService {
                 response: Response<DayWalksResponse>
             ) {
                 val resp= response.body()!!
+                //LogUtils.d("WALKSERVICE/DAY", resp.result)
 
                 when (resp.code) {
-                    1000 -> calendarView.onDayWalksSuccess(resp.result)
+                    1000 -> {
+                        val listType = object : TypeToken<List<DayWalkResult>>() {}.type
+                        calendarView.onDayWalksSuccess(NetworkUtils.decrypt(resp.result, listType))
+                    }
                     else -> calendarView.onCalendarFailure(resp.code, resp.message)
                 }
             }
 
             override fun onFailure(call: Call<DayWalksResponse>, t: Throwable) {
+                LogUtils.d("WALKSERVICE/MONTH", t.message.toString())
                 calendarView.onCalendarFailure(401, t.message.toString())
             }
 
@@ -73,7 +87,10 @@ object WalkService {
                 val resp = response.body()!!
 
                 when (resp.code) {
-                    1000 -> searchResultView.onSearchResultSuccess(resp.result!!)
+                    1000 -> {
+                        val listType = object : TypeToken<List<WalkDateResult>>() {}.type
+                        searchResultView.onSearchResultSuccess(NetworkUtils.decrypt(resp.result, listType))
+                    }
                     else -> searchResultView.onSearchResultFailure(resp.code, resp.message)
                 }
             }

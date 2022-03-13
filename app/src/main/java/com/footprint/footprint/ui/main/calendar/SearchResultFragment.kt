@@ -94,12 +94,7 @@ class SearchResultFragment() :
                 if (!isNetworkAvailable(requireContext())) {
                     showSnackBar(getString(R.string.error_network))
                 } else {
-                    if (code == 2125) {
-                        // 검색결과 없으면
-                        binding.searchResultLoadingPb.visibility = View.GONE
-                    } else {
-                        showSnackBar(getString(R.string.error_api_fail))
-                    }
+                    showSnackBar(getString(R.string.error_api_fail))
                 }
             })
         }
@@ -123,10 +118,13 @@ class SearchResultFragment() :
         if (view != null) {
             jobs.add(viewLifecycleOwner.lifecycleScope.launch {
                 binding.searchResultLoadingPb.visibility = View.GONE
-                binding.searchResultHintTv.visibility = View.GONE
-                binding.searchResultWalkDatesRv.visibility = View.VISIBLE
 
-                initAdapter(walkDates)
+                if (walkDates.isNotEmpty()) {
+                    binding.searchResultHintTv.visibility = View.GONE
+                    binding.searchResultWalkDatesRv.visibility = View.VISIBLE
+
+                    initAdapter(walkDates)
+                }
             })
         }
     }
