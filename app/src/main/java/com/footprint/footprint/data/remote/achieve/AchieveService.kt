@@ -7,6 +7,7 @@ import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.main.mypage.MyPageView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.NetworkUtils
 
 
 object AchieveService {
@@ -27,7 +28,7 @@ object AchieveService {
                 when(body!!.code){
                     1000 ->{
                         val result = body.result
-                        homeDayView.onTodaySuccess(result!!)
+                        homeDayView.onTodaySuccess(NetworkUtils.decrypt(result, Today::class.java))
                     }
                     else -> homeView.onHomeFailure(body.code, body.message)
                 }
@@ -53,8 +54,7 @@ object AchieveService {
                 LogUtils.d("TMONTH/API-SUCCESS", body.toString())
                 when(body!!.code){
                     1000 ->{
-                        val result = body.result
-                        homeMonthView.onTMonthSuccess(result!!)
+                        homeMonthView.onTMonthSuccess(NetworkUtils.decrypt(body.result, TMonth::class.java))
                     }
                     else -> homeView.onHomeFailure(body.code, body.message)
                 }

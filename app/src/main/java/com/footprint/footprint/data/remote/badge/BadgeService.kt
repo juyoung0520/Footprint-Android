@@ -4,6 +4,7 @@ import com.footprint.footprint.ui.main.mypage.BadgeView
 import com.footprint.footprint.ui.signin.MonthBadgeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.NetworkUtils
 import com.footprint.footprint.utils.isNetworkAvailable
 import gun0912.tedimagepicker.util.ToastUtil.context
 import retrofit2.*
@@ -82,10 +83,10 @@ object BadgeService {
                 val body = response.body()
 
                 when(body!!.code){
-                    1000 ->{
+                    1000 -> {
                         //요청 성공
                         val result = body.result
-                        monthBadgeView.onMonthBadgeSuccess(true, result)
+                        monthBadgeView.onMonthBadgeSuccess(true, NetworkUtils.decrypt(result, BadgeInfo::class.java))
                         LogUtils.d("MBADGE/API-SUCCESS", body.toString())
                     }
                     3030 -> {
