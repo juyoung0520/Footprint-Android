@@ -1,6 +1,7 @@
 package com.footprint.footprint.data.remote.walk
 
 import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.ui.main.calendar.CalendarView
 import com.footprint.footprint.ui.main.calendar.SearchResultView
 import com.footprint.footprint.ui.walk.WalkAfterView
@@ -10,14 +11,12 @@ import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
 import com.footprint.footprint.utils.isNetworkAvailable
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import kotlin.collections.ArrayList
 
 object WalkService {
@@ -148,10 +147,13 @@ object WalkService {
                 response: Response<WriteWalkResponse>
             ) {
                 val res = response.body()
-                LogUtils.d("WalkService","\nwriteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
+                LogUtils.d("WalkService","\nwriteWalk-RES\ncode: ${res?.code}\nbody: ${res?.result!!.javaClass}")
 
                 when (val code = res?.code) {
-                    1000 -> walkAfterView.onWriteWalkSuccess(res?.result!!)
+                    1000 -> {
+                        val itemType = object : TypeToken<List<BadgeInfo>>() {}.type
+                        walkAfterView.onWriteWalkSuccess(NetworkUtils.decrypt(res.result, itemType))
+                    }
                     else -> walkAfterView.onWalkAfterFail(code, walk)
                 }
             }
@@ -178,7 +180,7 @@ object WalkService {
                 LogUtils.d("WalkService","\ngetWalk-RES\ncode: ${res?.code}\nbody: ${res?.result}")
 
                 if (res?.code==1000)
-                    walkDetailView.onGetWalkSuccess(res?.result)
+                    walkDetailView.onGetWalkSuccess(NetworkUtils.decrypt(res?.result, WalkInfoResponse::class.java))
                 else
                     walkDetailView.onWalkDetailGETFail(res?.code, walkIdx)
             }

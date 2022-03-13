@@ -2,10 +2,8 @@ package com.footprint.footprint.data.remote.footprint
 
 import com.footprint.footprint.data.remote.walk.BaseResponse
 import com.footprint.footprint.ui.walk.WalkDetailView
-import com.footprint.footprint.utils.FormDataUtils
-import com.footprint.footprint.utils.GlobalApplication
-import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.utils.*
+import com.google.gson.reflect.TypeToken
 import gun0912.tedimagepicker.util.ToastUtil.context
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -29,7 +27,10 @@ object FootprintService {
                 LogUtils.d("FootprintService","\ngetFootprints-RES\ncode: ${res?.code}\nbody: $res")
 
                 when (val code = res?.code) {
-                    1000, 2221 -> walkDetailView.onGetFootprintsSuccess(res?.result)    //2221: 해당 산책에 발자국 데이터가 존재하지 않음.
+                    1000 -> {
+                        val itemType = object : TypeToken<List<Footprint>>() {}.type
+                        walkDetailView.onGetFootprintsSuccess(NetworkUtils.decrypt(res.result, itemType))
+                    }
                     else -> walkDetailView.onWalkDetailGETFail(code, walkIdx)
                 }
             }

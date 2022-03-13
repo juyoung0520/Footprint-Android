@@ -1,7 +1,7 @@
 package com.footprint.footprint.data.remote.goal
 
-import com.footprint.footprint.data.model.UpdateGoalReqModel
 import com.footprint.footprint.data.remote.walk.BaseResponse
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,5 +15,5 @@ interface GoalRetrofitInterface {
     fun getNextMonthGoal(): Call<GetGoalResponse>
 
     @PATCH("users/goals")
-    fun updateGoal(@Body updateGoal: UpdateGoalReqModel): Call<BaseResponse>
+    fun updateGoal(@Body updateGoal: RequestBody): Call<BaseResponse>
 }
