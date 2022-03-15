@@ -113,7 +113,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onStart() {
         super.onStart()
         //날씨 API
-        callWeatherAPI()
+//        callWeatherAPI()
 
         //유저 조회 API
         UserService.getUser(this)

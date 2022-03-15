@@ -4,7 +4,7 @@ data class GetFootprintsResponse(
     val isSuccess: Boolean,
     val code: Int,
     val message: String,
-    val result: List<Footprint>
+    val result: String
 )
 
 data class Footprint(

@@ -6,15 +6,16 @@ data class GetBadgeResponse(
     val isSuccess: Boolean,
     val code: Int,
     val message: String,
-    val result: BadgeResponse,
+    val result: String,
 )
 
 data class ChangeRepresentativeBadgeResponse(
     val isSuccess: Boolean,
     val code: Int,
     val message: String,
-    val result: BadgeInfo,
+    val result: String,
 )
+
 data class BadgeResponse(
     val repBadgeInfo: BadgeInfo,
     val badgeList: List<BadgeInfo>

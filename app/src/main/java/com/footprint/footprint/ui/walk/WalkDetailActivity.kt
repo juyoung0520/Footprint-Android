@@ -38,8 +38,7 @@ class WalkDetailActivity :
     private var tempUpdateFootprint: Footprint? = null  //수정하고자 하는 발자국 데이터
 
     override fun initAfterBinding() {
-        FootprintService.getFootprints(this, args.walkIdx)  //산책별 발자국 리스트 조회 API 요청
-        WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청청
+        WalkService.getWalk(this, args.walkIdx) //산책 정보 조회 API 요청
         binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
 
         binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
@@ -206,6 +205,12 @@ class WalkDetailActivity :
         if (this != null) {
             jobs.add(lifecycleScope.launch {
                 bindWalkInfo(walk)
+
+                if (walk.footCount==0) {
+                    binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
+                    binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
+                } else
+                    FootprintService.getFootprints(this@WalkDetailActivity, args.walkIdx)  //산책별 발자국 리스트 조회 API 요청
             })
         }
     }
@@ -213,17 +218,12 @@ class WalkDetailActivity :
     override fun onGetFootprintsSuccess(footprints: List<Footprint>?) {
         if (this != null) {
             jobs.add(lifecycleScope.launch {
-                if (footprints == null) {   //발자국이 없는 산책 정보는 "산책 기록이 없어요!" 텍스트뷰 보여주기
-                    binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
-                    binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
-                } else {    //발자국이 있는 산책 정보는 slidedPanelLayout 보여주기
-                    binding.walkDetailSlidingUpPanelLayout.panelHeight =
-                        (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
-                    binding.walkDetailSlidedLayout.visibility = View.VISIBLE
-                    binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
+                binding.walkDetailSlidingUpPanelLayout.panelHeight =
+                    (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
+                binding.walkDetailSlidedLayout.visibility = View.VISIBLE
+                binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
 
-                    initAdapter(footprints as ArrayList<Footprint>)
-                }
+                initAdapter(footprints as ArrayList<Footprint>)
             })
         }
     }

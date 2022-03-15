@@ -25,7 +25,7 @@ object BadgeService {
                 LogUtils.d("BadgeService", "\ngetBadgeInfo-RES\ncode: ${res?.code}\nbody: $res")
 
                 when (val code = res?.code) {
-                    1000 -> badgeView.onGetBadgeSuccess(res?.result)
+                    1000 -> badgeView.onGetBadgeSuccess(NetworkUtils.decrypt(res.result, BadgeResponse::class.java))
                     else -> badgeView.onGetBadgeFail(code)
                 }
             }
@@ -53,7 +53,7 @@ object BadgeService {
                     LogUtils.d("BadgeService", "\nchangeRepresentativeBadge-RES\ncode: ${res?.code}\nbody: $res")
 
                     when (val code = res?.code) {
-                        1000 -> badgeView.onChangeRepresentativeBadgeSuccess(res?.result)
+                        1000 -> badgeView.onChangeRepresentativeBadgeSuccess(NetworkUtils.decrypt(res!!.result, BadgeInfo::class.java))
                         else -> badgeView.onChangeRepresentativeBadgeFail(code, badgeIdx)
                     }
                 }
