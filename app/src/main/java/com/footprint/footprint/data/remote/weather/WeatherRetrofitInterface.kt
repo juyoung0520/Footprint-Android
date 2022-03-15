@@ -1,11 +1,10 @@
 package com.footprint.footprint.data.remote.weather
 
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface WeatherRetrofitInterface {
-    @GET("weather")
-    fun getWeather(@Query("nx") nx: String, @Query("ny") ny: String) : Call <WeatherResponse>
-//    @GET("weather")
-//    fun getWeather(@Body location: RequestBody) : Call <WeatherResponse>
+    @POST("weather")
+    fun getWeather(@Body location: RequestBody) : Call <WeatherResponse>
 }
