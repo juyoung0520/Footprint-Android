@@ -160,6 +160,7 @@
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
+    <string name="error_no_updating_content">변경된 내용이 없어요</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>

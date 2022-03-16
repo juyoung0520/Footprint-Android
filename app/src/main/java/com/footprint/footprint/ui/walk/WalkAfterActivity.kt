@@ -134,8 +134,6 @@ class WalkAfterActivity :
                 } else
                     footprintRVAdapter.addData(footprint, tempAddFootprintPosition!!)   //어댑터에 데이터 추가하여 UI 업데이트
                 binding.walkAfterRecordTv.text = walk.footprints.size.toString()    //기록 수를 보여주는 텍스트뷰도 증가
-
-                initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
             //발자국 수정
@@ -149,10 +147,12 @@ class WalkAfterActivity :
 
                 footprintRVAdapter.updateDataVerAfter(footprint, tempUpdateFootprintPosition!!) //수정된 발자국으로 어댑터 UI 업데이트
 
+                footprintDialogFragment.dismiss()
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
             override fun cancel() {
+                initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
         })

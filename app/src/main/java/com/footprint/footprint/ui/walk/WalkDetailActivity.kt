@@ -109,8 +109,6 @@ class WalkDetailActivity :
             }
 
             override fun sendUpdatedFootprint(footprint: FootprintModel) {
-                initFootprintDialog()   //다이얼로그 프래그먼트 초기화
-
                 //수정된 데이터만 모아서 요청하기
                 val reqMap: HashMap<String, Any> = HashMap()
                 if (footprint.write != tempUpdateFootprint!!.write)   //글
@@ -129,19 +127,21 @@ class WalkDetailActivity :
                     photos = footprint.photos
                 }
 
-                //발자국 수정 요청 API 호출
-                FootprintService.updateFootprint(
-                    this@WalkDetailActivity,
-                    args.walkIdx,
-                    tempUpdateFootprintPosition!! + 1,
-                    reqMap,
-                    photos
-                )
+                if (reqMap.isEmpty() && photos==null) //변경된 내용 없음 -> "변경된 내용이 없어요" 다이얼로그 띄우기
+                    showToast(getString(R.string.error_no_updating_content))
+                else    //발자국 수정 요청 API 호출
+                    FootprintService.updateFootprint(
+                        this@WalkDetailActivity,
+                        args.walkIdx,
+                        tempUpdateFootprintPosition!! + 1,
+                        reqMap,
+                        photos
+                    )
             }
 
             override fun cancel() {
+                initFootprintDialog()   //다이얼로그 프래그먼트 초기화
             }
-
         })
     }
 
@@ -238,6 +238,9 @@ class WalkDetailActivity :
     }
 
     override fun onUpdateFootprintSuccess() {
+        footprintDialogFragment.dismiss()
+        initFootprintDialog()   //다이얼로그 프래그먼트 초기화
+
         if (this != null) {
             jobs.add(lifecycleScope.launch {
                 binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
