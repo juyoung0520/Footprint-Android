@@ -14,13 +14,11 @@ class WeatherService() {
     fun getWeather(homeView: HomeView, nx: String, ny:String){
         val weatherService = retrofit.create(WeatherRetrofitInterface::class.java)
 
-//        val location = LocationModel(nx, ny)
-//        val encryptedData = NetworkUtils.encrypt(location)
-//        val data = encryptedData.toRequestBody("application/json".toMediaType())
-        val encryptedNx = NetworkUtils.encrypt(nx)
-        val encryptedNy = NetworkUtils.encrypt(ny)
+        val location = LocationModel(nx, ny)
+        val encryptedData = NetworkUtils.encrypt(location)
+        val data = encryptedData.toRequestBody("application/json".toMediaType())
 
-        weatherService.getWeather(encryptedNx, encryptedNy).enqueue(object : Callback<WeatherResponse>{
+        weatherService.getWeather(data).enqueue(object : Callback<WeatherResponse>{
             override fun onResponse(
                 call: Call<WeatherResponse>,
                 response: Response<WeatherResponse>
