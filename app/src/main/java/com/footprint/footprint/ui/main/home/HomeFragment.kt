@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
@@ -40,7 +41,7 @@ import java.time.ZoneId
 import java.util.*
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate),
-    HomeView, HomeDayView, HomeMonthView{
+    HomeView, HomeDayView, HomeMonthView {
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -61,7 +62,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     //Walk 액티비티로 전달할 유저 정보
-    private var userInfo =  UserInfoModel()
+    private var userInfo = UserInfoModel()
 
     //lifecycleScope 저장해두는 jobs
     private var jobs: ArrayList<Job> = arrayListOf()
@@ -126,10 +127,36 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
+            // 안드로이드 SDK 버전 Q 이상은 세 가지 권한 필요
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
 
-                return@setOnClickListener
+                    return@setOnClickListener
+                }
+            } else {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
+
+                    return@setOnClickListener
+                }
             }
 
             //유저 정보가 다 채워져야 산책 시작 가능
@@ -139,7 +166,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                 val userInfoJson = Gson().toJson(userInfo)
                 intent.putExtra("userInfo", userInfoJson)
 
-                LogUtils.d("userInfo", "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}")
+                LogUtils.d(
+                    "userInfo",
+                    "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}"
+                )
                 startActivity(intent)
             } else { //정보 없음
                 Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
@@ -222,7 +252,14 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
                 LogUtils.d("WEATHER/PERMISSION-NO", "user GPS permission 거절")
 
-                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                )
                     showGPSDeniedDialog(getString(R.string.msg_denied_foreground_gps))
             }
         }
@@ -259,7 +296,11 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
                             LogUtils.d("WEATHER/API-READY", "rs: ${rs.x.toInt()}, ${rs.y.toInt()}")
                             //날씨 api 호출
-                            WeatherService().getWeather(this@HomeFragment, rs.x.toInt().toString(), rs.y.toInt().toString())
+                            WeatherService().getWeather(
+                                this@HomeFragment,
+                                rs.x.toInt().toString(),
+                                rs.y.toInt().toString()
+                            )
                         }
                     }
 
@@ -390,17 +431,18 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     override fun onHomeFailure(code: Int, message: String) {
         LogUtils.d("HOME/API-FAILURE", "code: $code message: $message")
 
-        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
+        val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
             getString(R.string.error_network)
-        }else{ //나머지
+        } else { //나머지
             getString(R.string.error_api_fail)
         }
-        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-            UserService.getUser(this)
-            AchieveService.getToday(this)
-            AchieveService.getTMonth(this)
-            callWeatherAPI()
-        }.show()
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) {
+                UserService.getUser(this)
+                AchieveService.getToday(this)
+                AchieveService.getTMonth(this)
+                callWeatherAPI()
+            }.show()
     }
 
 
