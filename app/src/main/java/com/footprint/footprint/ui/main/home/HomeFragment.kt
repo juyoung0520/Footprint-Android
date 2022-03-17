@@ -46,18 +46,18 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
     private lateinit var gpsDescDialog: AlertDialog
-    private lateinit var backgroundGPSDialog: AlertDialog
+    private var backgroundGPSDialog: AlertDialog? = null
     private val fragmentList = arrayListOf<Fragment>(HomeDayFragment(), HomeMonthFragment())
     private val gpsBackgroundPermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
             //허용 시
             LogUtils.d("WEATHER/PERMISSION-OK", "user GPS Background permission 허용")
-            backgroundGPSDialog.dismiss()
+            backgroundGPSDialog?.dismiss()
         }
 
         override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
             LogUtils.d("WEATHER/PERMISSION-NO", "user GPS Background permission 거절")
-            backgroundGPSDialog.dismiss()
+            backgroundGPSDialog?.dismiss()
         }
     }
 
@@ -68,11 +68,17 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private var jobs: ArrayList<Job> = arrayListOf()
 
     override fun initAfterBinding() {
+        val gpsMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getString(R.string.msg_foreground_gps)
+        } else {
+            getString(R.string.msg_gps)
+        }
+
         gpsDescDialog = this?.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.apply {
                 setTitle(getString(R.string.title_notification))
-                setMessage(getString(R.string.msg_gps))
+                setMessage(gpsMessage)
                 setPositiveButton(R.string.action_agree) { dialog, id ->
                     setPermission()    //위치 정보 사용 요청(포그라운드)
                 }
@@ -84,18 +90,21 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         }
 
         //백그라운드 위치 권한 관련 다이얼로그
-        backgroundGPSDialog = this?.let {
-            val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            builder.apply {
-                setMessage(getString(R.string.msg_background_gps))
-                setPositiveButton(R.string.action_change_gps_access) { dialog, id ->
-                    TedPermission.create().setPermissionListener(gpsBackgroundPermissionListener)
-                        .setPermissions(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                        .check()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            backgroundGPSDialog = this.let {
+                val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                builder.apply {
+                    setMessage(getString(R.string.msg_background_gps))
+                    setPositiveButton(R.string.action_change_gps_access) { dialog, id ->
+                        TedPermission.create()
+                            .setPermissionListener(gpsBackgroundPermissionListener)
+                            .setPermissions(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                            .check()
+                    }
+                    setNegativeButton(R.string.action_maintain_gps_access, null)
                 }
-                setNegativeButton(R.string.action_maintain_gps_access, null)
+                builder.create()
             }
-            builder.create()
         }
 
         //Initialize
@@ -127,36 +136,25 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun setClickListener() {
         //산책 시작 버튼 => Walk Activity
         binding.homeStartBtn.setOnClickListener {
-            // 안드로이드 SDK 버전 Q 이상은 세 가지 권한 필요
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                showGPSDeniedDialog(getString(R.string.msg_denied_walk_for_foreground_gps))
 
-                    return@setOnClickListener
-                }
-            } else {
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    showGPSDeniedDialog(getString(R.string.msg_denied_background_gps))
+                return@setOnClickListener
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                showGPSDeniedDialog(getString(R.string.msg_denied_walk_for_background_gps))
 
-                    return@setOnClickListener
-                }
+                return@setOnClickListener
             }
 
             //유저 정보가 다 채워져야 산책 시작 가능
@@ -245,7 +243,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
                 if (!getFirstBackgroundGPSCheck()) {    //처음 들어온 사용자 -> 백그라운드 위치 권한 다이얼로그 띄우기
                     saveFirstBackgroundGPSCheck(true)
-                    backgroundGPSDialog.show()
+
+                    backgroundGPSDialog?.show()
                 }
             }
 
