@@ -471,8 +471,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         footprintDialogFragment.setMyDialogCallback(object :
             FootprintDialogFragment.MyDialogCallback {
             override fun sendFootprint(footprint: FootprintModel) {
-                initFootprintDialog()   //FootprintDialogFragment 초기화
-
                 //"발자국을 남겼어요." 다이얼로그 화면 띄우기
                 val action =
                     WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.msg_leave_footprint))
@@ -496,6 +494,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
             //다이얼로그 프래그먼트에서 취소를 누르거나 뒤로 나왔을 때 -> 타이머 재생
             override fun cancel() {
+                initFootprintDialog()   //FootprintDialogFragment 초기화
+
                 if (!isWalking)
                     sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT)    // 산책 재시작
             }

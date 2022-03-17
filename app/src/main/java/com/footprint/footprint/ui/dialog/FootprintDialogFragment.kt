@@ -30,7 +30,6 @@ import com.gun0912.tedpermission.normal.TedPermission
 import com.santalu.textmatcher.rule.HashtagRule
 import com.santalu.textmatcher.style.HashtagStyle
 import gun0912.tedimagepicker.builder.TedImagePicker
-import kotlinx.coroutines.*
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -283,8 +282,9 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
                 bundle.putString("msg", getString(R.string.msg_add_photo_or_writing))
                 msgDialogFragment.arguments = bundle
                 msgDialogFragment.show(requireActivity().supportFragmentManager, null)
-            } else {    //유효성 검사 통과 -> 프래그먼트 종료, 콜백함수 호출
-                dismiss()
+            } else {    //유효성 검사 통과 -> 프래그먼트 종료(필수X), 콜백함수 호출
+                if (!isUpdate)  //발자국 추가일 때만 다이얼로그 종료
+                    dismiss()
 
                 if (isUpdate)   //발자국 수정일 때
                     myDialogCallback.sendUpdatedFootprint(setFootprintData())
