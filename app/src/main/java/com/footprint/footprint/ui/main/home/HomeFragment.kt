@@ -107,10 +107,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
         }
 
-        //Initialize
-        initTB()
-        initDate()
-
         if (!getBackgroundGPS()) {  //첫 사용자에게 위치 서비스 사용에 대한 안내 다이얼로그 띄우기
             saveBackgroundGPS(true)
             gpsDescDialog.show()
@@ -118,6 +114,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             setPermission()    //위치 정보 사용 요청
 
         setClickListener() //클릭 이벤트 설정
+
+        //Initialize
+        initTB()
+        initDate()
     }
 
     override fun onStart() {

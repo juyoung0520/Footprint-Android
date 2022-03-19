@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main.home
 
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +11,7 @@ import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.utils.getDeviceWidth
+import com.google.gson.Gson
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
@@ -22,6 +24,15 @@ class HomeMonthFragment() :
     private lateinit var calRVAdapter: HomeMonthRVAdapter
 
     override fun initAfterBinding() {
+        setLoadingBar(true)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState != null){
+            val jsonTmonth = savedInstanceState.getString("TMONTH")
+            tMonth = Gson().fromJson(jsonTmonth, TMonth::class.java)
+        }
     }
 
     override fun onResume() {
@@ -84,5 +95,11 @@ class HomeMonthFragment() :
             binding.homeMonthLoadingPb.visibility = View.GONE
             binding.homeMonthLoadingBgV.visibility = View.GONE
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val jsonTmonth = Gson().toJson(tMonth)
+        outState.putString("TMONTH", jsonTmonth)
     }
 }
