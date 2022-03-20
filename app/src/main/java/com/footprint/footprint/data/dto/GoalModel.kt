@@ -1,4 +1,4 @@
-package com.footprint.footprint.data.model
+package com.footprint.footprint.data.dto
 
 import java.io.Serializable
 
@@ -13,9 +13,3 @@ data class UserGoalTime(
     var walkGoalTime: Int? = null,
     var walkTimeSlot: Int? = null
 ): Serializable
-
-data class UpdateGoalReqModel(
-    val dayIdx: ArrayList<Int> = arrayListOf(),
-    var walkGoalTime: Int? = null,
-    var walkTimeSlot: Int? = null
-)

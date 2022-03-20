@@ -6,13 +6,11 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
 import com.footprint.footprint.domain.model.Goal
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.viewmodel.GoalViewModel

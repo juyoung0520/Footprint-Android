@@ -18,6 +18,7 @@ object AuthService {
 
     /*자동 로그인 API*/
     fun autoLogin(splashView: SplashView){
+        LogUtils.d("AuthService", "autoLogin")
         authService.autoLogin().enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val body = response.body()
@@ -45,6 +46,7 @@ object AuthService {
 
     /*로그인 API*/
     fun login(signinView: SignInView, socialUserData: SocialUserModel){
+        LogUtils.d("AuthService", "login")
 
         val encryptedData = NetworkUtils.encrypt(socialUserData)
         val data = encryptedData.toRequestBody("application/json".toMediaType())
