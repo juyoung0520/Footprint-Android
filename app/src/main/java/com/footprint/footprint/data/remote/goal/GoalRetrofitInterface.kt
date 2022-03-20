@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.goal
 
-import com.footprint.footprint.data.remote.walk.BaseResponse
+import com.footprint.footprint.data.model.BaseResponse
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body

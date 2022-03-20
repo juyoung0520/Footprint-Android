@@ -1,8 +1,8 @@
 package com.footprint.footprint.data.remote.goal
 
+import com.footprint.footprint.data.model.BaseResponse
 import com.footprint.footprint.data.model.GoalModel
 import com.footprint.footprint.data.model.UpdateGoalReqModel
-import com.footprint.footprint.data.remote.walk.BaseResponse
 import com.footprint.footprint.ui.main.mypage.GoalNextMonthUpdateView
 import com.footprint.footprint.ui.main.mypage.GoalView
 import com.footprint.footprint.utils.GlobalApplication
