@@ -1,11 +1,13 @@
 package com.footprint.footprint.ui.main.home
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.footprint.footprint.data.remote.achieve.Today
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.google.gson.Gson
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -17,6 +19,16 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
 
     override fun initAfterBinding() {
         setLoadingBar(true) //초기 상태
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // onPause에서 임시 저장된 today 정보 받아오기
+        if(savedInstanceState != null){
+            val jsonToday = savedInstanceState.getString("TODAY")
+            today = Gson().fromJson(jsonToday, Today::class.java)
+        }
     }
 
     override fun onResume() {
@@ -81,6 +93,14 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
             binding.homeDayLoadingPb.visibility = View.GONE
             binding.homeDayLoadingBgV.visibility = View.GONE
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        // onPause 시 날라가는 데이터 임시 저장
+        val jsonToday = Gson().toJson(today)
+        outState.putString("TODAY", jsonToday)
     }
 
     override fun onDestroyView() {
