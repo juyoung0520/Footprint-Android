@@ -1,8 +1,8 @@
-package com.footprint.footprint.data.remote.walk
+package com.footprint.footprint.data.model
 
 data class BaseResponse(
     val isSuccess: Boolean,
     val code: Int,
     val message: String,
-    val result: Any
+    val result: String
 )

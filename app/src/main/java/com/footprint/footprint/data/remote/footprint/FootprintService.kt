@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.footprint
 
-import com.footprint.footprint.data.remote.walk.BaseResponse
+import com.footprint.footprint.data.model.BaseResponse
 import com.footprint.footprint.ui.walk.WalkDetailView
 import com.footprint.footprint.utils.*
 import com.google.gson.reflect.TypeToken

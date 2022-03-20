@@ -10,6 +10,8 @@ import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
 import com.footprint.footprint.data.model.SimpleUserModel
@@ -20,6 +22,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
@@ -30,6 +33,7 @@ class MyInfoUpdateFragment :
     MyInfoUpdateView {
 
     private val args: MyInfoUpdateFragmentArgs by navArgs()
+    private val userVm: UserViewModel by viewModels()
 
     private lateinit var animation: Animation   //EditText 애니메이션
     private lateinit var user: SimpleUserModel
@@ -37,6 +41,8 @@ class MyInfoUpdateFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        observe()
 
         user = Gson().fromJson(args.user, SimpleUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
 
@@ -120,7 +126,7 @@ class MyInfoUpdateFragment :
             hideKeyboard()  //키보드 내리기
 
             if (validate()) {   //유효성 검사를 통과한 경우 -> 1. 사용자 정보 수정 API 를 요청한다. 2. 요청 성공: MyInfoUpdateFragment 화면으로 돌아간다.
-                UserService.updateUser(this, bindUser())
+                userVm.updateUser(bindUser())
             }
         }
     }
@@ -335,5 +341,12 @@ class MyInfoUpdateFragment :
             .setAction(getString(R.string.action_retry)) {
                 UserService.updateUser(this, bindUser())
             }.show()
+    }
+
+    private fun observe() {
+        userVm.isEdit.observe(this, Observer {
+            if (it)
+                (requireActivity()).onBackPressed()
+        })
     }
 }

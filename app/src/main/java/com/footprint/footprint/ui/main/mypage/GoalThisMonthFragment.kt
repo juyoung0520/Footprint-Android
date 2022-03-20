@@ -1,43 +1,40 @@
 package com.footprint.footprint.ui.main.mypage
 
 import android.graphics.Paint
+import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.remote.goal.GoalService
+import com.footprint.footprint.data.remote.walk.WalkService
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
+import com.footprint.footprint.domain.model.Goal
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
 class GoalThisMonthFragment :
-    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate), GoalView {
+    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
-    private lateinit var goal: GoalModel
+    private lateinit var goal: Goal
 
-    private val jobs: ArrayList<Job> = arrayListOf()
+    private val goalVm: GoalViewModel by viewModel()
 
     override fun initAfterBinding() {
-        GoalService.getThisMonthGoal(this)
+        binding.goalThisMonthPb.visibility = View.VISIBLE
+        goalVm.getThisMonthGoal()
 
         setMyClickListener()
+        observe()
         binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
-    }
-
-    override fun onDestroyView() {
-        for (job in jobs) {
-            job.cancel()
-        }
-
-        super.onDestroyView()
     }
 
     private fun initAdapter() {
@@ -113,31 +110,27 @@ class GoalThisMonthFragment :
             "${yearFormat.format(currentTime)}년 ${monthFormat.format(currentTime).toInt() + 1}월"
     }
 
-    private fun showSnackBar(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-            GoalService.getThisMonthGoal(this@GoalThisMonthFragment)
-        }.show()
-    }
+    private fun observe() {
+        goalVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.goalThisMonthPb.visibility = View.INVISIBLE
 
-    override fun onGetGoalSuccess(goal: GoalModel) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                this@GoalThisMonthFragment.goal = goal
-            })
+            when (it) {
+                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    goalVm.getThisMonthGoal()
+                }.show()
+                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    goalVm.getThisMonthGoal()
+                }.show()
+            }
+        })
 
-            initAdapter()  //어댑터 초기화
-            bind()  //유저 데이터 바인딩
-        }
-    }
+        goalVm.thisMonthGoal.observe(viewLifecycleOwner, Observer {
+            binding.goalThisMonthPb.visibility = View.INVISIBLE
 
-    override fun onGoalFail(code: Int?) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                when (code) {
-                    6000 -> showSnackBar(getString(R.string.error_network))   //네트워크 연결 문제
-                    else -> showSnackBar(getString(R.string.error_api_fail))   //그 이외 문제
-                }
-            })
-        }
+            this@GoalThisMonthFragment.goal = it
+
+            initAdapter()
+            bind()
+        })
     }
 }

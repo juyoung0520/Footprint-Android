@@ -9,7 +9,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.footprint.footprint.R
 import com.footprint.footprint.utils.Inflate
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : Fragment() {
     private var _binding: VB? = null
@@ -45,5 +47,11 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
         val mInputMethodManager =
             requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         mInputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+    }
+
+    fun showSnackBar(text: String, callback: () -> Unit) {
+        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+            callback
+        }.show()
     }
 }
