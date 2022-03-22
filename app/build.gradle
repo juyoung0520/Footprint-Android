@@ -29,11 +29,21 @@ android {
         manifestPlaceholders["naver_map_sdk_client_id"] = naver_map_sdk_client_id
     }
 
+    signingConfigs {
+        releaseWithSignedKey {
+            storeFile file(properties['keystore.path'])
+            storePassword properties['keystore.password']
+            keyAlias properties['keystore.alias']
+            keyPassword properties['keystore.password']
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseWithSignedKey
         }
     }
 
