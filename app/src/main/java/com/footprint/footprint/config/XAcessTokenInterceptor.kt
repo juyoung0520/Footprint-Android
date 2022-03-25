@@ -42,10 +42,6 @@ class XAccessTokenInterceptor : Interceptor {
 
     private fun Response.extractResponseJson(): JSONObject {
         val jsonString = this.body?.string()
-        LogUtils.d(
-            "VinylaResponseUnboxingInterceptor",
-            "jsonString : $jsonString"
-        )
         return try {
             JSONObject(jsonString)
         } catch (exception: Exception) {

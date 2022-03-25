@@ -1,7 +1,7 @@
 package com.footprint.footprint.ui.main.home
 
-import com.footprint.footprint.data.remote.user.User
-import com.footprint.footprint.data.remote.weather.Weather
+import com.footprint.footprint.data.dto.User
+import com.footprint.footprint.data.dto.Weather
 
 
 interface HomeView {

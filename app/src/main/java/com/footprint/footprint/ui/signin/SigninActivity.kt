@@ -19,11 +19,11 @@ import com.footprint.footprint.BuildConfig
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.SocialUserModel
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.utils.*
 import com.google.android.gms.auth.api.signin.*
@@ -192,7 +192,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         //1. spf에 jwtId 저장, 로그인 상태 저장
         saveJwt(jwtId)
         saveLoginStatus(socialUserModel.providerType)
-       
 
         //2. STATUS에 따른 처리
         // ACTIVE: 가입된 회원 -> 뱃지 API 호출
@@ -284,7 +283,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         }
     }
 
-    fun runDelayed(millis: Long, function: () -> Unit) {
+    private fun runDelayed(millis: Long, function: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(function, millis)
     }
 }

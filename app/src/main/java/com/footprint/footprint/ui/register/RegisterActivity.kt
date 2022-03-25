@@ -1,7 +1,7 @@
 package com.footprint.footprint.ui.register
 
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.data.dto.UserModel
+import com.footprint.footprint.domain.model.UserModel
 import com.footprint.footprint.databinding.ActivityRegisterBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.RegisterViewpagerAdapter
@@ -9,6 +9,7 @@ import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 import com.footprint.footprint.ui.register.info.RegisterInfoFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.footprint.footprint.utils.LogUtils
+
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>(ActivityRegisterBinding::inflate) {
     private lateinit var registerVPAdapter: RegisterViewpagerAdapter

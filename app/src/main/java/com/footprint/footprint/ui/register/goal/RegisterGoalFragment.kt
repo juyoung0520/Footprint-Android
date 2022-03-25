@@ -2,9 +2,9 @@ package com.footprint.footprint.ui.register.goal
 
 import android.content.Intent
 import android.view.View
+import androidx.lifecycle.Observer
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.UserModel
-import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.domain.model.UserModel
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
@@ -12,7 +12,9 @@ import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterGoalFragment() :
     BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate), RegisterView {
@@ -20,10 +22,13 @@ class RegisterGoalFragment() :
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
     private lateinit var userModel: UserModel
 
+    private val userVm: UserViewModel by viewModel()
+
     override fun initAfterBinding() {
         initAdapter()
         initWalkTimeDialog()
         setMyEventListener()
+        observe()
     }
 
     override fun onResume() {
@@ -186,7 +191,7 @@ class RegisterGoalFragment() :
             LogUtils.d("RegisterGoalFragment", "완료! -> $userModel")
 
             //정보 등록 API 호출
-            UserService.registerInfos(this, userModel)
+            userVm.registerUser(userModel)
         }
     }
 
@@ -203,27 +208,33 @@ class RegisterGoalFragment() :
 
 
     /*정보 등록 API -> Response*/
-
     override fun onRegisterSuccess(result: String?) {
-        LogUtils.d("REGISTER/API-SUCCESS", "성공" + result.toString())
 
-            //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(Intent(intent))
     }
 
     override fun onRegisterFailure(code: Int, message: String) {
-        LogUtils.d("REGISTER/API-FAILURE", "code: $code message: $message")
 
-        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
-            getString(R.string.error_network)
-        }else{ //나머지
-            getString(R.string.error_api_fail)
-        }
-        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-            UserService.registerInfos(this, userModel)
-        }.show()
     }
 
+    private fun observe(){
+        userVm.mutableErrorType.observe(viewLifecycleOwner, Observer{
+            when (it) {
+                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    userVm.registerUser(userModel)
+                }.show()
+                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    userVm.registerUser(userModel)
+                }.show()
+            }
+        })
+
+        userVm.isRegistered.observe(viewLifecycleOwner, Observer{
+            if(it){
+                //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(Intent(intent))
+            }
+        })
+    }
 }

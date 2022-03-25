@@ -13,10 +13,10 @@ import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.remote.achieve.*
-import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.dto.User
 import com.footprint.footprint.data.remote.user.UserService
-import com.footprint.footprint.utils.loadSvg
 import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.utils.loadSvg
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
