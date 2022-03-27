@@ -3,7 +3,7 @@ package com.footprint.footprint.ui.register.goal
 import android.content.Intent
 import android.view.View
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.dto.UserModel
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment

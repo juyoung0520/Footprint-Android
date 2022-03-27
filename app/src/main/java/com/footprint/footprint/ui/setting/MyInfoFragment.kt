@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.SimpleUserModel
+import com.footprint.footprint.data.dto.SimpleUserModel
 import com.footprint.footprint.data.remote.user.User
 import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.data.remote.weather.Weather

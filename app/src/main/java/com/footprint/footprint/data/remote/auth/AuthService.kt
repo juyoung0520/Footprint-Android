@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.auth
 
-import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.data.dto.SocialUserModel
 import com.footprint.footprint.ui.setting.SettingView
 import com.footprint.footprint.ui.signin.SignInView
 import com.footprint.footprint.ui.signin.SplashView

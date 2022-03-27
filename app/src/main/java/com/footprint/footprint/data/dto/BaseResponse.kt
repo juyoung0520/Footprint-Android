@@ -1,4 +1,4 @@
-package com.footprint.footprint.data.model
+package com.footprint.footprint.data.dto
 
 data class BaseResponse(
     val isSuccess: Boolean,

@@ -1,7 +1,6 @@
 package com.footprint.footprint.data.repository.remote
 
-import com.footprint.footprint.data.model.Result
-import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.data.dto.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -29,5 +28,4 @@ abstract class BaseRepository {
             }
         }
     }
-
 }

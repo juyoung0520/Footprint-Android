@@ -1,6 +1,4 @@
-package com.footprint.footprint.data.model
-
-import com.footprint.footprint.utils.ErrorType
+package com.footprint.footprint.data.dto
 
 sealed class Result<out T> {
     data class Success<out T>(val value: T): Result<T>()

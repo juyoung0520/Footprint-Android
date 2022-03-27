@@ -17,9 +17,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.model.UserInfoModel
-import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.dto.FootprintModel
+import com.footprint.footprint.data.dto.UserInfoModel
+import com.footprint.footprint.data.dto.WalkModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
 import com.footprint.footprint.service.Path
 import com.footprint.footprint.service.BackgroundWalkService

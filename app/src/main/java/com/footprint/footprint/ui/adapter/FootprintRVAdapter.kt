@@ -12,7 +12,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.databinding.ItemFootprintBinding
 import com.footprint.footprint.utils.LogUtils

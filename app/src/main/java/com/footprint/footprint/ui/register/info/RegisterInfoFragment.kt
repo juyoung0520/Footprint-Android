@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils
 import android.widget.RadioGroup
 import androidx.core.view.updateLayoutParams
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.dto.UserModel
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.register.RegisterActivity

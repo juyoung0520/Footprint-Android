@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.footprint
 
-import com.footprint.footprint.data.model.BaseResponse
+import com.footprint.footprint.data.dto.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call

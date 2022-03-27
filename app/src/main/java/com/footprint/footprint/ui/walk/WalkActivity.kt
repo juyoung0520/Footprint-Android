@@ -1,10 +1,8 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
-import android.util.Log
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserInfoModel
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.dto.UserInfoModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment

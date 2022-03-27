@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.data.remote.footprint.FootprintService
 import com.footprint.footprint.data.remote.walk.WalkInfoResponse

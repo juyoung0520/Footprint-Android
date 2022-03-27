@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.FootprintModel
+import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils

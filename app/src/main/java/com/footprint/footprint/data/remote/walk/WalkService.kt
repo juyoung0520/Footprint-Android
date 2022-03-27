@@ -1,7 +1,7 @@
 package com.footprint.footprint.data.remote.walk
 
-import com.footprint.footprint.data.model.BaseResponse
-import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.dto.BaseResponse
+import com.footprint.footprint.data.dto.WalkModel
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.ui.main.calendar.CalendarView
 import com.footprint.footprint.ui.main.calendar.SearchResultView

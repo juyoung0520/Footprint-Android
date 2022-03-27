@@ -5,8 +5,8 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.FootprintModel
-import com.footprint.footprint.data.model.WalkModel
+import com.footprint.footprint.data.dto.FootprintModel
+import com.footprint.footprint.data.dto.WalkModel
 import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.data.remote.walk.WalkService

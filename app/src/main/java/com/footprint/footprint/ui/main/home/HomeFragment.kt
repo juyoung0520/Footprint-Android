@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserInfoModel
+import com.footprint.footprint.data.dto.UserInfoModel
 import com.footprint.footprint.data.remote.achieve.AchieveService
 import com.footprint.footprint.data.remote.achieve.TMonth
 import com.footprint.footprint.data.remote.achieve.Today
