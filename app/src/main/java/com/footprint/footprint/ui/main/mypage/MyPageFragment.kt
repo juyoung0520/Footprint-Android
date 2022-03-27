@@ -6,17 +6,20 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.classes.custom.CustomBarChartRender
+import com.footprint.footprint.data.dto.AchieveDetailResult
+import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.classes.custom.CustomBarChartRender
-import com.footprint.footprint.data.remote.achieve.*
-import com.footprint.footprint.data.dto.User
-import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.isNetworkAvailable
 import com.footprint.footprint.utils.loadSvg
+import com.footprint.footprint.viewmodel.AchieveViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -28,14 +31,15 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
-import kotlin.collections.ArrayList
 
-class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
-    MyPageView {
+class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate){
     private var isInitialized = false
     private var isFromFragment = false
     private val jobs = arrayListOf<Job>()
+
+    private val achieveVm: AchieveViewModel by viewModel()
 
     override fun initAfterBinding() {
         if (isFromFragment || !isInitialized) {
@@ -49,8 +53,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         // 사용자, 통계 API 호출
-        UserService.getUser(this)
-        AchieveService.getInfoDetail(this)
+        achieveVm.getInfoDetail()
+        binding.mypageLoadingPb.visibility = View.VISIBLE
+
+        observe()
     }
 
     private fun setBinding() {
@@ -84,6 +90,22 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                 valueFormatter = XAxisFormatter(getRecentMonths(true))
             }
         }
+    }
+
+    private fun observe() {
+        // fail 일때
+        achieveVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
+                else -> showSnackBar(getString(R.string.error_api_fail))
+            }
+        })
+
+        achieveVm.infoDetail.observe(viewLifecycleOwner, Observer { infoDetail ->
+            binding.mypageLoadingPb.visibility = View.GONE
+
+            setAchieveDetailResult(infoDetail)
+        })
     }
 
     private fun setAchieveDetailResult(result: AchieveDetailResult) {
@@ -422,48 +444,48 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    override fun onMyPageLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageLoadingPb.visibility = View.VISIBLE
-            })
-        }
-    }
-
-    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageLoadingPb.visibility = View.GONE
-
-                setAchieveDetailResult(achieveDetailResult)
-            })
-        }
-    }
-
-    override fun onUserSuccess(user: User) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageNickNameTv.text = user.nickname
-
-                if (user.badgeUrl==null)    //대표 뱃지가 없을 경우
-                    binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
-                else    //대표 뱃지가 있을 경우
-                    binding.mypageRepBadgeIv.loadSvg(requireContext(), user.badgeUrl)
-            })
-        }
-    }
-
-    override fun onMyPageFailure(code: Int, message: String) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                if (!isNetworkAvailable(requireContext())) {
-                    showSnackBar(getString(R.string.error_network))
-                } else {
-                    showSnackBar(getString(R.string.error_api_fail))
-                }
-            })
-        }
-    }
+//    override fun onMyPageLoading() {
+//        if (view != null) {
+//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+//                binding.mypageLoadingPb.visibility = View.VISIBLE
+//            })
+//        }
+//    }
+//
+//    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
+//        if (view != null) {
+//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+//                binding.mypageLoadingPb.visibility = View.GONE
+//
+//                setAchieveDetailResult(achieveDetailResult)
+//            })
+//        }
+//    }
+//
+//    override fun onUserSuccess(user: User) {
+//        if (view != null) {
+//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+//                binding.mypageNickNameTv.text = user.nickname
+//
+//                if (user.badgeUrl==null)    //대표 뱃지가 없을 경우
+//                    binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
+//                else    //대표 뱃지가 있을 경우
+//                    binding.mypageRepBadgeIv.loadSvg(requireContext(), user.badgeUrl)
+//            })
+//        }
+//    }
+//
+//    override fun onMyPageFailure(code: Int, message: String) {
+//        if (view != null) {
+//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
+//                if (!isNetworkAvailable(requireContext())) {
+//                    showSnackBar(getString(R.string.error_network))
+//                } else {
+//                    showSnackBar(getString(R.string.error_api_fail))
+//                }
+//            })
+//        }
+//    }
 
     private fun showSnackBar(errorMessage: String) {
         Snackbar.make(
@@ -472,9 +494,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             // 유저 API 오류
-            UserService.getUser(this)
             // 통계 API 오류
-            AchieveService.getInfoDetail(this)
+            achieveVm.getInfoDetail()
         }.show()
     }
 

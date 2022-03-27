@@ -6,4 +6,5 @@ import com.footprint.footprint.data.dto.Result
 interface AchieveRemoteDataSource {
     suspend fun getToday(): Result<BaseResponse>
     suspend fun getTmonth(): Result<BaseResponse>
+    suspend fun getInfoDetail(): Result<BaseResponse>
 }
