@@ -7,7 +7,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.config.XAccessTokenInterceptor
-import com.footprint.footprint.viewmodel.appModule
+import com.footprint.footprint.config.appModule
 import com.kakao.sdk.common.KakaoSdk
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
