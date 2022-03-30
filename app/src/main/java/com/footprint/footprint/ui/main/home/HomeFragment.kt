@@ -17,7 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.Weather
 import com.footprint.footprint.domain.model.LocationModel
-import com.footprint.footprint.domain.model.UserInfoModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.data.dto.TMonth
 import com.footprint.footprint.data.dto.Today
 import com.footprint.footprint.data.dto.User
@@ -49,13 +49,10 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     //뷰모델
     private val homeVm: HomeViewModel by sharedViewModel()
-    private lateinit var user: User
+    private lateinit var user: SimpleUserModel
     private lateinit var weather: Weather
     private lateinit var today: Today
     private lateinit var tmonth: TMonth
-
-    //Walk 액티비티로 전달할 유저 정보
-    private var userInfo = UserInfoModel()
 
     private val gpsBackgroundPermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -162,16 +159,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
 
             //유저 정보가 다 채워져야 산책 시작 가능
-            if (userInfo.height != null && userInfo.weight != null && userInfo.walkNumber != null) {
+            if (user.height != null && user.weight != null && user.walkNumber != null) {
                 val intent = Intent(activity, WalkActivity::class.java)
 
-                val userInfoJson = Gson().toJson(userInfo)
+                val userInfoJson = Gson().toJson(user)
                 intent.putExtra("userInfo", userInfoJson)
 
-                LogUtils.d(
-                    "userInfo",
-                    "목표 시간: ${userInfo.goalWalkTime} 키: ${userInfo.height} 몸무게: ${userInfo.weight} 산책횟수:  ${userInfo.walkNumber}"
-                )
                 startActivity(intent)
             } else { //정보 없음
                 Toast.makeText(activity, "다시 시도해 주세요", Toast.LENGTH_SHORT).show()
@@ -343,7 +336,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         homeVm.thisUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this@HomeFragment.user = it
-            userInfo.walkNumber = user.walkNumber
+            user.walkNumber = user.walkNumber
             bind()
         })
 
@@ -366,10 +359,37 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun bind(){
         if(::user.isInitialized){
             binding.homeTopUsernameTv.text = user.nickname
-            userInfo.gender = user.sex
-            userInfo.height = user.height
-            userInfo.weight = user.weight
-            userInfo.walkNumber = user.walkNumber
+
+            if(::today.isInitialized){
+                user.goalWalkTime = today.walkGoalTime
+
+                //목표 바꿔주기
+                val color =
+                    if (today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
+                binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
+                binding.homeDayGoalWalkTv.text = today.walkTime.toString()
+                binding.homeDayGoalWalkTv.isSelected = true
+                binding.homeDayGoalDistTv.text = today.distance.toString()
+                binding.homeDayGoalDistTv.isSelected = true
+                binding.homeDayGoalKcalTv.text = today.calorie.toString()
+                binding.homeDayGoalKcalTv.isSelected = true
+            }
+
+            if(::tmonth.isInitialized ){
+                //누적 산책시간
+                val monthTotalMin = tmonth.getMonthTotal.monthTotalMin
+                val color = if (monthTotalMin > user.walkNumber!!) "#FFC01D" else "#241F20"
+                binding.homeMonthGoalWalkTv.setTextColor(Color.parseColor(color))
+                binding.homeMonthGoalWalkTv.text = monthTotalMin.toString()
+                binding.homeMonthGoalWalkTv.isSelected = true
+                //누적 거리
+                binding.homeMonthGoalDistTv.text =
+                    tmonth.getMonthTotal.monthTotalDistance.toString()
+                binding.homeMonthGoalDistTv.isSelected = true
+                //누적 칼로리
+                binding.homeMonthGoalKcalTv.text = tmonth.getMonthTotal.monthPerCal.toString()
+                binding.homeMonthGoalKcalTv.isSelected = true
+            }
         }
 
         if(::weather.isInitialized){
@@ -393,37 +413,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                 else -> R.drawable.ic_weather_sunny
             }
             binding.homeTopWeatherIv.setImageResource(imgRes)
-        }
-
-        if(::today.isInitialized){
-            userInfo.goalWalkTime = today.walkGoalTime
-
-            //목표 바꿔주기
-            val color =
-                if (today.walkTime >= today.walkGoalTime) R.color.secondary else R.color.black
-            binding.homeMonthGoalWalkTv.setTextColor(resources.getColor(color))
-            binding.homeDayGoalWalkTv.text = today.walkTime.toString()
-            binding.homeDayGoalWalkTv.isSelected = true
-            binding.homeDayGoalDistTv.text = today.distance.toString()
-            binding.homeDayGoalDistTv.isSelected = true
-            binding.homeDayGoalKcalTv.text = today.calorie.toString()
-            binding.homeDayGoalKcalTv.isSelected = true
-        }
-
-        if(::tmonth.isInitialized && ::user.isInitialized){
-            //누적 산책시간
-            val monthTotalMin = tmonth.getMonthTotal.monthTotalMin
-            val color = if (monthTotalMin > user.walkNumber) "#FFC01D" else "#241F20"
-            binding.homeMonthGoalWalkTv.setTextColor(Color.parseColor(color))
-            binding.homeMonthGoalWalkTv.text = monthTotalMin.toString()
-            binding.homeMonthGoalWalkTv.isSelected = true
-            //누적 거리
-            binding.homeMonthGoalDistTv.text =
-                tmonth.getMonthTotal.monthTotalDistance.toString()
-            binding.homeMonthGoalDistTv.isSelected = true
-            //누적 칼로리
-            binding.homeMonthGoalKcalTv.text = tmonth.getMonthTotal.monthPerCal.toString()
-            binding.homeMonthGoalKcalTv.isSelected = true
         }
     }
 }

@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils
 import android.widget.RadioGroup
 import androidx.core.view.updateLayoutParams
 import com.footprint.footprint.R
-import com.footprint.footprint.domain.model.UserModel
+import com.footprint.footprint.domain.model.InitUserModel
 import com.footprint.footprint.databinding.FragmentRegisterInfoBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.register.RegisterActivity
@@ -38,7 +38,7 @@ class RegisterInfoFragment() :
     private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
     private var scrollState: String = "DOWN" //UP, DOWN
-    private var newUser: UserModel = UserModel()
+    private var newUser: InitUserModel = InitUserModel()
     private var isNicknameCorrect = false
     private var isGenderCorrect = false
 

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import androidx.lifecycle.Observer
 import com.footprint.footprint.R
-import com.footprint.footprint.domain.model.UserModel
+import com.footprint.footprint.domain.model.InitUserModel
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
@@ -20,7 +20,7 @@ class RegisterGoalFragment() :
     BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate), RegisterView {
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
-    private lateinit var userModel: UserModel
+    private lateinit var userModel: InitUserModel
 
     private val userVm: UserViewModel by viewModel()
 
@@ -202,7 +202,7 @@ class RegisterGoalFragment() :
     }
 
     //InfoFragment 로부터 user 데이터를 전달 받는 함수
-    fun deliverUser(userModel: UserModel) {
+    fun deliverUser(userModel: InitUserModel) {
         this.userModel = userModel
     }
 

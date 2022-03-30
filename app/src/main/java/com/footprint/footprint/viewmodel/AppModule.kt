@@ -35,7 +35,8 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }.bind(UserRemoteDataSourceImpl::class)
     single<RegisterUserUseCase> { RegisterUserUseCase(get()) }.bind(UserRepositoryImpl::class)
     single<UpdateUserUseCase> { UpdateUserUseCase(get()) }.bind(UserRepositoryImpl::class)
-    single<GetUserUseCase> { GetUserUseCase(get()) }.bind(UserRepositoryImpl::class)
+    single<GetSimpleUserUseCase> { GetSimpleUserUseCase(get()) }.bind(UserRepositoryImpl::class) //홈, 마이페이지 유저
+    single<GetMyInfoUserUseCase> { GetMyInfoUserUseCase(get()) }.bind(UserRepositoryImpl::class) //내 정보 수정 유저
 
     single<AchieveService> { GlobalApplication.retrofit.create(AchieveService::class.java) }
     single<AchieveRemoteDataSource> { AchieveRemoteDataSourceImpl(get()) }
@@ -44,9 +45,18 @@ val appModule = module {
     single<GetTmonthUseCase> { GetTmonthUseCase(get()) }.bind(AchieveRemoteDataSourceImpl::class)
 
     viewModel {
-        UserViewModel(get(), get(), get())
         GoalViewModel(get())
+    }
+
+    viewModel{
         HomeViewModel(get(), get(), get(), get())
-        //MyInfoViewModel(get(), get())
+    }
+
+    viewModel{
+        MyInfoViewModel(get(), get())
+    }
+
+    viewModel{
+        UserViewModel(get())
     }
 }

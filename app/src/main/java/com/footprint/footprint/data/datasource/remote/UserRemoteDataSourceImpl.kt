@@ -14,9 +14,9 @@ class UserRemoteDataSourceImpl(private val api: UserService): BaseRepository(), 
         return safeApiCall() { api.registerUser(userModel).body()!! }
     }
 
-    override suspend fun updateUser(simpleUserModel: RequestBody): Result<BaseResponse> {
+    override suspend fun updateUser(myInfoUserModel: RequestBody): Result<BaseResponse> {
         LogUtils.d("UserRemoteDataSourceImpl", "updateUser")
-        return safeApiCall() { api.updateUser(simpleUserModel).body()!! }
+        return safeApiCall() { api.updateUser(myInfoUserModel).body()!! }
     }
 
     override suspend fun getUser(): Result<BaseResponse> {

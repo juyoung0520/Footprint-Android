@@ -19,5 +19,5 @@ interface UserService {
 
     //유저 정보 수정 API
     @PATCH("users/infos/after")
-    suspend fun updateUser(@Body simpleUserModel: RequestBody) : Response<BaseResponse>
+    suspend fun updateUser(@Body myInfoUserModel: RequestBody) : Response<BaseResponse>
 }
