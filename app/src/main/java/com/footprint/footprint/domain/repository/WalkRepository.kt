@@ -10,4 +10,6 @@ interface WalkRepository {
     suspend fun getWalkByIdx(walkIdx: Int): Result<Walk>
     suspend fun deleteWalk(walkIdx: Int): Result<BaseResponse>
     suspend fun writeWalk(walk: WalkUIModel): Result<List<Badge>>
+    suspend fun getMonthWalks(year: Int, month: Int): Result<List<MonthDayDTO>>
+    suspend fun getDayWalks(date: String): Result<List<DayWalkDTO>>
 }

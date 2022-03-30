@@ -51,7 +51,7 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
             binding.walkDateDateTv.text = walkDates[position].walkAt
 
             val adapter = WalkRVAdapter(context)
-            adapter.setWalks(walkDates[position].walks)
+            //adapter.setWalks(walkDates[position].walks)
             adapter.setCurrentTag(currentTag)
 
             adapter.setOnItemClickListener(onWalkClickListener)

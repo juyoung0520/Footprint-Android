@@ -82,4 +82,31 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
             is Result.GenericError -> response
         }
     }
+    override suspend fun getMonthWalks(year: Int, month: Int): Result<List<MonthDayDTO>> {
+        return when (val response = dataSource.getMonthWalks(year, month)) {
+            is Result.Success -> {
+                if (response.value.isSuccess) {
+                    val listType = object : TypeToken<List<MonthDayDTO>>() {}.type
+                    Result.Success(NetworkUtils.decrypt(response.value.result, listType))
+                } else
+                    Result.GenericError(response.value.code, "")
+            }
+            is Result.NetworkError -> response
+            is Result.GenericError -> response
+        }
+    }
+
+    override suspend fun getDayWalks(date: String): Result<List<DayWalkDTO>> {
+        return when (val response = dataSource.getDayWalks(date)) {
+            is Result.Success -> {
+                if (response.value.isSuccess) {
+                    val listType = object : TypeToken<List<DayWalkDTO>>() {}.type
+                    Result.Success(NetworkUtils.decrypt(response.value.result, listType))
+                } else
+                    Result.GenericError(response.value.code, "")
+            }
+            is Result.NetworkError -> response
+            is Result.GenericError -> response
+        }
+    }
 }
