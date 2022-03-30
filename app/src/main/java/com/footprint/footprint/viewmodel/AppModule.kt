@@ -1,19 +1,10 @@
 package com.footprint.footprint.viewmodel
 
 import com.footprint.footprint.data.datasource.remote.*
-import com.footprint.footprint.data.repository.remote.AchieveRepositoryImpl
-import com.footprint.footprint.data.repository.remote.GoalRepositoryImpl
-import com.footprint.footprint.data.repository.remote.UserRepositoryImpl
-import com.footprint.footprint.data.repository.remote.WeatherRepositoryImpl
-import com.footprint.footprint.data.retrofit.AchieveService
-import com.footprint.footprint.domain.repository.GoalRepository
-import com.footprint.footprint.domain.repository.UserRepository
+import com.footprint.footprint.data.repository.remote.*
+import com.footprint.footprint.data.retrofit.*
+import com.footprint.footprint.domain.repository.*
 import com.footprint.footprint.domain.usecase.*
-import com.footprint.footprint.data.retrofit.GoalService
-import com.footprint.footprint.data.retrofit.UserService
-import com.footprint.footprint.data.retrofit.WeatherService
-import com.footprint.footprint.domain.repository.AchieveRepository
-import com.footprint.footprint.domain.repository.WeatherRepository
 import com.footprint.footprint.utils.GlobalApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
@@ -44,6 +35,13 @@ val appModule = module {
     single<GetTodayUseCase> { GetTodayUseCase(get()) }.bind(AchieveRemoteDataSourceImpl::class)
     single<GetTmonthUseCase> { GetTmonthUseCase(get()) }.bind(AchieveRemoteDataSourceImpl::class)
 
+    single<AuthService> { GlobalApplication.retrofit.create(AuthService::class.java) }
+    single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }.bind(AuthRemoteDataSourceImpl::class)
+    single<AutoLoginUseCase> { AutoLoginUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
+    single<LoginUseCase> { LoginUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
+    single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
+
     viewModel {
         GoalViewModel(get())
     }
@@ -58,5 +56,17 @@ val appModule = module {
 
     viewModel{
         UserViewModel(get())
+    }
+
+    viewModel{
+        SplashViewModel(get())
+    }
+
+    viewModel{
+        SignInViewModel(get())
+    }
+
+    viewModel{
+        SettingViewModel(get())
     }
 }

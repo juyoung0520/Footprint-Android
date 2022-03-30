@@ -4,5 +4,6 @@ enum class ErrorType {
     NETWORK,
     TIMEOUT,
     SESSION_EXPIRED,
-    UNKNOWN
+    UNKNOWN,
+    JWT
 }

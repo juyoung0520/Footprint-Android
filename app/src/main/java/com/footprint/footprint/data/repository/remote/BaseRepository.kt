@@ -19,6 +19,7 @@ abstract class BaseRepository {
                         var error = ""
                         when (code) {
                             500 -> error = "서버 에러입니다."
+                            2001, 2002, 2003, 2004 -> error = "JWT 에러입니다."
                         }
 
                         Result.GenericError(code, error)

@@ -12,5 +12,4 @@ interface UserRetrofitInterface  {
     //유저 정보 조회 API
     @GET("users")
     fun getUser() : Call<BaseResponse>
-
 }

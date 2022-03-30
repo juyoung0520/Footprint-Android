@@ -4,28 +4,29 @@ import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.auth.AuthService
-import com.footprint.footprint.data.remote.auth.UnRegisterResponse
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.signin.SplashActivity
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.SettingViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.kakao.sdk.user.UserApiClient
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate),
-    SettingView {
+class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBinding::inflate) {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     private lateinit var loginStatus: String
+    private val settingVm: SettingViewModel by viewModel()
 
     override fun initAfterBinding() {
         if (!::actionDialogFragment.isInitialized)
@@ -33,6 +34,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         initLoginStatus()
         setMyEventListener()
+        observe()
 
         //개인정보처리방침, 이용약관, 위치서비스이용약관 밑줄 표시
         binding.settingPrivacyPolicyTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
@@ -145,7 +147,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 override fun action2(isAction: Boolean) {
                     if (isAction) {
                         //회원 탈퇴 API 호출
-                        AuthService.unregister(this@SettingFragment)
+                        //AuthService.unregister(this@SettingFragment)
+                        settingVm.unRegister()
                     }
                 }
 
@@ -232,12 +235,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         }
     }
 
-    //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)
-    private fun startLockActivity(mode: String) {
-        val action = SettingFragmentDirections.actionSettingFragmentToLockActivity3(mode)
-        findNavController().navigate(action)
-    }
-
     /*Function - 로그아웃, 탈퇴*/
     private fun logout() {
         if (loginStatus == "kakao") {
@@ -294,25 +291,45 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         }
     }
 
-    override fun onUnregisterSuccess(result: UnRegisterResponse) {
-        LogUtils.d("SETTING/API-SUCCESS", result.toString())
-        if (loginStatus == "kakao") {
-            //Kakao Unlink
-            LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
-            kakaoUnlink()
-        } else if (loginStatus == "google") {
-            //Google Unlink
-            LogUtils.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
-            googleUnlink()
-        }
-        reset()
+
+    /*Activity 이동*/
+    //스플래시 액티비티(뒤로가기 다 지우기)
+    fun startSplashActivity(){
+        val intent = Intent(requireContext(), SplashActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
-    override fun onUnregisterFailure(code: Int, message: String) {
-        LogUtils.d("SETTING/API-FAILURE", "code: $code message: $message")
-        settingErrorCheck("UNREGISTER")
+    //암호 설정/변경 액티비티 이동(SETTING: 암호 설정, CHANGE: 암호 변경)
+    private fun startLockActivity(mode: String) {
+        val action = SettingFragmentDirections.actionSettingFragmentToLockActivity3(mode)
+        findNavController().navigate(action)
     }
 
+
+    /*Observe*/
+    private fun observe(){
+        settingVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            settingErrorCheck("UNREGISTER")
+        })
+
+        settingVm.isDeleted.observe(this, Observer{
+            if(it){
+                if (loginStatus == "kakao") {
+                    //Kakao Unlink
+                    LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
+                    kakaoUnlink()
+                } else if (loginStatus == "google") {
+                    //Google Unlink
+                    LogUtils.d("AUTO-UNLINK/GOOGLE", "Google 계정에서 탈퇴하셨습니다.")
+                    googleUnlink()
+                }
+                reset()
+            }
+        })
+    }
+
+    /*Error check*/
     private fun settingErrorCheck(type: String) {
         val text = if (!isNetworkAvailable(requireContext())) { //네트워크 에러
             getString(R.string.error_network)
@@ -323,7 +340,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             .setAction(getString(R.string.action_retry)) {
                 when (type) {
                     "UNREGISTER" -> {
-                        AuthService.unregister(this)
+                        settingVm.unRegister()
                     }
                     "UNLINK-K" -> {
                         kakaoUnlink()
@@ -333,12 +350,5 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     }
                 }
             }.show()
-    }
-
-    /*Splash Activity로 이동*/
-    fun startSplashActivity(){
-        val intent = Intent(requireContext(), SplashActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 }
