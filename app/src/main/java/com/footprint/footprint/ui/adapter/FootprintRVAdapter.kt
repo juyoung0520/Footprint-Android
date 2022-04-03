@@ -12,9 +12,9 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.FootprintModel
-import com.footprint.footprint.data.remote.footprint.Footprint
 import com.footprint.footprint.databinding.ItemFootprintBinding
+import com.footprint.footprint.domain.model.Footprint
+import com.footprint.footprint.ui.walk.model.FootprintUIModel
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.volokh.danylo.hashtaghelper.HashTagHelper
@@ -26,7 +26,7 @@ class FootprintRVAdapter() :
     RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
         fun addFootprint(position: Int)
-        fun updateFootprintVerAfter(position: Int, footprint: FootprintModel)
+        fun updateFootprintVerAfter(position: Int, footprint: FootprintUIModel)
         fun updateFootprintVerDetail(position: Int, footprint: Footprint)
     }
 
@@ -43,7 +43,7 @@ class FootprintRVAdapter() :
     )
 
     private var footprintIcIdx: Int = 0
-    private var footprintsAfterVer: ArrayList<FootprintModel>? = null
+    private var footprintsAfterVer: ArrayList<FootprintUIModel>? = null
     private var footprintsDetailVer: ArrayList<Footprint>? = null
 
     private lateinit var binding: ItemFootprintBinding
@@ -112,7 +112,7 @@ class FootprintRVAdapter() :
             footprintsAfterVer!!.size
     }
 
-    private fun bindAfterVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: FootprintModel) {
+    private fun bindAfterVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: FootprintUIModel) {
         //기록 시간
         holder.postTimeTv.text = footprint.recordAt.split(" ")[1].substring(0, 5)
 
@@ -142,23 +142,21 @@ class FootprintRVAdapter() :
             holder.photoIndicator.visibility = View.VISIBLE
         }
 
+        if (footprint.photos.isEmpty())  //이미지가 없을 때 -> 최대 3줄
+            holder.contentTv.maxLines = 3
+        else    //이미지가 있을 때 -> 최대 2줄
+            holder.contentTv.maxLines = 2
+
         //기록 내용
         val hashtagInContent = findHashTag(footprint.write)
         holder.contentTv.text = hashtagInContent
 
-        //기록 내용 더보기, 간략히 보기
+        //더보기 visibility 설정
         holder.contentTv.post(Runnable {
-            val lineCnt: Int = holder.contentTv.lineCount
-
-            if (footprint.photos.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
-                holder.contentTv.maxLines = 3
+            if (holder.contentTv.layout.getEllipsisCount(holder.contentTv.lineCount - 1) > 0)
                 holder.viewMoreTv.visibility = View.VISIBLE
-            } else if (footprint.photos.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
-                holder.contentTv.maxLines = 2
-                holder.viewMoreTv.visibility = View.VISIBLE
-            } else {    //이외 상황
+            else
                 holder.viewMoreTv.visibility = View.INVISIBLE
-            }
         })
 
         //기록 내용 더보기, 간략히 보기 클릭 리스너
@@ -261,7 +259,6 @@ class FootprintRVAdapter() :
         val matcher: Matcher = Pattern.compile("#([A-Za-z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+)").matcher(hashtagInContent)
         while (matcher.find() && hashTagCnt < 5) {
             hashTagCnt++    //5개까지만
-            LogUtils.d("FootprintRVAdapter", "hashTagCnt: $hashTagCnt")
 
             hashtagInContent.setSpan(
                 ForegroundColorSpan(ContextCompat.getColor(binding.root.context, R.color.primary)),
@@ -274,7 +271,7 @@ class FootprintRVAdapter() :
         return hashtagInContent
     }
 
-    fun setDataAfterVer(footprints: ArrayList<FootprintModel>) {
+    fun setDataAfterVer(footprints: ArrayList<FootprintUIModel>) {
         this.footprintsAfterVer = footprints
 
         footprintIcIdx = 0
@@ -288,7 +285,7 @@ class FootprintRVAdapter() :
         notifyDataSetChanged()
     }
 
-    fun addData(footprint: FootprintModel, position: Int) {
+    fun addData(footprint: FootprintUIModel, position: Int) {
         if (this.footprintsAfterVer!!.size == position)
             this.footprintsAfterVer!!.add(footprint)
         else
@@ -298,7 +295,7 @@ class FootprintRVAdapter() :
         notifyDataSetChanged()
     }
 
-    fun updateDataVerAfter(footprint: FootprintModel, position: Int) {
+    fun updateDataVerAfter(footprint: FootprintUIModel, position: Int) {
         footprintsAfterVer!![position] = footprint
 
         footprintIcIdx = 0

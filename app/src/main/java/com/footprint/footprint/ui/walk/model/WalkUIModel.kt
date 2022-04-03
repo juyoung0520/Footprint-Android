@@ -1,6 +1,6 @@
-package com.footprint.footprint.data.dto
+package com.footprint.footprint.ui.walk.model
 
-data class WalkModel(
+data class WalkUIModel(
     var walkIdx: Int = 0,
     var walkTitle: String = "", //00번째 산책
     var walkTime: String = "",  //산책 시간
@@ -10,5 +10,5 @@ data class WalkModel(
     var coordinate: List<List<Double>> = arrayListOf(),
     var calorie: Int = 0,
     var pathImg: String = "",
-    var footprints: ArrayList<FootprintModel> = arrayListOf()
+    var footprints: ArrayList<FootprintUIModel> = arrayListOf()
 )

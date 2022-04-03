@@ -18,10 +18,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
+import com.footprint.footprint.ui.walk.model.FootprintUIModel
 import com.footprint.footprint.utils.DialogFragmentUtils
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.footprint.footprint.utils.uriToBitmap
 import com.google.gson.Gson
@@ -38,7 +39,7 @@ import java.util.*
 class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var binding: FragmentFootprintDialogBinding
     private lateinit var photoRVAdapter: PhotoRVAdapter
-    private lateinit var footprint: FootprintModel
+    private lateinit var footprint: FootprintUIModel
     private lateinit var myDialogCallback: MyDialogCallback
 
     private var textMatcherFlag: Int = 1
@@ -57,8 +58,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     interface MyDialogCallback {
-        fun sendFootprint(footprint: FootprintModel)
-        fun sendUpdatedFootprint(footprint: FootprintModel)
+        fun sendFootprint(footprint: FootprintUIModel)
+        fun sendUpdatedFootprint(footprint: FootprintUIModel)
         fun cancel()
     }
 
@@ -79,7 +80,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
         if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
-            footprint = Gson().fromJson(footprintStr, FootprintModel::class.java)
+            footprint = Gson().fromJson(footprintStr, FootprintUIModel::class.java)
             setUI(footprint)
         }
 
@@ -106,7 +107,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
     //TextWatcher
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
     }
 
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -123,7 +123,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     override fun afterTextChanged(p0: Editable?) {
-
     }
 
     //카메라, 저장소 퍼미션 확인
@@ -295,10 +294,10 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     //사용자가 입력한 발자국 데이터를 가져오는 함수
-    private fun setFootprintData(): FootprintModel {
+    private fun setFootprintData(): FootprintUIModel {
         //발자국 추가하기 화면일 경우에는 아직 footprint 객체가 초기화되기 전이므로 초기화 시키기
         if (!::footprint.isInitialized) {
-            footprint = FootprintModel()
+            footprint = FootprintUIModel()
 
             val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
             footprint.recordAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
@@ -327,17 +326,17 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     //발자국 수정하기 화면 상태일 때 사용자가 수정 전 입력했던 발자국 데이터를 바인딩하는 함수
-    private fun setUI(footprint: FootprintModel) {
-        binding.postDialogContentEt.setText(footprint.write)    //발자국 내용
+    private fun setUI(footprintDto: FootprintUIModel) {
+        binding.postDialogContentEt.setText(footprintDto.write)    //발자국 내용
 
-        if (footprint.photos.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
+        if (footprintDto.photos.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
             setDeletePhotoUI()
         } else {    //사진이 있으면 "사진 삭제하기" 버전
             imgList.clear()
-            imgList.addAll(footprint.photos)
+            imgList.addAll(footprintDto.photos)
 
             binding.postDialogPhotoVp.visibility = View.VISIBLE
-            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
+            photoRVAdapter.addImgList(footprintDto.photos as ArrayList<String>)
 
             binding.postDialogPhotoIndicator.visibility = View.VISIBLE
             binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)

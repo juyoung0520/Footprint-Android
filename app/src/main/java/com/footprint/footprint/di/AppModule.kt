@@ -1,3 +1,3 @@
-package com.footprint.footprint.config
+package com.footprint.footprint.di
 
 val appModule = listOf(serviceModule, dataSourceModule, repositoryModule, useCaseModule, viewModelModule)

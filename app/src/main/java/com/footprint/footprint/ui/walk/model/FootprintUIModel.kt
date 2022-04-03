@@ -1,13 +1,6 @@
-package com.footprint.footprint.data.dto
+package com.footprint.footprint.ui.walk.model
 
-import java.util.*
-
-data class FootprintsModel(
-    val footprints: ArrayList<FootprintModel> = arrayListOf()
-)
-
-//기록 데이터 클래스(임시, API 연결 시 수정)
-data class FootprintModel(
+data class FootprintUIModel(
     var coordinate: List<Double> = arrayListOf(),   //발자국 좌표
     var recordAt: String = "", //발자국 작성 시간
     var write: String = "",   //발자국 내용
