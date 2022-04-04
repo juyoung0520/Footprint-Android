@@ -1,4 +1,4 @@
-package com.footprint.footprint.data.remote.badge
+package com.footprint.footprint.data.dto
 
 import com.google.gson.annotations.SerializedName
 

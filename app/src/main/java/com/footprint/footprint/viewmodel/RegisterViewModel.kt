@@ -9,7 +9,7 @@ import com.footprint.footprint.domain.usecase.RegisterUserUseCase
 import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch
 
-class UserViewModel(
+class RegisterViewModel(
     private val registerUserUseCase: RegisterUserUseCase,
     ): BaseViewModel() {
 

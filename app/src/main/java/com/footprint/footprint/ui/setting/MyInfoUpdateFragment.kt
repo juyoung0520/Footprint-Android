@@ -20,12 +20,10 @@ import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.utils.getJwt
 import com.footprint.footprint.viewmodel.MyInfoViewModel
-import com.footprint.footprint.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.floor
 
 class MyInfoUpdateFragment :

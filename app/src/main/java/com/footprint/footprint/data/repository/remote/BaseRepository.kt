@@ -24,7 +24,10 @@ abstract class BaseRepository {
 
                         Result.GenericError(code, error)
                     }
-                    else -> Result.GenericError(null, "오류가 발생했습니다. 다시 시도해 주세요.")
+                    else -> {
+                        LogUtils.d("BaseRepo", throwable.stackTraceToString())
+                        Result.GenericError(null, "오류가 발생했습니다. 다시 시도해 주세요.")
+                    }
                 }
             }
         }

@@ -1,6 +1,11 @@
 package com.footprint.footprint.data.remote.badge
 
 import com.footprint.footprint.ui.signin.MonthBadgeView
+import com.footprint.footprint.data.dto.BadgeInfo
+import com.footprint.footprint.data.dto.BadgeResponse
+import com.footprint.footprint.data.dto.ChangeRepresentativeBadgeResponse
+import com.footprint.footprint.data.dto.GetBadgeResponse
+import com.footprint.footprint.ui.main.mypage.BadgeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils

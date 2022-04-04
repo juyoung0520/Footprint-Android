@@ -12,7 +12,7 @@ import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.*
-import com.footprint.footprint.viewmodel.UserViewModel
+import com.footprint.footprint.viewmodel.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,7 +22,7 @@ class RegisterGoalFragment() :
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
     private lateinit var userModel: InitUserModel
 
-    private val userVm: UserViewModel by viewModel()
+    private val registerVm: RegisterViewModel by viewModel()
 
     override fun initAfterBinding() {
         initAdapter()
@@ -191,7 +191,7 @@ class RegisterGoalFragment() :
             LogUtils.d("RegisterGoalFragment", "완료! -> $userModel")
 
             //정보 등록 API 호출
-            userVm.registerUser(userModel)
+            registerVm.registerUser(userModel)
         }
     }
 
@@ -217,18 +217,18 @@ class RegisterGoalFragment() :
     }
 
     private fun observe(){
-        userVm.mutableErrorType.observe(viewLifecycleOwner, Observer{
+        registerVm.mutableErrorType.observe(viewLifecycleOwner, Observer{
             when (it) {
                 ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    userVm.registerUser(userModel)
+                    registerVm.registerUser(userModel)
                 }.show()
                 else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    userVm.registerUser(userModel)
+                    registerVm.registerUser(userModel)
                 }.show()
             }
         })
 
-        userVm.isRegistered.observe(viewLifecycleOwner, Observer{
+        registerVm.isRegistered.observe(viewLifecycleOwner, Observer{
             if(it){
                 //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
                 val intent = Intent(requireActivity(), MainActivity::class.java)

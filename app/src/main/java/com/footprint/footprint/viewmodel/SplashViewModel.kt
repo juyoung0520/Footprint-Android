@@ -7,6 +7,7 @@ import com.footprint.footprint.data.model.Result
 import com.footprint.footprint.data.dto.Login
 import com.footprint.footprint.domain.usecase.AutoLoginUseCase
 import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import kotlinx.coroutines.launch
 
 class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase): BaseViewModel() {
@@ -19,6 +20,7 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase): BaseViewM
                 is Result.Success -> _thisLogin.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> {
+                    LogUtils.d("responseCode", response.toString())
                     when(response.code){
                         2001, 2002, 2003, 2004 -> mutableErrorType.postValue(ErrorType.JWT)
                         else -> mutableErrorType.postValue(ErrorType.UNKNOWN)

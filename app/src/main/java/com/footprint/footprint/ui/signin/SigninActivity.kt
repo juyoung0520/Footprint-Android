@@ -20,9 +20,6 @@ import com.footprint.footprint.BuildConfig
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.Login
-import com.footprint.footprint.data.remote.badge.BadgeInfo
-import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.ui.agree.AgreeActivity
 import com.footprint.footprint.utils.*
@@ -30,11 +27,9 @@ import com.footprint.footprint.viewmodel.SignInViewModel
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
-    MonthBadgeView{
+class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate){
 
     private val signInVm: SignInViewModel by viewModel()
 
@@ -187,60 +182,12 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         signInVm.login(socialUserModel)
     }
 
-//    //-> Response
-//    override fun onSignInSuccess(result: Login) {
-//        val jwtId = result.jwtId
-//        val status = result.status
-//        val checkMonthChanged = result.checkMonthChanged
-//
-//        LogUtils.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
-//
-//        //1. spf에 jwtId 저장, 로그인 상태 저장
-//        saveJwt(jwtId)
-//        saveLoginStatus(socialUserModel.providerType)
-//
-//        //2. STATUS에 따른 처리
-//        // ACTIVE: 가입된 회원 -> 뱃지 API 호출
-//        // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
-//        when (status) {
-//            "ACTIVE" -> {
-//                if(checkMonthChanged){ // -> 뱃지 API 호출
-//                    BadgeService.getMonthBadge(this)
-//                }else{
-//                    startMainActivity()
-//                }
-//            }
-//            "ONGOING" -> startAgreeActivity()
-//        }
-//
-//    }
-//
-//    override fun onSignInFailure(code: Int, message: String) {
-//        LogUtils.d("SIGNIN/API-FAILURE", "code: $code message: $message")
-//
-//        signinErrorCheck("LOGIN")
-//    }
-
-    /*이달의 뱃지 조회 API*/
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
-        LogUtils.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
-
-        val intent = Intent(this, MainActivity::class.java)
-        if(isBadgeExist)
-            intent.putExtra("badge", Gson().toJson(monthBadge))
-        startActivity(intent)
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-        LogUtils.d("SIGNIN(BADGE)/API-FAILURE", "code: $code message: $message")
-
-        signinErrorCheck("BADGE")
-    }
-
     /*액티비티 이동*/
     //Main Activity
-    private fun startMainActivity() {
-        startNextActivity(MainActivity::class.java)
+    private fun startMainActivity(badgeCheck: Boolean) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("badgeCheck", badgeCheck)
+        startActivity(intent)
         finish()
     }
 
@@ -268,9 +215,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                 }
                 "LOGIN" -> {
                     signInVm.login(socialUserModel)
-                }
-                "BADGE" -> {
-                    BadgeService.getMonthBadge(this)
                 }
             }
         }.show()
@@ -310,11 +254,9 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
             when(it.status){
                 "ACTIVE" -> {   // 가입된 회원
-                    if (it.checkMonthChanged) { // 첫 접속 -> 뱃지 API 호출
-                        BadgeService.getMonthBadge(this)
-                    } else { // -> 메인 액티비티
-                        startMainActivity()
-                    }
+                    /*테스트입니다*/
+                    //startMainActivity(it.checkMonthChanged)
+                    startMainActivity(true)
                 }
                 "ONGOING" -> { // 가입이 안된 회원 -> 회원가입 액티비티
                     startAgreeActivity()

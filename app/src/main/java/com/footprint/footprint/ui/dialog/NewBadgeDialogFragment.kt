@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.footprint.footprint.data.remote.badge.BadgeInfo
+import com.footprint.footprint.data.dto.BadgeInfo
 import com.footprint.footprint.databinding.FragmentNewBadgeDialogBinding
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.loadSvg

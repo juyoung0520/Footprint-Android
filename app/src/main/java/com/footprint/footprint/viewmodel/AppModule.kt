@@ -42,6 +42,11 @@ val appModule = module {
     single<LoginUseCase> { LoginUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
     single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
 
+    single<BadgeService> { GlobalApplication.retrofit.create(BadgeService::class.java) }
+    single<BadgeRemoteDataSource> { BadgeRemoteDataSourceImpl(get()) }
+    single<BadgeRepository> { BadgeRepositoryImpl(get()) }.bind(BadgeRemoteDataSourceImpl::class)
+    single<GetMonthBadgeUseCase> { GetMonthBadgeUseCase(get()) }.bind(BadgeRemoteDataSourceImpl::class)
+
     viewModel {
         GoalViewModel(get())
     }
@@ -55,7 +60,7 @@ val appModule = module {
     }
 
     viewModel{
-        UserViewModel(get())
+        RegisterViewModel(get())
     }
 
     viewModel{
@@ -68,5 +73,9 @@ val appModule = module {
 
     viewModel{
         SettingViewModel(get())
+    }
+
+    viewModel{
+        MainViewModel(get())
     }
 }
