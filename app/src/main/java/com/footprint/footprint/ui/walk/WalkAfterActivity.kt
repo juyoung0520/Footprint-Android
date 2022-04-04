@@ -99,6 +99,8 @@ class WalkAfterActivity :
             override fun action2(isAction: Boolean) {
                 if (isAction) {   //저장 버튼 누르면 산책 정보 저장 API 호출
                     binding.walkAfterLoadingPb.visibility = View.VISIBLE
+//                    val file: File = File(walkUIModel.footprints[0].photos[0])    //S3에 이미지를 저장할 때 파일로 변환
+//                    S3UploadService.uploadImg(applicationContext, file)   //S3에 이미지 직접 저장
                     walkVm.writeWalk(walkUIModel)
                 }
             }
