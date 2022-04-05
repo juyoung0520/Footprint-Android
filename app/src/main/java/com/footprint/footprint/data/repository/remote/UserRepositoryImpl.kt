@@ -1,9 +1,9 @@
 package com.footprint.footprint.data.repository.remote
 
-import com.footprint.footprint.data.UserMapper
+import com.footprint.footprint.data.mapper.UserMapper
 import com.footprint.footprint.data.datasource.remote.UserRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.model.*
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.data.dto.User
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.domain.model.SimpleUserModel

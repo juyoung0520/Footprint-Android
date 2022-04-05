@@ -1,7 +1,7 @@
 package com.footprint.footprint.domain.repository
 
 import com.footprint.footprint.data.dto.*
-import com.footprint.footprint.data.model.*
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.domain.model.InitUserModel

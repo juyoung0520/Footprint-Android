@@ -80,8 +80,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         splashVm.thisLogin.observe(this, Observer {
             when(it.status){
                 "ACTIVE" -> {   // 가입된 회원
-                    //startMainActivity(it.checkMonthChanged)
-                    startMainActivity(true)
+                    startMainActivity(it.checkMonthChanged)
                 }
                 "ONGOING" -> { // 가입이 완료되지 않은 회원 -> 로그인 액티비티
                     startSignInActivity()

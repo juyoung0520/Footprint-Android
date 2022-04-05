@@ -2,7 +2,7 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.AuthRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.dto.Login
 import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.domain.repository.AuthRepository

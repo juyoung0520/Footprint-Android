@@ -3,7 +3,7 @@ package com.footprint.footprint.data.repository.remote
 import com.footprint.footprint.data.datasource.remote.UserRemoteDataSource
 import com.footprint.footprint.data.datasource.remote.WeatherRemoteDataSource
 import com.footprint.footprint.data.dto.Weather
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.LocationModel
 import com.footprint.footprint.domain.repository.WeatherRepository
 import com.footprint.footprint.utils.LogUtils

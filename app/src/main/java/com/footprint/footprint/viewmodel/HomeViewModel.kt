@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.Weather
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.dto.TMonth
 import com.footprint.footprint.data.dto.Today
 import com.footprint.footprint.domain.model.LocationModel

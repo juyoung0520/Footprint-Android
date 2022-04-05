@@ -13,4 +13,8 @@ class BadgeRemoteDataSourceImpl(private val api: BadgeService): BaseRepository()
     override suspend fun changeRepresentativeBadge(badgeIdx: Int): Result<BaseResponse> {
         return safeApiCall { api.changeRepresentativeBadge(badgeIdx).body()!! }
     }
+
+    override suspend fun getMonthBadge(): Result<BaseResponse> {
+        return safeApiCall() { api.getMonthBadge().body()!! }
+    }
 }

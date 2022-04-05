@@ -1,7 +1,7 @@
 package com.footprint.footprint.domain.repository
 
 import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.dto.Login
 import com.footprint.footprint.domain.model.SocialUserModel
 

@@ -1,7 +1,7 @@
 package com.footprint.footprint.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.usecase.UnRegisterUseCase
 import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch

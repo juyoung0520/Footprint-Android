@@ -3,7 +3,7 @@ package com.footprint.footprint.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.dto.Login
 import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.domain.usecase.LoginUseCase
