@@ -10,7 +10,7 @@ abstract class BaseRepository {
     suspend fun <T> safeApiCall(apiCall: suspend () -> T): Result<T> {
         return withContext(Dispatchers.IO) {
             try {
-                Result.Success(apiCall.invoke())
+                Result.Success(apiCall.invoke()) //api 부르기
             } catch (throwable: Throwable) {
                 when (throwable) {
                     is IOException -> Result.NetworkError
@@ -19,13 +19,10 @@ abstract class BaseRepository {
                         var error = ""
                         when (code) {
                             500 -> error = "서버 에러입니다."
-                            2001, 2002, 2003, 2004 -> error = "JWT 에러입니다."
                         }
-
                         Result.GenericError(code, error)
                     }
                     else -> {
-                        LogUtils.d("BaseRepo", throwable.stackTraceToString())
                         Result.GenericError(null, "오류가 발생했습니다. 다시 시도해 주세요.")
                     }
                 }

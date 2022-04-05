@@ -255,8 +255,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             when(it.status){
                 "ACTIVE" -> {   // 가입된 회원
                     /*테스트입니다*/
-                    //startMainActivity(it.checkMonthChanged)
-                    startMainActivity(true)
+                    startMainActivity(it.checkMonthChanged)
                 }
                 "ONGOING" -> { // 가입이 안된 회원 -> 회원가입 액티비티
                     startAgreeActivity()

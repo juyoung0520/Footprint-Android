@@ -19,7 +19,7 @@ class AuthRepositoryImpl(private val dataSource: AuthRemoteDataSource): AuthRepo
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, Login::class.java))
                 else
-                    Result.GenericError(response.value.code, "")
+                    Result.GenericError(response.value.code, response.value.message)
             }
             is Result.NetworkError -> response
             is Result.GenericError -> response

@@ -36,10 +36,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     private fun autoLogin() {
-        /*테스트입니다*/
-        //removeJwt()
         if (getJwt() != null) { // O -> 자동로그인 API 호출
-            saveJwt("12")
             splashVm.autoLogin()
         } else {  // X -> 로그인 액티비티
             startNextActivity(SigninActivity::class.java)
