@@ -6,4 +6,5 @@ import com.footprint.footprint.data.dto.Result
 interface BadgeRemoteDataSource {
     suspend fun getBadges(): Result<BaseResponse>
     suspend fun changeRepresentativeBadge(badgeIdx: Int): Result<BaseResponse>
+    suspend fun getMonthBadge(): Result<BaseResponse>
 }

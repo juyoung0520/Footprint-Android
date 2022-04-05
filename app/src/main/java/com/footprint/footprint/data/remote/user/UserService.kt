@@ -1,79 +1,20 @@
 package com.footprint.footprint.data.remote.user
 
-import com.footprint.footprint.data.dto.UserModel
-import com.footprint.footprint.ui.main.home.HomeView
+import com.footprint.footprint.data.dto.BaseResponse
+import com.footprint.footprint.data.dto.User
 import com.footprint.footprint.ui.main.mypage.MyPageView
-import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.*
 
 object UserService {
     val userService: UserRetrofitInterface = retrofit.create(UserRetrofitInterface::class.java)
 
-    /*초기 정보 등록 API*/
-    fun registerInfos(registerView: RegisterView,  userModel: UserModel) {
-
-        val encryptedData = NetworkUtils.encrypt(userModel)
-        LogUtils.d("REGISTER/API-DATA(E)", encryptedData)
-        val data = encryptedData.toRequestBody("application/json".toMediaType())
-
-        userService.registerUser(data).enqueue(object : Callback<UserRegisterResponse>{
-            override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
-                val body = response.body()
-                if(body != null){
-                    when(body.code){
-                        1000 -> {
-                            registerView.onRegisterSuccess(body.result)
-                        }
-                        else -> registerView.onRegisterFailure(body.code, body.message)
-                    }
-                    LogUtils.d("REGISTER/API-SUCCESS", body.toString())
-                }else{
-                    LogUtils.d("REGISTER/NULL", body.toString())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
-                registerView.onRegisterFailure(213, t.message.toString())
-                LogUtils.d("REGISTER/API-FAILURE", t.message.toString())
-            }
-
-        })
-    }
-
-    /*유저 정보 API*/
-    fun getUser(view: HomeView){
-        userService.getUser().enqueue(object : Callback<UserResponse>{
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                val body = response.body()
-
-                LogUtils.d("USER/API-SUCCESS", body.toString())
-                when(body!!.code){
-                    1000 ->{
-                        val result = body.result
-                        view.onUserSuccess(NetworkUtils.decrypt(result, User::class.java))
-                    }
-                    else -> view.onHomeFailure(body.code, body.message)
-                }
-            }
-
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                view.onHomeFailure(213, t.message.toString())
-                LogUtils.d("USER/API-FAILURE", t.message.toString())
-            }
-        })
-    }
-
     /*유저 정보 API 마이페이지*/
     fun getUser(view: MyPageView){
-        userService.getUser().enqueue(object : Callback<UserResponse>{
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+        userService.getUser().enqueue(object : Callback<BaseResponse>{
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
                 val body = response.body()
 
                 LogUtils.d("USER/API-SUCCESS", body.toString())
@@ -86,7 +27,7 @@ object UserService {
                 }
             }
 
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                 view.onMyPageFailure(213, t.message.toString())
             }
         })

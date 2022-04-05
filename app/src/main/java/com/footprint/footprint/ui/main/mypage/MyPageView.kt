@@ -1,7 +1,7 @@
 package com.footprint.footprint.ui.main.mypage
 
 import com.footprint.footprint.data.remote.achieve.AchieveDetailResult
-import com.footprint.footprint.data.remote.user.User
+import com.footprint.footprint.data.dto.User
 
 interface MyPageView {
     fun onMyPageLoading()

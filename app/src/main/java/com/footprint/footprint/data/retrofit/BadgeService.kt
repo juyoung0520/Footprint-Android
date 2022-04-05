@@ -7,6 +7,10 @@ import retrofit2.http.PATCH
 import retrofit2.http.Path
 
 interface BadgeService {
+    /*이달의 뱃지 조회 API*/
+    @GET("users/badges/status")
+    suspend fun getMonthBadge(): Response<BaseResponse>
+
     //뱃지 조회 API
     @GET("users/badges")
     suspend fun getBadges(): Response<BaseResponse>

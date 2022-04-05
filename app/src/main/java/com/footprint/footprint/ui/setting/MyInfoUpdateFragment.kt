@@ -10,36 +10,36 @@ import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.view.updateLayoutParams
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.SimpleUserModel
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
-import com.footprint.footprint.domain.model.SimpleUser
+import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
-import com.footprint.footprint.viewmodel.UserViewModel
+import com.footprint.footprint.utils.getJwt
+import com.footprint.footprint.viewmodel.MyInfoViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import kotlin.math.floor
 
 class MyInfoUpdateFragment :
-    BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate) {
+    BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate){
+
+    private val myInfoVm: MyInfoViewModel by sharedViewModel()
+    private lateinit var user: MyInfoUserModel
 
     private val args: MyInfoUpdateFragmentArgs by navArgs()
-    private val userVm: UserViewModel by viewModel()
-
     private lateinit var animation: Animation   //EditText 애니메이션
-    private lateinit var user: SimpleUserModel
     private lateinit var rgPositionListener: ViewTreeObserver.OnGlobalLayoutListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        user = Gson().fromJson(args.user, SimpleUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
+        user = Gson().fromJson(args.user, MyInfoUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
 
         rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener() {
             val extraWidth = binding.myInfoUpdateGenderRg.measuredWidth - (binding.myInfoUpdateGenderFemaleRb.measuredWidth + binding.myInfoUpdateGenderMaleRb.measuredWidth + binding.myInfoUpdateGenderNoneRb.measuredWidth)
@@ -66,7 +66,7 @@ class MyInfoUpdateFragment :
     }
 
     //내 정보 "수정" 화면
-    private fun setUpdateUI(user: SimpleUserModel) {
+    private fun setUpdateUI(user: MyInfoUserModel) {
         binding.myInfoUpdateNicknameEt.setText(user.nickname)   //닉네임
 
         binding.myInfoUpdateGenderRg.apply {    //성별
@@ -123,8 +123,7 @@ class MyInfoUpdateFragment :
             hideKeyboard()  //키보드 내리기
 
             if (validate()) {   //유효성 검사를 통과한 경우 -> 1. 사용자 정보 수정 API 를 요청한다. 2. 요청 성공: MyInfoUpdateFragment 화면으로 돌아간다.
-                binding.myInfoUpdatePb.visibility = View.VISIBLE
-                userVm.updateUser(bindUser())
+                myInfoVm.updateUser(bindUser())
             }
         }
     }
@@ -264,8 +263,8 @@ class MyInfoUpdateFragment :
     }
 
     //사용자 정보 수정 후 사용자 정보 조회 화면에 넘겨줄 유저 데이터 바인딩 함수
-    private fun bindUser(): SimpleUser {
-        val user = SimpleUser()
+    private fun bindUser(): MyInfoUserModel {
+        val user = MyInfoUserModel()
 
         user.nickname = binding.myInfoUpdateNicknameEt.text.toString()    //닉네임(필수)
 
@@ -322,22 +321,23 @@ class MyInfoUpdateFragment :
     }
 
     private fun observe() {
-        userVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
-            binding.myInfoUpdatePb.visibility = View.INVISIBLE
-
+        myInfoVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(R.string.action_retry) {
-                    userVm.updateUser(bindUser())
+                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    if (validate())
+                        myInfoVm.updateUser(bindUser())
                 }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(R.string.action_retry) {
-                    userVm.updateUser(bindUser())
+                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    if (validate())
+                        myInfoVm.updateUser(bindUser())
                 }.show()
             }
         })
 
-        userVm.user.observe(viewLifecycleOwner, Observer {
-            binding.myInfoUpdatePb.visibility = View.INVISIBLE
-            (requireActivity()).onBackPressed()
+        myInfoVm.isUpdate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it)
+               (requireActivity()).onBackPressed()
         })
+
     }
 }
