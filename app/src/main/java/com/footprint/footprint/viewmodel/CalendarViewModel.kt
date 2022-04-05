@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.DayWalkDTO
 import com.footprint.footprint.data.dto.MonthDayDTO
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.usecase.GetDayWalksUseCase
 import com.footprint.footprint.domain.usecase.GetMonthWalksUseCase
 import com.footprint.footprint.utils.ErrorType

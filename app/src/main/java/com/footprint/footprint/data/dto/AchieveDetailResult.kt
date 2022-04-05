@@ -1,6 +1,5 @@
 package com.footprint.footprint.data.dto
 
-import com.footprint.footprint.data.model.GoalModel
 import com.footprint.footprint.data.remote.achieve.InfoAchieveResult
 import com.footprint.footprint.data.remote.achieve.InfoStatResult
 import com.google.gson.annotations.SerializedName

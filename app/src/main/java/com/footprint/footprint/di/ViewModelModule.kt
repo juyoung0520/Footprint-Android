@@ -45,4 +45,12 @@ val viewModelModule = module {
     viewModel{
         MainViewModel(get())
     }
+
+    viewModel {
+        AchieveViewModel(get())
+    }
+
+    viewModel {
+        CalendarViewModel(get(), get())
+    }
 }

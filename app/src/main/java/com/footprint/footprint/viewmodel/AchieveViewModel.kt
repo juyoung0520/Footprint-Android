@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.AchieveDetailResult
-import com.footprint.footprint.data.model.Result
+import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.usecase.GetInfoDetailUseCase
 import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch

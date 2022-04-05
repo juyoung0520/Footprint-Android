@@ -2,6 +2,8 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.WalkRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
+import com.footprint.footprint.data.dto.DayWalkDTO
+import com.footprint.footprint.data.dto.MonthDayDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.mapper.FootprintMapper
 import com.footprint.footprint.data.mapper.WalkMapper

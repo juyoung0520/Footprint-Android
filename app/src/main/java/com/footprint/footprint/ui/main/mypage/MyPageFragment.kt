@@ -7,18 +7,13 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.dto.AchieveDetailResult
-import com.footprint.footprint.data.remote.user.User
-import com.footprint.footprint.data.remote.user.UserService
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.isNetworkAvailable
-import com.footprint.footprint.utils.loadSvg
 import com.footprint.footprint.viewmodel.AchieveViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
@@ -30,7 +25,6 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 
