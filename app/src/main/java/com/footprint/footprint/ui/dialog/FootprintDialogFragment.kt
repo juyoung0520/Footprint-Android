@@ -239,7 +239,7 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
 
     //사용자가 입력한 내용 속에서 해시태그를 찾는 함수
     private fun findHashTag(): java.util.ArrayList<String> {
-        val pattern = Regex("#([0-9a-zA-Z가-힣]*)")
+        val pattern = Regex("#([0-9a-zA-Z가-힣]+)")
         val matchedWords = pattern.findAll(binding.postDialogContentEt.text.toString())
         val hashtags: ArrayList<String> = arrayListOf()
 
