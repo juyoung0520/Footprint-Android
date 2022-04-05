@@ -16,4 +16,8 @@ class AchieveRemoteDataSourceImpl (private val api: AchieveService): BaseReposit
         LogUtils.d("AchieveRemoteDataSourceImpl", "getTmonth")
         return safeApiCall() { api.getTMonth().body()!! }
     }
+    override suspend fun getInfoDetail(): Result<BaseResponse> {
+        return safeApiCall() { api.getInfoDetail().body()!! }
+    }
+
 }

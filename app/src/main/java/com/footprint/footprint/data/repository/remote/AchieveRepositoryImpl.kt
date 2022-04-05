@@ -7,6 +7,7 @@ import com.footprint.footprint.data.dto.Today
 import com.footprint.footprint.domain.repository.AchieveRepository
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
+import com.footprint.footprint.data.dto.AchieveDetailResult
 
 class AchieveRepositoryImpl(private val dataSource: AchieveRemoteDataSource): AchieveRepository {
     override suspend fun getToday(): Result<Today> {
@@ -29,6 +30,18 @@ class AchieveRepositoryImpl(private val dataSource: AchieveRemoteDataSource): Ac
                 LogUtils.d("GET tmonth", "resp: ${response.value.result}")
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, TMonth::class.java))
+                else
+                    Result.GenericError(response.value.code, "")
+            }
+            is Result.NetworkError -> response
+            is Result.GenericError -> response
+        }
+    }
+    override suspend fun getInfoDetail(): Result<AchieveDetailResult> {
+        return when (val response = dataSource.getInfoDetail()) {
+            is Result.Success -> {
+                if (response.value.isSuccess)
+                    Result.Success(NetworkUtils.decrypt(response.value.result, AchieveDetailResult::class.java))
                 else
                     Result.GenericError(response.value.code, "")
             }

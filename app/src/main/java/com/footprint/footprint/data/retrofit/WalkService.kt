@@ -23,4 +23,13 @@ interface WalkService {
         @Part("footprintList") footprintList: RequestBody,
         @Part photos: List<MultipartBody.Part>
     ): Response<BaseResponse>
+    /* calendarFragment */
+    @GET("users/months/footprints")
+    suspend fun getMonthWalks(@Query("year")year: Int, @Query("month")month: Int): Response<BaseResponse>
+
+    @GET("users/{date}")
+    suspend fun getDayWalks(@Path("date")date: String): Response<BaseResponse>
+
+    @GET("users/tags")
+    suspend fun getTagWalkDates(@Query("tag")tag: String): Response<BaseResponse>
 }

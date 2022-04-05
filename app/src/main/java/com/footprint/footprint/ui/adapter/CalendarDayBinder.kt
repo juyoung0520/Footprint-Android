@@ -5,6 +5,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.MonthDayDTO
 import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.databinding.ItemCalendarDayBinding
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -18,7 +19,7 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
         fun onDayClick(oldSelection: LocalDate?, selection: LocalDate)
     }
 
-    private val currentMonthResults = arrayListOf<DayResult>()
+    private val currentMonthResults = arrayListOf<MonthDayDTO>()
     private val currentMonthDates = arrayListOf<Int>()
     private lateinit var mOnDayClickListener: OnDayClickListener
 
@@ -30,9 +31,9 @@ class CalendarDayBinder(val context: Context) : DayBinder<CalendarDayBinder.DayV
         mOnDayClickListener = listener
     }
 
-    fun setCurrentMonthResults(dayResults: List<DayResult>) {
+    fun setCurrentMonthResults(monthDays: List<MonthDayDTO>) {
         currentMonthResults.clear()
-        currentMonthResults.addAll(dayResults)
+        currentMonthResults.addAll(monthDays)
 
         // 날짜만 담기
         currentMonthDates.clear()

@@ -23,4 +23,11 @@ class WalkRemoteDataSourceImpl(private val api: WalkService): BaseRepository(), 
     ): Result<BaseResponse> {
         return safeApiCall { api.writeWalk(walk, footprintList, photos).body()!! }
     }
+    override suspend fun getMonthWalks(year: Int, month: Int): Result<BaseResponse> {
+        return safeApiCall { api.getMonthWalks(year, month).body()!! }
+    }
+
+    override suspend fun getDayWalks(date: String): Result<BaseResponse> {
+        return safeApiCall { api.getDayWalks(date).body()!! }
+    }
 }

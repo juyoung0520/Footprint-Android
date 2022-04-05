@@ -33,4 +33,8 @@ val useCaseModule = module {
     single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
     single<GetMonthBadgeUseCase> { GetMonthBadgeUseCase(get()) }.bind(BadgeRemoteDataSourceImpl::class)
 
+    single<GetInfoDetailUseCase> { GetInfoDetailUseCase(get()) }.bind(AchieveRepositoryImpl::class)
+    single<GetMonthWalksUseCase> { GetMonthWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
+    single<GetDayWalksUseCase> { GetDayWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
+
 }

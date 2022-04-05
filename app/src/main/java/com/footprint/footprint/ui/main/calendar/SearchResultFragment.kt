@@ -5,6 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.UserDateWalkDTO
 import com.footprint.footprint.data.remote.walk.*
 import com.footprint.footprint.databinding.FragmentSearchResultBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -66,7 +67,7 @@ class SearchResultFragment() :
         }
 
         adapter.setWalkClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(walk: UserDateWalk) {
+            override fun onItemClick(walk: UserDateWalkDTO) {
                 val action =
                     SearchResultFragmentDirections.actionSearchResultFragmentToWalkDetailActivity(
                         walk.walkIdx
