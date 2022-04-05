@@ -2,30 +2,26 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.model.UpdateGoalReqModel
-import com.footprint.footprint.data.remote.goal.GoalService
+import com.footprint.footprint.data.dto.GoalModel
 import com.footprint.footprint.databinding.FragmentGoalNextMonthUpdateBinding
+import com.footprint.footprint.domain.model.UpdateGoal
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.fadeIn
-import com.footprint.footprint.utils.fadeOut
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBinding>(FragmentGoalNextMonthUpdateBinding::inflate), GoalNextMonthUpdateView {
+class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBinding>(FragmentGoalNextMonthUpdateBinding::inflate) {
     private val args: GoalNextMonthUpdateFragmentArgs by navArgs()
-    private val jobs: ArrayList<Job> = arrayListOf()
-    private val updateGoal: UpdateGoalReqModel = UpdateGoalReqModel()  //사용자가 수정한 목표 데이터
+    private val goalVm: GoalViewModel by viewModel()
+    private val updateGoal: UpdateGoal = UpdateGoal()  //사용자가 수정한 목표 데이터
 
     private lateinit var goal: GoalModel    //수정 전 목표 데이터
     private lateinit var dayRVAdapter: DayRVAdapter
@@ -45,16 +41,9 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
     override fun initAfterBinding() {
         initAdapter()   //어댑터 초기화
         bind(goal.month!!)  //데이터 바인딩
+        observe()
         setMyEventListener()    //이벤트 리스너 설정
         initWalkTimeDialog()    //목표 산책 시간 직접 설정 다이얼로그 화면 초기화
-    }
-
-    override fun onDestroyView() {
-        for (job in jobs) {
-            job.cancel()
-        }
-
-        super.onDestroyView()
     }
 
     private fun initAdapter() {
@@ -232,14 +221,19 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
     }
 
     private fun validate() {
-        if (updateGoal.dayIdx.isEmpty()) {  //목표 산책 요일을 선택하지 않았을 때
-            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_set_goal_walk_time))
-            findNavController().navigate(action)
-        } else if (isSame()) {    //변경된 내역이 없을 때
-            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_no_updating_goal))
-            findNavController().navigate(action)
-        } else {    //유효성 검사 통과
-            GoalService.updateGoal(this, updateGoal)
+        when {
+            updateGoal.dayIdx.isEmpty() -> {  //목표 산책 요일을 선택하지 않았을 때
+                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_set_goal_walk_time))
+                findNavController().navigate(action)
+            }
+            isSame() -> {    //변경된 내역이 없을 때
+                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_no_updating_goal))
+                findNavController().navigate(action)
+            }
+            else -> {    //유효성 검사 통과
+                goalVm.updateGoal(goal.month!!, updateGoal)
+                binding.goalNextMonthUpdatePb.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -247,29 +241,24 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         return goal.dayIdx==updateGoal.dayIdx && goal.userGoalTime.walkGoalTime==updateGoal.walkGoalTime && goal.userGoalTime.walkTimeSlot==updateGoal.walkTimeSlot
     }
 
-    override fun onGoalNextMonthUpdateSuccess() {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.msg_success_update_goal))
-                findNavController().navigate(action)
-            })
-        }
-    }
+    private fun observe() {
+        goalVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.goalNextMonthUpdatePb.visibility = View.INVISIBLE
 
-    override fun onGoalNextMonthUpdateFail(code: Int?, goal: UpdateGoalReqModel) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                when (code) {
-                    6000 -> showSnackBar(getString(R.string.error_network), goal)   //네트워크 연결 문제
-                    else -> showSnackBar(getString(R.string.error_api_fail), goal)   //그 이외 문제
-                }
-            })
-        }
-    }
+            when (it) {
+                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    goalVm.updateGoal(goal.month!!, updateGoal)
+                }.show()
+                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    goalVm.updateGoal(goal.month!!, updateGoal)
+                }.show()
+            }
+        })
 
-    private fun showSnackBar(text: String, goal: UpdateGoalReqModel) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-            GoalService.updateGoal(this@GoalNextMonthUpdateFragment, goal)
-        }.show()
+        goalVm.nextMonthGoal.observe(viewLifecycleOwner, Observer {
+            binding.goalNextMonthUpdatePb.visibility = View.INVISIBLE
+            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.msg_success_update_goal))
+            findNavController().navigate(action)
+        })
     }
 }

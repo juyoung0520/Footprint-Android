@@ -1,11 +1,9 @@
 package com.footprint.footprint.data.remote.user
 
-import com.footprint.footprint.data.model.SimpleUserModel
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.data.dto.UserModel
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.ui.main.mypage.MyPageView
 import com.footprint.footprint.ui.register.RegisterView
-import com.footprint.footprint.ui.setting.MyInfoUpdateView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
@@ -91,35 +89,6 @@ object UserService {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 view.onMyPageFailure(213, t.message.toString())
             }
-        })
-    }
-
-
-    /*유저 정보 업데이트 API*/
-    fun updateUser(view: MyInfoUpdateView, user: SimpleUserModel){
-
-        val encryptedData = NetworkUtils.encrypt(user)
-        val data = encryptedData.toRequestBody("application/json".toMediaType())
-        LogUtils.d("UPDATE/API-DATA(E)", encryptedData)
-
-        userService.updateUser(data).enqueue(object : Callback<UserRegisterResponse>{
-            override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
-                val body = response.body()
-
-                LogUtils.d("UPDATE/API-SUCCESS", body.toString())
-                when(body!!.code){
-                    1000 ->{
-                        view.onUpdateSuccess(body)
-                    }
-                    else -> view.onUpdateFailure(body.code, body.message)
-                }
-            }
-
-            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
-                view.onUpdateFailure(213, t.message.toString())
-                LogUtils.d("UPDATE/API-FAILURE", t.message.toString())
-            }
-
         })
     }
 }

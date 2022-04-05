@@ -18,6 +18,7 @@ class XAccessTokenInterceptor : Interceptor {
 
         val jwtToken: String? = getJwt()
 
+        builder.addHeader("isEncrypted", "yes")
         jwtToken?.let {
             builder.addHeader(X_ACCESS_TOKEN, jwtToken)
         }
@@ -41,6 +42,10 @@ class XAccessTokenInterceptor : Interceptor {
 
     private fun Response.extractResponseJson(): JSONObject {
         val jsonString = this.body?.string()
+        LogUtils.d(
+            "VinylaResponseUnboxingInterceptor",
+            "jsonString : $jsonString"
+        )
         return try {
             JSONObject(jsonString)
         } catch (exception: Exception) {

@@ -155,9 +155,6 @@
         <action
             android:id="@+id/action_goalThisMonthFragment_to_goalNextMonthUpdateFragment"
             app:destination="@id/goalNextMonthUpdateFragment" />
-        <argument
-            android:name="goal"
-            app:argType="com.footprint.footprint.data.model.GoalModel" />
     </fragment>
     <fragment
         android:id="@+id/goalNextMonthFragment"

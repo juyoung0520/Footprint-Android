@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.achieve
 
-import com.footprint.footprint.data.model.GoalModel
+import com.footprint.footprint.data.dto.GoalModel
 import com.google.gson.annotations.SerializedName
 
 // 나중에 user -> infos 안으로

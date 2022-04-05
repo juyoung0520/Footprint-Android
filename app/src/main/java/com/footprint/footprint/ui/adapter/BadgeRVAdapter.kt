@@ -8,21 +8,21 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.BadgeInfo
 import com.footprint.footprint.databinding.ItemBadgeBinding
+import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.utils.loadSvg
 
-class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val size: Int) :
+class BadgeRVAdapter(private var representativeBadge: Badge, private val size: Int) :
     RecyclerView.Adapter<BadgeRVAdapter.BadgeViewHolder>() {
 
     interface MyItemClickListener {
-        fun changeRepresentativeBadge(badge: BadgeInfo)
+        fun changeRepresentativeBadge(badge: Badge)
     }
 
     private lateinit var binding: ItemBadgeBinding
     private lateinit var myItemClickListener: MyItemClickListener
 
-    private val badges: ArrayList<BadgeInfo> = arrayListOf()
+    private val badges: ArrayList<Badge> = arrayListOf()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -76,7 +76,7 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
 
     override fun getItemCount(): Int = 19
 
-    fun setData(badges: List<BadgeInfo>) {
+    fun setData(badges: List<Badge>) {
         this.badges.addAll(badges)
     }
 
@@ -84,7 +84,7 @@ class BadgeRVAdapter(private var representativeBadge: BadgeInfo, private val siz
         this.myItemClickListener = myItemClickListener
     }
 
-    fun changeRepresentativeBadge(representativeBadge: BadgeInfo) {
+    fun changeRepresentativeBadge(representativeBadge: Badge) {
         this.representativeBadge = representativeBadge
         notifyDataSetChanged()
     }

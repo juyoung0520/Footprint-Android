@@ -104,9 +104,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         // 이번달 목표
         val userGoalRes = result.getUserGoalRes
         binding.mypageGoalRightIv.setOnClickListener {
-            val action =
-                MyPageFragmentDirections.actionMypageFragmentToGoalThisMonthFragment(userGoalRes)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_mypageFragment_to_goalThisMonthFragment)
         }
         binding.mypageGoalWeekTv.text =
             getSpannableString(

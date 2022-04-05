@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.remote.weather
 
-import com.footprint.footprint.data.model.LocationModel
+import com.footprint.footprint.data.dto.LocationModel
 import com.footprint.footprint.ui.main.home.HomeView
 import com.footprint.footprint.utils.GlobalApplication.Companion.retrofit
 import com.footprint.footprint.utils.NetworkUtils

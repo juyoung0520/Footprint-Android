@@ -19,7 +19,7 @@ import com.footprint.footprint.BuildConfig
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.SocialUserModel
+import com.footprint.footprint.data.dto.SocialUserModel
 import com.footprint.footprint.data.remote.auth.AuthService
 import com.footprint.footprint.data.remote.auth.Login
 import com.footprint.footprint.data.remote.badge.BadgeInfo
