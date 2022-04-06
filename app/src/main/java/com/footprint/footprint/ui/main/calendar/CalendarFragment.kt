@@ -65,6 +65,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     private fun observe() {
         calendarVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.calendarLoadingPb.visibility = View.VISIBLE
+
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
                 else -> showSnackBar(getString(R.string.error_api_fail))

@@ -47,7 +47,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AchieveViewModel(get())
+        MyPageViewModel(get(), get())
     }
 
     viewModel {

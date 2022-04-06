@@ -14,7 +14,9 @@ import com.footprint.footprint.data.dto.AchieveDetailResult
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.viewmodel.AchieveViewModel
+import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.loadSvg
+import com.footprint.footprint.viewmodel.MyPageViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -33,7 +35,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     private var isFromFragment = false
     private val jobs = arrayListOf<Job>()
 
-    private val achieveVm: AchieveViewModel by viewModel()
+    private val myPageVm: MyPageViewModel by viewModel()
 
     override fun initAfterBinding() {
         if (isFromFragment || !isInitialized) {
@@ -47,7 +49,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         // 사용자, 통계 API 호출
-        achieveVm.getInfoDetail()
+        myPageVm.getSimpleUser()
+        myPageVm.getInfoDetail()
         binding.mypageLoadingPb.visibility = View.VISIBLE
 
         observe()
@@ -87,18 +90,30 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     private fun observe() {
-        // fail 일때
-        achieveVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+        myPageVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.mypageLoadingPb.visibility = View.VISIBLE
+
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
                 else -> showSnackBar(getString(R.string.error_api_fail))
             }
         })
 
-        achieveVm.infoDetail.observe(viewLifecycleOwner, Observer { infoDetail ->
+        myPageVm.infoDetail.observe(viewLifecycleOwner, Observer { infoDetail ->
             binding.mypageLoadingPb.visibility = View.GONE
 
             setAchieveDetailResult(infoDetail)
+        })
+
+        myPageVm.userInfo.observe(viewLifecycleOwner, Observer { userInfo ->
+            binding.mypageLoadingPb.visibility = View.GONE
+
+            binding.mypageNickNameTv.text = userInfo.nickname
+
+            if (userInfo.badgeUrl == "")    //대표 뱃지가 없을 경우
+                binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
+            else    //대표 뱃지가 있을 경우
+                binding.mypageRepBadgeIv.loadSvg(requireContext(), userInfo.badgeUrl)
         })
     }
 
@@ -438,49 +453,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-//    override fun onMyPageLoading() {
-//        if (view != null) {
-//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                binding.mypageLoadingPb.visibility = View.VISIBLE
-//            })
-//        }
-//    }
-//
-//    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
-//        if (view != null) {
-//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                binding.mypageLoadingPb.visibility = View.GONE
-//
-//                setAchieveDetailResult(achieveDetailResult)
-//            })
-//        }
-//    }
-//
-//    override fun onUserSuccess(user: User) {
-//        if (view != null) {
-//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                binding.mypageNickNameTv.text = user.nickname
-//
-//                if (user.badgeUrl==null)    //대표 뱃지가 없을 경우
-//                    binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
-//                else    //대표 뱃지가 있을 경우
-//                    binding.mypageRepBadgeIv.loadSvg(requireContext(), user.badgeUrl)
-//            })
-//        }
-//    }
-//
-//    override fun onMyPageFailure(code: Int, message: String) {
-//        if (view != null) {
-//            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                if (!isNetworkAvailable(requireContext())) {
-//                    showSnackBar(getString(R.string.error_network))
-//                } else {
-//                    showSnackBar(getString(R.string.error_api_fail))
-//                }
-//            })
-//        }
-//    }
-
     private fun showSnackBar(errorMessage: String) {
         Snackbar.make(
             requireView(),
@@ -488,8 +460,9 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             // 유저 API 오류
+            myPageVm.getSimpleUser()
             // 통계 API 오류
-            achieveVm.getInfoDetail()
+            myPageVm.getInfoDetail()
         }.show()
     }
 
