@@ -51,6 +51,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        CalendarViewModel(get(), get())
+        CalendarViewModel(get(), get(), get())
     }
 }

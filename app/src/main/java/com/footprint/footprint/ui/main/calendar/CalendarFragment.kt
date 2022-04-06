@@ -37,8 +37,7 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.roundToInt
 
-class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate),
-    CalendarView {
+class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private var isFromFragment = false
@@ -67,8 +66,8 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private fun observe() {
         calendarVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
             when (it) {
-                ErrorType.NETWORK -> showSnackBar(1234, getString(R.string.error_network))
-                else -> showSnackBar(1234, getString(R.string.error_api_fail))
+                ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
+                else -> showSnackBar(getString(R.string.error_api_fail))
             }
         })
 
@@ -88,6 +87,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 binding.calendarHintTv.visibility = View.GONE
                 binding.calendarWalkRv.visibility = View.VISIBLE
             }
+        })
+
+        calendarVM.isDelete.observe(viewLifecycleOwner, Observer {
+            updateAll()
         })
 
     }
@@ -205,7 +208,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
                 currentMonth = p1.yearMonth
                 // Month API 호출
-                LogUtils.d("Calendar", "afterInitCalendar")
                 getMonthWalks(p1.year, p1.month)
             }
         }
@@ -295,7 +297,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             override fun action1(isAction: Boolean) {
                 if (isAction) {
                     // deleteWalk API
-                    WalkService.deleteWalk(this@CalendarFragment, walkIdx)
+                    calendarVM.deleteWalk(walkIdx)
                     currentDeleteWalkIdx = walkIdx
                 }
             }
@@ -319,88 +321,19 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         findNavController().navigate(action)
     }
 
-    override fun onMonthLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarLoadingBgV.visibility = View.VISIBLE
-                binding.calendarLoadingPb.visibility = View.VISIBLE
-            })
-        }
-    }
-
-    override fun onDayWalkLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarHintTv.visibility = View.VISIBLE
-                binding.calendarWalkRv.visibility = View.GONE
-            })
-        }
-    }
-
-    override fun onCalendarFailure(code: Int, message: String) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                if (!isNetworkAvailable(requireContext())) {
-                    showSnackBar(code, getString(R.string.error_network))
-                } else {
-                    showSnackBar(code, getString(R.string.error_api_fail))
-                }
-            })
-        }
-    }
-
-    private fun showSnackBar(code: Int, errorMessage: String) {
+    private fun showSnackBar(errorMessage: String) {
         Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
-            if (code == 5000) {
-                LogUtils.d("calendar", "message")
+            if (calendarVM.getErrorType() == "deleteWalk") {
                 // 삭제 API이면
-                WalkService.deleteWalk(this, currentDeleteWalkIdx!!)
+                calendarVM.deleteWalk(currentDeleteWalkIdx!!)
             } else {
                 updateAll()
             }
         }.show()
-    }
-
-    override fun onMonthSuccess(monthResult: List<DayResult>) {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/MONTH/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                calendarDayBinder.setCurrentMonthResults(monthResult)
-//                binding.calendarWalkCv.notifyMonthChanged(currentMonth)
-
-                binding.calendarLoadingBgV.visibility = View.GONE
-                binding.calendarLoadingPb.visibility = View.GONE
-            })
-        }
-    }
-
-    override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-//                initWalkAdapter(dayWalkResult)
-
-                if (dayWalkResult.isNotEmpty()) {
-                    binding.calendarHintTv.visibility = View.GONE
-                    binding.calendarWalkRv.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
-    override fun onDeleteWalkSuccess() {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DELETE-WALK/success")
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                updateAll()
-            })
-        }
     }
 
     override fun onDestroyView() {
