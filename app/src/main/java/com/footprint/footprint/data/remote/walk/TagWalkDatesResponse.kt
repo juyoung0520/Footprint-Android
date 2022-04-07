@@ -1,10 +1,11 @@
 package com.footprint.footprint.data.remote.walk
 
+import com.footprint.footprint.data.dto.DayWalkDTO
 import com.google.gson.annotations.SerializedName
 
 data class WalkDateResult(
     @SerializedName("walkAt")val walkAt: String,
-    @SerializedName("walks")val walks: List<DayWalkResult>,
+    @SerializedName("walks")val walks: List<DayWalkDTO>,
 )
 
 // 태그 검색 결과

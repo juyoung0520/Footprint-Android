@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.MonthDayDTO
-import com.footprint.footprint.data.remote.walk.DayResult
 import com.footprint.footprint.databinding.ItemCalendarDayBinding
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
