@@ -7,8 +7,11 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.config.XAccessTokenInterceptor
+import com.footprint.footprint.di.appModule
 import com.kakao.sdk.common.KakaoSdk
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -31,6 +34,11 @@ class GlobalApplication: Application() {
         super.onCreate()
 
         KakaoSdk.init(this, BuildConfig.kakao_login_native_key)
+
+        startKoin {
+            androidContext(this@GlobalApplication)
+            modules(appModule)
+        }
 
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(30000, TimeUnit.MILLISECONDS)

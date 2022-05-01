@@ -6,17 +6,17 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.classes.custom.CustomBarChartRender
+import com.footprint.footprint.data.dto.AchieveDetailResult
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.classes.custom.CustomBarChartRender
-import com.footprint.footprint.data.remote.achieve.*
-import com.footprint.footprint.data.remote.user.User
-import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.loadSvg
-import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.viewmodel.MyPageViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -27,15 +27,15 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
-import kotlin.collections.ArrayList
 
-class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate),
-    MyPageView {
+class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate){
     private var isInitialized = false
     private var isFromFragment = false
     private val jobs = arrayListOf<Job>()
+
+    private val myPageVm: MyPageViewModel by viewModel()
 
     override fun initAfterBinding() {
         if (isFromFragment || !isInitialized) {
@@ -49,8 +49,11 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         // 사용자, 통계 API 호출
-        UserService.getUser(this)
-        AchieveService.getInfoDetail(this)
+        myPageVm.getSimpleUser()
+        myPageVm.getInfoDetail()
+        binding.mypageLoadingPb.visibility = View.VISIBLE
+
+        observe()
     }
 
     private fun setBinding() {
@@ -86,6 +89,34 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
+    private fun observe() {
+        myPageVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.mypageLoadingPb.visibility = View.VISIBLE
+
+            when (it) {
+                ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
+                else -> showSnackBar(getString(R.string.error_api_fail))
+            }
+        })
+
+        myPageVm.infoDetail.observe(viewLifecycleOwner, Observer { infoDetail ->
+            binding.mypageLoadingPb.visibility = View.GONE
+
+            setAchieveDetailResult(infoDetail)
+        })
+
+        myPageVm.userInfo.observe(viewLifecycleOwner, Observer { userInfo ->
+            binding.mypageLoadingPb.visibility = View.GONE
+
+            binding.mypageNickNameTv.text = userInfo.nickname
+
+            if (userInfo.badgeUrl == "")    //대표 뱃지가 없을 경우
+                binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
+            else    //대표 뱃지가 있을 경우
+                binding.mypageRepBadgeIv.loadSvg(requireContext(), userInfo.badgeUrl)
+        })
+    }
+
     private fun setAchieveDetailResult(result: AchieveDetailResult) {
         // 사용자 달성률
         val userInfoAchieve = result.userInfoAchieve
@@ -104,9 +135,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         // 이번달 목표
         val userGoalRes = result.getUserGoalRes
         binding.mypageGoalRightIv.setOnClickListener {
-            val action =
-                MyPageFragmentDirections.actionMypageFragmentToGoalThisMonthFragment(userGoalRes)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_mypageFragment_to_goalThisMonthFragment)
         }
         binding.mypageGoalWeekTv.text =
             getSpannableString(
@@ -424,49 +453,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    override fun onMyPageLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageLoadingPb.visibility = View.VISIBLE
-            })
-        }
-    }
-
-    override fun onMyPageSuccess(achieveDetailResult: AchieveDetailResult) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageLoadingPb.visibility = View.GONE
-
-                setAchieveDetailResult(achieveDetailResult)
-            })
-        }
-    }
-
-    override fun onUserSuccess(user: User) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.mypageNickNameTv.text = user.nickname
-
-                if (user.badgeUrl==null)    //대표 뱃지가 없을 경우
-                    binding.mypageRepBadgeIv.setImageResource(R.drawable.ic_no_badge)
-                else    //대표 뱃지가 있을 경우
-                    binding.mypageRepBadgeIv.loadSvg(requireContext(), user.badgeUrl)
-            })
-        }
-    }
-
-    override fun onMyPageFailure(code: Int, message: String) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                if (!isNetworkAvailable(requireContext())) {
-                    showSnackBar(getString(R.string.error_network))
-                } else {
-                    showSnackBar(getString(R.string.error_api_fail))
-                }
-            })
-        }
-    }
-
     private fun showSnackBar(errorMessage: String) {
         Snackbar.make(
             requireView(),
@@ -474,9 +460,9 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             // 유저 API 오류
-            UserService.getUser(this)
+            myPageVm.getSimpleUser()
             // 통계 API 오류
-            AchieveService.getInfoDetail(this)
+            myPageVm.getInfoDetail()
         }.show()
     }
 

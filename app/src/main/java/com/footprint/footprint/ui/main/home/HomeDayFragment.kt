@@ -3,29 +3,30 @@ package com.footprint.footprint.ui.main.home
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
-import com.footprint.footprint.data.remote.achieve.Today
+import androidx.lifecycle.Observer
+import com.footprint.footprint.data.dto.Today
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.viewmodel.HomeViewModel
 import com.google.gson.Gson
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate),
-    HomeDayView {
+class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate){
 
     private lateinit var today: Today
-    private lateinit var job: Job
+    private val homeVm: HomeViewModel by sharedViewModel()
 
     override fun initAfterBinding() {
         setLoadingBar(true) //초기 상태
+        observe()
     }
 
+    /*Life Cycle*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // onPause에서 임시 저장된 today 정보 받아오기
-        if(savedInstanceState != null){
+        if(savedInstanceState != null) {
             val jsonToday = savedInstanceState.getString("TODAY")
             today = Gson().fromJson(jsonToday, Today::class.java)
         }
@@ -35,25 +36,31 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
         super.onResume()
         //프래그먼트 다시 돌아왔을 때 ex. 산책 액티비티에서 메인으로 다시 돌아옴
         if(::today.isInitialized){
-            setDayFragment()
+            bind()
             setLoadingBar(false)
         }else{
             setLoadingBar(true)
         }
     }
 
-    /*API-SUCCESS*/
-    override fun onTodaySuccess(today: Today) {
-        this.today = today
-        if(view != null){
-            job = viewLifecycleOwner.lifecycleScope.launch{
-                setDayFragment()
-                setLoadingBar(false)
-            }
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        // onPause 시 날라가는 데이터 임시 저장
+        val jsonToday = Gson().toJson(today)
+        outState.putString("TODAY", jsonToday)
     }
 
-    private fun setDayFragment() {
+    /*Observe & Bind*/
+    private fun observe(){
+        homeVm.thisToday.observe(viewLifecycleOwner, Observer{
+            this@HomeDayFragment.today = it
+            bind()
+            setLoadingBar(false)
+        })
+    }
+
+    private fun bind() {
         val TodayGoalRate = today.goalRate.toInt()
         val TodayWalkGoalTime = today.walkGoalTime
 
@@ -82,7 +89,6 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
         binding.homeDayGoalTv.text = goalTimeString
     }
 
-    /*로딩 바*/
     private fun setLoadingBar(btn: Boolean){
         if(btn){
             //ON
@@ -93,19 +99,5 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
             binding.homeDayLoadingPb.visibility = View.GONE
             binding.homeDayLoadingBgV.visibility = View.GONE
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        // onPause 시 날라가는 데이터 임시 저장
-        val jsonToday = Gson().toJson(today)
-        outState.putString("TODAY", jsonToday)
-    }
-
-    override fun onDestroyView() {
-        if(::job.isInitialized)
-            job.cancel()
-        super.onDestroyView()
     }
 }

@@ -11,11 +11,11 @@ object NetworkUtils {
         return AES128(BuildConfig.encrypt_key).encrypt(json)
     }
 
-    fun <T> decrypt(data: String, className: Class<T>): T {
+    fun <T> decrypt(data: String?, className: Class<T>): T {
         return Gson().fromJson(data, className)
     }
 
-    fun <T> decrypt(data: String, type: Type): T {
+    fun <T> decrypt(data: String?, type: Type): T {
         return Gson().fromJson(data, type)
     }
 }

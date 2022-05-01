@@ -4,27 +4,31 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.footprint.footprint.data.remote.achieve.TMonth
+import com.footprint.footprint.data.dto.TMonth
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.viewmodel.HomeViewModel
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
 
 class HomeMonthFragment() :
-    BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMonthBinding::inflate), HomeMonthView {
+    BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMonthBinding::inflate){
 
     private lateinit var tMonth: TMonth
+    private val homeVm: HomeViewModel by sharedViewModel()
     private lateinit var calRVAdapter: HomeMonthRVAdapter
 
     override fun initAfterBinding() {
         setLoadingBar(true)
+        observe()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,19 +42,29 @@ class HomeMonthFragment() :
     override fun onResume() {
         super.onResume()
         if(::tMonth.isInitialized){
-            setMonthFragment()
+            bind()
             setLoadingBar(false)
         }else{
             setLoadingBar(true)
         }
     }
 
-    /*일별 정보 조회 API*/
-    override fun onTMonthSuccess(tMonth: TMonth) {
-        this.tMonth = tMonth
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val jsonTmonth = Gson().toJson(tMonth)
+        outState.putString("TMONTH", jsonTmonth)
     }
-    /*프래그먼트 설정*/
-    private fun setMonthFragment(){
+
+    /*Observe & Bind*/
+    private fun observe(){
+        homeVm.thisTmonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            this@HomeMonthFragment.tMonth = it
+            bind()
+            setLoadingBar(false)
+        })
+    }
+
+    private fun bind(){
         //1. 목표 요일 설정
         val goalDays = tMonth.goalDayList
         for(day in goalDays){
@@ -95,11 +109,5 @@ class HomeMonthFragment() :
             binding.homeMonthLoadingPb.visibility = View.GONE
             binding.homeMonthLoadingBgV.visibility = View.GONE
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val jsonTmonth = Gson().toJson(tMonth)
-        outState.putString("TMONTH", jsonTmonth)
     }
 }

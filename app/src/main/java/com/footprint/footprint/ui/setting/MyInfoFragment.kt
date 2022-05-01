@@ -8,26 +8,24 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.SimpleUserModel
-import com.footprint.footprint.data.remote.user.User
-import com.footprint.footprint.data.remote.user.UserService
-import com.footprint.footprint.data.remote.weather.Weather
+import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.main.home.HomeView
-import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.convertDpToSp
-import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.viewmodel.MyInfoViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.skydoves.balloon.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import kotlin.math.floor
 
-class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate),
-    HomeView {
+class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate){
 
-    private lateinit var user: SimpleUserModel
     private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
+
+    private val myInfoVm: MyInfoViewModel by sharedViewModel()
+    private lateinit var user: MyInfoUserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +44,8 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         super.onStart()
 
         //유저 정보 조회 API 호출
-        UserService.getUser(this)
+        myInfoVm.getMyInfoUser()
+        observe()
     }
 
     override fun initAfterBinding() {
@@ -54,7 +53,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
     }
 
     //내 정보 "조회" 화면
-    private fun setLookUI(user: SimpleUserModel) {
+    private fun setLookUI(user: MyInfoUserModel) {
         binding.myInfoNicknameEt.setText(user.nickname) //닉네임
 
         binding.myInfoGenderRg.apply {  //성별
@@ -213,34 +212,27 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         })
     }
 
-    /*유저 정보 조회 API*/
-    override fun onUserSuccess(user: User) {
-        LogUtils.d("MYINFO(USER)/API-SUCCESS", user.toString())
+    // observe 부분
+    private fun observe(){
+        myInfoVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when (it) {
+                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    myInfoVm.getMyInfoUser()
+                }.show()
+                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
+                    myInfoVm.getMyInfoUser()
+                }.show()
+            }
+        })
 
-        this.user = SimpleUserModel(user.nickname, user.sex, user.birth, user.height, user.weight)
+        myInfoVm.thisUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            this@MyInfoFragment.user = it
 
-        binding.myInfoDayLoadingBgV.visibility = View.GONE
-        binding.myInfoDayLoadingPb.visibility = View.GONE
-        setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
-        setMyEventListener()
-        setHelpBalloon()    //툴팁
-
-        LogUtils.d("MYINFO(USER)", this.user.toString())
-    }
-
-    override fun onWeatherSuccess(weather: Weather) {
-    }
-
-    override fun onHomeFailure(code: Int, message: String) {
-        LogUtils.d("MYINFO(USER)/API-FAILURE", code.toString() + message)
-
-        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
-            getString(R.string.error_network)
-        }else{ //나머지
-            getString(R.string.error_api_fail)
-        }
-        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-            UserService.getUser(this)
-        }.show()
+            binding.myInfoDayLoadingBgV.visibility = View.GONE
+            binding.myInfoDayLoadingPb.visibility = View.GONE
+            setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
+            setMyEventListener()
+            setHelpBalloon()    //툴팁
+        })
     }
 }

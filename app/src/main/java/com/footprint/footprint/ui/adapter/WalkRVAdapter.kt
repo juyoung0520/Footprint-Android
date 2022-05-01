@@ -10,19 +10,19 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.walk.DayWalkResult
-import com.footprint.footprint.data.remote.walk.UserDateWalk
+import com.footprint.footprint.data.dto.DayWalkDTO
+import com.footprint.footprint.data.dto.UserDateWalkDTO
 import com.footprint.footprint.databinding.ItemWalkBinding
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
-    private val walks = arrayListOf<DayWalkResult>()
+    private val walks = arrayListOf<DayWalkDTO>()
     private var currentTag: String ?= null
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
 
     interface OnItemClickListener {
-        fun onItemClick(walk: UserDateWalk)
+        fun onItemClick(walk: UserDateWalkDTO)
     }
 
     interface OnItemRemoveClickListener {
@@ -30,7 +30,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalks(walks: List<DayWalkResult>) {
+    fun setWalks(walks: List<DayWalkDTO>) {
         this.walks.clear()
         this.walks.addAll(walks)
 

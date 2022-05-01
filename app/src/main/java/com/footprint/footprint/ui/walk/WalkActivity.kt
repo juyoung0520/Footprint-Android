@@ -1,10 +1,8 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
-import android.util.Log
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserInfoModel
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -13,7 +11,7 @@ import com.google.gson.Gson
 import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
-    var userInfo: UserInfoModel?= null
+    var userInfo: SimpleUserModel?= null
     override fun initAfterBinding() {
     }
 
@@ -25,7 +23,7 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         // -> 사용자 정보 받아오기
         if (intent.hasExtra("userInfo")) {
             val userInfoJson = intent.getStringExtra("userInfo")
-            userInfo = Gson().fromJson(userInfoJson, UserInfoModel::class.java)
+            userInfo = Gson().fromJson(userInfoJson, SimpleUserModel::class.java)
 
             if (userInfo!!.weight == 0) {
                 userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
