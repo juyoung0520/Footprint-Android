@@ -1,8 +1,9 @@
 package com.footprint.footprint.service
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -15,7 +16,11 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.footprint.footprint.R
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
+import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.walk.WalkActivity
+import com.footprint.footprint.ui.walk.WalkMapFragment
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.Job
@@ -61,21 +66,6 @@ class BackgroundWalkService : LifecycleService() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_NAME,
-                NotificationManager.IMPORTANCE_LOW
-            )
-
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-
-            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).build()
-            startForeground(NOTIFICATION_ID, notification)
-        }
-
         isWalking.observe(this, Observer { state ->
             if (state) {
                 if (isFootprint) {
@@ -97,7 +87,37 @@ class BackgroundWalkService : LifecycleService() {
         })
     }
 
+    private fun createNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            )
+
+            val notificationManager =
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            val intent = Intent(this, MainActivity::class.java)
+                .setAction(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val notification = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+//                .setSmallIcon(R.mipmap.ic_launcher_footprint)
+//                .setContentText("발자국이다앙")
+//                .setContentIntent(pendingIntent)
+
+            startForeground(NOTIFICATION_ID, notification.build())
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        createNotification()
+
         if (intent != null) {
             when (intent.action) {
                 TRACKING_START_OR_RESUME -> {
