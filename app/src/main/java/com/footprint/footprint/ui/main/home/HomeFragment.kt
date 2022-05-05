@@ -37,6 +37,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate){
+    private val args2 = arguments?.getString("notices", "null")
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -121,9 +122,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onStart() {
         super.onStart()
-        /* API 에러 */
         //날씨 API
-        //callWeatherAPI() // method is not allowed
+        callWeatherAPI()
 
         //유저 정보, 일별, 월별 API
         homeVm.getUser()
