@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_dialog_fragment">
+
+    <!-- 상단 -->
+    <ImageView
+        android:id="@+id/notice_dialog_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_notice_speaker"
+        app:layout_constraintVertical_bias="0.06"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/notice_dialog_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_notice"
+        android:textColor="@color/primary"
+        style="@style/tv_body_b_14"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@id/notice_dialog_iv"
+        app:layout_constraintTop_toTopOf="@id/notice_dialog_iv"
+        app:layout_constraintBottom_toBottomOf="@id/notice_dialog_iv" />
+
+    <TextView
+        android:id="@+id/notice_dialog_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2022.05.06"
+        android:textColor="@color/black_light"
+        android:alpha="0.3"
+        style="@style/tv_body_b_12"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notice_dialog_iv"
+        app:layout_constraintBottom_toBottomOf="@id/notice_dialog_iv" />
+
+    <TextView
+        android:id="@+id/notice_dialog_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_notice"
+        android:textColor="@color/black_dark"
+        style="@style/tv_headline_eb_16"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="@id/notice_dialog_iv"
+        app:layout_constraintTop_toBottomOf="@id/notice_dialog_iv"/>
+
+    <!-- 본문 -->
+    <ScrollView
+        android:id="@+id/notice_dialog_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="56dp"
+        android:background="@color/white"
+        android:elevation="-0.5dp"
+        app:layout_constraintTop_toBottomOf="@id/notice_dialog_title_tv"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/notice_dialog_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_notice"
+            style="@style/tv_body_b_14"
+            android:textSize="120dp"
+            android:textColor="@color/black_dark"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="24dp"/>
+    </ScrollView>
+
+    <View
+        android:id="@+id/notice_dialog_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_dark"
+        app:layout_constraintTop_toBottomOf="@id/notice_dialog_scrollview" />
+
+    <!--하단 - 버튼 -->
+
+    <TextView
+        android:id="@+id/notice_dialog_close_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/action_close"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/notice_dialog_line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/notice_dialog_detail_tv"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/notice_dialog_detail_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/action_detail"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/primary"
+        app:layout_constraintTop_toBottomOf="@id/notice_dialog_line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/notice_dialog_close_tv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

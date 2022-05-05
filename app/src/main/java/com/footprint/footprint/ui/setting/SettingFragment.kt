@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,6 +26,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    private var page = "1" // 공지사항 page 수
     private lateinit var loginStatus: String
     private val settingVm: SettingViewModel by viewModel()
 
@@ -147,12 +149,16 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 override fun action2(isAction: Boolean) {
                     if (isAction) {
                         //회원 탈퇴 API 호출
-                        //AuthService.unregister(this@SettingFragment)
                         settingVm.unRegister()
                     }
                 }
 
             })
+        }
+
+        //공지사항 클릭 리스너 -> 공지사항 프래그먼트(NoticeFragment)로 이동
+        binding.settingNoticeView.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_noticeFragment)
         }
 
         //알림 스위치버튼 클릭 리스너
@@ -327,6 +333,14 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 reset()
             }
         })
+
+        // 공지사항 관련 정보 API 응답 오면 -> 1. 공지사항 view 보이게(new 확인 후), 2. 공지사항 페이지 수 저장
+//        binding.settingNoticeView.visibility = View.VISIBLE
+//        binding.settingNoticeLineView.visibility = View.VISIBLE
+//        binding.settingNoticeIv.visibility = View.VISIBLE
+//        binding.settingNoticeTv.visibility = View.VISIBLE
+//
+//        binding.settingNoticeNewIv.visibility = View.VISIBLE
     }
 
     /*Error check*/

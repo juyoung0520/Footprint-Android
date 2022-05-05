@@ -15,5 +15,5 @@ val repositoryModule = module {
     single<WalkRepository> { WalkRepositoryImpl(get()) }.bind(WalkRepositoryImpl::class)
     single<FootprintRepository> { FootprintRepositoryImpl(get()) }.bind(FootprintRepositoryImpl::class)
     single<WeatherRepository> { WeatherRepositoryImpl(get()) }.bind(WeatherRemoteDataSourceImpl::class)
-
+    single<NoticeRepository> { NoticeRepositoryImpl(get()) }.bind(NoticeRepositoryImpl::class)
 }

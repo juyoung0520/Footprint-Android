@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.setting.MyInfoFragment"
+    android:background="@color/white">
+
+    <!--상단: Toolbar-->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/notice_tb"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/notice_back_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/notice_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/notice_title_tv" />
+
+    <TextView
+        android:id="@+id/notice_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_notice"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintBottom_toBottomOf="@+id/notice_tb"
+        app:layout_constraintEnd_toEndOf="@+id/notice_tb"
+        app:layout_constraintStart_toStartOf="@+id/notice_tb"
+        app:layout_constraintTop_toTopOf="@+id/notice_tb"
+        app:layout_constraintVertical_bias="0.72" />
+
+    <!--내용: RecycleView & Indicator -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notice_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_notice"
+        tools:itemCount="8"
+        app:layout_constraintTop_toBottomOf="@id/notice_tb" />
+
+    <LinearLayout
+        android:id="@+id/notice_indicator_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:background="@color/white"
+
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notice_rv">
+
+        <ImageView
+            android:id="@+id/notice_first_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_first"
+            android:alpha="0.3"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/notice_page1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/black_light"
+            android:layout_marginEnd="8dp"
+            style="@style/tv_body_b_14"/>
+        <TextView
+            android:id="@+id/notice_page2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            style="@style/tv_body_b_14"/>
+        <TextView
+            android:id="@+id/notice_page3_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:textColor="@color/black_light"
+            android:layout_marginStart="8dp"
+            style="@style/tv_body_b_14"/>
+
+        <ImageView
+            android:id="@+id/notice_last_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_last"
+            android:alpha="0.3"
+            android:layout_marginStart="8dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

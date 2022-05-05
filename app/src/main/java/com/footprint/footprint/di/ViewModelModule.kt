@@ -57,4 +57,12 @@ val viewModelModule = module {
     viewModel {
         TagSearchViewModel(get())
     }
+
+    viewModel {
+        NoticeListViewModel(get())
+    }
+
+    viewModel {
+        NoticeDetailViewModel(get())
+    }
 }

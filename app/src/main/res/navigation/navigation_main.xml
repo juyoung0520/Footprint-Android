@@ -75,6 +75,9 @@
             <action
                 android:id="@+id/action_settingFragment_to_lockActivity3"
                 app:destination="@id/LockActivity" />
+            <action
+                android:id="@+id/action_settingFragment_to_noticeFragment"
+                app:destination="@id/noticeFragment" />
         </fragment>
         <fragment
             android:id="@+id/myInfoFragment"
@@ -92,6 +95,24 @@
             tools:layout="@layout/fragment_my_info_update">
             <argument
                 android:name="user"
+                app:argType="string" />
+        </fragment>
+        <fragment
+            android:id="@+id/noticeFragment"
+            android:name="com.footprint.footprint.ui.setting.NoticeFragment"
+            android:label="fragment_notice"
+            tools:layout="@layout/fragment_notice">
+            <action
+                android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
+                app:destination="@id/noticeDetailFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/noticeDetailFragment"
+            android:name="com.footprint.footprint.ui.setting.NoticeDetailFragment"
+            android:label="fragment_notice_detail"
+            tools:layout="@layout/fragment_notice_detail">
+            <argument
+                android:name="idx"
                 app:argType="string" />
         </fragment>
         <activity

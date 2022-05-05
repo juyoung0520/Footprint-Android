@@ -24,6 +24,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun initAfterBinding() {
         initBottomNavigation()
+
         checkBadgeExist()
         observe()
     }
