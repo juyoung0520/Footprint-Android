@@ -254,7 +254,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
             when(it.status){
                 "ACTIVE" -> {   // 가입된 회원
-                    /*테스트입니다*/
                     startMainActivity(it.checkMonthChanged)
                 }
                 "ONGOING" -> { // 가입이 안된 회원 -> 회원가입 액티비티

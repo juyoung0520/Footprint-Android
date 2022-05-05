@@ -38,18 +38,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun showMonthBadge(badgeInfo: String) {
-//        //뱃지 있으면 -> 뱃지 다이얼로그 띄우기
-//        if (intent.hasExtra("badge")) {
-//            val badgeInfo = intent.getStringExtra("badge")
-//
-//            val bundle = Bundle()
-//            bundle.putString("badge", badgeInfo)
-//
-//            val newBadgeDialogFragment = NewBadgeDialogFragment()
-//            newBadgeDialogFragment.arguments = bundle
-//            newBadgeDialogFragment.show(supportFragmentManager, null)
-//        }
-
         val bundle = Bundle()
         bundle.putString("badge", badgeInfo)
 
