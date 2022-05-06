@@ -82,6 +82,7 @@ class BackgroundWalkService : LifecycleService() {
                 }
             } else {
                 //LogUtils.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
+                checkPathValid()
                 locationDeactivate()
             }
         })
@@ -291,8 +292,7 @@ class BackgroundWalkService : LifecycleService() {
             }
         }
     }
-
-    private fun addEmptyPath() {
+    private fun checkPathValid() {
         if (paths.value.isNotEmpty()) {
             when(paths.value.last().size) {
                 0 -> return
@@ -302,7 +302,9 @@ class BackgroundWalkService : LifecycleService() {
                 }
             }
         }
+    }
 
+    private fun addEmptyPath() {
         paths.value.apply {
             add(mutableListOf())
             paths.postValue(this)
