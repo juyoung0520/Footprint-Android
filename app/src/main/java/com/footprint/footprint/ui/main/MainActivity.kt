@@ -19,6 +19,7 @@ import com.footprint.footprint.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalDateTime
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var navHostFragment: NavHostFragment
@@ -32,6 +33,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         checkBadgeExist()
         observe()
+
+        /* 테스트입니다 getString(R.string.msg_notice), */
+        val dummyNotice = KeyNoticeDto(0, "공지사항이야", getString(R.string.agreement_use), true, "" , LocalDateTime.now(), LocalDateTime.now())
+        val jsonDummyNotice = Gson().toJson(dummyNotice)
+        showKeyNotice(jsonDummyNotice)
     }
 
     /* Init - BottomNavigation, Notice, Badge */

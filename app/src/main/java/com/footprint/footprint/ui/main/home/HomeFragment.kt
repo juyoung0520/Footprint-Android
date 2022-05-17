@@ -126,12 +126,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         super.onStart()
 
         //날씨 API
-        callWeatherAPI()
+        //callWeatherAPI()
 
         //유저 정보, 일별, 월별 API
-        homeVm.getUser()
+        //homeVm.getUser()
         //homeVm.getToday()
-        homeVm.getTmonth()
+        //homeVm.getTmonth()
     }
 
     private fun setClickListener() {

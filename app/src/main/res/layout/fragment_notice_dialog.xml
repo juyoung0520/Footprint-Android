@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="wrap_content"
+    app:layout_constraintHeight_max="500dp"
+    app:layout_constraintHeight="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_dialog_fragment">
 
@@ -60,20 +62,24 @@
         android:layout_height="0dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="56dp"
+        app:layout_constraintHeight_max="300dp"
         android:background="@color/white"
         android:elevation="-0.5dp"
+        android:overScrollMode="never"
         app:layout_constraintTop_toBottomOf="@id/notice_dialog_title_tv"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:id="@+id/notice_dialog_content_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/msg_notice"
-            style="@style/tv_body_b_14"
-            android:textColor="@color/black_dark"
-            android:layout_marginTop="12dp"
-            android:layout_marginHorizontal="24dp"/>
+            <TextView
+                android:id="@+id/notice_dialog_content_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/agreement_use"
+                style="@style/tv_body_b_14"
+                android:textColor="@color/black_dark"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="24dp"/>
+
     </ScrollView>
 
     <View
@@ -84,29 +90,28 @@
         app:layout_constraintTop_toBottomOf="@id/notice_dialog_scrollview" />
 
     <!--하단 - 버튼 -->
-
     <TextView
         android:id="@+id/notice_dialog_close_tv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="70dp"
+        android:layout_height="56dp"
+        app:layout_constraintHeight_max="56dp"
         android:gravity="center"
         android:text="@string/action_close"
         android:textAppearance="@style/tv_headline_eb_14"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/notice_dialog_line_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/notice_dialog_detail_tv"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/notice_dialog_detail_tv"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="70dp"
+        android:layout_height="56dp"
+        app:layout_constraintHeight_max="56dp"
         android:gravity="center"
         android:text="@string/action_detail"
         android:textAppearance="@style/tv_headline_eb_14"
         android:textColor="@color/primary"
-        app:layout_constraintTop_toBottomOf="@id/notice_dialog_line_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/notice_dialog_close_tv" />

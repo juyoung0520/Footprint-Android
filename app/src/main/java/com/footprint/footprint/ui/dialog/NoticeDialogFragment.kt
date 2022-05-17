@@ -10,6 +10,7 @@ import android.view.Window
 import androidx.fragment.app.DialogFragment
 import com.footprint.footprint.data.dto.KeyNoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDialogBinding
+import com.footprint.footprint.utils.DialogFragmentUtils
 import com.google.gson.Gson
 import java.security.Key
 
@@ -54,6 +55,18 @@ class NoticeDialogFragment(): DialogFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        DialogFragmentUtils.dialogFragmentResize(
+            requireContext(),
+            this,
+            0.9f,
+            0.61f
+        )
+
     }
 
     private fun bindNotice(notice: KeyNoticeDto) {

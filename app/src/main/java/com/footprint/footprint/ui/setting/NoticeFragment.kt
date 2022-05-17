@@ -32,7 +32,6 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
     }
 
     override fun initAfterBinding() {
-        setMyEventListener()
 
         val heightDp = convertPxToDp(requireContext(), getDeviceWidth()) - (90 + 54)
         size = heightDp / 64
@@ -49,6 +48,8 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         initPageIndicator(max)
         current = 2
         bind(current)
+
+        setMyEventListener()
     }
 
     private fun setMyEventListener() {
