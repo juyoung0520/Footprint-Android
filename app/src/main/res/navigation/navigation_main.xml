@@ -79,6 +79,18 @@
                 android:id="@+id/action_settingFragment_to_noticeFragment"
                 app:destination="@id/noticeFragment" />
         </fragment>
+
+        <dialog
+            android:id="@+id/noticeDialogFragment"
+            android:name="com.footprint.footprint.ui.dialog.NoticeDialogFragment"
+            android:label="fragment_notice_dialog"
+            tools:layout="@layout/fragment_notice_dialog">
+            <action
+                android:id="@+id/action_noticeDialog_to_noticeDetailFragment"
+                app:destination="@id/noticeDetailFragment"
+                app:popUpTo="@id/homeFragment" />
+        </dialog>
+
         <fragment
             android:id="@+id/myInfoFragment"
             android:name="com.footprint.footprint.ui.setting.MyInfoFragment"
@@ -212,6 +224,7 @@
             app:destination="@id/goalNextMonthFragment"
             app:popUpTo="@id/goalThisMonthFragment" />
     </dialog>
+
     <fragment
         android:id="@+id/calendarBlankFragment"
         android:name="com.footprint.footprint.ui.main.calendar.CalendarBlankFragment"
@@ -234,4 +247,5 @@
             android:name="mode"
             app:argType="string" />
     </activity>
+
 </navigation>

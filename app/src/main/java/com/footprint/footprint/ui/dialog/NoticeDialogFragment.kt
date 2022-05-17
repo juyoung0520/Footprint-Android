@@ -8,18 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
+import com.footprint.footprint.data.dto.KeyNoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDialogBinding
+import com.google.gson.Gson
+import java.security.Key
 
-class NoticeFragmentDialogFragment(): DialogFragment() {
+class NoticeDialogFragment(): DialogFragment() {
     private lateinit var binding: FragmentNoticeDialogBinding
-    private lateinit var myDialogCallback: NoticeFragmentDialogFragment.MyDialogCallback
+    private lateinit var myDialogCallback: MyDialogCallback
 
-    private var title: String = ""
-    private var msg: String = ""
-
+    private lateinit var notice: KeyNoticeDto
 
     interface MyDialogCallback {
-        fun detail()
+        fun detail(notice: KeyNoticeDto)
+    }
+
+    fun setMyDialogCallback(myDialogCallback: MyDialogCallback) {
+        this.myDialogCallback = myDialogCallback
     }
 
     override fun onCreateView(
@@ -33,7 +38,8 @@ class NoticeFragmentDialogFragment(): DialogFragment() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
-        initUI()
+        notice = Gson().fromJson(arguments?.getString("notice"), KeyNoticeDto::class.java)
+        bindNotice(notice)
 
         binding.noticeDialogCloseTv.setOnClickListener {
             dismiss()
@@ -44,17 +50,16 @@ class NoticeFragmentDialogFragment(): DialogFragment() {
 
             //콜백함수가 등록돼 있으면 detail 메서드 호출
             if (::myDialogCallback.isInitialized)
-                myDialogCallback.detail()
+                myDialogCallback.detail(notice)
         }
 
         return binding.root
     }
 
-    private fun initUI() {
-        title = arguments?.getString("title", "")!!
-        msg = arguments?.getString("msg", "")!!
-
-        binding.noticeDialogTitleTv.text = title
-        binding.noticeDialogContentTv.text = msg
+    private fun bindNotice(notice: KeyNoticeDto) {
+        binding.noticeDialogTitleTv.text = notice.title
+        binding.noticeDialogContentTv.text = notice.notice
     }
+
+
 }

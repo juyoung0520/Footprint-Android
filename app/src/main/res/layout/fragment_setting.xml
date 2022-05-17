@@ -279,6 +279,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_notice_new"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/setting_notice_tv"
         app:layout_constraintBottom_toTopOf="@id/setting_notice_tv" />
 

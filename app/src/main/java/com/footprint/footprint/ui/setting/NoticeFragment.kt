@@ -22,6 +22,15 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
     private var current = 1
     private var size = 1
 
+    override fun onResume() {
+        super.onResume()
+
+        // 로딩바 띄우기
+
+        /* 테스트 - getNoticeList */
+        //noticeListVm.getNoticeList(1, size)
+    }
+
     override fun initAfterBinding() {
         setMyEventListener()
 
@@ -29,7 +38,7 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         size = heightDp / 64
 
         Log.d("Notice", "size는 $size")
-        //noticeListVm.getNoticeList(1, size)
+
         observe()
 
         noticeRVAdapter = NoticeRVAdapter()
@@ -75,16 +84,16 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         }
 
         // 클릭 이벤트 발생 시
-//        noticeRVAdapter.setMyItemClickListener(object : NoticeRVAdapter.MyItemClickListener{
-//
-//            override fun showNoticeDetail(idx: Int) {
-//
-//                // Item 클릭 시, notice idx 정보 가지고 detail 화면으로 이동
-//                val action = NoticeFragmentDirections.actionNoticeFragmentToNoticeDetailFragment(idx.toString())
-//                findNavController().navigate(action)
-//            }
-//
-//        })
+        noticeRVAdapter.setMyItemClickListener(object : NoticeRVAdapter.MyItemClickListener{
+
+            override fun showNoticeDetail(idx: Int) {
+
+                // Item 클릭 시, notice idx 정보 가지고 detail 화면으로 이동
+                val action = NoticeFragmentDirections.actionNoticeFragmentToNoticeDetailFragment(idx.toString())
+                findNavController().navigate(action)
+            }
+
+        })
 
     }
 

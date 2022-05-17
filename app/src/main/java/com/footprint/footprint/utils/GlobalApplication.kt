@@ -22,7 +22,7 @@ class GlobalApplication: Application() {
         const val TAG: String = "FOOTPRINT-APP"                 // SharedPreference
         const val PROD_URL: String = "https://prod.mysteps.shop/"    // 배포용 URI
         const val DEV_URL: String = "https://dev.mysteps.shop/" // 개발 URI
-        const val BASE_URL: String = DEV_URL
+        const val BASE_URL: String = PROD_URL
 
         lateinit var retrofit: Retrofit
         lateinit var mSharedPreferences: SharedPreferences         //APP 기본 SharedPreference

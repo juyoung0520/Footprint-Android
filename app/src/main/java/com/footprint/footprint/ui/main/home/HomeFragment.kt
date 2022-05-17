@@ -74,7 +74,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             getString(R.string.msg_gps)
         }
 
-        gpsDescDialog = this?.let {
+        gpsDescDialog = this.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.apply {
                 setTitle(getString(R.string.title_notification))
@@ -130,7 +130,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         //유저 정보, 일별, 월별 API
         homeVm.getUser()
-        homeVm.getToday()
+        //homeVm.getToday()
         homeVm.getTmonth()
     }
 
@@ -305,7 +305,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     private fun showGPSDeniedDialog(msg: String) {
-        val gpsDeniedDialog: AlertDialog = this?.let {
+        val gpsDeniedDialog: AlertDialog? = this.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.apply {
                 setTitle(getString(R.string.title_notification))

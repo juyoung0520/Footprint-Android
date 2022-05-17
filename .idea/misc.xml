@@ -234,6 +234,7 @@
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_snowy.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_sunny.xml" value="0.27291666666666664" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/drawable/ic_weather_windy.xml" value="0.27291666666666664" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/activity_agree.xml" value="0.2293859649122807" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/activity_signin.xml" value="0.33" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/em.xml" value="0.5" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.33" />
@@ -244,8 +245,8 @@
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.25677083333333334" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.67" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_notice.xml" value="1.25" />
-        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_notice_detail.xml" value="0.33" />
-        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_notice_dialog.xml" value="0.33" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_notice_detail.xml" value="0.1" />
+        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_notice_dialog.xml" value="0.25" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_setting.xml" value="0.33" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_terms.xml" value="0.27239583333333334" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.33" />

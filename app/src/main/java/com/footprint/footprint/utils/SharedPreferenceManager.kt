@@ -7,6 +7,7 @@ import com.footprint.footprint.utils.GlobalApplication.Companion.eSharedPreferen
 import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
 fun saveOnboarding(onboardingStatus: Boolean){
@@ -153,4 +154,54 @@ fun reset(){
     removePWD()
     removeJwt()
     removeNotification()
+}
+
+/* 주요 공지 */
+fun addReadNoticeList(idx: Int){
+    val editor = mSharedPreferences.edit()
+
+    val noticeList: ArrayList<Int> = getReadNoticeList()
+    noticeList.add(idx)
+
+    editor.putString("readNotice", convertIntArrayList2String(noticeList))
+    editor.apply()
+}
+
+fun getReadNoticeList(): ArrayList<Int>{
+    val SnoticeList = mSharedPreferences.getString("readNotice", "null")
+    var noticeList: ArrayList<Int> = arrayListOf()
+
+    if(SnoticeList != "null"){
+        noticeList = convertString2IntArrayList(SnoticeList!!)
+    }
+
+    return noticeList
+}
+
+fun removeReadNoticeList(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("readNotice")
+    editor.apply()
+}
+
+// Check this notice already read
+fun isReadNotice(idx: Int): Boolean{
+    val noticeList = getReadNoticeList()
+
+    for(notice in noticeList){
+        if(notice == idx)
+            return true;
+    }
+
+    return false;
+}
+
+private fun convertString2IntArrayList(list: String): ArrayList<Int>{
+    val type = object : TypeToken<ArrayList<Int>?>() {}.type
+    return Gson().fromJson(list, type)
+}
+
+private fun convertIntArrayList2String(list: ArrayList<Int>): String{
+    return Gson().toJson(list)
 }

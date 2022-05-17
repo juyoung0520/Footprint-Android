@@ -26,7 +26,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var page = "1" // 공지사항 page 수
     private lateinit var loginStatus: String
     private val settingVm: SettingViewModel by viewModel()
 
@@ -46,6 +45,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
+        /* 테스트 - getNewNotice */
+        //settingVm.getNewNotice()
 
         //산책기록 잠금 상태
         when (getPWDstatus()) {
@@ -300,7 +301,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     /*Activity 이동*/
     //스플래시 액티비티(뒤로가기 다 지우기)
-    fun startSplashActivity(){
+    fun startSplashActivity() {
         val intent = Intent(requireContext(), SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -314,13 +315,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
 
     /*Observe*/
-    private fun observe(){
+    private fun observe() {
         settingVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             settingErrorCheck("UNREGISTER")
         })
 
-        settingVm.isDeleted.observe(this, Observer{
-            if(it){
+        settingVm.isDeleted.observe(this, Observer {
+            if (it) {
                 if (loginStatus == "kakao") {
                     //Kakao Unlink
                     LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
@@ -334,13 +335,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             }
         })
 
-        // 공지사항 관련 정보 API 응답 오면 -> 1. 공지사항 view 보이게(new 확인 후), 2. 공지사항 페이지 수 저장
-//        binding.settingNoticeView.visibility = View.VISIBLE
-//        binding.settingNoticeLineView.visibility = View.VISIBLE
-//        binding.settingNoticeIv.visibility = View.VISIBLE
-//        binding.settingNoticeTv.visibility = View.VISIBLE
-//
-//        binding.settingNoticeNewIv.visibility = View.VISIBLE
+        settingVm.isNewNoticeExist.observe(this, Observer {
+            if (it) {
+                binding.settingNoticeNewIv.visibility = View.VISIBLE
+            }else{
+                binding.settingNoticeNewIv.visibility = View.GONE
+            }
+        })
+
+
     }
 
     /*Error check*/

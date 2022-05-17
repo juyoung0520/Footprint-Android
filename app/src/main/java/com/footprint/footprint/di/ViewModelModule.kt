@@ -39,11 +39,11 @@ val viewModelModule = module {
     }
 
     viewModel{
-        SettingViewModel(get())
+        SettingViewModel(get(), get())
     }
 
     viewModel{
-        MainViewModel(get())
+        MainViewModel(get(), get())
     }
 
     viewModel {
