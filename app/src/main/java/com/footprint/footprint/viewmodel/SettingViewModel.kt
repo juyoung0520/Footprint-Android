@@ -33,7 +33,7 @@ class SettingViewModel(private val unRegisterUseCase: UnRegisterUseCase, private
         viewModelScope.launch {
             when(val response = getNewNoticeUseCase.invoke()){
                 is Result.Success -> {
-                    _isNewNoticeExist.postValue(response.value)
+                    _isNewNoticeExist.postValue(response.value.noticeNew)
                 }
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)

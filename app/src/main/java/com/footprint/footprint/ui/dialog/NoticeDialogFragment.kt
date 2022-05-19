@@ -8,20 +8,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.footprint.footprint.data.dto.KeyNoticeDto
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDialogBinding
+import com.footprint.footprint.ui.main.home.HomeFragmentDirections
+import com.footprint.footprint.ui.setting.NoticeDetailFragmentDirections
 import com.footprint.footprint.utils.DialogFragmentUtils
+import com.footprint.footprint.utils.addReadNoticeList
 import com.google.gson.Gson
-import java.security.Key
 
-class NoticeDialogFragment(): DialogFragment() {
+
+class NoticeDialogFragment() : DialogFragment() {
     private lateinit var binding: FragmentNoticeDialogBinding
+    private lateinit var notice: NoticeDto
+
     private lateinit var myDialogCallback: MyDialogCallback
 
-    private lateinit var notice: KeyNoticeDto
-
     interface MyDialogCallback {
-        fun detail(notice: KeyNoticeDto)
+        fun isDismissed()
+        fun showingDetail()
     }
 
     fun setMyDialogCallback(myDialogCallback: MyDialogCallback) {
@@ -35,23 +42,35 @@ class NoticeDialogFragment(): DialogFragment() {
     ): View? {
         binding = FragmentNoticeDialogBinding.inflate(inflater, container, false)
 
-        //다이얼로그 프래그먼트 모서리 둥글게
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
-        notice = Gson().fromJson(arguments?.getString("notice"), KeyNoticeDto::class.java)
+        notice = Gson().fromJson(arguments?.getString("notice"), NoticeDto::class.java)
         bindNotice(notice)
 
+        // 취소 클릭 시,
         binding.noticeDialogCloseTv.setOnClickListener {
             dismiss()
+            myDialogCallback.isDismissed()
         }
 
+        // 자세히 보기 클릭 시,
         binding.noticeDialogDetailTv.setOnClickListener {
-            dismiss()   //프래그먼트 종료
+            addReadNoticeList(notice.noticeIdx) // 읽은 공지사항 리스트에 추가
 
-            //콜백함수가 등록돼 있으면 detail 메서드 호출
-            if (::myDialogCallback.isInitialized)
-                myDialogCallback.detail(notice)
+            dismiss()
+            myDialogCallback.isDismissed()
+
+            // 개별 공지 화면으로 이동
+            lateinit var action: NavDirections
+
+            if (findNavController().currentDestination!!.id == R.id.homeFragment) // 홈프래그먼트 -> 자세히 보기
+                action = HomeFragmentDirections.actionHomeFragmentToNoticeDetailFragment(notice.noticeIdx.toString())
+            else if (findNavController().currentDestination!!.id == R.id.noticeDetailFragment) // 자세히 보기 -> 자세히 보기
+                action = NoticeDetailFragmentDirections.actionNoticeDetailFragmentToNoticeDetailFragment(notice.noticeIdx.toString())
+
+            findNavController().navigate(action)
+            myDialogCallback.showingDetail()
         }
 
         return binding.root
@@ -64,12 +83,12 @@ class NoticeDialogFragment(): DialogFragment() {
             requireContext(),
             this,
             0.9f,
-            0.61f
+            0.5f
         )
 
     }
 
-    private fun bindNotice(notice: KeyNoticeDto) {
+    private fun bindNotice(notice: NoticeDto) {
         binding.noticeDialogTitleTv.text = notice.title
         binding.noticeDialogContentTv.text = notice.notice
     }

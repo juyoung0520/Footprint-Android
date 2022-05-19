@@ -7,15 +7,15 @@ import java.time.LocalDateTime
 data class NoticeListDto(
     @SerializedName("pageOn")val pageOn: Int,
     @SerializedName("pageTotal")val pageTotal: Int,
-    @SerializedName("noticeList")val noticeList: ArrayList<NoticeInfo>,
+    @SerializedName("noticeList")val noticeList: Array<NoticeInfoDto>,
 )
 
-data class NoticeInfo(
+data class NoticeInfoDto(
     @SerializedName("noticeIdx")val noticeIdx: Int,
     @SerializedName("title")val title: String,
     @SerializedName("isNewNotice")val isNewNotice: Boolean,
-    @SerializedName("createAt")val createAt: LocalDateTime,
-    @SerializedName("updateAt")val updateAt: LocalDateTime
+    @SerializedName("createAt")val createAt: String,
+    @SerializedName("updateAt")val updateAt: String
 )
 
 // 공지사항 조회 DTO
@@ -25,19 +25,21 @@ data class NoticeDto(
     @SerializedName("notice")val notice: String?,
     @SerializedName("image")val image: String?,
     @SerializedName("isNewNotice")val isNewNotice: Boolean,
-    @SerializedName("prevIdx")val prevIdx: Int?, // null이면 없는 것 (제일 첫 글)
-    @SerializedName("nextIdx")val nextIdx: Int?, // null이면 없는 것 (제일 마지막 글)
-    @SerializedName("createAt")val createAt: LocalDateTime,
-    @SerializedName("updateAt")val updateAt: LocalDateTime,
+    @SerializedName("preIdx")val preIdx: Int,
+    @SerializedName("postIdx")val postIdx: Int,
+    @SerializedName("createAt")val createAt: String,
+    @SerializedName("updateAt")val updateAt: String,
+)
+
+// 새로운 공지사항 조회 DTO
+data class NewNoticeDto(
+    @SerializedName("noticeNew") val noticeNew: Boolean
 )
 
 // 중요 공지사항 조회 DTO
 data class KeyNoticeDto(
-    @SerializedName("noticeIdx")val noticeIdx: Int,
-    @SerializedName("title")val title: String,
-    @SerializedName("notice")val notice: String,
-    @SerializedName("key")val key: Boolean,
-    @SerializedName("image")val image: String,
-    @SerializedName("createAt")val createAt: LocalDateTime,
-    @SerializedName("updateAt")val updateAt: LocalDateTime,
+    @SerializedName("keyNoticeList") val keyNoticeList: List<NoticeDto>
 )
+
+
+

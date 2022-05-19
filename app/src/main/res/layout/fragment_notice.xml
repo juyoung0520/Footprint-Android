@@ -43,7 +43,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/item_notice"
-        tools:itemCount="8"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        tools:itemCount="9"
         app:layout_constraintTop_toBottomOf="@id/notice_tb" />
 
     <LinearLayout
@@ -53,7 +55,7 @@
         android:background="@color/white"
 
         android:orientation="horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginVertical="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notice_rv">
@@ -70,7 +72,6 @@
             android:id="@+id/notice_page1_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
             android:textColor="@color/black_light"
             android:layout_marginEnd="8dp"
             style="@style/tv_body_b_14"/>
@@ -78,13 +79,11 @@
             android:id="@+id/notice_page2_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
             style="@style/tv_body_b_14"/>
         <TextView
             android:id="@+id/notice_page3_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3"
             android:textColor="@color/black_light"
             android:layout_marginStart="8dp"
             style="@style/tv_body_b_14"/>
@@ -98,5 +97,25 @@
             android:layout_marginStart="8dp"/>
 
     </LinearLayout>
+
+    <!-- 로딩 -->
+    <View
+        android:id="@+id/notice_loading_bg_v"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notice_tb" />
+
+    <ProgressBar
+        android:id="@+id/notice_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

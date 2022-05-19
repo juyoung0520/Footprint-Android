@@ -4,27 +4,34 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDetailBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.viewmodel.NoticeDetailViewModel
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentNoticeDetailBinding::inflate) {
     private val args: NoticeDetailFragmentArgs by navArgs()
     private val noticeDetailVm: NoticeDetailViewModel by viewModel()
 
-    private var index = args.idx.toInt()
-    private var prevIdx: Int? = null
-    private var nextIdx: Int? = null
+    private var index: Int? = null
+    private var preIdx: Int = -1
+    private var postIdx: Int = -1
 
     override fun onResume() {
         super.onResume()
 
         // 로딩바 띄우기
+        binding.noticeDetailLoadingBgV.visibility = View.VISIBLE
+        binding.noticeDetailLoadingPb.visibility = View.VISIBLE
 
-        /* 테스트 - getNotice */
-        //noticeDetailVm.getNotice(index)
+        index = args.idx.toInt()
+        noticeDetailVm.getNotice(index!!)
     }
 
     override fun initAfterBinding() {
@@ -33,32 +40,57 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
     }
 
     private fun setMyClickListener(){
+        binding.noticeBackIv.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         binding.noticePrevLayout.setOnClickListener {
-            if(prevIdx != null){
-                noticeDetailVm.getNotice(prevIdx!!)
+            if(preIdx != -1){
+                // 로딩바 띄우기
+                binding.noticeDetailLoadingBgV.visibility = View.VISIBLE
+                binding.noticeDetailLoadingPb.visibility = View.VISIBLE
+
+                noticeDetailVm.getNotice(preIdx)
             }
         }
 
         binding.noticeNextLayout.setOnClickListener {
-            if(nextIdx != null){
-                noticeDetailVm.getNotice(nextIdx!!)
+            if(postIdx != -1){
+                // 로딩바 띄우기
+                binding.noticeDetailLoadingBgV.visibility = View.VISIBLE
+                binding.noticeDetailLoadingPb.visibility = View.VISIBLE
+
+                noticeDetailVm.getNotice(postIdx)
             }
         }
     }
 
     private fun observe(){
         noticeDetailVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-
+            when (it) {
+                ErrorType.NETWORK -> {
+                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
+                        R.string.action_retry) {
+                        noticeDetailVm.getNotice(index!!)
+                    }.show()
+                }
+                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
+                        noticeDetailVm.getNotice(index!!)
+                }.show()
+            }
         })
 
         noticeDetailVm.notice.observe(this, Observer{
+            // 로딩바 지우기
+            binding.noticeDetailLoadingBgV.visibility = View.GONE
+            binding.noticeDetailLoadingPb.visibility = View.GONE
+
             index = it.noticeIdx
-            prevIdx = it.prevIdx
-            nextIdx = it.nextIdx
+            preIdx = it.preIdx
+            postIdx = it.postIdx
 
             bind(it)
-
-            // 로딩바 지우기
         })
     }
 
@@ -79,13 +111,13 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
             binding.noticeNewTv.visibility = View.GONE
 
         // 이전 글 있는지 체크
-        if(notice.prevIdx == null)
+        if(notice.preIdx == -1)
             binding.noticePrevLayout.alpha = 0.3F
         else
             binding.noticePrevLayout.alpha = 1F
 
         // 다음 글 있는지 체크
-        if(notice.nextIdx == null)
+        if(notice.postIdx == -1)
             binding.noticeNextLayout.alpha = 0.3F
         else
             binding.noticeNextLayout.alpha = 1F

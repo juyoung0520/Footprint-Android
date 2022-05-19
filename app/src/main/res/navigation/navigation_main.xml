@@ -9,9 +9,15 @@
         android:id="@+id/homeFragment"
         android:name="com.footprint.footprint.ui.main.home.HomeFragment"
         android:label="homeFragment">
+        <argument
+            android:name="notices"
+            app:argType="string" />
         <action
             android:id="@+id/action_homeFragment_to_settingFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_homeFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment" />
     </fragment>
 
     <fragment
@@ -80,17 +86,6 @@
                 app:destination="@id/noticeFragment" />
         </fragment>
 
-        <dialog
-            android:id="@+id/noticeDialogFragment"
-            android:name="com.footprint.footprint.ui.dialog.NoticeDialogFragment"
-            android:label="fragment_notice_dialog"
-            tools:layout="@layout/fragment_notice_dialog">
-            <action
-                android:id="@+id/action_noticeDialog_to_noticeDetailFragment"
-                app:destination="@id/noticeDetailFragment"
-                app:popUpTo="@id/homeFragment" />
-        </dialog>
-
         <fragment
             android:id="@+id/myInfoFragment"
             android:name="com.footprint.footprint.ui.setting.MyInfoFragment"
@@ -109,24 +104,7 @@
                 android:name="user"
                 app:argType="string" />
         </fragment>
-        <fragment
-            android:id="@+id/noticeFragment"
-            android:name="com.footprint.footprint.ui.setting.NoticeFragment"
-            android:label="fragment_notice"
-            tools:layout="@layout/fragment_notice">
-            <action
-                android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
-                app:destination="@id/noticeDetailFragment" />
-        </fragment>
-        <fragment
-            android:id="@+id/noticeDetailFragment"
-            android:name="com.footprint.footprint.ui.setting.NoticeDetailFragment"
-            android:label="fragment_notice_detail"
-            tools:layout="@layout/fragment_notice_detail">
-            <argument
-                android:name="idx"
-                app:argType="string" />
-        </fragment>
+
         <activity
             android:id="@+id/signinActivity"
             android:name="com.footprint.footprint.ui.signin.SigninActivity"
@@ -150,7 +128,10 @@
                 android:name="mode"
                 app:argType="string" />
         </activity>
+
+
     </navigation>
+
     <fragment
         android:id="@+id/badgeFragment"
         android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
@@ -247,5 +228,30 @@
             android:name="mode"
             app:argType="string" />
     </activity>
+
+    <!-- Notice 관련 -->
+    <fragment
+        android:id="@+id/noticeFragment"
+        android:name="com.footprint.footprint.ui.setting.NoticeFragment"
+        android:label="fragment_notice"
+        tools:layout="@layout/fragment_notice">
+        <action
+            android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment"
+            app:popUpTo="@id/noticeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/noticeDetailFragment"
+        android:name="com.footprint.footprint.ui.setting.NoticeDetailFragment"
+        android:label="fragment_notice_detail"
+        tools:layout="@layout/fragment_notice_detail">
+        <argument
+            android:name="idx"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_noticeDetailFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment" />
+    </fragment>
+
 
 </navigation>

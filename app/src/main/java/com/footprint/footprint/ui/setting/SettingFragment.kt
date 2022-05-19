@@ -45,8 +45,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
-        /* 테스트 - getNewNotice */
-        //settingVm.getNewNotice()
+        settingVm.getNewNotice()
 
         //산책기록 잠금 상태
         when (getPWDstatus()) {
@@ -318,6 +317,19 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     private fun observe() {
         settingVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             settingErrorCheck("UNREGISTER")
+
+            when (it) {
+                ErrorType.NETWORK -> {
+                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
+                        R.string.action_retry) {
+                            settingVm.getNewNotice()
+                    }.show()
+                }
+                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
+                    settingVm.getNewNotice()
+                }.show()
+            }
         })
 
         settingVm.isDeleted.observe(this, Observer {

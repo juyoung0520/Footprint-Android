@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.KeyNoticeDto
+import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.dto.MonthBadgeResponse
 import com.footprint.footprint.domain.usecase.GetKeyNoticeUseCase
@@ -15,8 +16,8 @@ class MainViewModel(private val getMonthBadgeUseCase: GetMonthBadgeUseCase, priv
     private val _thisMonthBadge: MutableLiveData<MonthBadgeResponse> = MutableLiveData()
     val thisMonthBadge: LiveData<MonthBadgeResponse> get() = _thisMonthBadge
 
-    private val _thisKeyNoticeList: MutableLiveData<List<KeyNoticeDto>> = MutableLiveData()
-    val thisKeyNoticeList: LiveData<List<KeyNoticeDto>> get() = _thisKeyNoticeList
+    private val _thisKeyNoticeList: MutableLiveData<KeyNoticeDto> = MutableLiveData()
+    val thisKeyNoticeList: LiveData<KeyNoticeDto> get() = _thisKeyNoticeList
 
     fun getMonthBange(){
         viewModelScope.launch {

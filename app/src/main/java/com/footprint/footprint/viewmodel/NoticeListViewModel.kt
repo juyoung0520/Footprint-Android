@@ -2,8 +2,7 @@ package com.footprint.footprint.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.footprint.footprint.data.dto.NoticeInfo
-import com.footprint.footprint.data.dto.NoticeListDto
+import com.footprint.footprint.data.dto.NoticeInfoDto
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.usecase.GetNoticeListUseCase
 import com.footprint.footprint.utils.ErrorType
@@ -12,8 +11,8 @@ import kotlinx.coroutines.launch
 class NoticeListViewModel(
     private val getNoticeListUseCase: GetNoticeListUseCase
 ): BaseViewModel(){
-    private val _noticeList = SingleLiveEvent<ArrayList<NoticeInfo>>()
-    val noticeList: LiveData<ArrayList<NoticeInfo>> get() = _noticeList
+    private val _noticeList = SingleLiveEvent<Array<NoticeInfoDto>>()
+    val noticeList: LiveData<Array<NoticeInfoDto>> get() = _noticeList
 
     private val _totalPage = SingleLiveEvent<Int>()
     val totalPage: LiveData<Int> get() = _totalPage

@@ -160,14 +160,14 @@ fun reset(){
 fun addReadNoticeList(idx: Int){
     val editor = mSharedPreferences.edit()
 
-    val noticeList: ArrayList<Int> = getReadNoticeList()
+    val noticeList: ArrayList<Int> = getReadNoticeList() as ArrayList<Int>
     noticeList.add(idx)
 
     editor.putString("readNotice", convertIntArrayList2String(noticeList))
     editor.apply()
 }
 
-fun getReadNoticeList(): ArrayList<Int>{
+fun getReadNoticeList(): List<Int>{
     val SnoticeList = mSharedPreferences.getString("readNotice", "null")
     var noticeList: ArrayList<Int> = arrayListOf()
 
@@ -175,7 +175,7 @@ fun getReadNoticeList(): ArrayList<Int>{
         noticeList = convertString2IntArrayList(SnoticeList!!)
     }
 
-    return noticeList
+    return noticeList as List<Int>
 }
 
 fun removeReadNoticeList(){
@@ -183,18 +183,6 @@ fun removeReadNoticeList(){
 
     editor.remove("readNotice")
     editor.apply()
-}
-
-// Check this notice already read
-fun isReadNotice(idx: Int): Boolean{
-    val noticeList = getReadNoticeList()
-
-    for(notice in noticeList){
-        if(notice == idx)
-            return true;
-    }
-
-    return false;
 }
 
 private fun convertString2IntArrayList(list: String): ArrayList<Int>{

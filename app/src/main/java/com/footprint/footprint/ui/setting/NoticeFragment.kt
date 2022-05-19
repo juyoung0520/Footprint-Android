@@ -1,16 +1,16 @@
 package com.footprint.footprint.ui.setting
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.NoticeInfoDto
 import com.footprint.footprint.databinding.FragmentNoticeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.NoticeRVAdapter
-import com.footprint.footprint.utils.convertPxToDp
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.NoticeListViewModel
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding::inflate) {
@@ -26,34 +26,27 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         super.onResume()
 
         // 로딩바 띄우기
+        binding.noticeLoadingBgV.visibility = View.GONE
+        binding.noticeLoadingPb.visibility = View.GONE
 
-        /* 테스트 - getNoticeList */
-        //noticeListVm.getNoticeList(1, size)
+        noticeListVm.getNoticeList(1, size)
     }
 
     override fun initAfterBinding() {
 
-        val heightDp = convertPxToDp(requireContext(), getDeviceWidth()) - (90 + 54)
+        val heightDp = convertPxToDp(requireContext(), getDeviceHeight()) - (90 + 54 + 70) //툴바(90) + 하단 indicator(54) + 네비게이션 (70)
         size = heightDp / 64
-
-        Log.d("Notice", "size는 $size")
-
-        observe()
 
         noticeRVAdapter = NoticeRVAdapter()
         binding.noticeRv.adapter = noticeRVAdapter
 
-        /*테스트입니다*/
-        max = 2
-        initPageIndicator(max)
-        current = 2
-        bind(current)
+        observe()
 
         setMyEventListener()
     }
 
     private fun setMyEventListener() {
-        //뒤로가기 이미지뷰 클릭 리스너 -> 프래그먼트 종료
+        //뒤로가기 이미지뷰 클릭 리스너 -> Setting fragment로 이동
         binding.noticeBackIv.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -86,7 +79,6 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
 
         // 클릭 이벤트 발생 시
         noticeRVAdapter.setMyItemClickListener(object : NoticeRVAdapter.MyItemClickListener{
-
             override fun showNoticeDetail(idx: Int) {
 
                 // Item 클릭 시, notice idx 정보 가지고 detail 화면으로 이동
@@ -192,18 +184,33 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         noticeListVm.getNoticeList(page, size)
 
         // 로딩 띄우기
+        binding.noticeLoadingBgV.visibility = View.VISIBLE
+        binding.noticeLoadingPb.visibility = View.VISIBLE
     }
 
     private fun observe(){
         noticeListVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when (it) {
+                ErrorType.NETWORK -> {
+                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
+                        R.string.action_retry) {
+                        noticeListVm.getNoticeList(current, size)
+                    }.show()
+                }
+                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
 
+                }.show()
+            }
         })
 
         noticeListVm.noticeList.observe(this, Observer{
-            if(it.size > 0){
-                // 응답 오면 로딩바 지우고 update
-                noticeRVAdapter.updateNoticeList(it)
-                Log.d("Notice", "Notice List = $it")
+            if(it.isNotEmpty()){
+                binding.noticeLoadingBgV.visibility = View.GONE
+                binding.noticeLoadingPb.visibility = View.GONE
+
+                val arrayList = it.toCollection(ArrayList<NoticeInfoDto>())
+                noticeRVAdapter.updateNoticeList(arrayList)
             }
         })
 
