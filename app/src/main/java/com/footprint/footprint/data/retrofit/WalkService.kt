@@ -31,5 +31,5 @@ interface WalkService {
     suspend fun getDayWalks(@Path("date")date: String): Response<BaseResponse>
 
     @GET("users/tags")
-    suspend fun getTagWalkDates(@Query("tag")tag: String): Response<BaseResponse>
+    suspend fun getTagWalks(@Query("tag")tag: String): Response<BaseResponse>
 }

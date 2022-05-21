@@ -3,6 +3,7 @@ package com.footprint.footprint.di
 import com.footprint.footprint.data.datasource.remote.AchieveRemoteDataSourceImpl
 import com.footprint.footprint.data.datasource.remote.AuthRemoteDataSourceImpl
 import com.footprint.footprint.data.datasource.remote.BadgeRemoteDataSourceImpl
+import com.footprint.footprint.data.dto.TagWalksDTO
 import com.footprint.footprint.data.repository.remote.*
 import com.footprint.footprint.domain.usecase.*
 import org.koin.dsl.bind
@@ -14,9 +15,13 @@ val useCaseModule = module {
     single<GetNextMonthGoalUseCase> { GetNextMonthGoalUseCase(get()) }.bind(GoalRepositoryImpl::class)
     single<UpdateGoalUseCase> { UpdateGoalUseCase(get()) }.bind(GoalRepositoryImpl::class)
     single<GetBadgesUseCase> { GetBadgesUseCase(get()) }.bind(BadgeRepositoryImpl::class)
-    single<ChangeRepresentativeBadgeUseCase> { ChangeRepresentativeBadgeUseCase(get()) }.bind(BadgeRepositoryImpl::class)
+    single<ChangeRepresentativeBadgeUseCase> { ChangeRepresentativeBadgeUseCase(get()) }.bind(
+        BadgeRepositoryImpl::class
+    )
     single<GetWalkByIdxUseCase> { GetWalkByIdxUseCase(get()) }.bind(WalkRepositoryImpl::class)
-    single<GetFootprintsByWalkIdxUseCase> { GetFootprintsByWalkIdxUseCase(get()) }.bind(FootprintRepositoryImpl::class)
+    single<GetFootprintsByWalkIdxUseCase> { GetFootprintsByWalkIdxUseCase(get()) }.bind(
+        FootprintRepositoryImpl::class
+    )
     single<UpdateFootprintUseCase> { UpdateFootprintUseCase(get()) }.bind(FootprintRepositoryImpl::class)
     single<DeleteWalkUseCase> { DeleteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
     single<WriteWalkUseCase> { WriteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
@@ -36,5 +41,5 @@ val useCaseModule = module {
     single<GetInfoDetailUseCase> { GetInfoDetailUseCase(get()) }.bind(AchieveRepositoryImpl::class)
     single<GetMonthWalksUseCase> { GetMonthWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
     single<GetDayWalksUseCase> { GetDayWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
-
+    single<GetTagWalksUseCase> { GetTagWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
 }

@@ -1,10 +1,7 @@
 package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.WalkRemoteDataSource
-import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.dto.DayWalkDTO
-import com.footprint.footprint.data.dto.MonthDayDTO
-import com.footprint.footprint.data.dto.Result
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.data.mapper.FootprintMapper
 import com.footprint.footprint.data.mapper.WalkMapper
 import com.footprint.footprint.domain.model.Badge
@@ -14,6 +11,7 @@ import com.footprint.footprint.domain.model.WriteWalkReq
 import com.footprint.footprint.domain.repository.WalkRepository
 import com.footprint.footprint.ui.walk.model.WalkUIModel
 import com.footprint.footprint.utils.FormDataUtils
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
 import com.google.gson.reflect.TypeToken
 import okhttp3.MultipartBody
@@ -103,6 +101,20 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
             is Result.Success -> {
                 if (response.value.isSuccess) {
                     val listType = object : TypeToken<List<DayWalkDTO>>() {}.type
+                    Result.Success(NetworkUtils.decrypt(response.value.result, listType))
+                } else
+                    Result.GenericError(response.value.code, "")
+            }
+            is Result.NetworkError -> response
+            is Result.GenericError -> response
+        }
+    }
+
+    override suspend fun getTagWalks(tag: String): Result<List<TagWalksDTO>> {
+        return when (val response = dataSource.getTagWalks(tag)) {
+            is Result.Success -> {
+                if (response.value.isSuccess) {
+                    val listType = object : TypeToken<List<TagWalksDTO>>() {}.type
                     Result.Success(NetworkUtils.decrypt(response.value.result, listType))
                 } else
                     Result.GenericError(response.value.code, "")
