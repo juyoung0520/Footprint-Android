@@ -19,7 +19,7 @@ class AuthRemoteDataSourceImpl(private val api: AuthService): BaseRepository(), 
     }
 
     override suspend fun unregister(): Result<BaseResponse> {
-        LogUtils.d("AuthRemoteDataSourceImpl", "unregisterlogin")
+        LogUtils.d("AuthRemoteDataSourceImpl", "unregister")
         return safeApiCall() { api.unregister().body()!! }
     }
 

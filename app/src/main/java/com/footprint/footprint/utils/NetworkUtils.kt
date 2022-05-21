@@ -19,58 +19,10 @@ object NetworkUtils {
     }
 
     fun <T> decrypt(data: String?, className: Class<T>): T {
-        val gson = GsonBuilder().registerTypeAdapter(
-            LocalDateTime::class.java,
-            JsonDeserializer<LocalDateTime?> { json, type, jsonDeserializationContext ->
-                ZonedDateTime.parse(
-                    json.asString
-                ).toLocalDateTime()
-            }).create()
-
-//        val gsonBuilder = GsonBuilder()
-//        gsonBuilder.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeDeserializer())
-//        val gson = gsonBuilder.setPrettyPrinting().create()
-//
-
-//        val gson = GsonBuilder().registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeConvertor).create()
-//
-//        val gsonBuilder = GsonBuilder()
-//        gsonBuilder.registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeDeserializer())
-//        val gson = gsonBuilder.setPrettyPrinting().create()
-
-        return gson.fromJson(data, className)
+        return Gson().fromJson(data, className)
     }
 
     fun <T> decrypt(data: String?, type: Type): T {
         return Gson().fromJson(data, type)
-    }
-
-    internal class LocalDateTimeSerializer: JsonSerializer<LocalDateTime>{
-        override fun serialize(
-            localDateTime: LocalDateTime?,
-            srcType: Type?,
-            context: JsonSerializationContext?
-        ): JsonElement? {
-            return JsonPrimitive(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(
-                    localDateTime
-                )
-            )
-        }
-
-    }
-
-    internal class LocalDateTimeDeserializer : JsonDeserializer<LocalDateTime> {
-        @Throws(JsonParseException::class)
-        override fun deserialize(
-            json: JsonElement,
-            typeOfT: Type,
-            context: JsonDeserializationContext
-        ): LocalDateTime {
-            return LocalDateTime.parse(
-                json.asString,
-                DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm::ss").withLocale(Locale.ENGLISH)
-            )
-        }
     }
 }
