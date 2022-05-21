@@ -357,4 +357,8 @@
     <string name="action_apply">적용하기</string>
     <string name="action_re_search">현재 위치에서 검색</string>
 
+    <!-- 산책종료 후 코스등록 -->
+    <string name="title_specify_which_courses_to_share">공유할 코스 지정</string>
+    <string name="title_start">시작</string>
+    <string name="msg_course_select_explanation">시작점과 끝점을 끌어 코스를 지정해 주세요</string>
 </resources>
