@@ -1,17 +1,16 @@
 package com.footprint.footprint.ui.main.course
 
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseSelectBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.convertDpToPx
 import com.innovattic.rangeseekbar.RangeSeekBar
-import java.lang.Math.round
-
 
 class CourseSelectFragment : BaseFragment<FragmentCourseSelectBinding>(FragmentCourseSelectBinding::inflate), RangeSeekBar.SeekBarChangeListener {
     override fun initAfterBinding() {
-        binding.courseSelectRsb.seekBarChangeListener = this
+        setMyEventListener()
     }
 
     override fun onStartedSeeking() {
@@ -29,6 +28,13 @@ class CourseSelectFragment : BaseFragment<FragmentCourseSelectBinding>(FragmentC
         val param = binding.courseSelectBarPrimaryView.layoutParams as ViewGroup.MarginLayoutParams
         param.setMargins(marginStart.toInt(),0, marginEnd.toInt(),0)
         binding.courseSelectBarPrimaryView.layoutParams = param
+    }
+
+    private fun setMyEventListener() {
+        binding.courseSelectRsb.seekBarChangeListener = this
+        binding.courseSelectNextTv.setOnClickListener {
+            findNavController().navigate(R.id.action_courseSelectFragment_to_courseShareFragment)
+        }
     }
 }
 
