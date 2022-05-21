@@ -70,7 +70,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private fun checkBadgeExist(){
         if (intent.hasExtra("badgeCheck") && intent.getBooleanExtra("badgeCheck", false)){
             //badgeCheck가 true면 badge API 호출
-            mainVm.getMonthBange()
+            mainVm.getMonthBadge()
         }
     }
 
@@ -98,13 +98,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                 ErrorType.NETWORK -> {
                     Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
                         R.string.action_retry) {
-                        mainVm.getMonthBange()
+                        mainVm.getMonthBadge()
                         mainVm.getKeyNotice()
                     }.show()
                 }
+                ErrorType.NO_BADGE -> { // 이번 달에 획득한 뱃지가 없습니다 -> 무시
+                    LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
+                }
                 else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
                     R.string.action_retry) {
-                    mainVm.getMonthBange()
+                    mainVm.getMonthBadge()
                     mainVm.getKeyNotice()
                 }.show()
             }
