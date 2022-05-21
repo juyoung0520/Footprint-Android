@@ -12,8 +12,8 @@ val repositoryModule = module {
     single<AchieveRepository> { AchieveRepositoryImpl(get()) }.bind(AchieveRemoteDataSourceImpl::class)
     single<GoalRepository> { GoalRepositoryImpl(get()) }.bind(GoalRemoteDataSourceImpl::class)
     single<BadgeRepository> { BadgeRepositoryImpl(get()) }.bind(BadgeRemoteDataSourceImpl::class)
-    single<WalkRepository> { WalkRepositoryImpl(get()) }.bind(WalkRepositoryImpl::class)
-    single<FootprintRepository> { FootprintRepositoryImpl(get()) }.bind(FootprintRepositoryImpl::class)
+    single<WalkRepository> { WalkRepositoryImpl(get()) }.bind(WalkRemoteDataSourceImpl::class)
+    single<FootprintRepository> { FootprintRepositoryImpl(get()) }.bind(FootprintRemoteDataSourceImpl::class)
     single<WeatherRepository> { WeatherRepositoryImpl(get()) }.bind(WeatherRemoteDataSourceImpl::class)
     single<NoticeRepository> { NoticeRepositoryImpl(get()) }.bind(NoticeRepositoryImpl::class)
 }

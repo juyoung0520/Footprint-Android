@@ -27,6 +27,9 @@
         android:theme="@style/Theme.Footprint"
         android:usesCleartextTraffic="false"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".ui.main.course.CourseSelectActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
