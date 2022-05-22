@@ -48,8 +48,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
 
         // 사용자, 통계 API 호출
-        myPageVm.getSimpleUser()
+        /* API 에러 */
+        //myPageVm.getSimpleUser() // 홈화면 getUser와 같은 API
         myPageVm.getUserInfo()
+
         binding.mypageLoadingPb.visibility = View.VISIBLE
 
         observe()
