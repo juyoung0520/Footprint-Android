@@ -148,7 +148,6 @@
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/item_goal_time.xml" value="0.264" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/item_photo.xml" value="0.2" />
         <entry key="..\:/Footprint-Android/app/src/main/res/layout/item_post.xml" value="0.4" />
-        <entry key="..\:/Footprint-Android/app/src/main/res/layout/item_walk.xml" value="0.2047008547008547" />
         <entry key="..\:/Footprint-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.21288888888888888" />
         <entry key="..\:/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint.xml" value="0.1" />
         <entry key="..\:/Users/JY/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1859375" />
@@ -258,27 +257,77 @@
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_photo.xml" value="0.25677083333333334" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.2293859649122807" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_walk_date.xml" value="0.2293859649122807" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_filter.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_filter_checked.xml" value="0.1495" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_primary_round_square.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_blueroad_signin.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_course_end_off.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_course_end_on.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_course_start_off.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_dialog_fragment.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_goal_setting_btn_disabled.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_gray_round_square.xml" value="0.1275" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_round.xml" value="0.163" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_round_square.xml" value="0.163" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_start_on.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_white_gradient.xml" value="0.1565" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_white_round.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_bg_view_start_on.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_filter_off.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_launcher_footprint_foreground.xml" value="0.1325" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location_overlay.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location_pin_end.xml" value="0.179" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_location_pin_start.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_marker_middle_end.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_marker_start.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/ic_user_off.xml" value="0.15" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_button_text.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_checkbox.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_course_end_button.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_course_start_button.xml" value="0.1275" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_course_viewmode.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_item_day.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_item_filter.xml" value="0.1495" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_footprint.xml" value="0.15" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_navi_user.xml" value="0.23" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/selector_setting_switch.xml" value="0.23" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_error.xml" value="0.264" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_lock.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_main.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_onboarding.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_signin.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk.xml" value="0.264" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_after.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_walk_detail.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.264" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_agree.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_course.xml" value="0.4" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_course_map.xml" value="0.2981586402266289" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_error.xml" value="0.2" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.4" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_goal_next_month.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_msg_dialog.xml" value="0.19490740740740742" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_notice.xml" value="0.4" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_notice.xml" value="0.264" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_onboarding_first.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_setting.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_goal.xml" value="0.536" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_register_info.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_setting.xml" value="0.536" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_update_dialog.xml" value="0.264" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walkmap.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_filter.xml" value="0.536" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_photo.xml" value="0.4" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.8" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/item_walk.xml" value="0.19490740740740742" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/menu/bottom_nav_menu.xml" value="0.19153776160145586" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1325" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint.xml" value="0.1765" />
+        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_footprint_round.xml" value="0.1325" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_footprint_foreground.xml" value="0.21979166666666666" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/drawable/bg_grayround.xml" value="0.23958333333333334" />

@@ -19,7 +19,4 @@ local.properties
 /app/release/output-metadata.json
 /app/client_secret_275484626544-dst0jhcq15rhntot3eljkfjb386tuaol.apps.googleusercontent.com.json
 /app/google-services.json
-
-app/FootprintKeyStore.jks
-
-app/google-services.json
+/app/FootprintKeyStore.jks
