@@ -11,4 +11,5 @@ interface WalkRemoteDataSource {
     suspend fun writeWalk(walk: RequestBody, footprintList: RequestBody, photos: List<MultipartBody.Part>): Result<BaseResponse>
     suspend fun getMonthWalks(year: Int, month: Int): Result<BaseResponse>
     suspend fun getDayWalks(date: String): Result<BaseResponse>
+    suspend fun getTagWalks(tag: String): Result<BaseResponse>
 }

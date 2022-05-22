@@ -5,19 +5,19 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.footprint.footprint.data.remote.walk.WalkDateResult
+import com.footprint.footprint.data.dto.TagWalksDTO
 import com.footprint.footprint.databinding.ItemWalkDateBinding
 
 class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVAdapter.WalkDateViewHolder>() {
-    private val walkDates = arrayListOf<WalkDateResult>()
+    private val tagWalks = arrayListOf<TagWalksDTO>()
     private lateinit var currentTag: String
 
     private lateinit var onWalkClickListener: WalkRVAdapter.OnItemClickListener
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalkDates(walkDates: List<WalkDateResult>) {
-        this.walkDates.clear()
-        this.walkDates.addAll(walkDates)
+    fun setWalkDates(walkDates: List<TagWalksDTO>) {
+        this.tagWalks.clear()
+        this.tagWalks.addAll(walkDates)
 
         notifyDataSetChanged()
     }
@@ -41,14 +41,14 @@ class WalkDateRVAdapter(val context: Context) : RecyclerView.Adapter<WalkDateRVA
     }
 
     override fun getItemCount(): Int {
-        return walkDates.size
+        return tagWalks.size
     }
 
     inner class WalkDateViewHolder(val binding: ItemWalkDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(position: Int) {
-            binding.walkDateDateTv.text = walkDates[position].walkAt
+            binding.walkDateDateTv.text = tagWalks[position].walkAt
 
             val adapter = WalkRVAdapter(context)
             //adapter.setWalks(walkDates[position].walks)

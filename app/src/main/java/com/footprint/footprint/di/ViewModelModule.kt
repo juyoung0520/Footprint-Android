@@ -53,4 +53,8 @@ val viewModelModule = module {
     viewModel {
         CalendarViewModel(get(), get(), get())
     }
+
+    viewModel {
+        TagSearchViewModel(get())
+    }
 }

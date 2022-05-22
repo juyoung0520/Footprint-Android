@@ -10,11 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.classes.custom.CustomBarChartRender
-import com.footprint.footprint.data.dto.AchieveDetailResult
+import com.footprint.footprint.data.dto.UserInfoDTO
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.loadSvg
 import com.footprint.footprint.viewmodel.MyPageViewModel
 import com.github.mikephil.charting.charts.BarChart
@@ -50,7 +49,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
         // 사용자, 통계 API 호출
         myPageVm.getSimpleUser()
-        myPageVm.getInfoDetail()
+        myPageVm.getUserInfo()
         binding.mypageLoadingPb.visibility = View.VISIBLE
 
         observe()
@@ -99,10 +98,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             }
         })
 
-        myPageVm.infoDetail.observe(viewLifecycleOwner, Observer { infoDetail ->
+        myPageVm.infoDetail.observe(viewLifecycleOwner, Observer { userInfo ->
             binding.mypageLoadingPb.visibility = View.GONE
 
-            setAchieveDetailResult(infoDetail)
+            setAchieveDetailResult(userInfo)
         })
 
         myPageVm.userInfo.observe(viewLifecycleOwner, Observer { userInfo ->
@@ -117,7 +116,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         })
     }
 
-    private fun setAchieveDetailResult(result: AchieveDetailResult) {
+    private fun setAchieveDetailResult(result: UserInfoDTO) {
         // 사용자 달성률
         val userInfoAchieve = result.userInfoAchieve
         binding.mypageTodayPb.progress = userInfoAchieve.todayGoalRate
@@ -462,7 +461,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             // 유저 API 오류
             myPageVm.getSimpleUser()
             // 통계 API 오류
-            myPageVm.getInfoDetail()
+            myPageVm.getUserInfo()
         }.show()
     }
 

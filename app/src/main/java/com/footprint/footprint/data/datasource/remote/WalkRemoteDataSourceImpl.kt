@@ -30,4 +30,8 @@ class WalkRemoteDataSourceImpl(private val api: WalkService): BaseRepository(), 
     override suspend fun getDayWalks(date: String): Result<BaseResponse> {
         return safeApiCall { api.getDayWalks(date).body()!! }
     }
+
+    override suspend fun getTagWalks(tag: String): Result<BaseResponse> {
+        return  safeApiCall { api.getTagWalks(tag).body()!! }
+    }
 }

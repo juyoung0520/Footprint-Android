@@ -31,6 +31,7 @@ class XAccessTokenInterceptor : Interceptor {
             val decrypt =
                 AES128(BuildConfig.encrypt_key).decrypt(responseJson["result"].toString())
             responseJson.put("result", decrypt)
+            LogUtils.d("responseJson-decrypt", responseJson.toString())
 
             return response.newBuilder()
                 .body(responseJson.toString().toResponseBody("application/json".toMediaType()))

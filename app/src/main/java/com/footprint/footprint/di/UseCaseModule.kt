@@ -14,9 +14,13 @@ val useCaseModule = module {
     single<GetNextMonthGoalUseCase> { GetNextMonthGoalUseCase(get()) }.bind(GoalRepositoryImpl::class)
     single<UpdateGoalUseCase> { UpdateGoalUseCase(get()) }.bind(GoalRepositoryImpl::class)
     single<GetBadgesUseCase> { GetBadgesUseCase(get()) }.bind(BadgeRepositoryImpl::class)
-    single<ChangeRepresentativeBadgeUseCase> { ChangeRepresentativeBadgeUseCase(get()) }.bind(BadgeRepositoryImpl::class)
+    single<ChangeRepresentativeBadgeUseCase> { ChangeRepresentativeBadgeUseCase(get()) }.bind(
+        BadgeRepositoryImpl::class
+    )
     single<GetWalkByIdxUseCase> { GetWalkByIdxUseCase(get()) }.bind(WalkRepositoryImpl::class)
-    single<GetFootprintsByWalkIdxUseCase> { GetFootprintsByWalkIdxUseCase(get()) }.bind(FootprintRepositoryImpl::class)
+    single<GetFootprintsByWalkIdxUseCase> { GetFootprintsByWalkIdxUseCase(get()) }.bind(
+        FootprintRepositoryImpl::class
+    )
     single<UpdateFootprintUseCase> { UpdateFootprintUseCase(get()) }.bind(FootprintRepositoryImpl::class)
     single<DeleteWalkUseCase> { DeleteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
     single<WriteWalkUseCase> { WriteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
@@ -33,8 +37,8 @@ val useCaseModule = module {
     single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
     single<GetMonthBadgeUseCase> { GetMonthBadgeUseCase(get()) }.bind(BadgeRemoteDataSourceImpl::class)
 
-    single<GetInfoDetailUseCase> { GetInfoDetailUseCase(get()) }.bind(AchieveRepositoryImpl::class)
+    single<GetUserInfoUseCase> { GetUserInfoUseCase(get()) }.bind(AchieveRepositoryImpl::class)
     single<GetMonthWalksUseCase> { GetMonthWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
     single<GetDayWalksUseCase> { GetDayWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
-
+    single<GetTagWalksUseCase> { GetTagWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
 }
