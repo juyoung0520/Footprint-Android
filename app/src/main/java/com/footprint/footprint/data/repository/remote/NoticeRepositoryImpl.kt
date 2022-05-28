@@ -70,4 +70,17 @@ class NoticeRepositoryImpl(private val dataSource: NoticeDataSource): NoticeRepo
         }
     }
 
+    override suspend fun getVersion(version: String): Result<VersionDto> {
+        return when(val response = dataSource.getVersion(version)){
+            is Result.Success -> {
+                if (response.value.isSuccess)
+                    Result.Success(NetworkUtils.decrypt(response.value.result, VersionDto::class.java))
+                else
+                    Result.GenericError(response.value.code, "")
+            }
+            is Result.GenericError -> response
+            is Result.NetworkError -> response
+        }
+    }
+
 }

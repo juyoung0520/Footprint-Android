@@ -27,4 +27,9 @@ class NoticeDataSourceImpl(private val api: NoticeService): BaseRepository(), No
         LogUtils.d("NoticeDataSourceImpl", "getKeyNotice")
         return safeApiCall { api.getKeyNotice(list).body()!! }
     }
+
+    override suspend fun getVersion(version: String): Result<BaseResponse> {
+        LogUtils.d("NoticeDataSourceImpl", "getVersion")
+        return safeApiCall { api.getVersion(version).body()!! }
+    }
 }

@@ -3,10 +3,7 @@ package com.footprint.footprint.data.retrofit
 import com.footprint.footprint.data.dto.BaseResponse
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface NoticeService {
 
@@ -30,4 +27,8 @@ interface NoticeService {
     // 필수 공지사항 조회 API
     @POST("notices/key")
     suspend fun getKeyNotice(@Body checkedKeyNoticeIdxList: RequestBody): Response<BaseResponse>
+
+    // 버전 확인 API
+    @GET("/notices/version/{userVersion}")
+    suspend fun getVersion(@Path("userVersion") userVersion: String): Response<BaseResponse>
 }

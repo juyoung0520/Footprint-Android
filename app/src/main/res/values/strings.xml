@@ -141,7 +141,9 @@
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
     <string name="title_hour">시간</string>
     <string name="title_minute">분</string>
+    <string name="title_update">발자국 업데이트 안내</string>
     <string name="action_withdrawal">탈퇴하기</string>
+    <string name="action_store">스토어 이동</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -162,6 +164,7 @@
     <string name="msg_denied_foreground_gps">위치 권한 거절로 위치 정보를 활용하는 일부 기능이 제한됩니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
     <string name="msg_denied_walk_for_foreground_gps">산책을 시작하기 위해서는 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
     <string name="msg_denied_walk_for_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
+    <string name="msg_denied_update">업데이트 후 사용 가능합니다.</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
@@ -261,7 +264,7 @@
     <string name="title_password_setting">암호 변경</string>
     <string name="title_logout">로그아웃</string>
     <string name="title_withdrawal">회원 탈퇴</string>
-    <string name="title_version_copyright">버전 1.0.0\nⓒ 2021. 발자국 all rights reserved.</string>
+    <string name="title_version_copyright">\nⓒ 2021. 발자국 all rights reserved.</string>
     <string name="title_privacy_policy">개인정보처리방침</string>
     <string name="title_terms_of_user">이용약관</string>
     <string name="title_location_terms_of_service">위치서비스이용약관</string>
