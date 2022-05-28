@@ -178,7 +178,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     /*로그인 API*/
     private fun callSignInAPI(){
-        //AuthService.login(this, socialUserModel)
         signInVm.login(socialUserModel)
     }
 

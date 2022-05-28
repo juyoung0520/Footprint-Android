@@ -41,5 +41,11 @@ data class KeyNoticeDto(
     @SerializedName("keyNoticeList") val keyNoticeList: List<NoticeDto>
 )
 
+// 버전 확인 DTO
+data class VersionDto(
+    @SerializedName("whetherUpdate") val whetherUpdate: Boolean,
+    @SerializedName("version") val serverVersion: String,
+)
+
 
 

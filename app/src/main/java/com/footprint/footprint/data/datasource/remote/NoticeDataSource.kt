@@ -9,4 +9,5 @@ interface NoticeDataSource {
     suspend fun getNotice(idx: Int): Result<BaseResponse>
     suspend fun getNewNotice(): Result<BaseResponse>
     suspend fun getKeyNotice(list: RequestBody): Result<BaseResponse>
+    suspend fun getVersion(version: String): Result<BaseResponse>
 }
