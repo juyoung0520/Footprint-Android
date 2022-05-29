@@ -7,6 +7,7 @@ import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.BadgeEntity
 import com.footprint.footprint.domain.model.GetWalkEntity
 import com.footprint.footprint.domain.model.SaveWalkEntity
+import com.footprint.footprint.data.dto.TagWalksDTO
 
 interface WalkRepository {
     suspend fun getWalkByIdx(walkIdx: Int): Result<GetWalkEntity>
