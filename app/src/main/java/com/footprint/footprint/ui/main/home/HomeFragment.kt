@@ -6,14 +6,12 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
@@ -22,7 +20,6 @@ import com.footprint.footprint.domain.model.LocationModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.data.dto.TMonth
 import com.footprint.footprint.data.dto.Today
-import com.footprint.footprint.data.dto.User
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
@@ -35,12 +32,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import kotlinx.coroutines.*
-import lombok.ToString
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.*
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate){
 
