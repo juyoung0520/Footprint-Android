@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemFootprintBinding
-import com.footprint.footprint.domain.model.Footprint
-import com.footprint.footprint.ui.walk.model.FootprintUIModel
-import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.convertDpToPx
 import com.volokh.danylo.hashtaghelper.HashTagHelper
 import me.relex.circleindicator.CircleIndicator3
@@ -26,8 +24,8 @@ class FootprintRVAdapter() :
     RecyclerView.Adapter<FootprintRVAdapter.PostViewHolder>() {
     interface MyItemClickListener {
         fun addFootprint(position: Int)
-        fun updateFootprintVerAfter(position: Int, footprint: FootprintUIModel)
-        fun updateFootprintVerDetail(position: Int, footprint: Footprint)
+        fun updateFootprintVerAfter(position: Int, saveWalkFootprint: SaveWalkFootprintEntity)
+        fun updateFootprintVerDetail(position: Int, saveWalkFootprint: SaveWalkFootprintEntity)
     }
 
     private val footprintIcList: ArrayList<Int> = arrayListOf(
@@ -43,8 +41,8 @@ class FootprintRVAdapter() :
     )
 
     private var footprintIcIdx: Int = 0
-    private var footprintsAfterVer: ArrayList<FootprintUIModel>? = null
-    private var footprintsDetailVer: ArrayList<Footprint>? = null
+    private var footprintsAfterVer: ArrayList<SaveWalkFootprintEntity>? = null
+    private var footprintsDetailVer: ArrayList<SaveWalkFootprintEntity>? = null
 
     private lateinit var binding: ItemFootprintBinding
     private lateinit var myItemClickListener: MyItemClickListener
@@ -112,29 +110,29 @@ class FootprintRVAdapter() :
             footprintsAfterVer!!.size
     }
 
-    private fun bindAfterVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: FootprintUIModel) {
+    private fun bindAfterVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, saveWalkFootprint: SaveWalkFootprintEntity/*holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: FootprintUIModel*/) {
         //기록 시간
-        holder.postTimeTv.text = footprint.recordAt.split(" ")[1].substring(0, 5)
+        holder.postTimeTv.text = saveWalkFootprint.recordAt.split(" ")[1].substring(0, 5)
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
-            myItemClickListener.updateFootprintVerAfter(position, footprint)
+            myItemClickListener.updateFootprintVerAfter(position, saveWalkFootprint)
         }
 
         //발자국 아이콘
-        if (footprint.isMarked==1) {    //발자국 표시가 있는 발자국일 때
+        if (saveWalkFootprint.onWalk==1) {    //발자국 표시가 있는 발자국일 때
             holder.footPrintIv.visibility = View.VISIBLE
             holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
         } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
             holder.footPrintIv.visibility = View.INVISIBLE
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
-        if (footprint.photos.isEmpty()) {
+        if (saveWalkFootprint.photos.isEmpty()) {
             holder.photoVp.visibility = View.GONE
             holder.photoIndicator.visibility = View.GONE
         } else {
             val photoRVAdapter = PhotoRVAdapter(1)
-            photoRVAdapter.addImgList(footprint.photos as ArrayList<String>)
+            photoRVAdapter.addImgList(saveWalkFootprint.photos as ArrayList<String>)
             holder.photoVp.adapter = photoRVAdapter
             holder.photoVp.visibility = View.VISIBLE
 
@@ -142,13 +140,13 @@ class FootprintRVAdapter() :
             holder.photoIndicator.visibility = View.VISIBLE
         }
 
-        if (footprint.photos.isEmpty())  //이미지가 없을 때 -> 최대 3줄
+        if (saveWalkFootprint.photos.isEmpty())  //이미지가 없을 때 -> 최대 3줄
             holder.contentTv.maxLines = 3
         else    //이미지가 있을 때 -> 최대 2줄
             holder.contentTv.maxLines = 2
 
         //기록 내용
-        val hashtagInContent = findHashTag(footprint.write)
+        val hashtagInContent = findHashTag(saveWalkFootprint.write)
         holder.contentTv.text = hashtagInContent
 
         //더보기 visibility 설정
@@ -167,7 +165,7 @@ class FootprintRVAdapter() :
             } else {
                 holder.viewMoreTv.text = "더보기"
 
-                if (footprint.photos.isEmpty())
+                if (saveWalkFootprint.photos.isEmpty())
                     holder.contentTv.maxLines = 3
                 else
                     holder.contentTv.maxLines = 2
@@ -184,28 +182,28 @@ class FootprintRVAdapter() :
         }
     }
 
-    private fun bindDetailVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, footprint: Footprint) {
-        holder.postTimeTv.text = footprint.recordAt //기록 시간
+    private fun bindDetailVer(holder: FootprintRVAdapter.PostViewHolder, position: Int, saveWalkFootprint: SaveWalkFootprintEntity) {
+        holder.postTimeTv.text = saveWalkFootprint.recordAt //기록 시간
 
         //기록 편집 텍스트뷰 클릭 리스너
         holder.editTv.setOnClickListener {
-            myItemClickListener.updateFootprintVerDetail(position, footprint)
+            myItemClickListener.updateFootprintVerDetail(position, saveWalkFootprint)
         }
 
         //발자국 아이콘
-        if (footprint.onWalk==1) {    //발자국 표시가 있는 발자국일 때
+        if (saveWalkFootprint.onWalk==1) {    //발자국 표시가 있는 발자국일 때
             holder.footPrintIv.visibility = View.VISIBLE
             holder.footPrintIv.setImageResource(footprintIcList[footprintIcIdx++])
         } else     //발자국 표시가 없는 발자국일 때(산책 종료 후 기록된 발자국)
             holder.footPrintIv.visibility = View.INVISIBLE
 
         //이미지가 있으면 뷰페이저 연결, 없으면 뷰페이저 연결 안함.
-        if (footprint.photoList.isEmpty()) {
+        if (saveWalkFootprint.photos.isEmpty()) {
             holder.photoVp.visibility = View.GONE
             holder.photoIndicator.visibility = View.GONE
         } else {
             val photoRVAdapter = PhotoRVAdapter(1)
-            photoRVAdapter.addImgList(footprint.photoList as ArrayList<String>)
+            photoRVAdapter.addImgList(saveWalkFootprint.photos)
             holder.photoVp.adapter = photoRVAdapter
             holder.photoVp.visibility = View.VISIBLE
 
@@ -214,17 +212,17 @@ class FootprintRVAdapter() :
         }
 
         //내용
-        val hashtagInContent = findHashTag(footprint.write)
+        val hashtagInContent = findHashTag(saveWalkFootprint.write)
         holder.contentTv.text = hashtagInContent
 
         //기록 내용 더보기, 간략히 보기
         holder.contentTv.post(Runnable {
             val lineCnt: Int = holder.contentTv.lineCount
 
-            if (footprint.photoList.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
+            if (saveWalkFootprint.photos.isEmpty() && lineCnt > 3) {  //이미지가 없고, 기록 내용이 3줄보다 더 길 때
                 holder.contentTv.maxLines = 3
                 holder.viewMoreTv.visibility = View.VISIBLE
-            } else if (footprint.photoList.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
+            } else if (saveWalkFootprint.photos.isNotEmpty() && lineCnt > 2) {    //이미지가 있고, 기록 내용이 2줄보다 더 길 때
                 holder.contentTv.maxLines = 2
                 holder.viewMoreTv.visibility = View.VISIBLE
             } else {    //이외 상황
@@ -240,7 +238,7 @@ class FootprintRVAdapter() :
             } else {
                 holder.viewMoreTv.text = "더보기"
 
-                if (footprint.photoList.isEmpty())
+                if (saveWalkFootprint.photos.isEmpty())
                     holder.contentTv.maxLines = 3
                 else
                     holder.contentTv.maxLines = 2
@@ -271,32 +269,32 @@ class FootprintRVAdapter() :
         return hashtagInContent
     }
 
-    fun setDataAfterVer(footprints: ArrayList<FootprintUIModel>) {
-        this.footprintsAfterVer = footprints
+    fun setDataAfterVer(saveWalkFootprints: ArrayList<SaveWalkFootprintEntity>) {
+        this.footprintsAfterVer = saveWalkFootprints
 
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
-    fun setDataDetailVer(footprints: ArrayList<Footprint>) {
-        this.footprintsDetailVer = footprints
+    fun setDataDetailVer(saveWalkFootprints: ArrayList<SaveWalkFootprintEntity>) {
+        this.footprintsDetailVer = saveWalkFootprints
 
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
-    fun addData(footprint: FootprintUIModel, position: Int) {
+    fun addData(saveWalkFootprint: SaveWalkFootprintEntity, position: Int) {
         if (this.footprintsAfterVer!!.size == position)
-            this.footprintsAfterVer!!.add(footprint)
+            this.footprintsAfterVer!!.add(saveWalkFootprint)
         else
-            this.footprintsAfterVer!!.add(position, footprint)
+            this.footprintsAfterVer!!.add(position, saveWalkFootprint)
 
         footprintIcIdx = 0
         notifyDataSetChanged()
     }
 
-    fun updateDataVerAfter(footprint: FootprintUIModel, position: Int) {
-        footprintsAfterVer!![position] = footprint
+    fun updateDataVerAfter(saveWalkFootprint: SaveWalkFootprintEntity, position: Int) {
+        footprintsAfterVer!![position] = saveWalkFootprint
 
         footprintIcIdx = 0
         notifyDataSetChanged()

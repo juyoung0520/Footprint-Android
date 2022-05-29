@@ -4,7 +4,6 @@ import com.footprint.footprint.data.dto.BaseResponse
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.repository.remote.BaseRepository
 import com.footprint.footprint.data.retrofit.WalkService
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 class WalkRemoteDataSourceImpl(private val api: WalkService): BaseRepository(), WalkRemoteDataSource {
@@ -16,13 +15,10 @@ class WalkRemoteDataSourceImpl(private val api: WalkService): BaseRepository(), 
         return safeApiCall { api.deleteWalk(walkIdx).body()!! }
     }
 
-    override suspend fun writeWalk(
-        walk: RequestBody,
-        footprintList: RequestBody,
-        photos: List<MultipartBody.Part>
-    ): Result<BaseResponse> {
-        return safeApiCall { api.writeWalk(walk, footprintList, photos).body()!! }
+    override suspend fun saveWalk(request: RequestBody): Result<BaseResponse> {
+        return safeApiCall { api.saveWalk(request).body()!! }
     }
+
     override suspend fun getMonthWalks(year: Int, month: Int): Result<BaseResponse> {
         return safeApiCall { api.getMonthWalks(year, month).body()!! }
     }

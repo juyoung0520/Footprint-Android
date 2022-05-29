@@ -19,10 +19,9 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentFootprintDialogBinding
+import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.ui.adapter.PhotoRVAdapter
-import com.footprint.footprint.ui.walk.model.FootprintUIModel
 import com.footprint.footprint.utils.DialogFragmentUtils
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.footprint.footprint.utils.uriToBitmap
 import com.google.gson.Gson
@@ -39,7 +38,7 @@ import java.util.*
 class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     private lateinit var binding: FragmentFootprintDialogBinding
     private lateinit var photoRVAdapter: PhotoRVAdapter
-    private lateinit var footprint: FootprintUIModel
+    private lateinit var saveWalkFootprint: SaveWalkFootprintEntity
     private lateinit var myDialogCallback: MyDialogCallback
 
     private var textMatcherFlag: Int = 1
@@ -58,8 +57,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     interface MyDialogCallback {
-        fun sendFootprint(footprint: FootprintUIModel)
-        fun sendUpdatedFootprint(footprint: FootprintUIModel)
+        fun sendFootprint(saveWalkFootprint: SaveWalkFootprintEntity)
+        fun sendUpdatedFootprint(saveWalkFootprint: SaveWalkFootprintEntity)
         fun cancel()
     }
 
@@ -80,8 +79,8 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
         val footprintStr = arguments?.getString("footprint", "")    //이전 화면으로부터 전달 받는 발자국 데이터
         if (footprintStr!=null) {   //발자국 데이터가 있다는 건 수정 화면이라는 의미
             isUpdate = true
-            footprint = Gson().fromJson(footprintStr, FootprintUIModel::class.java)
-            setUI(footprint)
+            saveWalkFootprint = Gson().fromJson(footprintStr, SaveWalkFootprintEntity::class.java)
+            setUI(saveWalkFootprint)
         }
 
         return binding.root
@@ -294,26 +293,26 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     //사용자가 입력한 발자국 데이터를 가져오는 함수
-    private fun setFootprintData(): FootprintUIModel {
+    private fun setFootprintData(): SaveWalkFootprintEntity {
         //발자국 추가하기 화면일 경우에는 아직 footprint 객체가 초기화되기 전이므로 초기화 시키기
-        if (!::footprint.isInitialized) {
-            footprint = FootprintUIModel()
+        if (!::saveWalkFootprint.isInitialized) {
+            saveWalkFootprint = SaveWalkFootprintEntity()
 
             val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-            footprint.recordAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            saveWalkFootprint.recordAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         }
 
         //해시태그
         var hashtags = findHashTag()
         if (hashtags.isNotEmpty() && hashtags.size > 5)
             hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
-        footprint.hashtagList = hashtags
+        saveWalkFootprint.hashtagList = hashtags
 
-        footprint.coordinate = listOf(10.0, 12.0)   //발자국을 남긴 좌표
-        footprint.write = binding.postDialogContentEt.text.toString()   //발자국 내용
-        footprint.photos = imgList  //발자국 사진
+        saveWalkFootprint.coordinates = listOf(10.0, 12.0)   //발자국을 남긴 좌표
+        saveWalkFootprint.write = binding.postDialogContentEt.text.toString()   //발자국 내용
+        saveWalkFootprint.photos = imgList  //발자국 사진
 
-        return footprint
+        return saveWalkFootprint
     }
 
     //사진 삭제하기 텍스트뷰/이미지뷰를 눌렀을 때 호출되는 함수 -> 사진 추가하기로 바꾸고, 선택됐던 모든 이미지 삭제
@@ -326,17 +325,17 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
     }
 
     //발자국 수정하기 화면 상태일 때 사용자가 수정 전 입력했던 발자국 데이터를 바인딩하는 함수
-    private fun setUI(footprintDto: FootprintUIModel) {
-        binding.postDialogContentEt.setText(footprintDto.write)    //발자국 내용
+    private fun setUI(saveWalkFootprintDto: SaveWalkFootprintEntity) {
+        binding.postDialogContentEt.setText(saveWalkFootprintDto.write)    //발자국 내용
 
-        if (footprintDto.photos.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
+        if (saveWalkFootprintDto.photos.isEmpty()) {    //사진이 없으면 "사진 선택하기" 버전
             setDeletePhotoUI()
         } else {    //사진이 있으면 "사진 삭제하기" 버전
             imgList.clear()
-            imgList.addAll(footprintDto.photos)
+            imgList.addAll(saveWalkFootprintDto.photos)
 
             binding.postDialogPhotoVp.visibility = View.VISIBLE
-            photoRVAdapter.addImgList(footprintDto.photos as ArrayList<String>)
+            photoRVAdapter.addImgList(saveWalkFootprintDto.photos as ArrayList<String>)
 
             binding.postDialogPhotoIndicator.visibility = View.VISIBLE
             binding.postDialogPhotoIndicator.setViewPager(binding.postDialogPhotoVp)
