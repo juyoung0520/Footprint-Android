@@ -1,10 +1,10 @@
 package com.footprint.footprint.data.mapper
 
-import com.footprint.footprint.data.dto.SaveWalkBadgeResModel
+import com.footprint.footprint.data.dto.SaveWalkBadgeResDTO
 import com.footprint.footprint.domain.model.BadgeEntity
 
 object BadgeMapper {
-    fun mapperToBadgeEntityList(badges: List<SaveWalkBadgeResModel>): List<BadgeEntity> {
+    fun mapperToBadgeEntityList(badges: List<SaveWalkBadgeResDTO>): List<BadgeEntity> {
         val badgeEntityList: ArrayList<BadgeEntity> = arrayListOf()
 
         for (badge in badges) {

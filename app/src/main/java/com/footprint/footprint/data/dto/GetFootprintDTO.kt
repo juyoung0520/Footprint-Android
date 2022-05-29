@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.dto
 
-data class GetFootprintModel(
+data class GetFootprintDTO(
     val footprintIdx: Int,
     val recordAt: String,
     val write: String,

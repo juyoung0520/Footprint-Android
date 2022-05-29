@@ -2,7 +2,7 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.FootprintRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.dto.GetFootprintModel
+import com.footprint.footprint.data.dto.GetFootprintDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.mapper.FootprintMapper
 import com.footprint.footprint.domain.model.GetFootprintEntity
@@ -21,8 +21,8 @@ class FootprintRepositoryImpl(private val dataSource: FootprintRemoteDataSource)
             is Result.Success -> {
                 if (response.value.isSuccess) {
                     //List<GetFootprintModel>로 복호화
-                    val itemType = object : TypeToken<List<GetFootprintModel>>() {}.type
-                    val getFootprints: List<GetFootprintModel> = NetworkUtils.decrypt(response.value.result, itemType)
+                    val itemType = object : TypeToken<List<GetFootprintDTO>>() {}.type
+                    val getFootprints: List<GetFootprintDTO> = NetworkUtils.decrypt(response.value.result, itemType)
 
                     //List<GetFootprintModel> -> List<GetFootprintEntity> 로 매핑
                     Result.Success(FootprintMapper.mapperToGetFootprintEntityList(getFootprints))

@@ -62,8 +62,8 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
             is Result.Success -> {
                 if (response.value.isSuccess) {
                     //response 데이터를 복호화
-                    val itemType = object : TypeToken<List<SaveWalkBadgeResModel>>() {}.type
-                    val badges: List<SaveWalkBadgeResModel> = NetworkUtils.decrypt(response.value.result, itemType)
+                    val itemType = object : TypeToken<List<SaveWalkBadgeResDTO>>() {}.type
+                    val badges: List<SaveWalkBadgeResDTO> = NetworkUtils.decrypt(response.value.result, itemType)
                     //SaveWalkResponse -> BadgeEntity 로 매핑
                     Result.Success(BadgeMapper.mapperToBadgeEntityList(badges))
                 } else
