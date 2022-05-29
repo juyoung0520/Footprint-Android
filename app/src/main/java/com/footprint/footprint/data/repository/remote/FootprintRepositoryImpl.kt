@@ -2,8 +2,10 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.FootprintRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
+import com.footprint.footprint.data.dto.GetFootprintModel
 import com.footprint.footprint.data.dto.Result
-import com.footprint.footprint.domain.model.Footprint
+import com.footprint.footprint.data.mapper.FootprintMapper
+import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.repository.FootprintRepository
 import com.footprint.footprint.utils.FormDataUtils
 import com.footprint.footprint.utils.NetworkUtils
@@ -14,12 +16,16 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class FootprintRepositoryImpl(private val dataSource: FootprintRemoteDataSource): FootprintRepository {
-    override suspend fun getFootprintsByWalkIdx(walkIdx: Int): Result<List<Footprint>> {
+    override suspend fun getFootprintsByWalkIdx(walkIdx: Int): Result<List<GetFootprintEntity>> {
         return when (val response = dataSource.getFootprintsByWalkIdx(walkIdx)) {
             is Result.Success -> {
                 if (response.value.isSuccess) {
-                    val itemType = object : TypeToken<List<Footprint>>() {}.type
-                    Result.Success(NetworkUtils.decrypt(response.value.result, itemType))
+                    //List<GetFootprintModel>로 복호화
+                    val itemType = object : TypeToken<List<GetFootprintModel>>() {}.type
+                    val getFootprints: List<GetFootprintModel> = NetworkUtils.decrypt(response.value.result, itemType)
+
+                    //List<GetFootprintModel> -> List<GetFootprintEntity> 로 매핑
+                    Result.Success(FootprintMapper.mapperToGetFootprintEntityList(getFootprints))
                 } else
                     Result.GenericError(response.value.code, "")
             }
