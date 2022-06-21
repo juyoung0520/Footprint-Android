@@ -173,6 +173,7 @@ dependencies {
 
     //RangeSeekBar
     implementation 'com.github.Innovattic:range-seek-bar:v1.0.8'
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:30.2.0')

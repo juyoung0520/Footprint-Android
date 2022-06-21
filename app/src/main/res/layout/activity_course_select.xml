@@ -6,10 +6,120 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.course.CourseSelectActivity">
 
-    <fragment
-        android:id="@+id/map"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/course_select_select_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.naver.maps.map.MapFragment" />
+        android:layout_height="237dp"
+        android:background="@color/white_light"
+        android:elevation="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/course_select_cancel_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginBottom="147dp"
+            android:padding="10dp"
+            android:text="@string/action_cancel"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/course_select_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="157dp"
+            android:text="@string/title_specify_which_courses_to_share"
+            android:textAppearance="@style/tv_headline_eb_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/course_select_next_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="147dp"
+            android:padding="10dp"
+            android:text="@string/action_next"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            android:textColor="@color/primary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/course_select_explanation_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:text="@string/msg_course_select_explanation"
+            android:textAppearance="@style/tv_caption_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/course_select_title_tv" />
+
+        <com.jaygoo.widget.RangeSeekBar
+            android:id="@+id/course_select_rsb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="43.5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:rsb_gravity="bottom"
+            app:rsb_mode="range"
+            app:rsb_progress_color="@color/transparent"
+            app:rsb_progress_default_color="@color/transparent"
+            app:rsb_thumb_height="51.5dp"
+            app:rsb_thumb_width="38dp" />
+
+        <com.innovattic.rangeseekbar.RangeSeekBar
+            android:id="@+id/course_select_rsb_sub"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_course_select_rsb_sub"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:rsb_maxThumbDrawable="@drawable/ic_donut_primary"
+            app:rsb_maxThumbOffsetHorizontal="8dp"
+            app:rsb_minThumbDrawable="@drawable/ic_donut_secondary"
+            app:rsb_minThumbOffsetHorizontal="-8dp"
+            app:rsb_progress_default_color="@color/white_dark"
+            app:rsb_trackColor="@color/white_light"
+            app:rsb_trackRoundedCaps="true"
+            app:rsb_trackSelectedColor="@color/primary"
+            app:rsb_trackSelectedRoundedCaps="true"
+            app:rsb_trackSelectedThickness="10dp"
+            app:rsb_trackThickness="18dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <fragment
+        android:id="@+id/course_select_map_fragment"
+        android:name="com.naver.maps.map.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/course_select_select_layout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/couse_select_reset_btn"
+        android:layout_width="125dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="57dp"
+        android:background="@drawable/bg_course_select_reset_btn"
+        android:elevation="16dp"
+        android:text="@string/action_reset"
+        android:textAppearance="@style/tv_headline_eb_18"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
