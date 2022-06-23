@@ -1,10 +1,12 @@
 package com.footprint.footprint.ui.main.course
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.View
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityCourseSelectBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.jaygoo.widget.OnRangeChangedListener
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
@@ -20,6 +22,7 @@ class CourseSelectActivity : BaseActivity<ActivityCourseSelectBinding>(ActivityC
     private lateinit var startMarker: Marker
     private lateinit var endMarker: Marker
     private lateinit var map: NaverMap
+    private lateinit var actionFrag: ActionDialogFragment
 
     override fun initAfterBinding() {
         pathCoords = listOf(
@@ -52,6 +55,12 @@ class CourseSelectActivity : BaseActivity<ActivityCourseSelectBinding>(ActivityC
         binding.courseSelectRsb.setProgress(0f, 100f)
 
         setMyEventListener()
+        initActionFrag()
+    }
+
+    //뒤로가기 버튼 누르면 공유를 취소할건지 물어보는 action 다이얼로그 화면 띄우기
+    override fun onBackPressed() {
+        actionFrag.show(supportFragmentManager, null)
     }
 
     //네이버 지도 세팅
@@ -188,5 +197,34 @@ class CourseSelectActivity : BaseActivity<ActivityCourseSelectBinding>(ActivityC
         binding.couseSelectResetBtn.setOnClickListener {
             binding.courseSelectRsb.setProgress(0f, 100f)
         }
+
+        //취소 텍스트뷰 클릭 리스너
+        binding.courseSelectCancelTv.setOnClickListener {
+            actionFrag.show(supportFragmentManager, null)
+        }
+
+        //다음 텍스트뷰 클릭 리스너
+        binding.courseSelectNextTv.setOnClickListener {
+            startNextActivity(CourseShareActivity::class.java)
+        }
+    }
+
+    private fun initActionFrag() {
+        val bundle: Bundle = Bundle()
+        bundle.putString("msg", getString(R.string.msg_cancel_course_share))
+        bundle.putString("desc", getString(R.string.msg_no_restore_shared_content))
+        bundle.putString("action", getString(R.string.action_delete))
+
+        actionFrag = ActionDialogFragment()
+        actionFrag.arguments = bundle
+        actionFrag.setMyDialogCallback(object: ActionDialogFragment.MyDialogCallback {
+            override fun action1(isAction: Boolean) {
+                if (isAction)   //삭제 텍스트뷰를 눌렀을 때 액티비티 종료
+                    finish()
+            }
+
+            override fun action2(isAction: Boolean) {
+            }
+        })
     }
 }
