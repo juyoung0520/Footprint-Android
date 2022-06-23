@@ -359,11 +359,20 @@
 
     <!-- 산책종료 후 코스등록 -->
     <string name="action_reset">초기화</string>
+    <string name="action_share">공유</string>
     <string name="title_specify_which_courses_to_share">공유할 코스 지정</string>
     <string name="title_start">시작</string>
     <string name="title_course_sharing">코스 공유하기</string>
     <string name="title_course_location">코스 위치</string>
     <string name="title_course_length">코스 길이</string>
     <string name="title_time">소요시간</string>
+    <string name="title_course_name">코스 이름 (필수)</string>
+    <string name="title_tag">태그</string>
+    <string name="title_course_desc">코스 설명</string>
     <string name="msg_course_select_explanation">시작점과 끝점을 끌어 코스를 지정해 주세요</string>
+    <string name="msg_cancel_course_share">코스 공유를 취소하시겠어요?</string>
+    <string name="msg_no_restore_shared_content">*공유 내용을 복구할 수 없어요</string>
+    <string name="msg_input_course_name">산책코스 이름을 입력해 주세요</string>
+    <string name="msg_input_course_desc">산책코스 설명을 입력해주세요</string>
+    <string name="msg_course_share_tag_desc">실시간 기록 시 추가한 태그 중에서 선택할 수 있어요</string>
 </resources>
