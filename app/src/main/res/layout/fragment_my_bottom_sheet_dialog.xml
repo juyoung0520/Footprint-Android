@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="22dp"
+    tools:context=".ui.main.course.MyBottomSheetDialogFragment">
+
+    <TextView
+        android:id="@+id/my_bsd_view_course_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:text="@string/title_view_course"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/my_bsd_update_course_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:text="@string/title_update_course"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        app:layout_constraintTop_toBottomOf="@+id/my_bsd_view_course_tv" />
+
+    <TextView
+        android:id="@+id/my_bsd_delete_course_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:text="@string/title_delete_course"
+        android:textAppearance="@style/tv_subtitle_b_16"
+        android:textColor="@color/primary"
+        app:layout_constraintTop_toBottomOf="@+id/my_bsd_update_course_tv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

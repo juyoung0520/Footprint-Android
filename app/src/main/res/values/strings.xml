@@ -26,6 +26,7 @@
     <string name="action_change_gps_access">권한 변경</string>
     <string name="action_close">닫기</string>
     <string name="action_detail">자세히 보기</string>
+    <string name="action_share">공유</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -152,6 +153,7 @@
     <string name="action_withdrawal">탈퇴하기</string>
     <string name="action_store">스토어 이동</string>
     <string name="action_follow_up">이어서 작성하기</string>
+    <string name="action_later">나중에</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -174,6 +176,7 @@
     <string name="msg_denied_walk_for_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
     <string name="msg_denied_update">업데이트 후 사용 가능합니다.</string>
     <string name="msg_temp_walk">임시 저장된 산책 기록이 있어요.\n이어서 기록을 작성하시겠어요?</string>
+    <string name="msg_course_share">이 코스를 다른사람들에게 공유할까요?</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
@@ -359,7 +362,6 @@
 
     <!-- 산책종료 후 코스등록 -->
     <string name="action_reset">초기화</string>
-    <string name="action_share">공유</string>
     <string name="title_specify_which_courses_to_share">공유할 코스 지정</string>
     <string name="title_start">시작</string>
     <string name="title_course_sharing">코스 공유하기</string>
@@ -369,10 +371,23 @@
     <string name="title_course_name">코스 이름 (필수)</string>
     <string name="title_tag">태그</string>
     <string name="title_course_desc">코스 설명</string>
+    <string name="title_enter_in_person">직접 입력</string>
     <string name="msg_course_select_explanation">시작점과 끝점을 끌어 코스를 지정해 주세요</string>
     <string name="msg_cancel_course_share">코스 공유를 취소하시겠어요?</string>
     <string name="msg_no_restore_shared_content">*공유 내용을 복구할 수 없어요</string>
     <string name="msg_input_course_name">산책코스 이름을 입력해 주세요</string>
     <string name="msg_input_course_desc">산책코스 설명을 입력해주세요</string>
     <string name="msg_course_share_tag_desc">실시간 기록 시 추가한 태그 중에서 선택할 수 있어요</string>
+
+    <!-- 마이 -->
+    <string name="title_my">마이</string>
+    <string name="title_wish_list">찜한목록</string>
+    <string name="title_my_recommended_course">내 추천코스</string>
+    <string name="title_view_course">코스 보기</string>
+    <string name="title_update_course">코스 수정</string>
+    <string name="title_delete_course">코스 삭제</string>
+
+    <!--코스 선택-->
+    <string name="title_course_select">코스 선택</string>
+    <string name="msg_select_shared_course">공유할 코스를 선택해 주세요</string>
 </resources>

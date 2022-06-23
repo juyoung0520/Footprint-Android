@@ -46,4 +46,6 @@ val useCaseModule = module {
     single<GetNewNoticeUseCase> { GetNewNoticeUseCase(get()) }.bind(NoticeRepositoryImpl::class)
     single<GetKeyNoticeUseCase> { GetKeyNoticeUseCase(get()) }.bind(NoticeRepositoryImpl::class)
     single<GetVersionUseCase> { GetVersionUseCase(get()) }.bind(NoticeRepositoryImpl::class)
+
+    single<GetAddressUseCase> { GetAddressUseCase((get())) }.bind(MapRepositoryImpl::class)
 }

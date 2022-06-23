@@ -28,12 +28,15 @@
         android:usesCleartextTraffic="false"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".ui.main.course.CourseSelectActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.main.course.CourseShareActivity"
             android:exported="false"
             android:taskAffinity="com.footprint.footprint.multiFinish"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.main.course.CourseSelectActivity"
+            android:name=".ui.main.course.CourseSetActivity"
             android:exported="false"
             android:taskAffinity="com.footprint.footprint.multiFinish" />
 

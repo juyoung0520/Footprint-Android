@@ -60,7 +60,9 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
                 //대표뱃지로 설정할까요? 다이얼로그 띄우기
                 val bundle = Bundle()
                 bundle.putSerializable("msg", getString(R.string.msg_change_representative_badge))
-                bundle.putString("action", getString(R.string.action_set))
+                bundle.putString("left", getString(R.string.action_cancel))
+                bundle.putString("right", getString(R.string.action_set))
+
                 actionDialogFragment.arguments = bundle
                 actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             }
@@ -75,13 +77,11 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
         //대표뱃지로 설정할까요? 다이얼로그
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun action1(isAction: Boolean) {
-                if (isAction) { //사용자가 설정을 누르면 -> 대표뱃지 변경 요청 API 실행
-                    badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!)
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!)
             }
         })
     }

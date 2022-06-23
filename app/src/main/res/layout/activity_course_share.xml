@@ -124,10 +124,28 @@
                 android:layout_marginEnd="41dp"
                 android:gravity="end|center"
                 android:maxWidth="100dp"
-                android:text="서울시 정릉동"
                 android:textAppearance="@style/tv_body_b_12"
                 app:layout_constraintBottom_toBottomOf="@+id/course_share_course_location_title_tv"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_location_title_tv" />
+
+            <EditText
+                android:id="@+id/course_share_location_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@null"
+                android:drawableEnd="@drawable/ic_modify_16"
+                android:drawablePadding="3dp"
+                android:gravity="center|end"
+                android:hint="@string/title_enter_in_person"
+                android:inputType="text"
+                android:textAppearance="@style/tv_body_b_12"
+                android:textColorHint="@color/white_dark"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_location_title_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/course_share_course_location_title_tv"
                 app:layout_constraintTop_toTopOf="@+id/course_share_course_location_title_tv" />
 
             <TextView
@@ -148,7 +166,6 @@
                 android:layout_marginEnd="41dp"
                 android:gravity="end|center"
                 android:maxWidth="100dp"
-                android:text="2km"
                 android:textAppearance="@style/tv_body_b_12"
                 app:layout_constraintBottom_toBottomOf="@+id/course_share_course_length_title_tv"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +189,6 @@
                 android:layout_marginEnd="41dp"
                 android:gravity="end|center"
                 android:maxWidth="100dp"
-                android:text="약 20분"
                 android:textAppearance="@style/tv_body_b_12"
                 app:layout_constraintBottom_toBottomOf="@+id/course_share_course_time_title_tv"
                 app:layout_constraintEnd_toEndOf="parent"

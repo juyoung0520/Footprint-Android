@@ -69,4 +69,8 @@ val viewModelModule = module {
     viewModel{
         CourseViewModel()
     }
+
+    viewModel {
+        MapViewModel(get())
+    }
 }

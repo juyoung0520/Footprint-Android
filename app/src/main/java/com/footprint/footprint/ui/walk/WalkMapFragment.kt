@@ -30,7 +30,6 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.CourseInfoDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.utils.*
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
@@ -393,7 +392,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun showStopWalkDialog() {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
-        bundle.putString("action", getString(R.string.action_stop))
+        bundle.putString("left", getString(R.string.action_cancel))
+        bundle.putString("right", getString(R.string.action_stop))
 
         val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
         actionDialogFragment.arguments = bundle
@@ -401,23 +401,21 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         actionDialogFragment.show(requireActivity().supportFragmentManager, null)
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun action1(isAction: Boolean) {
-                if (isAction) {   // 사용자가 다이얼로그 화면에서 중지 버튼을 누른 경우
-                    if (view != null) {
-                        lifecycleScope.launch {
-                            setWalkState(false)
-                            // 경로 끝 마크 추가
-                            if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
-                                getMarker(paths.last().last(), endMarkerImage).map = map
-                            }
-
-                            goToWalkAfterActivity()
-                        }
-                    }
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                if (view != null) {
+                    lifecycleScope.launch {
+                        setWalkState(false)
+                        // 경로 끝 마크 추가
+                        if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
+                            getMarker(paths.last().last(), endMarkerImage).map = map
+                        }
+
+                        goToWalkAfterActivity()
+                    }
+                }
             }
         })
     }

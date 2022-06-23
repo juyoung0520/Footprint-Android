@@ -296,21 +296,20 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         val actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun action1(isAction: Boolean) {
-                if (isAction) {
-                    // deleteWalk API
-                    calendarVM.deleteWalk(walkIdx)
-                    currentDeleteWalkIdx = walkIdx
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                // deleteWalk API
+                calendarVM.deleteWalk(walkIdx)
+                currentDeleteWalkIdx = walkIdx
             }
         })
 
         val bundle = Bundle()
         bundle.putString("msg", "'${walkIdx}번째 산책' 을 삭제하시겠어요?")
-        bundle.putString("action", getString(R.string.action_delete))
+        bundle.putString("left", getString(R.string.action_cancel))
+        bundle.putString("right", getString(R.string.action_delete))
 
         actionDialogFragment.arguments = bundle
         actionDialogFragment.show(childFragmentManager, null)

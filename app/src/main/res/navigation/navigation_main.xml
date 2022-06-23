@@ -261,4 +261,27 @@
             android:name="idx"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/myFragment"
+        android:name="com.footprint.footprint.ui.main.course.MyFragment"
+        android:label="fragment_my"
+        tools:layout="@layout/fragment_my" >
+        <action
+            android:id="@+id/action_myFragment_to_courseSelectActivity"
+            app:destination="@id/courseSelectActivity" />
+        <action
+            android:id="@+id/action_myFragment_to_courseShareActivity"
+            app:destination="@id/courseShareActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/courseSelectActivity"
+        android:name="com.footprint.footprint.ui.main.course.CourseSelectActivity"
+        android:label="activity_course_select"
+        tools:layout="@layout/activity_course_select" />
+    <activity
+        android:id="@+id/courseShareActivity"
+        android:name="com.footprint.footprint.ui.main.course.CourseShareActivity"
+        android:label="activity_course_share"
+        tools:layout="@layout/activity_course_share" />
 </navigation>

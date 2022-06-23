@@ -54,7 +54,8 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
     private fun showStopWalkDialog() {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
-        bundle.putString("action", getString(R.string.action_stop))
+        bundle.putString("left", getString(R.string.action_cancel))
+        bundle.putString("right", getString(R.string.action_stop))
 
         val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
         actionDialogFragment.arguments = bundle
@@ -64,15 +65,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         actionDialogFragment.setMyDialogCallback(object :
             ActionDialogFragment.MyDialogCallback {
 
-            //중지 텍스트뷰를 클릭하면
-            override fun action1(isAction: Boolean) {
-                if (isAction) {
-                    removeTempWalk()    //임시저장 산책 삭제
-                    finish()    //액티비티 종료
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                removeTempWalk()    //임시저장 산책 삭제
+                finish()    //액티비티 종료
             }
         })
     }

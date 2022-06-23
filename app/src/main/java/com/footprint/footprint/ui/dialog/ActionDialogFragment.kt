@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.footprint.footprint.R
@@ -17,20 +18,22 @@ class ActionDialogFragment() : DialogFragment() {
     private lateinit var binding: FragmentActionDialogBinding
     private lateinit var myDialogCallback: MyDialogCallback
     private lateinit var msg: String    //이전 화면으로부터 전달받는 메세지(ex.실시간 기록을 중지할까요?)
-    private lateinit var action: String
+    private lateinit var leftAction: String
+    private lateinit var rightAction: String
     private lateinit var desc: String
 
     //다이얼로그 콜백 인터페이스
     interface MyDialogCallback {
-        fun action1(isAction: Boolean)
-        fun action2(isAction: Boolean)
+        fun leftAction(action: String)
+        fun rightAction(action: String)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         msg = arguments?.getString("msg").toString()
-        action = arguments?.getString("action").toString()
+        leftAction = arguments?.getString("left").toString()
+        rightAction = arguments?.getString("right").toString()
         desc = arguments?.getString("desc", "").toString()
     }
 
@@ -64,7 +67,8 @@ class ActionDialogFragment() : DialogFragment() {
 
     private fun initUI() {
         binding.walkDialogMsgTv.text = msg
-        binding.walkDialogActionTv.text = action
+        binding.walkDialogCancelTv.text = leftAction
+        binding.walkDialogActionTv.text = rightAction
 
         if (desc.isBlank()) {
             binding.walkDialogDescTv.visibility = View.GONE
@@ -92,21 +96,13 @@ class ActionDialogFragment() : DialogFragment() {
     private fun setMyClickListener() {
         //취소 텍스트뷰 클릭 리스너
         binding.walkDialogCancelTv.setOnClickListener {
-            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'\\d\\d번째 산책'을 저장할까요?".toRegex()))
-                myDialogCallback.action2(false)
-            else
-                myDialogCallback.action1(false)
-
+            myDialogCallback.leftAction((it as TextView).text.toString())
             dismiss()
         }
 
         //액션 텍스트뷰(중지, 저장, 삭제 등) 클릭 리스너
         binding.walkDialogActionTv.setOnClickListener {
-            if (msg == getString(R.string.msg_withdrawal) || msg.matches("'([0-9]+)번째 산책'을 저장할까요\\?".toRegex()))
-                myDialogCallback.action2(true)
-            else
-                myDialogCallback.action1(true)
-
+            myDialogCallback.rightAction((it as TextView).text.toString())
             dismiss()
         }
     }
