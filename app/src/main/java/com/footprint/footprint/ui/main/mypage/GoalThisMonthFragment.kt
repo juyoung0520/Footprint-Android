@@ -5,14 +5,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
-import com.footprint.footprint.domain.model.Goal
+import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
-import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -22,7 +21,7 @@ import java.text.SimpleDateFormat
 class GoalThisMonthFragment :
     BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
-    private lateinit var goal: Goal
+    private lateinit var goal: GoalEntity
 
     private val goalVm: GoalViewModel by viewModel()
 
@@ -116,6 +115,10 @@ class GoalThisMonthFragment :
                 ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
                     goalVm.getThisMonthGoal()
                 }.show()
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    findNavController().popBackStack()
+                }
                 else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
                     goalVm.getThisMonthGoal()
                 }.show()

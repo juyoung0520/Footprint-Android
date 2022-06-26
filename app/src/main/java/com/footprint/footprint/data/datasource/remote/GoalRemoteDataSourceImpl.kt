@@ -8,11 +8,11 @@ import okhttp3.RequestBody
 
 class GoalRemoteDataSourceImpl(private val api: GoalService): BaseRepository(), GoalRemoteDataSource {
     override suspend fun getThisMonthGoal(): Result<BaseResponse> {
-        return safeApiCall() { api.getThisMonthGoal().body()!! }
+        return safeApiCall2() { api.getThisMonthGoal() }
     }
 
     override suspend fun getNextMonthGoal(): Result<BaseResponse> {
-        return safeApiCall() { api.getNextMonthGoal().body()!! }
+        return safeApiCall2() { api.getNextMonthGoal() }
     }
 
     override suspend fun updateGoal(updateGoal: RequestBody): Result<BaseResponse> {

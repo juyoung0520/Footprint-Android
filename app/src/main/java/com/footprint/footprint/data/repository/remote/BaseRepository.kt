@@ -1,9 +1,11 @@
 package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.dto.Result
+import com.footprint.footprint.utils.LogUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 
 abstract class BaseRepository {
@@ -13,7 +15,7 @@ abstract class BaseRepository {
                 Result.Success(apiCall.invoke()) //api 부르기
             } catch (throwable: Throwable) {
                 when (throwable) {
-                    is IOException -> Result.NetworkError
+                    is IOException -> Result.NetworkError   //네트워크 연결 실패
                     is HttpException -> {
                         val code = throwable.code()
                         var error = ""
@@ -27,6 +29,21 @@ abstract class BaseRepository {
                     }
                 }
             }
+        }
+    }
+
+    suspend fun <T> safeApiCall2(apiCall: suspend () -> Response<T>): Result<T> {
+        return try {
+            val myResp = apiCall.invoke()
+
+            if (myResp.isSuccessful)
+                Result.Success(myResp.body()!!)
+            else
+                Result.GenericError(myResp.code(), myResp.message() ?: "Something goes wrong")  //code: HTTP STATUS, message: Retrofit 에서 보내주는 message.
+        } catch (e: IOException) {
+            Result.NetworkError
+        } catch (e: Exception) {
+            Result.GenericError(600, e.message?: "Retrofit Error")
         }
     }
 }

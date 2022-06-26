@@ -1,15 +1,13 @@
-package com.footprint.footprint.data.dto
+package com.footprint.footprint.domain.model
 
-import java.io.Serializable
-
-data class GoalModel(
-    var month: String? = "",
+data class GoalEntity(
+    var month: String ?= "",
     val dayIdx: ArrayList<Int> = arrayListOf(),
     val userGoalTime: UserGoalTime = UserGoalTime(),
     var goalNextModified: Boolean? = true
-): Serializable
+)
 
 data class UserGoalTime(
     var walkGoalTime: Int? = null,
     var walkTimeSlot: Int? = null
-): Serializable
+)
