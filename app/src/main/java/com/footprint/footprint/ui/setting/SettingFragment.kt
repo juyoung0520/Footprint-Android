@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -44,6 +45,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
+        settingVm.getNewNotice()
 
         //산책기록 잠금 상태
         when (getPWDstatus()) {
@@ -147,12 +149,16 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 override fun action2(isAction: Boolean) {
                     if (isAction) {
                         //회원 탈퇴 API 호출
-                        //AuthService.unregister(this@SettingFragment)
                         settingVm.unRegister()
                     }
                 }
 
             })
+        }
+
+        //공지사항 클릭 리스너 -> 공지사항 프래그먼트(NoticeFragment)로 이동
+        binding.settingNoticeView.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_noticeFragment)
         }
 
         //알림 스위치버튼 클릭 리스너
@@ -294,7 +300,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     /*Activity 이동*/
     //스플래시 액티비티(뒤로가기 다 지우기)
-    fun startSplashActivity(){
+    fun startSplashActivity() {
         val intent = Intent(requireContext(), SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -308,13 +314,26 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
 
     /*Observe*/
-    private fun observe(){
+    private fun observe() {
         settingVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             settingErrorCheck("UNREGISTER")
+
+            when (it) {
+                ErrorType.NETWORK -> {
+                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
+                        R.string.action_retry) {
+                            settingVm.getNewNotice()
+                    }.show()
+                }
+                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
+                    settingVm.getNewNotice()
+                }.show()
+            }
         })
 
-        settingVm.isDeleted.observe(this, Observer{
-            if(it){
+        settingVm.isDeleted.observe(this, Observer {
+            if (it) {
                 if (loginStatus == "kakao") {
                     //Kakao Unlink
                     LogUtils.d("AUTO-UNLINK/KAKAO", "Kakao 계정에서 탈퇴하셨습니다.")
@@ -327,6 +346,16 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 reset()
             }
         })
+
+        settingVm.isNewNoticeExist.observe(this, Observer {
+            if (it) {
+                binding.settingNoticeNewIv.visibility = View.VISIBLE
+            }else{
+                binding.settingNoticeNewIv.visibility = View.GONE
+            }
+        })
+
+
     }
 
     /*Error check*/

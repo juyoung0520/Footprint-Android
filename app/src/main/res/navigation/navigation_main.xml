@@ -9,9 +9,15 @@
         android:id="@+id/homeFragment"
         android:name="com.footprint.footprint.ui.main.home.HomeFragment"
         android:label="homeFragment">
+        <argument
+            android:name="notices"
+            app:argType="string" />
         <action
             android:id="@+id/action_homeFragment_to_settingFragment"
             app:destination="@id/navigation" />
+        <action
+            android:id="@+id/action_homeFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment" />
     </fragment>
 
     <fragment
@@ -75,7 +81,11 @@
             <action
                 android:id="@+id/action_settingFragment_to_lockActivity3"
                 app:destination="@id/LockActivity" />
+            <action
+                android:id="@+id/action_settingFragment_to_noticeFragment"
+                app:destination="@id/noticeFragment" />
         </fragment>
+
         <fragment
             android:id="@+id/myInfoFragment"
             android:name="com.footprint.footprint.ui.setting.MyInfoFragment"
@@ -94,6 +104,7 @@
                 android:name="user"
                 app:argType="string" />
         </fragment>
+
         <activity
             android:id="@+id/signinActivity"
             android:name="com.footprint.footprint.ui.signin.SigninActivity"
@@ -117,7 +128,10 @@
                 android:name="mode"
                 app:argType="string" />
         </activity>
+
+
     </navigation>
+
     <fragment
         android:id="@+id/badgeFragment"
         android:name="com.footprint.footprint.ui.main.mypage.BadgeFragment"
@@ -191,6 +205,7 @@
             app:destination="@id/goalNextMonthFragment"
             app:popUpTo="@id/goalThisMonthFragment" />
     </dialog>
+
     <fragment
         android:id="@+id/calendarBlankFragment"
         android:name="com.footprint.footprint.ui.main.calendar.CalendarBlankFragment"
@@ -213,4 +228,30 @@
             android:name="mode"
             app:argType="string" />
     </activity>
+
+    <!-- Notice 관련 -->
+    <fragment
+        android:id="@+id/noticeFragment"
+        android:name="com.footprint.footprint.ui.setting.NoticeFragment"
+        android:label="fragment_notice"
+        tools:layout="@layout/fragment_notice">
+        <action
+            android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment"
+            app:popUpTo="@id/noticeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/noticeDetailFragment"
+        android:name="com.footprint.footprint.ui.setting.NoticeDetailFragment"
+        android:label="fragment_notice_detail"
+        tools:layout="@layout/fragment_notice_detail">
+        <argument
+            android:name="idx"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_noticeDetailFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment" />
+    </fragment>
+
+
 </navigation>

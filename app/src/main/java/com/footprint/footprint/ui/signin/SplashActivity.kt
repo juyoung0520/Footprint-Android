@@ -36,6 +36,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
     }
 
     private fun autoLogin() {
+        LogUtils.d("Splash", getJwt().toString())
         if (getJwt() != null) { // O -> 자동로그인 API 호출
             splashVm.autoLogin()
         } else {  // X -> 로그인 액티비티

@@ -39,11 +39,11 @@ val viewModelModule = module {
     }
 
     viewModel{
-        SettingViewModel(get())
+        SettingViewModel(get(), get())
     }
 
     viewModel{
-        MainViewModel(get())
+        MainViewModel(get(), get())
     }
 
     viewModel {
@@ -56,5 +56,13 @@ val viewModelModule = module {
 
     viewModel {
         TagSearchViewModel(get())
+    }
+
+    viewModel {
+        NoticeListViewModel(get())
+    }
+
+    viewModel {
+        NoticeDetailViewModel(get())
     }
 }

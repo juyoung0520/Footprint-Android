@@ -13,7 +13,6 @@ class AchieveRepositoryImpl(private val dataSource: AchieveRemoteDataSource): Ac
     override suspend fun getToday(): Result<Today> {
         return when(val response = dataSource.getToday()){
             is Result.Success -> {
-                LogUtils.d("GET today", "resp: ${response.value.result}")
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, Today::class.java))
                 else
@@ -27,7 +26,6 @@ class AchieveRepositoryImpl(private val dataSource: AchieveRemoteDataSource): Ac
     override suspend fun getTmonth(): Result<TMonth> {
         return when(val response = dataSource.getTmonth()){
             is Result.Success -> {
-                LogUtils.d("GET tmonth", "resp: ${response.value.result}")
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, TMonth::class.java))
                 else

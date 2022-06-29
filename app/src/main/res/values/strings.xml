@@ -24,6 +24,8 @@
     <string name="action_agree">동의</string>
     <string name="action_maintain_gps_access">위치 정보 권한 유지</string>
     <string name="action_change_gps_access">권한 변경</string>
+    <string name="action_close">닫기</string>
+    <string name="action_detail">자세히 보기</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -265,6 +267,14 @@
 
     <!--내 정보-->
     <string name="title_my_info">내 정보</string>
+
+    <!--공지사항-->
+    <string name="title_notice">공지사항</string>
+    <string name="msg_notice">[공지] 새로운 기능이 업데이트됐어요!</string>
+    <string name="msg_new">new</string>
+    <string name="title_notice_prev">이전글</string>
+    <string name="title_notice_next">다음글</string>
+
 
     <!--이번달 목표-->
     <string name="title_goal_this_month">이번달 목표</string>

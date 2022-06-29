@@ -6,12 +6,14 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
@@ -34,6 +36,7 @@ import com.google.gson.Gson
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import kotlinx.coroutines.*
+import lombok.ToString
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
 import java.time.ZoneId
@@ -74,7 +77,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             getString(R.string.msg_gps)
         }
 
-        gpsDescDialog = this?.let {
+        gpsDescDialog = this.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.apply {
                 setTitle(getString(R.string.title_notification))
@@ -124,12 +127,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onStart() {
         super.onStart()
-
+        /* API 에러 */
         //날씨 API
-        callWeatherAPI()
+        //callWeatherAPI() // method is not allowed
 
         //유저 정보, 일별, 월별 API
-        homeVm.getUser()
+        //homeVm.getUser() // badUrl
         homeVm.getToday()
         homeVm.getTmonth()
     }
@@ -305,7 +308,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     private fun showGPSDeniedDialog(msg: String) {
-        val gpsDeniedDialog: AlertDialog = this?.let {
+        val gpsDeniedDialog: AlertDialog? = this.let {
             val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             builder.apply {
                 setTitle(getString(R.string.title_notification))
