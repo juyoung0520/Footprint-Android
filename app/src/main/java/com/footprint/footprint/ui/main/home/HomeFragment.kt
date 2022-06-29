@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.view.View
@@ -274,7 +276,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                interval = 60 * 60 * 60 //1시간마다 위치 불러옴
+                interval = 60 * 1000
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -285,9 +287,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             //날씨 api 호출
                             val location = LocationModel(location.latitude.toInt().toString(), location.longitude.toInt().toString())
                             homeVm.getWeather(location)
+                            locationClient.removeLocationUpdates(this)
                         }
                     }
-
                 }
             }
 
