@@ -94,8 +94,11 @@ class WalkAfterActivity :
     }
 
     private fun uploadFootprintPhotos(startFootprintIndex: Int, startPhotoIndex: Int) {
+        var havePhotos: Boolean = false //발자국에 저장된 이미지가 있는지 없는지 판단해주는 Boolean 변수
+
         loop@ for (footprintIndex in startFootprintIndex until saveWalkEntity.saveWalkFootprints.size) {
             for (photoIndex in startPhotoIndex until saveWalkEntity.saveWalkFootprints[footprintIndex].photos.size) {
+                havePhotos = true
                 if (!isNetworkAvailable(applicationContext)) {
                     Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
                         uploadFootprintPhotos(footprintIndex, photoIndex)
@@ -107,6 +110,9 @@ class WalkAfterActivity :
                 }
             }
         }
+
+        if (!havePhotos)    //발자국에 어떠한 이미지도 없으면 바로 saveWalk 메서드 호출
+            saveWalk()
     }
 
     override fun onBackPressed() {
