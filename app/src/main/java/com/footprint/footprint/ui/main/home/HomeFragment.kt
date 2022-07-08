@@ -126,7 +126,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         //callWeatherAPI() // method is not allowed
 
         //유저 정보, 일별, 월별 API
-        //homeVm.getUser() // badUrl
+        homeVm.getUser()
         homeVm.getToday()
         homeVm.getTmonth()
     }
