@@ -23,16 +23,19 @@ class BadgeViewModel(private val getBadgesUseCase: GetBadgesUseCase, private val
     fun getBadges() {
         viewModelScope.launch {
             when (val response = getBadgesUseCase.invoke()) {
-                is Result.Success -> {
-                    _badges.postValue(response.value)
-                }
+                is Result.Success -> _badges.postValue(response.value)
                 is Result.NetworkError -> {
                     errorMethod = "getBadges"
+
                     mutableErrorType.postValue(ErrorType.NETWORK)
                 }
                 is Result.GenericError -> {
                     errorMethod = "getBadges"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
             }
         }
@@ -48,7 +51,10 @@ class BadgeViewModel(private val getBadgesUseCase: GetBadgesUseCase, private val
                 }
                 is Result.GenericError -> {
                     errorMethod = "changeRepresentativeBadge"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
             }
         }

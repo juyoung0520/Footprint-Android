@@ -15,7 +15,7 @@ class BadgeRepositoryImpl(private val dataSource: BadgeRemoteDataSource): BadgeR
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, BadgeInfo::class.java))
                 else
-                    Result.GenericError(response.value.code, "")
+                    Result.GenericError(response.value.code, response.value.message)
             }
             is Result.GenericError -> response
             is Result.NetworkError -> response
@@ -28,7 +28,7 @@ class BadgeRepositoryImpl(private val dataSource: BadgeRemoteDataSource): BadgeR
                 if (response.value.isSuccess)
                     Result.Success(NetworkUtils.decrypt(response.value.result, Badge::class.java))
                 else
-                    Result.GenericError(response.value.code, "")
+                    Result.GenericError(response.value.code, response.value.message)
             }
             is Result.GenericError -> response
             is Result.NetworkError -> response
