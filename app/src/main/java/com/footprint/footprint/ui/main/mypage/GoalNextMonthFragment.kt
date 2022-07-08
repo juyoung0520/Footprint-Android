@@ -9,6 +9,7 @@ import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.viewmodel.GoalViewModel
@@ -31,12 +32,13 @@ class GoalNextMonthFragment :
         goalVm.getNextMonthGoal()
 
         setMyClickListener()
-        initSnackBar()
     }
 
     override fun onStop() {
         super.onStop()
-        networkErrorSb.dismiss()
+
+        if (::networkErrorSb.isInitialized && networkErrorSb.isShown)
+            networkErrorSb.dismiss()
     }
 
     private fun initAdapter() {
@@ -46,12 +48,6 @@ class GoalNextMonthFragment :
         dayRVAdapter.setEnabled(false)  //아이템뷰 비활성화
 
         binding.goalNextMonthGoalDayRv.adapter = dayRVAdapter
-    }
-
-    private fun initSnackBar() {
-        networkErrorSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-            goalVm.getNextMonthGoal()
-        }
     }
 
     private fun bind() {
@@ -99,21 +95,20 @@ class GoalNextMonthFragment :
             binding.goalNextMonthPb.visibility = View.INVISIBLE
 
             when (it) {
-//                ErrorType.NETWORK -> networkErrorSb.show()
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getNextMonthGoal()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrorSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.getNextMonthGoal() }
+                    networkErrorSb.show()
+                }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
                     showToast(getString(R.string.error_sorry))
                     findNavController().popBackStack()
                 }
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getNextMonthGoal()
-                }.show()
             }
         })
 
         goalVm.nextMonthGoal.observe(viewLifecycleOwner, Observer {
+            LogUtils.d("GoalRepositoryImpl", "nextMonthGoal Observe!! nextMonthGoal: $it")
+
             binding.goalNextMonthPb.visibility = View.INVISIBLE
 
             this@GoalNextMonthFragment.goal = it

@@ -16,6 +16,6 @@ class GoalRemoteDataSourceImpl(private val api: GoalService): BaseRepository(), 
     }
 
     override suspend fun updateGoal(updateGoal: RequestBody): Result<BaseResponse> {
-        return safeApiCall { api.updateGoal(updateGoal).body()!! }
+        return safeApiCall2() { api.updateGoal(updateGoal) }
     }
 }

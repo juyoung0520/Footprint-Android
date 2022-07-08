@@ -4,7 +4,7 @@ import com.footprint.footprint.data.dto.GoalModel
 import com.footprint.footprint.domain.model.*
 
 object GoalMapper {
-    fun mapperToGoalEntity(month: String, updateGoal: UpdateGoal): GoalEntity = updateGoal.run {
+    fun mapperToGoalEntity(month: String, updateGoalEntity: UpdateGoalEntity): GoalEntity = updateGoalEntity.run {
         GoalEntity(month, dayIdx, UserGoalTime(walkGoalTime, walkTimeSlot), true)
     }
 

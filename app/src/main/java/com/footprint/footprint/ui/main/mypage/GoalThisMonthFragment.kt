@@ -22,6 +22,7 @@ class GoalThisMonthFragment :
     BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var goal: GoalEntity
+    private lateinit var networkErrSb: Snackbar
 
     private val goalVm: GoalViewModel by viewModel()
 
@@ -32,6 +33,13 @@ class GoalThisMonthFragment :
         setMyClickListener()
         observe()
         binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     private fun initAdapter() {
@@ -112,16 +120,14 @@ class GoalThisMonthFragment :
             binding.goalThisMonthPb.visibility = View.INVISIBLE
 
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getThisMonthGoal()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.getThisMonthGoal() }
+                    networkErrSb.show()
+                }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
                     showToast(getString(R.string.error_sorry))
                     findNavController().popBackStack()
                 }
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getThisMonthGoal()
-                }.show()
             }
         })
 
