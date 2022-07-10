@@ -27,7 +27,7 @@ class FootprintRepositoryImpl(private val dataSource: FootprintRemoteDataSource)
                     //List<GetFootprintModel> -> List<GetFootprintEntity> 로 매핑
                     Result.Success(FootprintMapper.mapperToGetFootprintEntityList(getFootprints))
                 } else
-                    Result.GenericError(response.value.code, "")
+                    Result.GenericError(response.value.code, response.value.message)
             }
 
             is Result.GenericError -> response

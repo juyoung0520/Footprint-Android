@@ -23,7 +23,7 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
                     //GetWalkModel -> GetWalkEntity 로 매핑
                     Result.Success(WalkMapper.mapperToGetWalkEntity(getWalkModel))
                 } else
-                    Result.GenericError(response.value.code, "")
+                    Result.GenericError(response.value.code, response.value.message)
             }
             is Result.NetworkError -> response
             is Result.GenericError -> response

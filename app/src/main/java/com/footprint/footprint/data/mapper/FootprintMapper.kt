@@ -20,6 +20,7 @@ object FootprintMapper {
 
     fun mapperToGetFootprintEntityList(getFootprintDTOList: List<GetFootprintDTO>): List<GetFootprintEntity> {
         val getFootprintEntityList: ArrayList<GetFootprintEntity> = arrayListOf()
+        var footprintImgIdx: Int = 0
 
         for (getFootprintModel in getFootprintDTOList) {
             getFootprintEntityList.add(GetFootprintEntity(
@@ -28,7 +29,8 @@ object FootprintMapper {
                 write = getFootprintModel.write,
                 photoList = getFootprintModel.photoList,
                 tagList = getFootprintModel.tagList,
-                onWalk = getFootprintModel.onWalk
+                onWalk = getFootprintModel.onWalk,
+                footprintImgIdx = if (getFootprintModel.onWalk==1) footprintImgIdx++ else null
             ))
         }
 

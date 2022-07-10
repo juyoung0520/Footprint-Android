@@ -30,6 +30,8 @@ class WalkAfterActivity :
     private lateinit var newBadgeDialogFragment: NewBadgeDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
     private lateinit var saveWalkEntity: SaveWalkEntity
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var s3ErrorSb: Snackbar
 
     private var tempAddFootprintPosition: Int? = null   //발자국을 추가할 때 추가하려고 하는 위치를 임시 저장하는 변수
     private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
@@ -63,9 +65,12 @@ class WalkAfterActivity :
             }
 
             override fun failWalkImg() {
-                Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                binding.walkAfterLoadingPb.visibility = View.VISIBLE
+
+                s3ErrorSb = Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
                     uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
-                }.show()
+                }
+                s3ErrorSb.show()
             }
 
             override fun successFootprintImg(img: String, footprintIdx: Int, imgIdx: Int) {
@@ -77,19 +82,32 @@ class WalkAfterActivity :
             }
 
             override fun failFootprintImg(footprintIdx: Int, imgIdx: Int) {
-                Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-                    uploadFootprintPhotos(footprintIdx, imgIdx)
-                }.show()
+                binding.walkAfterLoadingPb.visibility = View.VISIBLE
+
+                s3ErrorSb = Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                    uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+                }
+                s3ErrorSb.show()
             }
         })
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+        else if (::s3ErrorSb.isInitialized && s3ErrorSb.isShown)
+            s3ErrorSb.dismiss()
+    }
+
     private fun saveWalk() {
-        if (!isNetworkAvailable(applicationContext))
-            Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-                saveWalk()
-            }.show()
-        else
+        if (!isNetworkAvailable(applicationContext)) {
+            binding.walkAfterLoadingPb.visibility = View.VISIBLE
+
+            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+            networkErrSb.show()
+        } else
             walkVm.saveWalk(saveWalkEntity)
     }
 
@@ -99,10 +117,13 @@ class WalkAfterActivity :
         loop@ for (footprintIndex in startFootprintIndex until saveWalkEntity.saveWalkFootprints.size) {
             for (photoIndex in startPhotoIndex until saveWalkEntity.saveWalkFootprints[footprintIndex].photos.size) {
                 havePhotos = true
+
                 if (!isNetworkAvailable(applicationContext)) {
-                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
                         uploadFootprintPhotos(footprintIndex, photoIndex)
-                    }.show()
+                    }
+                    networkErrSb.show()
+
                     break@loop
                 } else {
                     S3UploadService.uploadFootprintImg(applicationContext, File(saveWalkEntity.saveWalkFootprints[footprintIndex].photos[photoIndex]), footprintIndex, photoIndex)
@@ -159,20 +180,24 @@ class WalkAfterActivity :
 
             //‘OO번째 산책’을 저장할까요?
             override fun action2(isAction: Boolean) {
-                if (isAction) {   //저장 버튼 누르면 산책 정보 저장 API 호출
+                if (isAction && isNetworkAvailable(applicationContext)) {   //저장 버튼 누르면 산책 정보 저장 API 호출
                     binding.walkAfterLoadingPb.visibility = View.VISIBLE    //로딩바 띄우기
                     uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+                } else if (isAction && !isNetworkAvailable(applicationContext)) {    //저장을 눌렀는데 네트워크 연결이 안 돼 있는 경우
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                    networkErrSb.show()
                 }
             }
         })
     }
 
     private fun uploadWalkImg(file: File) {
-        if (!isNetworkAvailable(applicationContext))
-            Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-                uploadWalkImg(file)
-            }.show()
-        else
+        if (!isNetworkAvailable(applicationContext)) {
+            binding.walkAfterLoadingPb.visibility = View.VISIBLE
+
+            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+            networkErrSb.show()
+        } else
             S3UploadService.uploadWalkImg(applicationContext, file)  //산책 이미지 저장
     }
 
@@ -277,7 +302,7 @@ class WalkAfterActivity :
                 footprintDialogFragment.show(supportFragmentManager, null)
             }
 
-            override fun updateFootprintVerDetail(position: Int, saveWalkFootprint: SaveWalkFootprintEntity) {
+            override fun updateFootprintVerDetail(position: Int, saveWalkFootprint: GetFootprintEntity) {
             }
         })
 
@@ -322,8 +347,14 @@ class WalkAfterActivity :
             binding.walkAfterLoadingPb.visibility = View.INVISIBLE
 
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG).show()
-                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    onBackPressed()
+                }
             }
         })
 

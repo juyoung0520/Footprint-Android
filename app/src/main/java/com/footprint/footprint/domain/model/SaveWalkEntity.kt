@@ -19,5 +19,6 @@ data class SaveWalkFootprintEntity(
     var write: String = "",   //발자국 내용
     var hashtagList: ArrayList<String> = arrayListOf(),  //해시태그
     var photos: ArrayList<String> = arrayListOf(),   //사진
-    var onWalk: Int = 1    //발자국 아이콘 여부
+    var onWalk: Int = 1,    //발자국 아이콘 여부
+    var footprintImgIdx: Int? = null    //발자국 아이콘 인덱스
 )

@@ -475,6 +475,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
+                saveWalkFootprint.footprintImgIdx = saveWalkFootprints.size //발자국 아이콘 인덱스 번호 저장
                 saveWalkFootprints.add(saveWalkFootprint)   //footprints 리스트에 발자국 추가
 
                 // 발자국 마크 추가
@@ -496,7 +497,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 if (!isWalking)
                     sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT)    // 산책 재시작
             }
-
         })
     }
 
@@ -504,5 +504,4 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         super.onDestroyView()
         sendCommandToService(BackgroundWalkService.TRACKING_STOP)
     }
-
 }

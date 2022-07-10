@@ -14,6 +14,7 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.ui.dialog.MsgDialogFragment
 import com.footprint.footprint.data.dto.FootprintRequestDTO
+import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.convertDpToPx
@@ -29,12 +30,13 @@ class WalkDetailActivity :
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
+    private lateinit var networkErrSb: Snackbar
 
     private val walkVm: WalkViewModel by viewModel()
     private val args: WalkDetailActivityArgs by navArgs()
 
     private var tempUpdateFootprintPosition: Int? = null    //수정하고자 하는 발자국의 RV 어댑터 위치
-    private var tempUpdateSaveWalkFootprint: SaveWalkFootprintEntity? = null  //수정하고자 하는 발자국 데이터
+    private var tempUpdateSaveWalkFootprint: GetFootprintEntity? = null  //수정하고자 하는 발자국 데이터
 
     override fun initAfterBinding() {
         observe()
@@ -42,8 +44,16 @@ class WalkDetailActivity :
         setActionDialog()
         initFootprintDialog()
 
+        binding.walkDetailLoadingPb.visibility = View.VISIBLE
         binding.walkDetailTitleTv.text = "${args.walkIdx}번째 산책"
         walkVm.getWalkByIdx(args.walkIdx)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     override fun onBackPressed() {
@@ -101,9 +111,11 @@ class WalkDetailActivity :
             override fun sendUpdatedFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
                 //수정된 데이터만 모아서 요청하기
                 val reqMap: HashMap<String, Any> = HashMap()
+
                 if (saveWalkFootprint.write != tempUpdateSaveWalkFootprint!!.write)   //글
                     reqMap["write"] = saveWalkFootprint.write
-                if (saveWalkFootprint.hashtagList != tempUpdateSaveWalkFootprint!!.hashtagList) { //해시태그
+
+                if (saveWalkFootprint.hashtagList != tempUpdateSaveWalkFootprint!!.tagList) { //해시태그
                     if (saveWalkFootprint.hashtagList!!.isEmpty()) {    //해시태그를 모두 삭제한 경우
                         reqMap["tagList"] = ""
                     } else {    //해시 태그를 모두 삭제하지 않은 경우
@@ -112,8 +124,9 @@ class WalkDetailActivity :
                         }
                     }
                 }
+
                 var photos: List<String>? = null    //사진 -> 수정된 사진이 없으면 null
-                if (saveWalkFootprint.photos != tempUpdateSaveWalkFootprint!!.photos) {
+                if (saveWalkFootprint.photos != tempUpdateSaveWalkFootprint!!.photoList) {
                     photos = saveWalkFootprint.photos
                 }
 
@@ -142,16 +155,16 @@ class WalkDetailActivity :
         Glide.with(this).load(getWalkEntity.pathImageUrl).into(binding.walkDetailMapIv)  //산책 동선 이미지
 
         if (getWalkEntity.footCount==0) {   //남긴 발자국이 없으면 -> 산책기록이 없어요! 화면 보여주기
+            binding.walkDetailLoadingPb.visibility = View.INVISIBLE   //로딩 프로그래스바 INVISIBLE
+
             binding.walkDetailSlidedLayout.visibility = View.INVISIBLE
             binding.walkDetailNoFootprintTv.visibility = View.VISIBLE
-        } else {   //남긴 발자국이 있으면 -> 산책별 발자국 리스트 조회 API 요청
-            binding.walkDetailLoadingPb.visibility = View.VISIBLE   //로딩 프로그래스바 VISIBLE
-            walkVm.getFootprintsByWalkIdx(19)
-        }
+        } else //남긴 발자국이 있으면 -> 산책별 발자국 리스트 조회 API 요청
+            walkVm.getFootprintsByWalkIdx(args.walkIdx)
     }
 
     //발자국 리사이클러뷰 어댑터 클래스 초기화
-    private fun initAdapter(saveWalkFootprints: ArrayList<SaveWalkFootprintEntity>) {
+    private fun initAdapter(saveWalkFootprints: ArrayList<GetFootprintEntity>) {
         footprintRVAdapter = FootprintRVAdapter()
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
             override fun addFootprint(position: Int) {
@@ -161,7 +174,7 @@ class WalkDetailActivity :
             }
 
             //발자국 편집 텍스트뷰 클릭 리스너
-            override fun updateFootprintVerDetail(position: Int, saveWalkFootprint: SaveWalkFootprintEntity) {
+            override fun updateFootprintVerDetail(position: Int, saveWalkFootprint: GetFootprintEntity) {
                 //수정하고자 하는 발자국의 어댑터 위치와 데이터를 임시 저장
                 tempUpdateFootprintPosition = position
                 tempUpdateSaveWalkFootprint = saveWalkFootprint
@@ -170,8 +183,8 @@ class WalkDetailActivity :
                 val footprintModel = FootprintRequestDTO(
                     recordAt = saveWalkFootprint.recordAt,
                     write = saveWalkFootprint.write,
-                    hashtagList = saveWalkFootprint.hashtagList,
-                    photos = saveWalkFootprint.photos,
+                    hashtagList = saveWalkFootprint.tagList,
+                    photos = saveWalkFootprint.photoList as ArrayList,
                     onWalk = saveWalkFootprint.onWalk
                 )
 
@@ -194,54 +207,44 @@ class WalkDetailActivity :
             when (it) {
                 ErrorType.NETWORK -> {
                     when (walkVm.getErrorType()) {
-                        "getWalkByIdx" -> Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.getWalkByIdx(args.walkIdx)
-                        }.show()
-                        "getFootprintsByWalkIdx" -> Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.getFootprintsByWalkIdx(args.walkIdx)
-                        }.show()
-                        "updateFootprint" -> Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG).show()
-                        "deleteWalk" -> Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.deleteWalk(args.walkIdx)
-                        }.show()
+                        "getWalkByIdx" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { walkVm.getWalkByIdx(args.walkIdx) }
+                        "getFootprintsByWalkIdx" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { walkVm.getFootprintsByWalkIdx(args.walkIdx) }
+                        "updateFootprint" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                        "deleteWalk" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { walkVm.deleteWalk(args.walkIdx) }
                     }
 
+                    networkErrSb.show()
                 }
-                else -> {
-                    when (walkVm.getErrorType()) {
-                        "getWalkByIdx" -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.getWalkByIdx(args.walkIdx)
-                        }.show()
-                        "getFootprintsByWalkIdx" -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.getFootprintsByWalkIdx(args.walkIdx)
-                        }.show()
-                        "updateFootprint" -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).show()
-                        "deleteWalk" -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) {
-                            walkVm.deleteWalk(args.walkIdx)
-                        }.show()
-                    }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    onBackPressed()
                 }
             }
         })
 
         //산책 기록 observe
         walkVm.getWalkEntity.observe(this, Observer {
-            binding.walkDetailLoadingPb.visibility = View.INVISIBLE   //로딩 프로그래스바 INVISIBLE
             bindWalkInfo(it)    //데이터 바인딩
         })
 
         walkVm.footprints.observe(this, Observer {
-            binding.walkDetailSlidingUpPanelLayout.panelHeight =
-                (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
+            binding.walkDetailLoadingPb.visibility = View.INVISIBLE   //로딩 프로그래스바 INVISIBLE
+
+            binding.walkDetailSlidingUpPanelLayout.panelHeight = (getDeviceHeight() - convertDpToPx(this@WalkDetailActivity, 90) - (getDeviceHeight() * 0.42)).toInt()
             binding.walkDetailSlidedLayout.visibility = View.VISIBLE
             binding.walkDetailNoFootprintTv.visibility = View.INVISIBLE
 
-            initAdapter(it as ArrayList<SaveWalkFootprintEntity>)
+            initAdapter(it as ArrayList)
         })
 
         walkVm.isUpdate.observe(this, Observer {
-            binding.walkDetailLoadingPb.visibility = View.INVISIBLE
-            footprintDialogFragment.dismiss()
+            binding.walkDetailLoadingPb.visibility = View.INVISIBLE //로딩바 INVISIBLE
+
+            //스낵바 보이고 있으면 닫기
+            if (::networkErrSb.isInitialized && networkErrSb.isShown)
+                networkErrSb.dismiss()
+
+            footprintDialogFragment.dismiss()   //발자국 수정 다이얼로그 닫기
             initFootprintDialog()   //다이얼로그 프래그먼트 초기화
 
             //발자국을 수정했어요 메세지 다이얼로그 띄우기

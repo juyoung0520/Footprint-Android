@@ -8,15 +8,15 @@ import okhttp3.RequestBody
 
 class WalkRemoteDataSourceImpl(private val api: WalkService): BaseRepository(), WalkRemoteDataSource {
     override suspend fun getWalkByIdx(walkIdx: Int): Result<BaseResponse> {
-        return safeApiCall { api.getWalkByIdx(walkIdx).body()!! }
+        return safeApiCall2 { api.getWalkByIdx(walkIdx) }
     }
 
     override suspend fun deleteWalk(walkIdx: Int): Result<BaseResponse> {
-        return safeApiCall { api.deleteWalk(walkIdx).body()!! }
+        return safeApiCall2 { api.deleteWalk(walkIdx) }
     }
 
     override suspend fun saveWalk(request: RequestBody): Result<BaseResponse> {
-        return safeApiCall { api.saveWalk(request).body()!! }
+        return safeApiCall2 { api.saveWalk(request) }
     }
 
     override suspend fun getMonthWalks(year: Int, month: Int): Result<BaseResponse> {
