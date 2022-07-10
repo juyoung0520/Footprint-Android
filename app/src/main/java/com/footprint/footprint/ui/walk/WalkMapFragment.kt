@@ -17,15 +17,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
-import com.footprint.footprint.ui.walk.model.WalkUIModel
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
+import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
+import com.footprint.footprint.domain.model.SaveWalkEntity
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.service.Path
 import com.footprint.footprint.service.BackgroundWalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
-import com.footprint.footprint.ui.walk.model.FootprintUIModel
 import com.footprint.footprint.utils.getAbsolutePathByBitmap
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -59,8 +59,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private var isFootprint = false
 
-    private val footprints: ArrayList<FootprintUIModel> = arrayListOf() //지금까지 사용자가 기록한 총 데이터
-    private val walkUIModel: WalkUIModel = WalkUIModel()  //산책 데이터
+    private val saveWalkFootprints: ArrayList<SaveWalkFootprintEntity> = arrayListOf() //지금까지 사용자가 기록한 총 데이터
+    private val saveWalkEntity: SaveWalkEntity = SaveWalkEntity()  //산책 데이터
     private lateinit var userInfo: SimpleUserModel
 
     override fun initAfterBinding() {
@@ -83,11 +83,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         mapFragment.getMapAsync(this)
 
         userInfo = (activity as WalkActivity).userInfo!!
-        walkUIModel.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
+        saveWalkEntity.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
 
         //산책 시작 시간 데이터 저장
         val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-        walkUIModel.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        saveWalkEntity.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
         initFootprintDialog()   //FootprintDialogFragment 초기화
     }
@@ -221,7 +221,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             isFootprint = true
             setWalkState(false)
 
-            if (footprints.size >= 9) {  //기록이 이미 9개가 됐으면
+            if (saveWalkFootprints.size >= 9) {  //기록이 이미 9개가 됐으면
                 //"발자국은 최대 9개까지 남길 수 있어요." 다이얼로그 화면 띄우기
                 val action =
                     WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.error_post_cnt_exceed))
@@ -314,13 +314,11 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
     private fun takeSnapshotMap() {
         map.takeSnapshot { bitmap ->    //산책 동선 사진
-            walkUIModel.pathImg =
-                getAbsolutePathByBitmap(requireContext(), bitmap)
-            bindWalkModel()
+            saveWalkEntity.pathImg = getAbsolutePathByBitmap(requireContext(), bitmap)
+            bindSaveWalkEntity()
 
-            val intent: Intent =
-                Intent(requireActivity(), WalkAfterActivity::class.java)
-            intent.putExtra("walk", Gson().toJson(walkUIModel))    //산책 정보 전달
+            val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+            intent.putExtra("walk", Gson().toJson(saveWalkEntity))    //산책 정보 전달
             startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
             (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
         }
@@ -438,15 +436,15 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     //산책 데이터 모델에 데이터 바인딩
-    private fun bindWalkModel() {
-        walkUIModel.walkTime = binding.walkmapWalktimeNumberTv.text.toString()    //산책 시간
+    private fun bindSaveWalkEntity() {
+        saveWalkEntity.walkTime = binding.walkmapWalktimeNumberTv.text.toString()    //산책 시간
         val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-        walkUIModel.endAt =
+        saveWalkEntity.endAt =
             current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))   //산책 종료 시간
-        walkUIModel.distance = binding.walkmapDistanceNumberTv.text.toString().toDouble() //산책 거리
-        walkUIModel.coordinate = getCoordinate() //산책 동선 좌표
-        walkUIModel.calorie = binding.walkmapCalorieNumberTv.text.toString().toInt()  //칼로리
-        walkUIModel.footprints = footprints    //발자국
+        saveWalkEntity.distance = binding.walkmapDistanceNumberTv.text.toString().toDouble() //산책 거리
+        saveWalkEntity.coordinate = getCoordinate() //산책 동선 좌표
+        saveWalkEntity.calorie = binding.walkmapCalorieNumberTv.text.toString().toInt()  //칼로리
+        saveWalkEntity.saveWalkFootprints = saveWalkFootprints    //발자국
     }
 
     // PathGroup -> List<List<Double>>
@@ -468,9 +466,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun initFootprintDialog() {
         footprintDialogFragment = FootprintDialogFragment()
 
-        footprintDialogFragment.setMyDialogCallback(object :
-            FootprintDialogFragment.MyDialogCallback {
-            override fun sendFootprint(footprint: FootprintUIModel) {
+        footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
+            override fun sendFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
                 //"발자국을 남겼어요." 다이얼로그 화면 띄우기
                 val action =
                     WalkMapFragmentDirections.actionGlobalMsgDialogFragment(getString(R.string.msg_leave_footprint))
@@ -478,18 +475,19 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT) // 발자국 찍고 다시 시작할 때
 
-                footprints.add(footprint)   //footprints 리스트에 발자국 추가
+                saveWalkFootprint.footprintImgIdx = saveWalkFootprints.size //발자국 아이콘 인덱스 번호 저장
+                saveWalkFootprints.add(saveWalkFootprint)   //footprints 리스트에 발자국 추가
 
                 // 발자국 마크 추가
                 if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
                     val lastLang = paths.last().last()
-                    putMarker(lastLang, footprints.size)
-                    footprint.coordinate = listOf(lastLang.latitude, lastLang.longitude)
+                    putMarker(lastLang, saveWalkFootprints.size)
+                    saveWalkFootprint.coordinates = listOf(lastLang.latitude, lastLang.longitude)
                     //LogUtils.d("$TAG/WALKMAP", footprint.coordinate.toString())
                 }
             }
 
-            override fun sendUpdatedFootprint(footprint: FootprintUIModel) {
+            override fun sendUpdatedFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
             }
 
             //다이얼로그 프래그먼트에서 취소를 누르거나 뒤로 나왔을 때 -> 타이머 재생
@@ -499,7 +497,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 if (!isWalking)
                     sendCommandToService(BackgroundWalkService.TRACKING_RESUME_BY_FOOTPRINT)    // 산책 재시작
             }
-
         })
     }
 
@@ -507,5 +504,4 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         super.onDestroyView()
         sendCommandToService(BackgroundWalkService.TRACKING_STOP)
     }
-
 }

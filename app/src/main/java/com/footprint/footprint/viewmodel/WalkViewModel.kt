@@ -4,22 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.Result
-import com.footprint.footprint.domain.model.Badge
-import com.footprint.footprint.domain.model.Footprint
-import com.footprint.footprint.domain.model.Walk
+import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.domain.usecase.*
-import com.footprint.footprint.ui.walk.model.WalkUIModel
 import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch
+import kotlin.collections.HashMap
 
-class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, private val getFootprintsByWalkIdxUseCase: GetFootprintsByWalkIdxUseCase, private val updateFootprintUseCase: UpdateFootprintUseCase, private val deleteWalkUseCase: DeleteWalkUseCase, private val writeWalkUseCase: WriteWalkUseCase): BaseViewModel() {
+class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, private val getFootprintsByWalkIdxUseCase: GetFootprintsByWalkIdxUseCase, private val updateFootprintUseCase: UpdateFootprintUseCase, private val deleteWalkUseCase: DeleteWalkUseCase, private val saveWalkUseCase: SaveWalkUseCase): BaseViewModel() {
     private var errorMethod: String? = null
 
-    private val _walk: MutableLiveData<Walk> = MutableLiveData()
-    val walk: LiveData<Walk> get() = _walk
+    private val _getWalkEntity: MutableLiveData<GetWalkEntity> = MutableLiveData()
+    val getWalkEntity: LiveData<GetWalkEntity> get() = _getWalkEntity
 
-    private val _footprints: MutableLiveData<List<Footprint>> = MutableLiveData()
-    val footprints: LiveData<List<Footprint>> get() = _footprints
+    private val _footprints: MutableLiveData<List<GetFootprintEntity>> = MutableLiveData()
+    val footprints: LiveData<List<GetFootprintEntity>> get() = _footprints
 
     private val _isUpdate: MutableLiveData<Boolean> = MutableLiveData()
     val isUpdate: LiveData<Boolean> get() = _isUpdate
@@ -27,16 +25,20 @@ class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, privat
     private val _isDelete: MutableLiveData<Boolean> = MutableLiveData()
     val isDelete: LiveData<Boolean> get() = _isDelete
 
-    private val _badges: MutableLiveData<List<Badge>> = MutableLiveData()
-    val badges: LiveData<List<Badge>> get() = _badges
+    private val _badges: MutableLiveData<List<BadgeEntity>> = MutableLiveData()
+    val badges: LiveData<List<BadgeEntity>> get() = _badges
 
     fun getWalkByIdx(walkIdx: Int) {
         viewModelScope.launch {
             when (val response = getWalkByIdxUseCase(walkIdx)) {
-                is Result.Success -> _walk.postValue(response.value)
+                is Result.Success -> _getWalkEntity.postValue(response.value)
                 is Result.GenericError -> {
                     errorMethod = "getWalkByIdx"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
                 is Result.NetworkError -> {
                     errorMethod = "getWalkByIdx"
@@ -52,7 +54,11 @@ class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, privat
                 is Result.Success -> _footprints.postValue(response.value)
                 is Result.GenericError -> {
                     errorMethod = "getFootprintsByWalkIdx"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
                 is Result.NetworkError -> {
                     errorMethod = "getFootprintsByWalkIdx"
@@ -66,11 +72,15 @@ class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, privat
 
     fun updateFootprint(walkIdx: Int, footprintIdx: Int, footprintMap: HashMap<String, Any>, footprintPhoto: List<String>?) {
         viewModelScope.launch {
-            when (updateFootprintUseCase(walkIdx, footprintIdx, footprintMap, footprintPhoto)) {
+            when (val response = updateFootprintUseCase(walkIdx, footprintIdx, footprintMap, footprintPhoto)) {
                 is Result.Success -> _isUpdate.postValue(true)
                 is Result.GenericError -> {
                     errorMethod = "updateFootprint"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
                 is Result.NetworkError -> {
                     errorMethod = "updateFootprint"
@@ -82,11 +92,15 @@ class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, privat
 
     fun deleteWalk(walkIdx: Int) {
         viewModelScope.launch {
-            when (deleteWalkUseCase(walkIdx)) {
+            when (val response = deleteWalkUseCase(walkIdx)) {
                 is Result.Success -> _isDelete.postValue((true))
                 is Result.GenericError -> {
                     errorMethod = "deleteWalk"
-                    mutableErrorType.postValue(ErrorType.UNKNOWN)
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
                 }
                 is Result.NetworkError -> {
                     errorMethod = "deleteWalk"
@@ -96,11 +110,16 @@ class WalkViewModel(private val getWalkByIdxUseCase: GetWalkByIdxUseCase, privat
         }
     }
 
-    fun writeWalk(walk: WalkUIModel) {
+    fun saveWalk(walk: SaveWalkEntity) {
         viewModelScope.launch {
-            when (val response = writeWalkUseCase(walk)) {
+            when (val response = saveWalkUseCase(walk)) {
                 is Result.Success -> _badges.postValue(response.value)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.GenericError -> {
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
             }
         }

@@ -1,6 +1,5 @@
 package com.footprint.footprint.utils
 
-import com.google.gson.Gson
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -17,10 +16,6 @@ object FormDataUtils {
             partMap[v.key] = v.value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
 
         return partMap
-    }
-
-    fun getJsonBody(value: Any): RequestBody? {
-        return Gson().toJson(value).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
     }
 
     fun prepareFilePart(key: String, fileUri: String): MultipartBody.Part? {

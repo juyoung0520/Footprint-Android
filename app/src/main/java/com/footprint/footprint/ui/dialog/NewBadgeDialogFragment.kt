@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.footprint.footprint.data.dto.BadgeInfo
 import com.footprint.footprint.databinding.FragmentNewBadgeDialogBinding
+import com.footprint.footprint.domain.model.BadgeEntity
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.loadSvg
 import com.google.gson.Gson
@@ -34,7 +34,7 @@ class NewBadgeDialogFragment : DialogFragment() {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         //이전 화면으로부터 전달받은 뱃지 정보를 가져다가 화면에 보여준다.
-        val badge = Gson().fromJson(arguments?.getString("badge"), BadgeInfo::class.java)
+        val badge = Gson().fromJson(arguments?.getString("badge"), BadgeEntity::class.java)
         bindBadge(badge)
 
         //확인 텍스트뷰 클릭 리스너
@@ -60,7 +60,7 @@ class NewBadgeDialogFragment : DialogFragment() {
         )
     }
 
-    private fun bindBadge(badge: BadgeInfo) {
+    private fun bindBadge(badge: BadgeEntity) {
         binding.newBadgeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
         binding.newBadgeTitleTv.text = "'${badge.badgeName}'"
     }

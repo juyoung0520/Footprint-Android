@@ -9,7 +9,7 @@ import okhttp3.RequestBody
 
 class FootprintRemoteDataSourceImpl(private val api: FootprintService): BaseRepository(), FootprintRemoteDataSource {
     override suspend fun getFootprintsByWalkIdx(walkIdx: Int): Result<BaseResponse> {
-        return safeApiCall { api.getFootprints(walkIdx).body()!! }
+        return safeApiCall2 { api.getFootprints(walkIdx) }
     }
 
     override suspend fun updateFootprint(
@@ -18,6 +18,6 @@ class FootprintRemoteDataSourceImpl(private val api: FootprintService): BaseRepo
         data: HashMap<String, RequestBody>?,
         photos: List<MultipartBody.Part>?
     ): Result<BaseResponse> {
-        return safeApiCall { api.updateFootprint(walkIdx, footprintIdx, data, photos).body()!! }
+        return safeApiCall2 { api.updateFootprint(walkIdx, footprintIdx, data, photos) }
     }
 }

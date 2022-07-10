@@ -5,10 +5,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentGoalNextMonthBinding
-import com.footprint.footprint.domain.model.Goal
+import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
 import com.footprint.footprint.viewmodel.GoalViewModel
@@ -19,7 +20,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class GoalNextMonthFragment :
     BaseFragment<FragmentGoalNextMonthBinding>(FragmentGoalNextMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
-    private lateinit var goal: Goal
+    private lateinit var goal: GoalEntity
+    private lateinit var networkErrorSb: Snackbar
 
     private val goalVm: GoalViewModel by viewModel()
 
@@ -30,6 +32,13 @@ class GoalNextMonthFragment :
         goalVm.getNextMonthGoal()
 
         setMyClickListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrorSb.isInitialized && networkErrorSb.isShown)
+            networkErrorSb.dismiss()
     }
 
     private fun initAdapter() {
@@ -86,16 +95,20 @@ class GoalNextMonthFragment :
             binding.goalNextMonthPb.visibility = View.INVISIBLE
 
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getNextMonthGoal()
-                }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getNextMonthGoal()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrorSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.getNextMonthGoal() }
+                    networkErrorSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    findNavController().popBackStack()
+                }
             }
         })
 
         goalVm.nextMonthGoal.observe(viewLifecycleOwner, Observer {
+            LogUtils.d("GoalRepositoryImpl", "nextMonthGoal Observe!! nextMonthGoal: $it")
+
             binding.goalNextMonthPb.visibility = View.INVISIBLE
 
             this@GoalNextMonthFragment.goal = it

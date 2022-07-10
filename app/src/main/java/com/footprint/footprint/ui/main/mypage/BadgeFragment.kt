@@ -3,6 +3,7 @@ package com.footprint.footprint.ui.main.mypage
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentBadgeBinding
 import com.footprint.footprint.domain.model.Badge
@@ -18,6 +19,8 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
     private lateinit var badgeRVAdapter: BadgeRVAdapter
     private lateinit var actionDialogFragment: ActionDialogFragment
+    private lateinit var networkErrSbGet: Snackbar
+    private lateinit var networkErrSbPatch: Snackbar
 
     private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
 
@@ -32,6 +35,15 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
         badgeVm.getBadges()
         binding.badgeLoadingPb.visibility = View.VISIBLE
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSbGet.isInitialized && networkErrSbGet.isShown)
+            networkErrSbGet.dismiss()
+        else if (::networkErrSbPatch.isInitialized && networkErrSbPatch.isShown)
+            networkErrSbPatch.dismiss()
     }
 
     private fun initAdapter(badgeInfo: com.footprint.footprint.domain.model.BadgeInfo) {
@@ -72,7 +84,6 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
             override fun action2(isAction: Boolean) {
             }
-
         })
     }
 
@@ -103,20 +114,26 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
             when (it) {
                 ErrorType.NETWORK -> {
                     when (badgeVm.getErrorMethod()) {
-                        "getBadges" -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) { badgeVm.getBadges() }.show()
-                        "changeRepresentativeBadge" -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) { badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!) }.show()
+                        "getBadges" -> {
+                            networkErrSbGet = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { badgeVm.getBadges() }
+                            networkErrSbGet.show()
+                        }
+                        "changeRepresentativeBadge" -> {
+                            networkErrSbPatch = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!) }
+                            networkErrSbPatch.show()
+                        }
                     }
                 }
-                else -> {
-                    when (badgeVm.getErrorMethod()) {
-                        "getBadges" -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) { badgeVm.getBadges() }.show()
-                        "changeRepresentativeBadge" -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_LONG).setAction(getString(R.string.action_retry)) { badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!) }.show()
-                    }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    findNavController().popBackStack()
                 }
             }
         })
 
         badgeVm.badges.observe(viewLifecycleOwner, Observer {
+            LogUtils.d("BadgeFragment", "badges Observe!! -> $it")
+
             binding.badgeLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
             bindRepresentativeBade(it.repBadgeInfo) //변경된 대표뱃지로 UI 업데이트
             initAdapter(it)

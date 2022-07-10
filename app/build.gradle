@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 Properties properties = new Properties()
@@ -168,4 +170,9 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-cognito:2.20.0'
     implementation 'com.amazonaws:aws-android-sdk-s3:2.43.0'
     implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.43.0'
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:30.2.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 }

@@ -39,5 +39,5 @@ data class SimpleUserModel(
     var weight: Int? = null,
     var goalWalkTime: Int? = null,
     var walkNumber: Int? = null,
-    var badgeUrl: String = ""
+    var badgeUrl: String? = ""
 )

@@ -5,14 +5,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
-import com.footprint.footprint.domain.model.Goal
+import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
-import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -22,7 +21,8 @@ import java.text.SimpleDateFormat
 class GoalThisMonthFragment :
     BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
-    private lateinit var goal: Goal
+    private lateinit var goal: GoalEntity
+    private lateinit var networkErrSb: Snackbar
 
     private val goalVm: GoalViewModel by viewModel()
 
@@ -33,6 +33,13 @@ class GoalThisMonthFragment :
         setMyClickListener()
         observe()
         binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     private fun initAdapter() {
@@ -113,12 +120,14 @@ class GoalThisMonthFragment :
             binding.goalThisMonthPb.visibility = View.INVISIBLE
 
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getThisMonthGoal()
-                }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    goalVm.getThisMonthGoal()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.getThisMonthGoal() }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    findNavController().popBackStack()
+                }
             }
         })
 

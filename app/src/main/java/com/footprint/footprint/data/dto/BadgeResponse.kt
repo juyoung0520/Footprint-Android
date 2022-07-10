@@ -2,14 +2,6 @@ package com.footprint.footprint.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class BadgeInfo(
-    val badgeIdx: Int,
-    val badgeName: String,
-    val badgeUrl: String,
-    val badgeDate: String,
-    val badgeOrder: String
-)
-
 /*이달의 뱃지 조회 Response*/
 data class MonthBadgeResponse(
     @SerializedName("isSuccess") val isSuccess: Boolean,

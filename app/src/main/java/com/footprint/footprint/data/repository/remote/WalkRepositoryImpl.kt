@@ -2,28 +2,28 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.WalkRemoteDataSource
 import com.footprint.footprint.data.dto.*
+import com.footprint.footprint.data.mapper.BadgeMapper
 import com.footprint.footprint.data.mapper.FootprintMapper
 import com.footprint.footprint.data.mapper.WalkMapper
-import com.footprint.footprint.domain.model.Badge
-import com.footprint.footprint.domain.model.Walk
-import com.footprint.footprint.domain.model.WriteFootprintReq
-import com.footprint.footprint.domain.model.WriteWalkReq
+import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.domain.repository.WalkRepository
-import com.footprint.footprint.ui.walk.model.WalkUIModel
-import com.footprint.footprint.utils.FormDataUtils
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
 import com.google.gson.reflect.TypeToken
-import okhttp3.MultipartBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepository {
-    override suspend fun getWalkByIdx(walkIdx: Int): Result<Walk> {
+    override suspend fun getWalkByIdx(walkIdx: Int): Result<GetWalkEntity> {
         return when (val response = dataSource.getWalkByIdx(walkIdx)) {
             is Result.Success -> {
-                if (response.value.isSuccess)
-                    Result.Success(NetworkUtils.decrypt(response.value.result, Walk::class.java))
-                else
-                    Result.GenericError(response.value.code, "")
+                if (response.value.isSuccess) {
+                    //response 데이터를 복호화
+                    val getWalkModel: GetWalkModel = NetworkUtils.decrypt(response.value.result, GetWalkModel::class.java)
+                    //GetWalkModel -> GetWalkEntity 로 매핑
+                    Result.Success(WalkMapper.mapperToGetWalkEntity(getWalkModel))
+                } else
+                    Result.GenericError(response.value.code, response.value.message)
             }
             is Result.NetworkError -> response
             is Result.GenericError -> response
@@ -43,37 +43,29 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
         }
     }
 
-    override suspend fun writeWalk(walk: WalkUIModel): Result<List<Badge>> {
-        val walkReq: WriteWalkReq = WalkMapper.mapperToWriteWalkReq(walk)   //서버에 전달할 산책 정보 객체
-
-        val photosReq: ArrayList<MultipartBody.Part> = arrayListOf()    //서버에 전달할 이미지 리스트
-        photosReq.add(FormDataUtils.prepareFilePart("photos", walk.pathImg)!!)    //산책 동선 사진을 이미지 리스트에 추가
-
-        val footprintsReq: ArrayList<WriteFootprintReq> = arrayListOf() //서버에 전달할 발자국 데이터
-        for (footprint in walk.footprints) {
-            val data: WriteFootprintReq = FootprintMapper.mapperToWriteFootprintReq(footprint)
-            footprintsReq.add(data)
-
-            //산책 정보의 photoMatchNumList 데이터 가공(각 발자국 별 저장된 이미지 갯수를 저장)
-            if (footprint.photos.isEmpty()) {
-                walkReq.photoMatchNumList.add(0)
-            } else {
-                walkReq.photoMatchNumList.add(footprint.photos.size)
-
-                //이미지를 MultipartBody.Part 객체로 생성
-                for (photo in footprint.photos)
-                    photosReq.add(FormDataUtils.prepareFilePart("photos", photo)!!)
+    override suspend fun saveWalk(request: SaveWalkEntity): Result<List<BadgeEntity>> {
+        //SaveWalkEntity -> SaveWalkModel 로 매핑
+        val footprintModelList: ArrayList<FootprintModel> = arrayListOf()
+        if (request.saveWalkFootprints.isNotEmpty()) {
+            for (footprintEntity in request.saveWalkFootprints) {
+                footprintModelList.add(FootprintMapper.mapperToFootprintModel(footprintEntity))
             }
         }
+        val saveWalkReqModel: SaveWalkReqModel = WalkMapper.mapperToSaveWalkReqModel(request)
 
-        val walkFormData = FormDataUtils.getJsonBody(walkReq)!!   //산책 정보를 FormData 로 변환
-        val footprintsFormData = FormDataUtils.getJsonBody(footprintsReq)!!    //발자국 정보를 FormData 로 변환
+        //saveWalkModel 데이터를 암호화
+        val encryptedGoal = NetworkUtils.encrypt(saveWalkReqModel)
+        val requestBody: RequestBody = encryptedGoal.toRequestBody("application/json".toMediaTypeOrNull())
 
-        return when (val response = dataSource.writeWalk(walkFormData, footprintsFormData, photosReq)) {
+        //산책 정보 저장: BaseResponse -> 여기서부터 해야함.
+        return when (val response = dataSource.saveWalk(requestBody)) {
             is Result.Success -> {
                 if (response.value.isSuccess) {
-                    val itemType = object : TypeToken<List<Badge>>() {}.type
-                    Result.Success(NetworkUtils.decrypt(response.value.result, itemType))
+                    //response 데이터를 복호화
+                    val itemType = object : TypeToken<List<SaveWalkBadgeResDTO>>() {}.type
+                    val badges: List<SaveWalkBadgeResDTO> = NetworkUtils.decrypt(response.value.result, itemType)
+                    //SaveWalkResponse -> BadgeEntity 로 매핑
+                    Result.Success(BadgeMapper.mapperToBadgeEntityList(badges))
                 } else
                     Result.GenericError(response.value.code, response.value.message)
             }
@@ -82,6 +74,7 @@ class WalkRepositoryImpl(private val dataSource: WalkRemoteDataSource): WalkRepo
             is Result.GenericError -> response
         }
     }
+
     override suspend fun getMonthWalks(year: Int, month: Int): Result<List<MonthDayDTO>> {
         return when (val response = dataSource.getMonthWalks(year, month)) {
             is Result.Success -> {

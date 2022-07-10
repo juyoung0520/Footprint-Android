@@ -23,8 +23,7 @@ val useCaseModule = module {
     )
     single<UpdateFootprintUseCase> { UpdateFootprintUseCase(get()) }.bind(FootprintRepositoryImpl::class)
     single<DeleteWalkUseCase> { DeleteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
-    single<WriteWalkUseCase> { WriteWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
-
+    single<SaveWalkUseCase> { SaveWalkUseCase(get()) }.bind(WalkRepositoryImpl::class)
 
     single<GetWeatherUseCase> { GetWeatherUseCase(get()) }.bind(WeatherRepositoryImpl::class)
     single<RegisterUserUseCase> { RegisterUserUseCase(get()) }.bind(UserRepositoryImpl::class)
