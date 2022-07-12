@@ -83,7 +83,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         mapFragment.getMapAsync(this)
 
         userInfo = (activity as WalkActivity).userInfo!!
-        saveWalkEntity.walkTitle = "${userInfo.walkNumber}번째 산책" //00번째 산책
+        saveWalkEntity.walkTitle = "${userInfo.walkNumber!!+1}번째 산책" //00번째 산책
 
         //산책 시작 시간 데이터 저장
         val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
