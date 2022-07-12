@@ -19,6 +19,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
     private val splashVm: SplashViewModel by viewModel()
     private val MY_REQUEST_CODE = 1524
+    private lateinit var networkErrSb: Snackbar
 
     override fun initAfterBinding() {
         checkUpdate() // 업데이트 확인
@@ -109,13 +110,13 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     startSignInActivity()
                 }
                 ErrorType.NETWORK -> {
-                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
-                        R.string.action_retry) {
-                    }.show()
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { checkUpdate() }
+                    networkErrSb.show()
                 }
-                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
-                    R.string.action_retry) {
-                }.show()
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    onBackPressed()
+                }
             }
         })
 
@@ -143,5 +144,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             }
 
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

@@ -13,6 +13,7 @@ import com.footprint.footprint.utils.LogUtils
 import kotlinx.coroutines.launch
 
 class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private val getVersionUseCase: GetVersionUseCase): BaseViewModel() {
+
     private val _thisLogin: MutableLiveData<Login> = MutableLiveData()
     val thisLogin: LiveData<Login> get() = _thisLogin
 
@@ -25,10 +26,10 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private va
                 is Result.Success -> _thisLogin.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> {
-                    LogUtils.d("responseCode", response.toString())
                     when(response.code){
                         2001, 2002, 2003, 2004 -> mutableErrorType.postValue(ErrorType.JWT)
-                        else -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                        600 -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                        else -> mutableErrorType.postValue(ErrorType.DB_SERVER)
                     }
                 }
             }
@@ -40,8 +41,14 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private va
             when(val response = getVersionUseCase.invoke(version)){
                 is Result.Success -> _thisVersion.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.GenericError -> {
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
+
 }

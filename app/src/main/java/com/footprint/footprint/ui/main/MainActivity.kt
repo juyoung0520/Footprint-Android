@@ -24,6 +24,7 @@ import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+    private lateinit var networkErrSb: Snackbar
     private lateinit var navHostFragment: NavHostFragment
 
     private val mainVm: MainViewModel by viewModel()
@@ -96,20 +97,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         mainVm.mutableErrorType.observe(this, androidx.lifecycle.Observer {
             when (it) {
                 ErrorType.NETWORK -> {
-                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
-                        R.string.action_retry) {
-                        mainVm.getMonthBadge()
-                        mainVm.getKeyNotice()
-                    }.show()
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+
+                    when(mainVm.getErrorType()){
+                        "getMonthBadge" -> networkErrSb.setAction(R.string.action_retry) { mainVm.getMonthBadge() }
+                        "getKeyNotice" -> networkErrSb.setAction(R.string.action_retry) { mainVm.getKeyNotice() }
+                    }
+                    networkErrSb.show()
                 }
                 ErrorType.NO_BADGE -> { // 이번 달에 획득한 뱃지가 없습니다 -> 무시
                     LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
                 }
-                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
-                    R.string.action_retry) {
-                    mainVm.getMonthBadge()
-                    mainVm.getKeyNotice()
-                }.show()
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    onBackPressed()
+                }
             }
         })
 
@@ -124,5 +126,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             if(acquireNotices.isNotEmpty())
                 showKeyNotice(acquireNotices.removeAt(0))
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }
