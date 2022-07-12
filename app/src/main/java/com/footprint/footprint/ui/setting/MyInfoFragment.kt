@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.MyInfoUserModel
@@ -21,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import kotlin.math.floor
 
 class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate){
-
+    private lateinit var networkErrSb: Snackbar
     private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
@@ -216,12 +217,14 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
     private fun observe(){
         myInfoVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    myInfoVm.getMyInfoUser()
-                }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    myInfoVm.getMyInfoUser()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { myInfoVm.getMyInfoUser() }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
             }
         })
 
@@ -234,5 +237,12 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
             setMyEventListener()
             setHelpBalloon()    //툴팁
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

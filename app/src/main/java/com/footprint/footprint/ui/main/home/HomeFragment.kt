@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -39,7 +40,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate){
-    private val args2 = arguments?.getString("notices", "null")
+    private lateinit var networkErrSb: Snackbar
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -320,16 +321,21 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun observe(){
         homeVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    homeVm.getUser()
-                    homeVm.getToday()
-                    homeVm.getTmonth()
-                }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    homeVm.getUser()
-                    homeVm.getToday()
-                    homeVm.getTmonth()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+
+                    when(homeVm.getErrorType()){
+                        "getUser" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getUser() }
+                        "getToday" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getToday() }
+                        "getTmonth" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getUser() }
+                        "getWeather" -> networkErrSb.setAction(getString(R.string.action_retry)) { callWeatherAPI() }
+                    }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
             }
         })
 
@@ -413,5 +419,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
             binding.homeTopWeatherIv.setImageResource(imgRes)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }
