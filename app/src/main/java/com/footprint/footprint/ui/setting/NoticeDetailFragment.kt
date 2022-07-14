@@ -1,6 +1,11 @@
 package com.footprint.footprint.ui.setting
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
@@ -8,6 +13,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDetailBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.viewmodel.NoticeDetailViewModel
@@ -17,7 +23,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentNoticeDetailBinding::inflate) {
     private val args: NoticeDetailFragmentArgs by navArgs()
+
     private val noticeDetailVm: NoticeDetailViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private var index: Int? = null
     private var preIdx: Int = -1
@@ -69,15 +78,10 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
         noticeDetailVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 ErrorType.NETWORK -> {
-                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
-                        R.string.action_retry) {
-                        noticeDetailVm.getNotice(index!!)
-                    }.show()
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { noticeDetailVm.getNotice(index!!)}
+                    networkErrSb.show()
                 }
-                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
-                    R.string.action_retry) {
-                        noticeDetailVm.getNotice(index!!)
-                }.show()
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> startErrorActivity(getResult, "NoticeDetailFragment")
             }
         })
 
@@ -124,4 +128,24 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
 
     }
 
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                noticeDetailVm.getNotice(index!!)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+    }
 }

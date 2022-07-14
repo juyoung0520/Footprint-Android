@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.ui.agree.AgreeActivity
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.SignInViewModel
 import com.google.android.gms.auth.api.signin.*
@@ -33,9 +34,10 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     private val signInVm: SignInViewModel by viewModel()
     private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var getResult: ActivityResultLauncher<Intent>
+    private lateinit var getGoogleResult: ActivityResultLauncher<Intent>
     private lateinit var socialUserModel: SocialUserModel
 
     private var doubleBackToExit = false //뒤로가기 두 번 눌러야 종료 확인하는 변수
@@ -53,15 +55,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //구글 로그인
         binding.signinGoogleloginBtnLayout.setOnClickListener {
-            getResult.launch(mGoogleSignInClient.signInIntent)
+            getGoogleResult.launch(mGoogleSignInClient.signInIntent)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //구글 로그인 API Result 처리 부분
-        googleClient()
     }
 
     /*Funtion-Kakao*/
@@ -129,13 +124,13 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     /*Function - Google*/
-    private fun googleClient(){
+    private fun initGoogleResult(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(BuildConfig.google_login_server_id)
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        getResult = registerForActivityResult(
+        getGoogleResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
 
@@ -207,7 +202,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
                     networkErrSb.setAction(getString(R.string.action_retry)) { setKakaoLogin() }
                 }
                 "GOOGLE" -> {
-                    networkErrSb.setAction(getString(R.string.action_retry)) { getResult.launch(mGoogleSignInClient.signInIntent) }
+                    networkErrSb.setAction(getString(R.string.action_retry)) { getGoogleResult.launch(mGoogleSignInClient.signInIntent) }
                 }
                 "LOGIN" -> {
                     networkErrSb.setAction(getString(R.string.action_retry)) { signInVm.login(socialUserModel) }
@@ -215,10 +210,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
             }
 
             networkErrSb.show()
-        }else{ //나머지
-            /* UNKNOWN, DB_SERVER */
-            showToast(getString(R.string.error_sorry))
-            onBackPressed()
+        }else{ /* UNKNOWN, DB_SERVER */
+            startErrorActivity(getResult, "SignInActivity")
         }
 
     }
@@ -249,6 +242,16 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         })
     }
 
+    /*에러 처리*/
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                callSignInAPI()
+            }
+        }
+    }
 
     /*백버튼 처리: 두 번 누르면 앱 종료*/
     override fun onBackPressed() {
@@ -267,10 +270,20 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         Handler(Looper.getMainLooper()).postDelayed(function, millis)
     }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initActivityResult()
+        initGoogleResult()
+    }
+
     override fun onStop() {
         super.onStop()
 
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
     }
+
+
 }

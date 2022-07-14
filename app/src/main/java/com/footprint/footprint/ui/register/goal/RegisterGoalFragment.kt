@@ -1,7 +1,11 @@
 package com.footprint.footprint.ui.register.goal
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.footprint.footprint.R
@@ -10,6 +14,7 @@ import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.RegisterViewModel
@@ -19,6 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RegisterGoalFragment() :
     BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate) {
     private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
@@ -31,11 +37,6 @@ class RegisterGoalFragment() :
         initWalkTimeDialog()
         setMyEventListener()
         observe()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        dayRVAdapter.setUserGoalDay(userModel.goalDay)
     }
 
     private fun initAdapter() {
@@ -73,6 +74,16 @@ class RegisterGoalFragment() :
                 validate()
             }
         })
+    }
+
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                registerVm.registerUser(userModel)
+            }
+        }
     }
 
     private fun setMyEventListener() {
@@ -208,7 +219,6 @@ class RegisterGoalFragment() :
         this.userModel = userModel
     }
 
-
     private fun observe(){
         registerVm.mutableErrorType.observe(viewLifecycleOwner, Observer{
             when (it) {
@@ -217,8 +227,7 @@ class RegisterGoalFragment() :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    startErrorActivity(getResult, "RegisterGoalFragment")
                 }
             }
         })
@@ -231,6 +240,16 @@ class RegisterGoalFragment() :
                 startActivity(Intent(intent))
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dayRVAdapter.setUserGoalDay(userModel.goalDay)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
     }
 
     override fun onStop() {

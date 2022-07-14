@@ -1,6 +1,10 @@
 package com.footprint.footprint.ui.main
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -14,6 +18,7 @@ import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.ui.dialog.NoticeDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.main.home.HomeFragmentDirections
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.MainViewModel
@@ -25,6 +30,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
     private lateinit var navHostFragment: NavHostFragment
 
     private val mainVm: MainViewModel by viewModel()
@@ -68,6 +75,20 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         })
     }
 
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+
+                when(mainVm.getErrorType()){
+                    "getMonthBadge" -> mainVm.getMonthBadge()
+                    "getKeyNotice" ->  mainVm.getKeyNotice()
+                }
+            }
+        }
+    }
+
     private fun checkBadgeExist(){
         if (intent.hasExtra("badgeCheck") && intent.getBooleanExtra("badgeCheck", false)){
             //badgeCheck가 true면 badge API 호출
@@ -109,8 +130,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    onBackPressed()
+                    startErrorActivity(getResult, "MainActivity")
                 }
             }
         })
@@ -126,6 +146,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             if(acquireNotices.isNotEmpty())
                 showKeyNotice(acquireNotices.removeAt(0))
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initActivityResult()
     }
 
     override fun onStop() {

@@ -1,7 +1,11 @@
 package com.footprint.footprint.ui.main.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -14,6 +18,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
@@ -44,6 +49,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     private val calendarVM: CalendarViewModel by viewModel()
 
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+    private var error = 0
+
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
@@ -66,9 +75,10 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         calendarVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
             binding.calendarLoadingPb.visibility = View.VISIBLE
 
+            /* 여기 */
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> showSnackBar(getString(R.string.error_api_fail))
+                else -> startErrorActivity(getResult, "CalendarFragment")
             }
         })
 
@@ -323,7 +333,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun showSnackBar(errorMessage: String) {
-        Snackbar.make(
+        networkErrSb = Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
@@ -334,7 +344,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             } else {
                 updateAll()
             }
-        }.show()
+        }
+
+        networkErrSb.show()
     }
 
     override fun onDestroyView() {
@@ -346,5 +358,33 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         jobs.map {
             it.cancel()
         }
+    }
+
+    /* 여기 */
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                if (calendarVM.getErrorType() == "deleteWalk") {
+                    // 삭제 API이면
+                    calendarVM.deleteWalk(currentDeleteWalkIdx!!)
+                } else {
+                    if(error++ < 4)
+                        updateAll()
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

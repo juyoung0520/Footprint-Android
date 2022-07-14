@@ -8,6 +8,8 @@ import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch
 
 class SettingViewModel(private val unRegisterUseCase: UnRegisterUseCase, private val getNewNoticeUseCase: GetNewNoticeUseCase): BaseViewModel() {
+    private var errorMethod: String? = null
+
     private val _isDeleted: SingleLiveEvent<Boolean> = SingleLiveEvent()
     val isDeleted: SingleLiveEvent<Boolean> get() = _isDeleted
 
@@ -23,8 +25,17 @@ class SettingViewModel(private val unRegisterUseCase: UnRegisterUseCase, private
                         else-> _isDeleted.postValue(false)
                     }
                 }
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "unRegister"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "unRegister"
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
@@ -35,9 +46,20 @@ class SettingViewModel(private val unRegisterUseCase: UnRegisterUseCase, private
                 is Result.Success -> {
                     _isNewNoticeExist.postValue(response.value.noticeNew)
                 }
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "getNewNotice"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getNewNotice"
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
+
+    fun getErrorType(): String = this.errorMethod.toString()
 }

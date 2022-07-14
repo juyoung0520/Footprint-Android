@@ -1,6 +1,11 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -8,6 +13,7 @@ import com.footprint.footprint.databinding.FragmentGoalNextMonthBinding
 import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
@@ -23,6 +29,9 @@ class GoalNextMonthFragment :
     private lateinit var goal: GoalEntity
     private lateinit var networkErrorSb: Snackbar
 
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+    private var error = 0
+
     private val goalVm: GoalViewModel by viewModel()
 
     override fun initAfterBinding() {
@@ -32,6 +41,23 @@ class GoalNextMonthFragment :
         goalVm.getNextMonthGoal()
 
         setMyClickListener()
+    }
+
+    /* 여기 */
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                if(error++ < 4)
+                    goalVm.getNextMonthGoal()
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
     }
 
     override fun onStop() {
@@ -100,8 +126,10 @@ class GoalNextMonthFragment :
                     networkErrorSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    findNavController().popBackStack()
+                    /* 여기 */
+                    startErrorActivity(getResult, "GoalNextMonthFragment")
+                    //showToast(getString(R.string.error_sorry))
+                    //findNavController().popBackStack()
                 }
             }
         })

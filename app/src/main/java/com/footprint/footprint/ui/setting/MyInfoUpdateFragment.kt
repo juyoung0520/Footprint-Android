@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.setting
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -9,6 +10,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.navigation.fragment.navArgs
@@ -16,6 +20,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMyInfoUpdateBinding
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToSp
@@ -29,9 +34,11 @@ import kotlin.math.floor
 
 class MyInfoUpdateFragment :
     BaseFragment<FragmentMyInfoUpdateBinding>(FragmentMyInfoUpdateBinding::inflate){
-    private lateinit var networkErrSb: Snackbar
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
     private lateinit var user: MyInfoUserModel
 
     private val args: MyInfoUpdateFragmentArgs by navArgs()
@@ -43,6 +50,7 @@ class MyInfoUpdateFragment :
 
         user = Gson().fromJson(args.user, MyInfoUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
 
+        initActivityResult()
         rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener() {
             val extraWidth = binding.myInfoUpdateGenderRg.measuredWidth - (binding.myInfoUpdateGenderFemaleRb.measuredWidth + binding.myInfoUpdateGenderMaleRb.measuredWidth + binding.myInfoUpdateGenderNoneRb.measuredWidth)
             binding.myInfoUpdateGenderMaleRb.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -65,6 +73,19 @@ class MyInfoUpdateFragment :
         requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
 
         observe()
+    }
+
+
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                if (validate()) {
+                    myInfoVm.updateUser(bindUser())
+                }
+            }
+        }
     }
 
     //내 정보 "수정" 화면
@@ -334,8 +355,7 @@ class MyInfoUpdateFragment :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    requireActivity().supportFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
+                    startErrorActivity(getResult, "MyInfoUpdateFragmnet")
                 }
             }
         })

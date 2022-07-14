@@ -1,8 +1,12 @@
 package com.footprint.footprint.ui.walk
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
@@ -19,6 +23,10 @@ import com.footprint.footprint.data.dto.FootprintRequestDTO
 import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.ui.error.ErrorActivity
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.convertDpToPx
+import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -37,6 +45,9 @@ class WalkDetailActivity :
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
     private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
+    private var error = arrayListOf(0, 0)
 
     private val walkVm: WalkViewModel by viewModel()
     private val args: WalkDetailActivityArgs by navArgs()
@@ -58,6 +69,32 @@ class WalkDetailActivity :
         walkVm.getWalkByIdx(args.walkIdx)
     }
 
+    /* 여기 */
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                when (walkVm.getErrorType()) {
+                    "getWalkByIdx" ->  {
+                        if(error[0]++ < 4)
+                            walkVm.getWalkByIdx(args.walkIdx)
+                    }
+                    "getFootprintsByWalkIdx" -> {
+                        if(error[1]++ < 4)
+                        walkVm.getFootprintsByWalkIdx(args.walkIdx)
+                    }
+                    "deleteWalk" ->  walkVm.deleteWalk(args.walkIdx)
+                    //"updateFootprint" -> 업데이트는 재시도에 action 없길래 주석
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
+    }
     override fun onStop() {
         super.onStop()
 
@@ -224,8 +261,11 @@ class WalkDetailActivity :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    onBackPressed()
+
+                    /* 여기 */
+                    startErrorActivity(getResult, "WalkDetailActivity")
+                    //showToast(getString(R.string.error_sorry))
+                    //onBackPressed()
                 }
             }
         })

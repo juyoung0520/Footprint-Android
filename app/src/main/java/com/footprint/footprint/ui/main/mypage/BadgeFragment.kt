@@ -1,7 +1,11 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -10,6 +14,7 @@ import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.BadgeViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -21,6 +26,9 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var networkErrSbGet: Snackbar
     private lateinit var networkErrSbPatch: Snackbar
+
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+    private var error = 0
 
     private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
 
@@ -35,6 +43,30 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
         badgeVm.getBadges()
         binding.badgeLoadingPb.visibility = View.VISIBLE
+    }
+
+
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+
+                /* 여기 */
+                when(badgeVm.getErrorMethod()){
+                    "getBadges" -> {
+                        if(error++ < 4)
+                        badgeVm.getBadges()
+                    }
+                    "changeRepresentativeBadge" ->  badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!)
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initActivityResult()
     }
 
     override fun onStop() {
@@ -125,8 +157,11 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
                     }
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    findNavController().popBackStack()
+                    /* 여기 */
+                    startErrorActivity(getResult, "BadgeFragment")
+
+                    //showToast(getString(R.string.error_sorry))
+                    //findNavController().popBackStack()
                 }
             }
         })

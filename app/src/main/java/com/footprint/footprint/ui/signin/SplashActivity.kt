@@ -3,11 +3,16 @@ package com.footprint.footprint.ui.signin
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
 import com.footprint.footprint.utils.*
@@ -18,8 +23,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate){
 
     private val splashVm: SplashViewModel by viewModel()
-    private val MY_REQUEST_CODE = 1524
     private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
+    private var hasUpdate = false
 
     override fun initAfterBinding() {
         checkUpdate() // 업데이트 확인
@@ -64,19 +71,28 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 "https://play.google.com/store/apps/details?id=com.footprint.footprint")
             setPackage("com.android.vending")
         }
-        startActivityForResult(intent, MY_REQUEST_CODE)
+        getResult.launch(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {  // update failed or cancelled
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
 
+            // 업데이트 하지 않고 돌아왔을 경우,
+            if(hasUpdate && result.resultCode != RESULT_OK){
                 Snackbar.make(binding.root, getString(R.string.msg_denied_update), Snackbar.LENGTH_INDEFINITE).setAction(
                     R.string.action_retry) {
                     goAppStore()
                 }.show()
+            }
 
+            // 에러 액티비티에서 재시도 버튼을 누른 경우,
+            if(result.resultCode == ErrorActivity.RETRY){
+                when(splashVm.getErrorType()){
+                    "autoLogin" -> splashVm.autoLogin()
+                    "getVersion" -> splashVm.getVersion(BuildConfig.VERSION_NAME)
+                }
             }
         }
     }
@@ -114,8 +130,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    onBackPressed()
+                    startErrorActivity(getResult, "SplashActivity")
                 }
             }
         })
@@ -133,6 +148,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
 
         splashVm.thisVersion.observe(this, Observer {
             if(it.whetherUpdate) { // true -> 강제 업데이트
+                hasUpdate = it.whetherUpdate
                 showUpdateDialog(it.serverVersion)
             }
             else { // false -> 온보딩 or 로그인
@@ -144,6 +160,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
             }
 
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initActivityResult()
     }
 
     override fun onStop() {

@@ -13,6 +13,7 @@ import com.footprint.footprint.utils.LogUtils
 import kotlinx.coroutines.launch
 
 class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private val getVersionUseCase: GetVersionUseCase): BaseViewModel() {
+    private var errorMethod: String? = null
 
     private val _thisLogin: MutableLiveData<Login> = MutableLiveData()
     val thisLogin: LiveData<Login> get() = _thisLogin
@@ -26,6 +27,8 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private va
                 is Result.Success -> _thisLogin.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> {
+                    errorMethod = "autoLogin"
+
                     when(response.code){
                         2001, 2002, 2003, 2004 -> mutableErrorType.postValue(ErrorType.JWT)
                         600 -> mutableErrorType.postValue(ErrorType.UNKNOWN)
@@ -42,6 +45,8 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private va
                 is Result.Success -> _thisVersion.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> {
+                    errorMethod = "getVersion"
+
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)
                     else
@@ -51,4 +56,5 @@ class SplashViewModel(private val autoLoginUseCase: AutoLoginUseCase, private va
         }
     }
 
+    fun getErrorType(): String = this.errorMethod.toString()
 }

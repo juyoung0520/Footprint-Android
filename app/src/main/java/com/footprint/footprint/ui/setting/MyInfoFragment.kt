@@ -1,9 +1,13 @@
 package com.footprint.footprint.ui.setting
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
@@ -12,6 +16,7 @@ import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.viewmodel.MyInfoViewModel
@@ -22,14 +27,18 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import kotlin.math.floor
 
 class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate){
-    private lateinit var networkErrSb: Snackbar
     private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
     private lateinit var user: MyInfoUserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initActivityResult()
 
         rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener {
             val extraWidth = binding.myInfoGenderRg.measuredWidth - (binding.myInfoGenderFemaleRb.measuredWidth + binding.myInfoGenderMaleRb.measuredWidth + binding.myInfoGenderNoneRb.measuredWidth)
@@ -51,6 +60,17 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     override fun initAfterBinding() {
         requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
+    }
+
+
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                myInfoVm.getMyInfoUser()
+            }
+        }
     }
 
     //내 정보 "조회" 화면
@@ -222,8 +242,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    startErrorActivity(getResult, "MyInfoFragment")
                 }
             }
         })
@@ -238,6 +257,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
             setHelpBalloon()    //툴팁
         })
     }
+
 
     override fun onStop() {
         super.onStop()

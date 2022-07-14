@@ -61,5 +61,5 @@ class MainViewModel(private val getMonthBadgeUseCase: GetMonthBadgeUseCase, priv
     }
 
 
-    fun getErrorType(): String = this.errorMethod!!
+    fun getErrorType(): String = this.errorMethod.toString()
 }

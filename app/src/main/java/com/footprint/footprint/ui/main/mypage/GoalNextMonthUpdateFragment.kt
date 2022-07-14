@@ -1,7 +1,11 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,6 +16,7 @@ import com.footprint.footprint.domain.model.UpdateGoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -28,8 +33,11 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
     private lateinit var networkErrSb: Snackbar
 
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initActivityResult()
 
         goal = Gson().fromJson(args.goal, GoalModel::class.java)    //이전 화면(GoalThisMonthFragment, GoalNextMonthFragment 로부터 전달 받은 goal 데이터)
 
@@ -45,6 +53,17 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         observe()
         setMyEventListener()    //이벤트 리스너 설정
         initWalkTimeDialog()    //목표 산책 시간 직접 설정 다이얼로그 화면 초기화
+    }
+
+    /* 여기 */
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if(result.resultCode == ErrorActivity.RETRY){
+                validate()
+            }
+        }
     }
 
     override fun onStop() {
@@ -259,8 +278,10 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    findNavController().popBackStack()
+                    /* 여기 */
+                    startErrorActivity(getResult, "GoalNextMonthUpdateFragment")
+                    //showToast(getString(R.string.error_sorry))
+                    //findNavController().popBackStack()
                 }
             }
         })
