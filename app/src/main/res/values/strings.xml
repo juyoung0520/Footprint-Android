@@ -136,6 +136,7 @@
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
+    <string name="msg_notification">발자국을 남기거나 산책을 종료하려면 터치해 주세요.</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>

@@ -99,17 +99,17 @@ class BackgroundWalkService : LifecycleService() {
                 getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
 
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, WalkActivity::class.java)
                 .setAction(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
             val notification = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-//                .setSmallIcon(R.mipmap.ic_launcher_footprint)
-//                .setContentText("발자국이다앙")
-//                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher_footprint)
+                .setContentText(getString(R.string.msg_notification))
+                .setContentIntent(pendingIntent)
 
             startForeground(NOTIFICATION_ID, notification.build())
         }
