@@ -16,6 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
+import com.footprint.footprint.utils.LogUtils
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.Job
@@ -246,7 +247,7 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun startTimer() {
-        val startTime= System.currentTimeMillis()
+        val startTime = System.currentTimeMillis()
         var lapTime = 0L
         var lastSecondTimeMillis = currentTime.value * 1000L
 
@@ -254,15 +255,18 @@ class BackgroundWalkService : LifecycleService() {
             try {
                 while (isWalking.value) {
                     lapTime = System.currentTimeMillis() - startTime
+                    val sub = totalTimeMillis + lapTime - lastSecondTimeMillis
 
-                    if (totalTimeMillis + lapTime >= lastSecondTimeMillis + 1000L) {
+                    if (sub >= 1000L) {
                         // 산책 중 gps 확인
                         if (checkNoGPS()) {
                             isWalking.postValue(false)
                         }
 
-                        currentTime.postValue(currentTime.value + 1)
-                        lastSecondTimeMillis += 1000L
+                        val second = (sub / 1000L).toInt() //초 단위로 변환
+
+                        currentTime.postValue(currentTime.value + second)
+                        lastSecondTimeMillis += second * 1000L
                     }
                     delay(500L)
                 }
