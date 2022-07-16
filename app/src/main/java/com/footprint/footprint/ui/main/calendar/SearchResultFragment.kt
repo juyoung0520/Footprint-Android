@@ -28,10 +28,7 @@ class SearchResultFragment() :
     private lateinit var currentTag: String
 
     private val tagSearchVM: TagSearchViewModel by viewModel()
-
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = 0
 
     override fun initAfterBinding() {
         if (!isInitialized) {
@@ -57,7 +54,7 @@ class SearchResultFragment() :
         tagSearchVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> startErrorActivity(getResult, "SearchResultFragment")
+                else -> startErrorActivity("SearchResultFragment")
             }
         })
 
@@ -126,23 +123,6 @@ class SearchResultFragment() :
             getTagWalks()
         }
         networkErrSb.show()
-    }
-
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                if(error++ < 4)
-                    getTagWalks()
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

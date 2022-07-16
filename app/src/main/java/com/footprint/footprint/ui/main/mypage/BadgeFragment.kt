@@ -27,9 +27,6 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
     private lateinit var networkErrSbGet: Snackbar
     private lateinit var networkErrSbPatch: Snackbar
 
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = 0
-
     private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
 
     private val badgeVm: BadgeViewModel by viewModel()
@@ -43,30 +40,6 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
         badgeVm.getBadges()
         binding.badgeLoadingPb.visibility = View.VISIBLE
-    }
-
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-
-                /* 여기 */
-                when(badgeVm.getErrorMethod()){
-                    "getBadges" -> {
-                        if(error++ < 4)
-                        badgeVm.getBadges()
-                    }
-                    "changeRepresentativeBadge" ->  badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!)
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {
@@ -157,11 +130,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
                     }
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    /* 여기 */
-                    startErrorActivity(getResult, "BadgeFragment")
-
-                    //showToast(getString(R.string.error_sorry))
-                    //findNavController().popBackStack()
+                    startErrorActivity("BadgeFragment")
                 }
             }
         })

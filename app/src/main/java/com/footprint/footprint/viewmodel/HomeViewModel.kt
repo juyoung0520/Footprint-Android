@@ -116,7 +116,4 @@ class HomeViewModel(
     }
 
     fun getErrorType(): String = this.errorMethod.toString()
-    fun setErrorType(type:String) {
-        this.errorMethod = type
-    }
 }

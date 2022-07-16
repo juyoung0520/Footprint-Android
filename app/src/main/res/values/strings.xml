@@ -30,7 +30,7 @@
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
     <string name="action_gohome">홈으로 돌아가기</string>
-    <string name="action_error_retry">다시 시도하기</string>
+    <string name="action_contactus">문의하기</string>
 
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>

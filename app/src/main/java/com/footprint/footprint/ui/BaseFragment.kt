@@ -65,4 +65,12 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
 
         getResult.launch(intent)
     }
+
+    fun startErrorActivity(screen: String){
+
+        val intent = Intent(requireContext(), ErrorActivity::class.java)
+        intent.putExtra(ErrorActivity.SCREEN, screen)
+
+        startActivity(intent)
+    }
 }

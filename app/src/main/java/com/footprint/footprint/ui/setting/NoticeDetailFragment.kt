@@ -26,14 +26,14 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
 
     private val noticeDetailVm: NoticeDetailViewModel by viewModel()
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private var index: Int? = null
     private var preIdx: Int = -1
     private var postIdx: Int = -1
 
-    override fun onResume() {
-        super.onResume()
+    override fun initAfterBinding() {
+        observe()
+        setMyClickListener()
 
         // 로딩바 띄우기
         binding.noticeDetailLoadingBgV.visibility = View.VISIBLE
@@ -41,11 +41,6 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
 
         index = args.idx.toInt()
         noticeDetailVm.getNotice(index!!)
-    }
-
-    override fun initAfterBinding() {
-        observe()
-        setMyClickListener()
     }
 
     private fun setMyClickListener(){
@@ -81,7 +76,7 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
                     networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { noticeDetailVm.getNotice(index!!)}
                     networkErrSb.show()
                 }
-                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> startErrorActivity(getResult, "NoticeDetailFragment")
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> startErrorActivity("NoticeDetailFragment")
             }
         })
 
@@ -126,21 +121,6 @@ class NoticeDetailFragment : BaseFragment<FragmentNoticeDetailBinding>(FragmentN
         else
             binding.noticeNextLayout.alpha = 1F
 
-    }
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                noticeDetailVm.getNotice(index!!)
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

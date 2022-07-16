@@ -29,14 +29,12 @@ import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-
     private lateinit var navHostFragment: NavHostFragment
 
     private val mainVm: MainViewModel by viewModel()
-    private lateinit var noticeDialogFragment: NoticeDialogFragment
+    private lateinit var networkErrSb: Snackbar
 
+    private lateinit var noticeDialogFragment: NoticeDialogFragment
     private val acquireNotices: ArrayList<NoticeDto> = arrayListOf() //주요 공지사항 목록들
 
     override fun initAfterBinding() {
@@ -73,20 +71,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
 
         })
-    }
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-
-                when(mainVm.getErrorType()){
-                    "getMonthBadge" -> mainVm.getMonthBadge()
-                    "getKeyNotice" ->  mainVm.getKeyNotice()
-                }
-            }
-        }
     }
 
     private fun checkBadgeExist(){
@@ -130,7 +114,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "MainActivity")
+                    startErrorActivity("MainActivity")
                 }
             }
         })
@@ -146,12 +130,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             if(acquireNotices.isNotEmpty())
                 showKeyNotice(acquireNotices.removeAt(0))
         })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        initActivityResult()
     }
 
     override fun onStop() {

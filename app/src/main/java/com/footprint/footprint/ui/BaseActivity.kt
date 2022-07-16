@@ -54,11 +54,17 @@ abstract class BaseActivity<T: ViewBinding>(private val inflate: (LayoutInflater
     }
 
     fun startErrorActivity(getResult: ActivityResultLauncher<Intent>, screen: String){
-
         val intent = Intent(this, ErrorActivity::class.java)
         intent.putExtra(ErrorActivity.SCREEN, screen)
 
         getResult.launch(intent)
+    }
+
+    fun startErrorActivity(screen: String){
+        val intent = Intent(this, ErrorActivity::class.java)
+        intent.putExtra(ErrorActivity.SCREEN, screen)
+
+        startActivity(intent)
     }
 
     // 키보드 숨기기

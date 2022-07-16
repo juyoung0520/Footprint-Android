@@ -45,9 +45,6 @@ class WalkDetailActivity :
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-
-    private var error = arrayListOf(0, 0)
 
     private val walkVm: WalkViewModel by viewModel()
     private val args: WalkDetailActivityArgs by navArgs()
@@ -69,32 +66,6 @@ class WalkDetailActivity :
         walkVm.getWalkByIdx(args.walkIdx)
     }
 
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                when (walkVm.getErrorType()) {
-                    "getWalkByIdx" ->  {
-                        if(error[0]++ < 4)
-                            walkVm.getWalkByIdx(args.walkIdx)
-                    }
-                    "getFootprintsByWalkIdx" -> {
-                        if(error[1]++ < 4)
-                        walkVm.getFootprintsByWalkIdx(args.walkIdx)
-                    }
-                    "deleteWalk" ->  walkVm.deleteWalk(args.walkIdx)
-                    //"updateFootprint" -> 업데이트는 재시도에 action 없길래 주석
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
-    }
     override fun onStop() {
         super.onStop()
 
@@ -261,11 +232,7 @@ class WalkDetailActivity :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-
-                    /* 여기 */
-                    startErrorActivity(getResult, "WalkDetailActivity")
-                    //showToast(getString(R.string.error_sorry))
-                    //onBackPressed()
+                    startErrorActivity("WalkDetailActivity")
                 }
             }
         })

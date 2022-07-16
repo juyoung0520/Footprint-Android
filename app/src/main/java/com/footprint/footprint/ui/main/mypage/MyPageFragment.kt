@@ -43,8 +43,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     private val myPageVm: MyPageViewModel by viewModel()
 
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = 0
 
     override fun initAfterBinding() {
         if (isFromFragment || !isInitialized) {
@@ -105,7 +103,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> startErrorActivity(getResult, "MyPageFragment")
+                else -> startErrorActivity("MyPageFragment")
             }
         })
 
@@ -487,27 +485,6 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         jobs.map {
             it.cancel()
         }
-    }
-
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                if(error++ < 4){
-                    // 유저 API 오류
-                    myPageVm.getSimpleUser()
-                    // 통계 API 오류
-                    myPageVm.getUserInfo()
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

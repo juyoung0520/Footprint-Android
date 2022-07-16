@@ -87,12 +87,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                 }.show()
             }
 
-            // 에러 액티비티에서 재시도 버튼을 누른 경우,
-            if(result.resultCode == ErrorActivity.RETRY){
-                when(splashVm.getErrorType()){
-                    "autoLogin" -> splashVm.autoLogin()
-                    "getVersion" -> splashVm.getVersion(BuildConfig.VERSION_NAME)
-                }
+            if(result.resultCode == ErrorActivity.BACK || result.resultCode == ErrorActivity.CONTACT){
+                finishAffinity()
             }
         }
     }
@@ -130,7 +126,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "SplashActivity")
+                    startErrorActivity("SplashActivity")
                 }
             }
         })

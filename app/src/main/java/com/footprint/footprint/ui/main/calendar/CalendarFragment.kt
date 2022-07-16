@@ -48,10 +48,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private var currentDeleteWalkIdx: Int? = null
 
     private val calendarVM: CalendarViewModel by viewModel()
-
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = 0
 
     private val jobs = arrayListOf<Job>()
 
@@ -78,7 +75,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             /* 여기 */
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> startErrorActivity(getResult, "CalendarFragment")
+                else -> startErrorActivity("CalendarFragment")
             }
         })
 
@@ -358,28 +355,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         jobs.map {
             it.cancel()
         }
-    }
-
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                if (calendarVM.getErrorType() == "deleteWalk") {
-                    // 삭제 API이면
-                    calendarVM.deleteWalk(currentDeleteWalkIdx!!)
-                } else {
-                    if(error++ < 4)
-                        updateAll()
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

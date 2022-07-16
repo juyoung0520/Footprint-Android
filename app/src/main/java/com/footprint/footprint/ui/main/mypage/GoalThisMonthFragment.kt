@@ -30,9 +30,6 @@ class GoalThisMonthFragment :
     private lateinit var goal: GoalEntity
     private lateinit var networkErrSb: Snackbar
 
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = 0
-
     private val goalVm: GoalViewModel by viewModel()
 
     override fun initAfterBinding() {
@@ -42,23 +39,6 @@ class GoalThisMonthFragment :
         setMyClickListener()
         observe()
         binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
-    }
-
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                if(error++ < 4)
-                    goalVm.getThisMonthGoal()
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {
@@ -151,10 +131,7 @@ class GoalThisMonthFragment :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    /* 여기 */
-                    startErrorActivity(getResult, "GoalThisMonthFragment")
-                    //showToast(getString(R.string.error_sorry))
-                    //findNavController().popBackStack()
+                    startErrorActivity("GoalThisMonthFragment")
                 }
             }
         })

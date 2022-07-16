@@ -35,11 +35,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     private val settingVm: SettingViewModel by viewModel()
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     override fun initAfterBinding() {
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
+
+        settingVm.getNewNotice()
 
         initLoginStatus()
         setMyEventListener()
@@ -57,7 +58,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     override fun onStart() {
         super.onStart()
-        settingVm.getNewNotice()
 
         //산책기록 잠금 상태
         when (getPWDstatus()) {
@@ -335,7 +335,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { settingVm.getNewNotice() }
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "SettingFragment")
+                    startErrorActivity("SettingFragment")
                 }
             }
         })
@@ -387,25 +387,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     }
                 }
             }.show()
-    }
-
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                when(settingVm.getErrorType()){
-                    "unRegister" -> settingVm.unRegister()
-                    "getNewNotice" ->  settingVm.getNewNotice()
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

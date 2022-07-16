@@ -1,22 +1,17 @@
 package com.footprint.footprint.ui.setting
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.databinding.FragmentMyInfoBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.convertDpToSp
 import com.footprint.footprint.viewmodel.MyInfoViewModel
@@ -31,14 +26,11 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private lateinit var user: MyInfoUserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        initActivityResult()
 
         rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener {
             val extraWidth = binding.myInfoGenderRg.measuredWidth - (binding.myInfoGenderFemaleRb.measuredWidth + binding.myInfoGenderMaleRb.measuredWidth + binding.myInfoGenderNoneRb.measuredWidth)
@@ -50,27 +42,15 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun initAfterBinding() {
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
+
+        observe()
+        setMyEventListener()
+        setHelpBalloon()
 
         //유저 정보 조회 API 호출
         myInfoVm.getMyInfoUser()
-        observe()
-    }
-
-    override fun initAfterBinding() {
-        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
-    }
-
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                myInfoVm.getMyInfoUser()
-            }
-        }
     }
 
     //내 정보 "조회" 화면
@@ -242,7 +222,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "MyInfoFragment")
+                    startErrorActivity("MyInfoFragment")
                 }
             }
         })
@@ -253,8 +233,12 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
             binding.myInfoDayLoadingBgV.visibility = View.GONE
             binding.myInfoDayLoadingPb.visibility = View.GONE
             setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
-            setMyEventListener()
-            setHelpBalloon()    //툴팁
+        })
+
+        myInfoVm.isUpdate.observe(viewLifecycleOwner, Observer { isUpdate ->
+            if(isUpdate){
+                myInfoVm.getMyInfoUser()
+            }
         })
     }
 

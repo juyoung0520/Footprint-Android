@@ -33,12 +33,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate){
 
     private val signInVm: SignInViewModel by viewModel()
+    private lateinit var socialUserModel: SocialUserModel
+
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var getGoogleResult: ActivityResultLauncher<Intent>
-    private lateinit var socialUserModel: SocialUserModel
 
     private var doubleBackToExit = false //뒤로가기 두 번 눌러야 종료 확인하는 변수
 
@@ -211,7 +211,7 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
             networkErrSb.show()
         }else{ /* UNKNOWN, DB_SERVER */
-            startErrorActivity(getResult, "SignInActivity")
+            startErrorActivity("SignInActivity")
         }
 
     }
@@ -242,17 +242,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         })
     }
 
-    /*에러 처리*/
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                callSignInAPI()
-            }
-        }
-    }
-
     /*백버튼 처리: 두 번 누르면 앱 종료*/
     override fun onBackPressed() {
         if (doubleBackToExit) {
@@ -274,7 +263,6 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initActivityResult()
         initGoogleResult()
     }
 

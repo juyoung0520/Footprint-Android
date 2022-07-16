@@ -24,7 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RegisterGoalFragment() :
     BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate) {
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
@@ -74,16 +73,6 @@ class RegisterGoalFragment() :
                 validate()
             }
         })
-    }
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                registerVm.registerUser(userModel)
-            }
-        }
     }
 
     private fun setMyEventListener() {
@@ -227,7 +216,7 @@ class RegisterGoalFragment() :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "RegisterGoalFragment")
+                    startErrorActivity("RegisterGoalFragment")
                 }
             }
         })
@@ -245,11 +234,6 @@ class RegisterGoalFragment() :
     override fun onResume() {
         super.onResume()
         dayRVAdapter.setUserGoalDay(userModel.goalDay)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

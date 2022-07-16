@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.main.home
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -47,7 +48,6 @@ import java.time.ZoneId
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate){
     private lateinit var networkErrSb: Snackbar
     private lateinit var getResult: ActivityResultLauncher<Intent>
-    private var error = arrayListOf(0, 0, 0, 0) // 자동 호출되는 API는 재호출 3회까지 제한
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -76,10 +76,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     }
 
     override fun initAfterBinding() {
-        binding.homeDayGoalLayout.setOnClickListener {
-            //startActivity(Intent(requireContext(), ErrorActivity::class.java))
-            startErrorActivity(getResult, "HomeFrg")
-        }
 
         val gpsMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             getString(R.string.msg_foreground_gps)
@@ -133,8 +129,6 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         setClickListener()
         observe()
-
-
     }
 
     private fun setClickListener() {
@@ -237,25 +231,18 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         getResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
+            when(result.resultCode){
+                Activity.RESULT_CANCELED, ErrorActivity.BACK, ErrorActivity.CONTACT -> {
 
-                when(homeVm.getErrorType()){
-                    "getUser" -> {
-                        if(error[0]++ < 4)
-                            homeVm.getUser()
+                    // 사용자 정보 조회 API에 문제 생긴 경우, 앱 종료
+                    if(homeVm.getErrorType() == "getUser"){
+                        if(activity != null)
+                            requireActivity().finishAffinity()
                     }
-                    "getToday" -> {
-                        if(error[1]++ < 4)
-                            homeVm.getToday()
-                    }
-                    "getTmonth" ->  {
-                        if(error[2]++ < 4)
-                            homeVm.getUser()
-                    }
-                    "getWeather" -> {
-                        if(error[3]++ < 4)
-                            callWeatherAPI()
-                    }
+
+                    // today, tmonth 정보 없으면 로딩바
+                    if(!::today.isInitialized && !::tmonth.isInitialized)
+                        showLoadingBar(true)
                 }
             }
         }
@@ -383,11 +370,15 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
         homeVm.thisToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this@HomeFragment.today = it
             bind()
+
+            showLoadingBar(false)
         })
 
         homeVm.thisTmonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this@HomeFragment.tmonth = it
             bind()
+
+            showLoadingBar(false)
         })
     }
 
@@ -456,20 +447,28 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
         initActivityResult()
     }
-
-    override fun onStart() {
-        super.onStart()
-
-        callWeatherAPI()
-        homeVm.getUser()
-        homeVm.getToday()
-        homeVm.getTmonth()
+    override fun onResume() {
+        super.onResume()
+            callWeatherAPI()
+            homeVm.getUser()
+            homeVm.getToday()
+            homeVm.getTmonth()
     }
-
     override fun onStop() {
         super.onStop()
 
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
+    }
+
+    // 로딩바
+    private fun showLoadingBar(show: Boolean){
+        if(show){
+            binding.homeLoadingBgV.visibility = View.VISIBLE
+            binding.homeLoadingPb.visibility = View.VISIBLE
+        }else{
+            binding.homeLoadingBgV.visibility = View.GONE
+            binding.homeLoadingPb.visibility = View.GONE
+        }
     }
 }

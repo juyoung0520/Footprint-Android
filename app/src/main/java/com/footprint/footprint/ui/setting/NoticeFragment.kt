@@ -23,23 +23,12 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
 
     private val noticeListVm: NoticeListViewModel by viewModel()
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private lateinit var noticeRVAdapter: NoticeRVAdapter
 
     private var max = 1
     private var current = 1
     private var size = 1
-
-    override fun onResume() {
-        super.onResume()
-
-        // 로딩바 띄우기
-        binding.noticeLoadingBgV.visibility = View.GONE
-        binding.noticeLoadingPb.visibility = View.GONE
-
-        noticeListVm.getNoticeList(1, size)
-    }
 
     override fun initAfterBinding() {
 
@@ -50,8 +39,13 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         binding.noticeRv.adapter = noticeRVAdapter
 
         observe()
-
         setMyEventListener()
+
+        // 로딩바 띄우기
+        binding.noticeLoadingBgV.visibility = View.GONE
+        binding.noticeLoadingPb.visibility = View.GONE
+
+        noticeListVm.getNoticeList(1, size)
     }
 
     private fun setMyEventListener() {
@@ -204,7 +198,7 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
                     networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { noticeListVm.getNoticeList(current, size) }
                     networkErrSb.show()
                 }
-                ErrorType.UNKNOWN, ErrorType.DB_SERVER ->  startErrorActivity(getResult, "NoticeFragment")
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER ->  startErrorActivity("NoticeFragment")
 
             }
         })
@@ -228,21 +222,6 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
             current = it
             bind(it)
         })
-    }
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                noticeListVm.getNoticeList(current, size)
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {

@@ -42,7 +42,6 @@ class WalkAfterActivity :
     private lateinit var saveWalkEntity: SaveWalkEntity
     private lateinit var networkErrSb: Snackbar
     private lateinit var s3ErrorSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private var tempAddFootprintPosition: Int? = null   //발자국을 추가할 때 추가하려고 하는 위치를 임시 저장하는 변수
     private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
@@ -101,22 +100,6 @@ class WalkAfterActivity :
                 s3ErrorSb.show()
             }
         })
-    }
-
-    /* 여기 */
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                saveWalk()
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initActivityResult()
     }
 
     override fun onStop() {
@@ -379,7 +362,7 @@ class WalkAfterActivity :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "WalkAfterActivity")
+                    startErrorActivity("WalkAfterActivity")
                 }
             }
         })

@@ -37,7 +37,6 @@ class MyInfoUpdateFragment :
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
     private lateinit var networkErrSb: Snackbar
-    private lateinit var getResult: ActivityResultLauncher<Intent>
 
     private lateinit var user: MyInfoUserModel
 
@@ -50,7 +49,6 @@ class MyInfoUpdateFragment :
 
         user = Gson().fromJson(args.user, MyInfoUserModel::class.java)    //MyInfoFragment 로부터 user 정보 전달받기
 
-        initActivityResult()
         rgPositionListener = ViewTreeObserver.OnGlobalLayoutListener() {
             val extraWidth = binding.myInfoUpdateGenderRg.measuredWidth - (binding.myInfoUpdateGenderFemaleRb.measuredWidth + binding.myInfoUpdateGenderMaleRb.measuredWidth + binding.myInfoUpdateGenderNoneRb.measuredWidth)
             binding.myInfoUpdateGenderMaleRb.updateLayoutParams<ViewGroup.MarginLayoutParams> {
@@ -73,19 +71,6 @@ class MyInfoUpdateFragment :
         requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
 
         observe()
-    }
-
-
-    private fun initActivityResult() {
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: ActivityResult ->
-            if(result.resultCode == ErrorActivity.RETRY){
-                if (validate()) {
-                    myInfoVm.updateUser(bindUser())
-                }
-            }
-        }
     }
 
     //내 정보 "수정" 화면
@@ -355,7 +340,7 @@ class MyInfoUpdateFragment :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    startErrorActivity(getResult, "MyInfoUpdateFragmnet")
+                    startErrorActivity("MyInfoUpdateFragment")
                 }
             }
         })
