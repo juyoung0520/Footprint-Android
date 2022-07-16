@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -41,6 +42,10 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         binding.settingPrivacyPolicyTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         binding.settingTermsOfUserTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         binding.settingLocationTermsOfServiceTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+
+        //버전 정보 표시
+        val version = "버전 ${BuildConfig.VERSION_NAME}${getString(R.string.title_version_copyright)}"
+        binding.settingVersionTv.text = version
     }
 
     override fun onStart() {

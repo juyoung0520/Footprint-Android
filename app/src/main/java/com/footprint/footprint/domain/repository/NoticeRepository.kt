@@ -7,4 +7,5 @@ interface NoticeRepository {
     suspend fun getNotice(idx: Int): Result<NoticeDto>
     suspend fun getNewNotice(): Result<NewNoticeDto>
     suspend fun getKeyNotice(): Result<KeyNoticeDto>
+    suspend fun getVersion(version: String): Result<VersionDto>
 }

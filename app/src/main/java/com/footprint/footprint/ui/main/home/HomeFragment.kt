@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Looper
 import android.view.View
@@ -11,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -37,6 +40,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate){
+    private lateinit var networkErrSb: Snackbar
 
     //뷰페이저, 프래그먼트
     private lateinit var homeVPAdapter: HomeViewpagerAdapter
@@ -121,9 +125,8 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
 
     override fun onStart() {
         super.onStart()
-        /* API 에러 */
         //날씨 API
-        //callWeatherAPI() // method is not allowed
+        callWeatherAPI()
 
         //유저 정보, 일별, 월별 API
         homeVm.getUser()
@@ -274,7 +277,7 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             val locationRequest = LocationRequest.create()
             locationRequest.run {
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                interval = 60 * 60 * 60 //1시간마다 위치 불러옴
+                interval = 60 * 1000
             }
             val locationCallback = object : LocationCallback() {
                 override fun onLocationResult(p0: LocationResult) {
@@ -285,9 +288,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
                             //날씨 api 호출
                             val location = LocationModel(location.latitude.toInt().toString(), location.longitude.toInt().toString())
                             homeVm.getWeather(location)
+                            locationClient.removeLocationUpdates(this)
                         }
                     }
-
                 }
             }
 
@@ -318,16 +321,21 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     private fun observe(){
         homeVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                ErrorType.NETWORK -> Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    homeVm.getUser()
-                    homeVm.getToday()
-                    homeVm.getTmonth()
-                }.show()
-                else -> Snackbar.make(requireView(), getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                    homeVm.getUser()
-                    homeVm.getToday()
-                    homeVm.getTmonth()
-                }.show()
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+
+                    when(homeVm.getErrorType()){
+                        "getUser" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getUser() }
+                        "getToday" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getToday() }
+                        "getTmonth" -> networkErrSb.setAction(getString(R.string.action_retry)) { homeVm.getUser() }
+                        "getWeather" -> networkErrSb.setAction(getString(R.string.action_retry)) { callWeatherAPI() }
+                    }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    showToast(getString(R.string.error_sorry))
+                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
             }
         })
 
@@ -411,5 +419,12 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
             }
             binding.homeTopWeatherIv.setImageResource(imgRes)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

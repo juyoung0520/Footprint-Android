@@ -27,7 +27,13 @@ class MyInfoViewModel(private val getMyInfoUserUseCase: GetMyInfoUserUseCase, pr
                     }
                 }
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.GenericError -> {
+                    if(response.code == 600 ){
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    }else{
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                    }
+                }
             }
         }
     }
@@ -37,7 +43,13 @@ class MyInfoViewModel(private val getMyInfoUserUseCase: GetMyInfoUserUseCase, pr
             when(val response = getMyInfoUserUseCase.invoke()) {
                 is Result.Success -> _thisUser.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.GenericError -> {
+                    if(response.code == 600 ){
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    }else{
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                    }
+                }
             }
         }
     }

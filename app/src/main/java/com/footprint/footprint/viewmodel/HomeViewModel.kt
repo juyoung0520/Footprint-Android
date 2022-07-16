@@ -22,6 +22,7 @@ class HomeViewModel(
     private val getTodayUseCase: GetTodayUseCase,
     private val getTmonthUseCase: GetTmonthUseCase
     ): BaseViewModel() {
+    private var errorMethod: String? = null
 
     private val _thisUser: MutableLiveData<SimpleUserModel> = MutableLiveData()
     val thisUser: LiveData<SimpleUserModel> get() = _thisUser
@@ -39,8 +40,18 @@ class HomeViewModel(
         viewModelScope.launch {
             when(val response = getSimpleUserUseCase.invoke()) {
                 is Result.Success -> _thisUser.value = response.value
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "getUser"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getUser"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
@@ -49,8 +60,18 @@ class HomeViewModel(
         viewModelScope.launch {
             when(val response = getWeatherUseCase.invoke(location)){
                 is Result.Success -> _thisWeather.value = response.value
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "getWeather"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getWeather"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
@@ -59,8 +80,18 @@ class HomeViewModel(
         viewModelScope.launch {
             when(val response = getTodayUseCase.invoke()){
                 is Result.Success -> _thisToday.value = response.value
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "getToday"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getToday"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
@@ -68,10 +99,21 @@ class HomeViewModel(
         viewModelScope.launch {
             when(val response = getTmonthUseCase.invoke()){
                 is Result.Success -> _thisTmonth.value = response.value
-                is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.NetworkError -> {
+                    errorMethod = "getTmonth"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getTmonth"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
 
+    fun getErrorType(): String = this.errorMethod!!
 }

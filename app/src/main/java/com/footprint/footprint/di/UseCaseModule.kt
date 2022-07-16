@@ -29,12 +29,12 @@ val useCaseModule = module {
     single<RegisterUserUseCase> { RegisterUserUseCase(get()) }.bind(UserRepositoryImpl::class)
     single<GetSimpleUserUseCase> { GetSimpleUserUseCase(get()) }.bind(UserRepositoryImpl::class) //홈, 마이페이지 유저
     single<GetMyInfoUserUseCase> { GetMyInfoUserUseCase(get()) }.bind(UserRepositoryImpl::class) //내 정보 수정 유저
-    single<GetTodayUseCase> { GetTodayUseCase(get()) }.bind(AchieveRemoteDataSourceImpl::class)
-    single<GetTmonthUseCase> { GetTmonthUseCase(get()) }.bind(AchieveRemoteDataSourceImpl::class)
-    single<AutoLoginUseCase> { AutoLoginUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
-    single<LoginUseCase> { LoginUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
-    single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRemoteDataSourceImpl::class)
-    single<GetMonthBadgeUseCase> { GetMonthBadgeUseCase(get()) }.bind(BadgeRemoteDataSourceImpl::class)
+    single<GetTodayUseCase> { GetTodayUseCase(get()) }.bind(AchieveRepositoryImpl::class)
+    single<GetTmonthUseCase> { GetTmonthUseCase(get()) }.bind(AchieveRepositoryImpl::class)
+    single<AutoLoginUseCase> { AutoLoginUseCase(get()) }.bind(AuthRepositoryImpl::class)
+    single<LoginUseCase> { LoginUseCase(get()) }.bind(AuthRepositoryImpl::class)
+    single<UnRegisterUseCase> { UnRegisterUseCase(get()) }.bind(AuthRepositoryImpl::class)
+    single<GetMonthBadgeUseCase> { GetMonthBadgeUseCase(get()) }.bind(BadgeRepositoryImpl::class)
 
     single<GetUserInfoUseCase> { GetUserInfoUseCase(get()) }.bind(AchieveRepositoryImpl::class)
     single<GetMonthWalksUseCase> { GetMonthWalksUseCase(get()) }.bind(WalkRepositoryImpl::class)
@@ -45,4 +45,5 @@ val useCaseModule = module {
     single<GetNoticeUseCase> { GetNoticeUseCase(get()) }.bind(NoticeRepositoryImpl::class)
     single<GetNewNoticeUseCase> { GetNewNoticeUseCase(get()) }.bind(NoticeRepositoryImpl::class)
     single<GetKeyNoticeUseCase> { GetKeyNoticeUseCase(get()) }.bind(NoticeRepositoryImpl::class)
+    single<GetVersionUseCase> { GetVersionUseCase(get()) }.bind(NoticeRepositoryImpl::class)
 }

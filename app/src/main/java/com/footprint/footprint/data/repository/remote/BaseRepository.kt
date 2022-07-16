@@ -25,6 +25,7 @@ abstract class BaseRepository {
                         Result.GenericError(code, error)
                     }
                     else -> {
+                        LogUtils.d("safeApiCall", throwable.stackTraceToString())
                         Result.GenericError(null, "오류가 발생했습니다. 다시 시도해 주세요.")
                     }
                 }

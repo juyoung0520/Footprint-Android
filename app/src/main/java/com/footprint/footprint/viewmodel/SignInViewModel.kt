@@ -19,7 +19,12 @@ class SignInViewModel (private val loginUseCase: LoginUseCase): BaseViewModel(){
             when(val response = loginUseCase.invoke(socialUserModel)) {
                 is Result.Success -> _thisLogin.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
-                is Result.GenericError -> mutableErrorType.postValue(ErrorType.UNKNOWN)
+                is Result.GenericError -> {
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
             }
         }
     }
