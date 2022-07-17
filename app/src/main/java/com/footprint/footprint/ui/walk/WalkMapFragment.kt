@@ -18,29 +18,23 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
-import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkEntity
+import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.domain.model.SimpleUserModel
-import com.footprint.footprint.service.Path
 import com.footprint.footprint.service.BackgroundWalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
-import com.footprint.footprint.utils.getAbsolutePathByBitmap
-import com.footprint.footprint.utils.getPathBounds
-import com.footprint.footprint.utils.initMarker
-import com.footprint.footprint.utils.initPath
+import com.footprint.footprint.utils.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.*
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBinding::inflate),
@@ -56,7 +50,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private lateinit var spannable: SpannableString
 
     private var isWalking: Boolean = false
-    private var paths = mutableListOf<Path>()
+    private var paths = mutableListOf<MutableList<LatLng>>()
     private var currentTime: Int = 0
     private var firstLocationCome = false
 
@@ -71,6 +65,19 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             return
         }
 
+        initWalkMap()
+
+        userInfo = (activity as WalkActivity).userInfo!!
+        saveWalkEntity.walkTitle = "${userInfo.walkNumber!!+1}번째 산책" //00번째 산책
+
+        //산책 시작 시간 데이터 저장
+        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
+        saveWalkEntity.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        initFootprintDialog()   //FootprintDialogFragment 초기화
+    }
+
+    private fun initWalkMap() {
         val options = NaverMapOptions()
             .locationButtonEnabled(true)
             .compassEnabled(false)
@@ -84,15 +91,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         // 지도 비동기 호출
         mapFragment.getMapAsync(this)
-
-        userInfo = (activity as WalkActivity).userInfo!!
-        saveWalkEntity.walkTitle = "${userInfo.walkNumber!!+1}번째 산책" //00번째 산책
-
-        //산책 시작 시간 데이터 저장
-        val current = LocalDateTime.now(TimeZone.getTimeZone("Asia/Seoul").toZoneId())
-        saveWalkEntity.startAt = current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-        initFootprintDialog()   //FootprintDialogFragment 초기화
     }
 
     // 지도 콜백
@@ -131,7 +129,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 if (isFootprint) {
                     isFootprint = false
                 } else {
-                    currentPathOverlay = initPath(requireContext())
+                    currentPathOverlay = getPath(requireContext())
                 }
             } else { // 산책 중 아니면
                 //LogUtils.d("$TAG/WALKMAP", "ISWALKING - false")
@@ -140,12 +138,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
                 if (paths.isNotEmpty() && paths.last().isNotEmpty() && !isFootprint) {
                     if (paths.size == 1) {
-                        initMarker(paths.last()[0], startMarkerImage).map = map
+                        getMarker(paths.last()[0], startMarkerImage).map = map
                     } else {
-                        initMarker(paths.last()[0], midMarkerImage).map = map
+                        getMarker(paths.last()[0], midMarkerImage).map = map
                     }
 
-                    initMarker(paths.last().last(), midMarkerImage).map = map
+                    getMarker(paths.last().last(), midMarkerImage).map = map
                 }
             }
         })
@@ -253,28 +251,30 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         }
     }
 
-    private fun containPaths() {
+    private fun moveMapCamera() {
         val bounds = getPathBounds(paths)
         if (bounds == null) {
-            takeSnapshotMap()
+            goToWalkAfterActivity()
             return
         }
 
         val cameraUpdate = CameraUpdate.fitBounds(bounds)
             .animate(CameraAnimation.Fly, 2000)
             .finishCallback {
-                takeSnapshotMap()
+                goToWalkAfterActivity()
             }
         map.moveCamera(cameraUpdate)
     }
 
-    private fun takeSnapshotMap() {
+    private fun goToWalkAfterActivity() {
         map.takeSnapshot { bitmap ->    //산책 동선 사진
             saveWalkEntity.pathImg = getAbsolutePathByBitmap(requireContext(), bitmap)
             bindSaveWalkEntity()
 
-            val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+            val intent: Intent =
+                Intent(requireActivity(), WalkAfterActivity::class.java)
             intent.putExtra("walk", Gson().toJson(saveWalkEntity))    //산책 정보 전달
+            intent.putExtra("paths", Gson().toJson(paths))
             startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
             (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
         }
@@ -369,10 +369,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                             setWalkState(false)
                             // 경로 끝 마크 추가
                             if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
-                                initMarker(paths.last().last(), endMarkerImage).map = map
+                                getMarker(paths.last().last(), endMarkerImage).map = map
                             }
 
-                            containPaths() // 경로 모두 포함하도록 지도 카메라 이동
+                            moveMapCamera() // 경로 모두 포함하도록 지도 카메라 이동
                         }
                     }
                 }
@@ -402,25 +402,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         saveWalkEntity.endAt =
             current.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))   //산책 종료 시간
         saveWalkEntity.distance = binding.walkmapDistanceNumberTv.text.toString().toDouble() //산책 거리
-        saveWalkEntity.coordinate = getCoordinate() //산책 동선 좌표
+        saveWalkEntity.coordinate = paths //산책 동선 좌표
         saveWalkEntity.calorie = binding.walkmapCalorieNumberTv.text.toString().toInt()  //칼로리
         saveWalkEntity.saveWalkFootprints = saveWalkFootprints    //발자국
-    }
-
-    // PathGroup -> List<List<Double>>
-    private fun getCoordinate(): List<List<Double>> {
-        val coordinate = arrayListOf<ArrayList<Double>>()
-
-        paths.forEach {
-            coordinate.add(arrayListOf())
-            it.forEach { lang ->
-                coordinate.last().add(lang.latitude)
-                coordinate.last().add(lang.longitude)
-            }
-        }
-
-        //LogUtils.d("$TAG/WALKMAP", coordinate.toString())
-        return coordinate
     }
 
     private fun initFootprintDialog() {
@@ -441,9 +425,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 // 발자국 마크 추가
                 if (paths.isNotEmpty() && paths.last().isNotEmpty()) {
                     val lastLang = paths.last().last()
-                    initMarker(lastLang, footprints.size).map = map
-                    saveWalkFootprint.coordinates = listOf(lastLang.latitude, lastLang.longitude)
-                    //LogUtils.d("$TAG/WALKMAP", footprint.coordinate.toString())
+                    getFootPrintMarker(lastLang, saveWalkFootprints.size).map = map
+                    saveWalkFootprint.coordinates = lastLang
                 }
             }
 

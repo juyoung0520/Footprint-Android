@@ -308,7 +308,6 @@ class FootprintDialogFragment() : DialogFragment(), TextWatcher {
             hashtags = hashtags.slice(0..4) as java.util.ArrayList<String>
         saveWalkFootprint.hashtagList = hashtags
 
-        saveWalkFootprint.coordinates = listOf(10.0, 12.0)   //발자국을 남긴 좌표
         saveWalkFootprint.write = binding.postDialogContentEt.text.toString()   //발자국 내용
         saveWalkFootprint.photos = imgList  //발자국 사진
 

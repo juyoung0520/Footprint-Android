@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.UiThread
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
@@ -18,13 +19,17 @@ import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.NaverMapOptions
+import com.naver.maps.map.OnMapReadyCallback
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import kotlin.collections.ArrayList
 
 class WalkAfterActivity :
-    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate) {
+    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), OnMapReadyCallback  {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var newBadgeDialogFragment: NewBadgeDialogFragment
@@ -251,7 +256,6 @@ class WalkAfterActivity :
     //산책 정보를 바인딩하는 함수
     private fun bindWalkData() {
         binding.walkAfterTitleTv.text = saveWalkEntity.walkTitle   //산책 이름
-        Glide.with(this).load(saveWalkEntity.pathImg).into(binding.walkAfterMapIv)    //산책 동선 이미지
         binding.walkAfterWalkTimeTv.text = saveWalkEntity.walkTime    //산책 시간
         binding.walkAfterCalorieTv.text = saveWalkEntity.calorie.toString()   //칼로리
         binding.walkAfterDistanceTv.text = saveWalkEntity.distance.toString() //산책 거리
@@ -271,6 +275,7 @@ class WalkAfterActivity :
         }
 
         initAdapter()   //어댑터 초기화
+        initWalkAfterMap() // 지도 초기화
     }
 
     //기록 관련 리사이클러뷰 초기화
@@ -369,5 +374,29 @@ class WalkAfterActivity :
                 showNewBadgeDialog(acquireBadges.removeAt(0))   //NewBadgeDialog 띄우기
             }
         })
+    }
+
+    private fun initWalkAfterMap() {
+        val options = NaverMapOptions()
+            .compassEnabled(false)
+
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.walk_after_map_fragment) as MapFragment?
+                ?: MapFragment.newInstance(options).also {
+                    supportFragmentManager.beginTransaction().add(R.id.walk_after_map_fragment, it)
+                        .commit()
+                }
+
+        // 지도 비동기 호출
+        mapFragment.getMapAsync(this)
+    }
+
+    @UiThread
+    override fun onMapReady(naverMap: NaverMap) {
+        moveMapCamera(saveWalkEntity.coordinate, naverMap)
+
+        drawWalkPath(saveWalkEntity.coordinate, this, naverMap)
+
+        drawFootprints(saveWalkEntity.saveWalkFootprints, naverMap)
     }
 }

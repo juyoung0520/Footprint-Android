@@ -38,6 +38,7 @@
             android:id="@+id/walk_detail_title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="00번째 산책"
             android:textAppearance="@style/tv_headline_eb_16"
             app:layout_constraintBottom_toTopOf="@+id/walk_detail_walk_date_tv"
             app:layout_constraintEnd_toEndOf="@+id/walk_detail_tb"
@@ -70,14 +71,14 @@
             app:layout_constraintEnd_toEndOf="@+id/walk_detail_tb"
             app:layout_constraintTop_toTopOf="@+id/walk_detail_title_tv" />
 
-        <ImageView
-            android:id="@+id/walk_detail_map_iv"
+        <fragment
+            android:id="@+id/walk_detail_map_fragment"
+            android:name="com.naver.maps.map.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="center"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.3"
-            app:layout_constraintTop_toBottomOf="@+id/walk_detail_tb" />
+            app:layout_constraintTop_toBottomOf="@id/walk_detail_tb" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/walk_detail_info_layout"
@@ -85,7 +86,7 @@
             android:layout_height="0dp"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.12"
-            app:layout_constraintTop_toBottomOf="@+id/walk_detail_map_iv">
+            app:layout_constraintTop_toBottomOf="@+id/walk_detail_map_fragment">
 
             <TextView
                 android:id="@+id/walk_detail_walk_time_title_tv"
