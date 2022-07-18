@@ -1,11 +1,6 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,7 +11,6 @@ import com.footprint.footprint.databinding.FragmentSearchResultBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.WalkDateRVAdapter
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.viewmodel.TagSearchViewModel
 import com.google.android.material.snackbar.Snackbar

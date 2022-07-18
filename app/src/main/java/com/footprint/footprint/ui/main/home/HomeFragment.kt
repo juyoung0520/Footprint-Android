@@ -23,11 +23,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
-import com.footprint.footprint.data.dto.Weather
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.LocationModel
 import com.footprint.footprint.domain.model.SimpleUserModel
-import com.footprint.footprint.data.dto.TMonth
-import com.footprint.footprint.data.dto.Today
 import com.footprint.footprint.databinding.FragmentHomeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeViewpagerAdapter
@@ -58,9 +56,9 @@ class HomeFragment() : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::in
     //뷰모델
     private val homeVm: HomeViewModel by sharedViewModel()
     private lateinit var user: SimpleUserModel
-    private lateinit var weather: Weather
-    private lateinit var today: Today
-    private lateinit var tmonth: TMonth
+    private lateinit var weather: WeatherDTO
+    private lateinit var today: TodayDTO
+    private lateinit var tmonth: TMonthDTO
 
     private val gpsBackgroundPermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {

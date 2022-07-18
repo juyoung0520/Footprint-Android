@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.footprint.footprint.data.dto.Today
+import com.footprint.footprint.data.dto.TodayDTO
 import com.footprint.footprint.databinding.FragmentHomeDayBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.viewmodel.HomeViewModel
@@ -13,7 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBinding::inflate){
 
-    private lateinit var today: Today
+    private lateinit var today: TodayDTO
     private val homeVm: HomeViewModel by sharedViewModel()
 
     override fun initAfterBinding() {
@@ -28,7 +28,7 @@ class HomeDayFragment() : BaseFragment<FragmentHomeDayBinding>(FragmentHomeDayBi
         // onPause에서 임시 저장된 today 정보 받아오기
         if(savedInstanceState != null) {
             val jsonToday = savedInstanceState.getString("TODAY")
-            today = Gson().fromJson(jsonToday, Today::class.java)
+            today = Gson().fromJson(jsonToday, TodayDTO::class.java)
         }
     }
 

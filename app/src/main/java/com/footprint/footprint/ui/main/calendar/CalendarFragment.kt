@@ -1,11 +1,7 @@
 package com.footprint.footprint.ui.main.calendar
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,7 +14,6 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
@@ -72,7 +67,6 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         calendarVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
             binding.calendarLoadingPb.visibility = View.VISIBLE
 
-            /* 여기 */
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
                 else -> startErrorActivity("CalendarFragment")

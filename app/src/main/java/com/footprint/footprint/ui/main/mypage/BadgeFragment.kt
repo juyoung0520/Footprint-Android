@@ -1,20 +1,14 @@
 package com.footprint.footprint.ui.main.mypage
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentBadgeBinding
 import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.BadgeViewModel
 import com.google.android.material.snackbar.Snackbar

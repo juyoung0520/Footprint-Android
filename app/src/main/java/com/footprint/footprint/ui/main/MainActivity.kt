@@ -1,31 +1,21 @@
 package com.footprint.footprint.ui.main
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.ActivityMainBinding
-import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.ui.dialog.NoticeDialogFragment
-import com.footprint.footprint.ui.error.ErrorActivity
-import com.footprint.footprint.ui.main.home.HomeFragmentDirections
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
-import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {

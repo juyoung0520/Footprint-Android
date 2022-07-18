@@ -1,16 +1,11 @@
 package com.footprint.footprint.ui.main.mypage
 
-import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -18,7 +13,6 @@ import com.footprint.footprint.classes.custom.CustomBarChartRender
 import com.footprint.footprint.data.dto.UserInfoDTO
 import com.footprint.footprint.databinding.FragmentMypageBinding
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.loadSvg
 import com.footprint.footprint.viewmodel.MyPageViewModel

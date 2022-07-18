@@ -1,12 +1,8 @@
 package com.footprint.footprint.ui.walk
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
@@ -23,7 +19,6 @@ import com.footprint.footprint.data.dto.FootprintRequestDTO
 import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.*
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceHeight
