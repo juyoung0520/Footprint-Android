@@ -19,6 +19,9 @@ import com.footprint.footprint.data.dto.FootprintRequestDTO
 import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.convertDpToPx
+import com.footprint.footprint.utils.getDeviceHeight
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -224,8 +227,7 @@ class WalkDetailActivity :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    onBackPressed()
+                    startErrorActivity("WalkDetailActivity")
                 }
             }
         })

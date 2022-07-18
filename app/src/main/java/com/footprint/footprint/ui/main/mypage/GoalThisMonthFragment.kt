@@ -1,8 +1,13 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.content.Intent
 import android.graphics.Paint
+import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.BuildConfig
@@ -11,6 +16,7 @@ import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
 import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -125,8 +131,7 @@ class GoalThisMonthFragment :
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    findNavController().popBackStack()
+                    startErrorActivity("GoalThisMonthFragment")
                 }
             }
         })

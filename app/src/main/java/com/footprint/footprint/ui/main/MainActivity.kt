@@ -3,33 +3,28 @@ package com.footprint.footprint.ui.main
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.ActivityMainBinding
-import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.ui.dialog.NoticeDialogFragment
-import com.footprint.footprint.ui.main.home.HomeFragmentDirections
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
-import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-    private lateinit var networkErrSb: Snackbar
     private lateinit var navHostFragment: NavHostFragment
 
     private val mainVm: MainViewModel by viewModel()
-    private lateinit var noticeDialogFragment: NoticeDialogFragment
+    private lateinit var networkErrSb: Snackbar
 
+    private lateinit var noticeDialogFragment: NoticeDialogFragment
     private val acquireNotices: ArrayList<NoticeDto> = arrayListOf() //주요 공지사항 목록들
 
     override fun initAfterBinding() {
@@ -109,8 +104,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    onBackPressed()
+                    startErrorActivity("MainActivity")
                 }
             }
         })

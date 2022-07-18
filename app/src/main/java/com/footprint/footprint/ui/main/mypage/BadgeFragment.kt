@@ -3,7 +3,6 @@ package com.footprint.footprint.ui.main.mypage
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentBadgeBinding
 import com.footprint.footprint.domain.model.Badge
@@ -125,8 +124,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
                     }
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    findNavController().popBackStack()
+                    startErrorActivity("BadgeFragment")
                 }
             }
         })

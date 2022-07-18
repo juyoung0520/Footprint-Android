@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.footprint.footprint.data.dto.TMonth
+import com.footprint.footprint.data.dto.TMonthDTO
 import com.footprint.footprint.databinding.FragmentHomeMonthBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.HomeMonthRVAdapter
@@ -22,7 +22,7 @@ import java.util.*
 class HomeMonthFragment() :
     BaseFragment<FragmentHomeMonthBinding>(FragmentHomeMonthBinding::inflate){
 
-    private lateinit var tMonth: TMonth
+    private lateinit var tMonth: TMonthDTO
     private val homeVm: HomeViewModel by sharedViewModel()
     private lateinit var calRVAdapter: HomeMonthRVAdapter
 
@@ -35,7 +35,7 @@ class HomeMonthFragment() :
         super.onCreate(savedInstanceState)
         if(savedInstanceState != null){
             val jsonTmonth = savedInstanceState.getString("TMONTH")
-            tMonth = Gson().fromJson(jsonTmonth, TMonth::class.java)
+            tMonth = Gson().fromJson(jsonTmonth, TMonthDTO::class.java)
         }
     }
 

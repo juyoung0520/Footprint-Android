@@ -110,7 +110,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
         private fun initTag(textView: TextView, tag: String) {
             if (currentTag != null && currentTag == tag) {
-                textView.background = getDrawable(context, R.drawable.bg_primary_round_square)
+                textView.background = getDrawable(context, R.drawable.bg_primary55_round_square)
             }
 
             textView.visibility = View.VISIBLE

@@ -1,6 +1,11 @@
 package com.footprint.footprint.ui.setting
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -8,6 +13,7 @@ import com.footprint.footprint.data.dto.NoticeInfoDto
 import com.footprint.footprint.databinding.FragmentNoticeBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.NoticeRVAdapter
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.NoticeListViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -16,21 +22,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding::inflate) {
 
     private val noticeListVm: NoticeListViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
+
     private lateinit var noticeRVAdapter: NoticeRVAdapter
 
     private var max = 1
     private var current = 1
     private var size = 1
-
-    override fun onResume() {
-        super.onResume()
-
-        // 로딩바 띄우기
-        binding.noticeLoadingBgV.visibility = View.GONE
-        binding.noticeLoadingPb.visibility = View.GONE
-
-        noticeListVm.getNoticeList(1, size)
-    }
 
     override fun initAfterBinding() {
 
@@ -41,8 +39,13 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         binding.noticeRv.adapter = noticeRVAdapter
 
         observe()
-
         setMyEventListener()
+
+        // 로딩바 띄우기
+        binding.noticeLoadingBgV.visibility = View.GONE
+        binding.noticeLoadingPb.visibility = View.GONE
+
+        noticeListVm.getNoticeList(1, size)
     }
 
     private fun setMyEventListener() {
@@ -192,15 +195,11 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         noticeListVm.mutableErrorType.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 ErrorType.NETWORK -> {
-                    Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(
-                        R.string.action_retry) {
-                        noticeListVm.getNoticeList(current, size)
-                    }.show()
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { noticeListVm.getNoticeList(current, size) }
+                    networkErrSb.show()
                 }
-                else -> Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(
-                    R.string.action_retry) {
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER ->  startErrorActivity("NoticeFragment")
 
-                }.show()
             }
         })
 
@@ -223,5 +222,11 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
             current = it
             bind(it)
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

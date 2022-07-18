@@ -105,11 +105,16 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <!-- Lock & Error Activity -->
         <activity
             android:name=".ui.lock.LockActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.error.ErrorActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.BackgroundWalkService"

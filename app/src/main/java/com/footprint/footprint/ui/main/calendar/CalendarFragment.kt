@@ -43,6 +43,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     private var currentDeleteWalkIdx: Int? = null
 
     private val calendarVM: CalendarViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
 
     private val jobs = arrayListOf<Job>()
 
@@ -68,7 +69,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> showSnackBar(getString(R.string.error_api_fail))
+                else -> startErrorActivity("CalendarFragment")
             }
         })
 
@@ -323,7 +324,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
     }
 
     private fun showSnackBar(errorMessage: String) {
-        Snackbar.make(
+        networkErrSb = Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
@@ -334,7 +335,9 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             } else {
                 updateAll()
             }
-        }.show()
+        }
+
+        networkErrSb.show()
     }
 
     override fun onDestroyView() {
@@ -346,5 +349,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         jobs.map {
             it.cancel()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

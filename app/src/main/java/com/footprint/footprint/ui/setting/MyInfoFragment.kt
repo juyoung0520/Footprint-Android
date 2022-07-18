@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.MyInfoUserModel
@@ -22,10 +22,11 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import kotlin.math.floor
 
 class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding::inflate){
-    private lateinit var networkErrSb: Snackbar
     private lateinit var rgPositionListener : ViewTreeObserver.OnGlobalLayoutListener
 
     private val myInfoVm: MyInfoViewModel by sharedViewModel()
+    private lateinit var networkErrSb: Snackbar
+
     private lateinit var user: MyInfoUserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,16 +42,15 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun initAfterBinding() {
+        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
+
+        observe()
+        setMyEventListener()
+        setHelpBalloon()
 
         //유저 정보 조회 API 호출
         myInfoVm.getMyInfoUser()
-        observe()
-    }
-
-    override fun initAfterBinding() {
-        requireView().viewTreeObserver.addOnGlobalLayoutListener(rgPositionListener)
     }
 
     //내 정보 "조회" 화면
@@ -222,8 +222,7 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
-                    showToast(getString(R.string.error_sorry))
-                    requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    startErrorActivity("MyInfoFragment")
                 }
             }
         })
@@ -234,10 +233,15 @@ class MyInfoFragment : BaseFragment<FragmentMyInfoBinding>(FragmentMyInfoBinding
             binding.myInfoDayLoadingBgV.visibility = View.GONE
             binding.myInfoDayLoadingPb.visibility = View.GONE
             setLookUI(this.user) //내 정보 조회 화면 데이터 바인딩
-            setMyEventListener()
-            setHelpBalloon()    //툴팁
+        })
+
+        myInfoVm.isUpdate.observe(viewLifecycleOwner, Observer { isUpdate ->
+            if(isUpdate){
+                myInfoVm.getMyInfoUser()
+            }
         })
     }
+
 
     override fun onStop() {
         super.onStop()

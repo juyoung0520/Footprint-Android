@@ -4,7 +4,7 @@ import com.footprint.footprint.data.mapper.UserMapper
 import com.footprint.footprint.data.datasource.remote.UserRemoteDataSource
 import com.footprint.footprint.data.dto.BaseResponse
 import com.footprint.footprint.data.dto.*
-import com.footprint.footprint.data.dto.User
+import com.footprint.footprint.data.dto.UserDTO
 import com.footprint.footprint.domain.model.MyInfoUserModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.domain.model.InitUserModel
@@ -57,7 +57,7 @@ class UserRepositoryImpl(private val dataSource: UserRemoteDataSource): UserRepo
         return when(val response = dataSource.getUser()){
             is Result.Success -> {
                 if (response.value.isSuccess){
-                    val user = NetworkUtils.decrypt(response.value.result, User::class.java)
+                    val user = NetworkUtils.decrypt(response.value.result, UserDTO::class.java)
                     val userInfo = UserMapper.mapperToSimpleUser(user)
                     Result.Success(userInfo)
                 }
@@ -73,7 +73,7 @@ class UserRepositoryImpl(private val dataSource: UserRemoteDataSource): UserRepo
         return when(val response = dataSource.getUser()){
             is Result.Success -> {
                 if (response.value.isSuccess){
-                    val user = NetworkUtils.decrypt(response.value.result, User::class.java)
+                    val user = NetworkUtils.decrypt(response.value.result, UserDTO::class.java)
                     val userInfo = UserMapper.mapperToMyInfoUser(user)
                     Result.Success(userInfo)
                 }

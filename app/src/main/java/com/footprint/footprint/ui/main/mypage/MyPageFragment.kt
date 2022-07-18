@@ -36,6 +36,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
     private val myPageVm: MyPageViewModel by viewModel()
 
+    private lateinit var networkErrSb: Snackbar
+
     override fun initAfterBinding() {
         if (isFromFragment || !isInitialized) {
             setBinding()
@@ -95,7 +97,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> showSnackBar(getString(R.string.error_api_fail))
+                else -> startErrorActivity("MyPageFragment")
             }
         })
 
@@ -454,7 +456,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     private fun showSnackBar(errorMessage: String) {
-        Snackbar.make(
+        networkErrSb = Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
@@ -463,7 +465,9 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
             myPageVm.getSimpleUser()
             // 통계 API 오류
             myPageVm.getUserInfo()
-        }.show()
+        }
+
+        networkErrSb.show()
     }
 
     override fun onDestroyView() {
@@ -475,5 +479,11 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         jobs.map {
             it.cancel()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

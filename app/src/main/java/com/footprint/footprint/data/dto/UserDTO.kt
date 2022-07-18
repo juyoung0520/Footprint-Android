@@ -1,7 +1,7 @@
 package com.footprint.footprint.data.dto
 import com.google.gson.annotations.SerializedName
 
-data class User(
+data class UserDTO(
     @SerializedName("userIdx") val userIdx: Int,      //유저 인덱스
     @SerializedName("nickname") val nickname: String, //어플에서 사용할 닉네임
     @SerializedName("name") val name: String,         //본명(소셜 계정 이름)

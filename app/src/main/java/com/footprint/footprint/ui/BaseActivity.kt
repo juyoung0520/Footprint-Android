@@ -6,8 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import com.footprint.footprint.ui.error.ErrorActivity
 
 
 abstract class BaseActivity<T: ViewBinding>(private val inflate: (LayoutInflater) -> T): AppCompatActivity(){
@@ -46,6 +50,20 @@ abstract class BaseActivity<T: ViewBinding>(private val inflate: (LayoutInflater
     fun startActivityWithClear(activity: Class<*>?) {
         val intent = Intent(this, activity)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    fun startErrorActivity(getResult: ActivityResultLauncher<Intent>, screen: String){
+        val intent = Intent(this, ErrorActivity::class.java)
+        intent.putExtra(ErrorActivity.SCREEN, screen)
+
+        getResult.launch(intent)
+    }
+
+    fun startErrorActivity(screen: String){
+        val intent = Intent(this, ErrorActivity::class.java)
+        intent.putExtra(ErrorActivity.SCREEN, screen)
+
         startActivity(intent)
     }
 

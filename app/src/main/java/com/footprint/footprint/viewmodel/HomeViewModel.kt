@@ -3,10 +3,7 @@ package com.footprint.footprint.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.footprint.footprint.data.dto.Weather
-import com.footprint.footprint.data.dto.Result
-import com.footprint.footprint.data.dto.TMonth
-import com.footprint.footprint.data.dto.Today
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.LocationModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.domain.usecase.GetTmonthUseCase
@@ -27,14 +24,14 @@ class HomeViewModel(
     private val _thisUser: MutableLiveData<SimpleUserModel> = MutableLiveData()
     val thisUser: LiveData<SimpleUserModel> get() = _thisUser
 
-    private val _thisWeather: MutableLiveData<Weather> = MutableLiveData()
-    val thisWeather: LiveData<Weather> get() = _thisWeather
+    private val _thisWeather: MutableLiveData<WeatherDTO> = MutableLiveData()
+    val thisWeather: LiveData<WeatherDTO> get() = _thisWeather
 
-    private val _thisToday: MutableLiveData<Today> = MutableLiveData()
-    val thisToday: LiveData<Today> get() = _thisToday
+    private val _thisToday: MutableLiveData<TodayDTO> = MutableLiveData()
+    val thisToday: LiveData<TodayDTO> get() = _thisToday
 
-    private val _thisTmonth: MutableLiveData<TMonth> = MutableLiveData()
-    val thisTmonth: LiveData<TMonth> get() = _thisTmonth
+    private val _thisTmonth: MutableLiveData<TMonthDTO> = MutableLiveData()
+    val thisTmonth: LiveData<TMonthDTO> get() = _thisTmonth
 
     fun getUser(){
         viewModelScope.launch {
@@ -115,5 +112,5 @@ class HomeViewModel(
         }
     }
 
-    fun getErrorType(): String = this.errorMethod!!
+    fun getErrorType(): String = this.errorMethod.toString()
 }

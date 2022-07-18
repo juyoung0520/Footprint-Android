@@ -22,6 +22,7 @@ class SearchResultFragment() :
     private lateinit var currentTag: String
 
     private val tagSearchVM: TagSearchViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
 
     override fun initAfterBinding() {
         if (!isInitialized) {
@@ -47,7 +48,7 @@ class SearchResultFragment() :
         tagSearchVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
             when (it) {
                 ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
-                else -> showSnackBar(getString(R.string.error_api_fail))
+                else -> startErrorActivity("SearchResultFragment")
             }
         })
 
@@ -107,13 +108,20 @@ class SearchResultFragment() :
 
 
     private fun showSnackBar(errorMessage: String) {
-        Snackbar.make(
+        networkErrSb = Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
             // Tag API
             getTagWalks()
-        }.show()
+        }
+        networkErrSb.show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

@@ -177,7 +177,6 @@
                 android:layout_width="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_height="30dp"
-                android:text="발자국"
                 app:layout_constraintStart_toEndOf="@id/home_top_hello_tv"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -244,6 +243,27 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:id="@+id/home_loading_bg_v"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white_light"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/home_daymonth_vp"
+            app:layout_constraintBottom_toBottomOf="@id/home_daymonth_vp"/>
+
+        <ProgressBar
+            android:id="@+id/home_loading_pb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary"
+            app:layout_constraintTop_toTopOf="@id/home_loading_bg_v"
+            app:layout_constraintStart_toStartOf="@id/home_loading_bg_v"
+            app:layout_constraintEnd_toEndOf="@id/home_loading_bg_v"
+            app:layout_constraintBottom_toBottomOf="@id/home_loading_bg_v"
+            android:visibility="gone"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--Bottom: 선과 목표-->

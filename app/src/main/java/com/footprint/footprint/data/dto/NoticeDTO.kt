@@ -1,7 +1,6 @@
 package com.footprint.footprint.data.dto
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
 
 // 공지사항 목록 조회 DTO
 data class NoticeListDto(
@@ -46,6 +45,5 @@ data class VersionDto(
     @SerializedName("whetherUpdate") val whetherUpdate: Boolean,
     @SerializedName("version") val serverVersion: String,
 )
-
 
 
