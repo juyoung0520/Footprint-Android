@@ -25,6 +25,11 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
             val userInfoJson = intent.getStringExtra("userInfo")
             userInfo = Gson().fromJson(userInfoJson, SimpleUserModel::class.java)
 
+            // 사용자 목표 없을 때 ??
+            if (userInfo!!.goalWalkTime == 0) {
+                userInfo!!.goalWalkTime = 60
+            }
+
             if (userInfo!!.weight == 0) {
                 userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
             }

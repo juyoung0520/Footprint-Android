@@ -1,5 +1,7 @@
 package com.footprint.footprint.domain.model
 
+import com.naver.maps.geometry.LatLng
+
 data class GetWalkEntity(
     val walkIdx: Int,
     val walkDate: String,
@@ -9,5 +11,7 @@ data class GetWalkEntity(
     val calorie: Int,
     val distance: Double,
     val footCount: Int,
-    val pathImageUrl: String
+    val pathImageUrl: String,
+    val coordinate: MutableList<MutableList<LatLng>>,
+    val footCoordinates: List<List<Double>>
 )

@@ -1,5 +1,7 @@
 package com.footprint.footprint.data.mapper
 
+import com.naver.maps.geometry.LatLng
+
 import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.data.dto.GetWalkModel
 import com.footprint.footprint.domain.model.SaveWalkEntity
@@ -13,7 +15,7 @@ object WalkMapper {
             startAt = saveWalkEntity.startAt,
             endAt = saveWalkEntity.endAt,
             distance = saveWalkEntity.distance,
-            coordinates = saveWalkEntity.coordinate,
+            coordinates = convertToCoordinates(saveWalkEntity.coordinate),
             calorie = saveWalkEntity.calorie,
             thumbnail = saveWalkEntity.pathImg
         )
@@ -22,7 +24,7 @@ object WalkMapper {
         for (footprintEntity in saveWalkEntity.saveWalkFootprints) {
             footprintList.add(
                 FootprintModel(
-                    coordinates = footprintEntity.coordinates,
+                    coordinates = listOf(footprintEntity.coordinates!!.latitude, footprintEntity.coordinates!!.longitude),
                     recordAt = footprintEntity.recordAt,
                     write = footprintEntity.write,
                     hashtagList = footprintEntity.hashtagList,
@@ -45,7 +47,38 @@ object WalkMapper {
             calorie,
             distance,
             footCount,
-            pathImageUrl
+            pathImageUrl,
+            convertToPaths(coordinate),
+            footCoordinates
         )
+    }
+
+    private fun convertToCoordinates(paths: MutableList<MutableList<LatLng>>): List<List<Double>> {
+        val coordinate = arrayListOf<ArrayList<Double>>()
+
+        paths.forEach {
+            coordinate.add(arrayListOf())
+            it.forEach { lang ->
+                coordinate.last().add(lang.latitude)
+                coordinate.last().add(lang.longitude)
+            }
+        }
+        return coordinate
+    }
+
+    // 나중에 mapper로 이동.
+    fun convertToPaths(coordinates: List<List<Double>>): MutableList<MutableList<LatLng>> {
+        val paths = mutableListOf<MutableList<LatLng>>()
+
+        coordinates.forEach {
+            paths.add(mutableListOf())
+
+            for (i in it.indices step (2)) {
+                val latLng = LatLng(it[i], it[i + 1])
+                paths.last().add(latLng)
+            }
+        }
+
+        return paths
     }
 }

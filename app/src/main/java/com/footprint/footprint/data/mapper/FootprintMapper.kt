@@ -4,12 +4,13 @@ import com.footprint.footprint.data.dto.FootprintModel
 import com.footprint.footprint.data.dto.GetFootprintDTO
 import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
+import com.naver.maps.geometry.LatLng
 
 object FootprintMapper {
     fun mapperToFootprintModel(saveWalkFootprintEntity: SaveWalkFootprintEntity): FootprintModel =
         saveWalkFootprintEntity.run {
             FootprintModel(
-                coordinates,
+                convertFootprintCoordinates(coordinates!!),
                 recordAt,
                 write,
                 hashtagList,
@@ -35,5 +36,9 @@ object FootprintMapper {
         }
 
         return getFootprintEntityList
+    }
+
+    fun convertFootprintCoordinates(coordinate: LatLng): List<Double> {
+        return listOf(coordinate.latitude, coordinate.longitude)
     }
 }

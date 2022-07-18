@@ -27,9 +27,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-typealias Path = MutableList<LatLng>
-typealias PathGroup = MutableList<Path>
-
 class BackgroundWalkService : LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -44,7 +41,7 @@ class BackgroundWalkService : LifecycleService() {
         val isWalking = NonNullMutableLiveData(false)
         val currentTime = NonNullMutableLiveData(0)
         val currentLocation = MutableLiveData<Location?>(null)
-        val paths = NonNullMutableLiveData<PathGroup>(mutableListOf())
+        val paths = NonNullMutableLiveData<MutableList<MutableList<LatLng>>>(mutableListOf())
         val totalDistance = NonNullMutableLiveData(0.0f)
         val pauseWalk = NonNullMutableLiveData(false)
         val gpsStatus = NonNullMutableLiveData(true)
@@ -82,6 +79,7 @@ class BackgroundWalkService : LifecycleService() {
                 }
             } else {
                 //LogUtils.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
+                checkPathValid()
                 locationDeactivate()
             }
         })
@@ -291,8 +289,7 @@ class BackgroundWalkService : LifecycleService() {
             }
         }
     }
-
-    private fun addEmptyPath() {
+    private fun checkPathValid() {
         if (paths.value.isNotEmpty()) {
             when(paths.value.last().size) {
                 0 -> return
@@ -302,7 +299,9 @@ class BackgroundWalkService : LifecycleService() {
                 }
             }
         }
+    }
 
+    private fun addEmptyPath() {
         paths.value.apply {
             add(mutableListOf())
             paths.postValue(this)
