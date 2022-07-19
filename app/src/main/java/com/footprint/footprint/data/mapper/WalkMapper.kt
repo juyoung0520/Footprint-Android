@@ -7,6 +7,7 @@ import com.footprint.footprint.data.dto.GetWalkModel
 import com.footprint.footprint.domain.model.SaveWalkEntity
 import com.footprint.footprint.data.dto.SaveWalkReqModel
 import com.footprint.footprint.data.dto.WalkModel
+import com.footprint.footprint.data.mapper.FootprintMapper.convertFootprintCoordinates
 import com.footprint.footprint.domain.model.GetWalkEntity
 
 object WalkMapper {
@@ -24,7 +25,7 @@ object WalkMapper {
         for (footprintEntity in saveWalkEntity.saveWalkFootprints) {
             footprintList.add(
                 FootprintModel(
-                    coordinates = listOf(footprintEntity.coordinates!!.latitude, footprintEntity.coordinates!!.longitude),
+                    coordinates = convertFootprintCoordinates(footprintEntity.coordinates),
                     recordAt = footprintEntity.recordAt,
                     write = footprintEntity.write,
                     hashtagList = footprintEntity.hashtagList,
