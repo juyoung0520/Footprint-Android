@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
+import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.domain.model.SimpleUserModel
@@ -431,6 +432,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
 
             override fun sendUpdatedFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
+            }
+
+            override fun sendUpdatedFootprint(getFootprintEntity: GetFootprintEntity) {
             }
 
             //다이얼로그 프래그먼트에서 취소를 누르거나 뒤로 나왔을 때 -> 타이머 재생

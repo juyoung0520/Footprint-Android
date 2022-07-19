@@ -5,9 +5,7 @@ import android.view.View
 import androidx.annotation.UiThread
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
-import com.footprint.footprint.data.mapper.WalkMapper.convertToPaths
 import com.footprint.footprint.databinding.ActivityWalkDetailBinding
 import com.footprint.footprint.domain.model.GetWalkEntity
 import com.footprint.footprint.ui.BaseActivity
@@ -15,7 +13,6 @@ import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.ui.dialog.MsgDialogFragment
-import com.footprint.footprint.data.dto.FootprintRequestDTO
 import com.footprint.footprint.domain.model.GetFootprintEntity
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
 import com.footprint.footprint.utils.*
@@ -121,25 +118,28 @@ class WalkDetailActivity :
             }
 
             override fun sendUpdatedFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
+            }
+
+            override fun sendUpdatedFootprint(getFootprintEntity: GetFootprintEntity) {
                 //수정된 데이터만 모아서 요청하기
                 val reqMap: HashMap<String, Any> = HashMap()
 
-                if (saveWalkFootprint.write != tempUpdateSaveWalkFootprint!!.write)   //글
-                    reqMap["write"] = saveWalkFootprint.write
+                if (getFootprintEntity.write != tempUpdateSaveWalkFootprint!!.write)   //글
+                    reqMap["write"] = getFootprintEntity.write
 
-                if (saveWalkFootprint.hashtagList != tempUpdateSaveWalkFootprint!!.tagList) { //해시태그
-                    if (saveWalkFootprint.hashtagList!!.isEmpty()) {    //해시태그를 모두 삭제한 경우
+                if (getFootprintEntity.tagList != tempUpdateSaveWalkFootprint!!.tagList) { //해시태그
+                    if (getFootprintEntity.tagList!!.isEmpty()) {    //해시태그를 모두 삭제한 경우
                         reqMap["tagList"] = ""
                     } else {    //해시 태그를 모두 삭제하지 않은 경우
-                        for (i in saveWalkFootprint.hashtagList!!.indices) {
-                            reqMap["tagList[$i]"] = saveWalkFootprint.hashtagList!![i]
+                        for (i in getFootprintEntity.tagList!!.indices) {
+                            reqMap["tagList[$i]"] = getFootprintEntity.tagList!![i]
                         }
                     }
                 }
 
                 var photos: List<String>? = null    //사진 -> 수정된 사진이 없으면 null
-                if (saveWalkFootprint.photos != tempUpdateSaveWalkFootprint!!.photoList) {
-                    photos = saveWalkFootprint.photos
+                if (getFootprintEntity.photoList != tempUpdateSaveWalkFootprint!!.photoList) {
+                    photos = getFootprintEntity.photoList
                 }
 
                 if (reqMap.isEmpty() && photos==null) //변경된 내용 없음 -> "변경된 내용이 없어요" 다이얼로그 띄우기
@@ -190,17 +190,9 @@ class WalkDetailActivity :
                 tempUpdateFootprintPosition = position
                 tempUpdateSaveWalkFootprint = saveWalkFootprint
 
-                //발자국 데이터와 함께 FootprintDialogFragment 호출 -> FootprintDialogFragment 에 보내려면 Footprint -> FootprintModel 로 형 변환 필요
-                val footprintModel = FootprintRequestDTO(
-                    recordAt = saveWalkFootprint.recordAt,
-                    write = saveWalkFootprint.write,
-                    hashtagList = saveWalkFootprint.tagList,
-                    photos = saveWalkFootprint.photoList as ArrayList,
-                    onWalk = saveWalkFootprint.onWalk
-                )
-
                 val bundle: Bundle = Bundle()
-                bundle.putString("footprint", Gson().toJson(footprintModel))
+                bundle.putString("footprint", Gson().toJson(saveWalkFootprint))
+                bundle.putBoolean("isSaved", true) //이전에 저장됐던 발자국인지 보내주기 -> 저장했던 발자국을 수정할 거니까 true
                 footprintDialogFragment.arguments = bundle
                 footprintDialogFragment.show(supportFragmentManager, null)
             }
