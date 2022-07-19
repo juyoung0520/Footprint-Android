@@ -89,6 +89,8 @@ fun drawFootprints(
     naverMap: NaverMap
 ) {
     for (i in footprints.indices) {
+        if (footprints[i].isEmpty()) continue
+
         val latLng = LatLng(footprints[i][0], footprints[i][1])
         val marker = getFootPrintMarker(latLng, i + 1)
         marker.map = naverMap
