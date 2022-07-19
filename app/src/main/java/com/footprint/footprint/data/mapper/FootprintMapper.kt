@@ -10,7 +10,7 @@ object FootprintMapper {
     fun mapperToFootprintModel(saveWalkFootprintEntity: SaveWalkFootprintEntity): FootprintModel =
         saveWalkFootprintEntity.run {
             FootprintModel(
-                convertFootprintCoordinates(coordinates!!),
+                convertFootprintCoordinates(coordinates),
                 recordAt,
                 write,
                 hashtagList,
@@ -24,21 +24,23 @@ object FootprintMapper {
         var footprintImgIdx: Int = 0
 
         for (getFootprintModel in getFootprintDTOList) {
-            getFootprintEntityList.add(GetFootprintEntity(
-                footprintIdx = getFootprintModel.footprintIdx,
-                recordAt = getFootprintModel.recordAt,
-                write = getFootprintModel.write,
-                photoList = getFootprintModel.photoList,
-                tagList = getFootprintModel.tagList,
-                onWalk = getFootprintModel.onWalk,
-                footprintImgIdx = if (getFootprintModel.onWalk==1) footprintImgIdx++ else null
-            ))
+            getFootprintEntityList.add(
+                GetFootprintEntity(
+                    footprintIdx = getFootprintModel.footprintIdx,
+                    recordAt = getFootprintModel.recordAt,
+                    write = getFootprintModel.write,
+                    photoList = getFootprintModel.photoList,
+                    tagList = getFootprintModel.tagList,
+                    onWalk = getFootprintModel.onWalk,
+                    footprintImgIdx = if (getFootprintModel.onWalk == 1) footprintImgIdx++ else null
+                )
+            )
         }
 
         return getFootprintEntityList
     }
 
-    fun convertFootprintCoordinates(coordinate: LatLng): List<Double> {
-        return listOf(coordinate.latitude, coordinate.longitude)
+     fun convertFootprintCoordinates(coordinate: LatLng?): List<Double> {
+        return coordinate?.let { listOf(coordinate.latitude, coordinate.longitude) } ?: listOf()
     }
 }
