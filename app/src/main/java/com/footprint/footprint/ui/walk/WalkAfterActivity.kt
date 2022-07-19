@@ -1,14 +1,9 @@
 package com.footprint.footprint.ui.walk
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityWalkAfterBinding
 import com.footprint.footprint.service.S3UploadService
@@ -19,7 +14,6 @@ import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.ui.dialog.MsgDialogFragment
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.domain.model.*
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -252,6 +246,9 @@ class WalkAfterActivity :
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
 
+            override fun sendUpdatedFootprint(getFootprintEntity: GetFootprintEntity) {
+            }
+
             override fun cancel() {
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
@@ -308,6 +305,7 @@ class WalkAfterActivity :
                 //수정할 발자국 데이터와 함께 FootprintDialogFragment 띄우기
                 val bundle: Bundle = Bundle()
                 bundle.putString("footprint", Gson().toJson(saveWalkFootprint))
+                bundle.putBoolean("isSaved", false) //이전에 저장됐던 발자국인지 보내주기 -> 아직 저장 전이니까 false
                 footprintDialogFragment.arguments = bundle
                 footprintDialogFragment.show(supportFragmentManager, null)
             }
