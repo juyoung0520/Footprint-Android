@@ -20,72 +20,96 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
     private lateinit var navHostFragment: NavHostFragment
+    private lateinit var navController: NavController
 
     private val mainVm: MainViewModel by viewModel()
     private lateinit var networkErrSb: Snackbar
 
     private lateinit var noticeDialogFragment: NoticeDialogFragment
-    private val acquireNotices: ArrayList<NoticeDto> = arrayListOf() //주요 공지사항 목록들
+    private lateinit var newBadgeDialogFragment:NewBadgeDialogFragment
+    private val notices: ArrayList<NoticeDto> = arrayListOf() //주요 공지사항 목록들
 
     override fun initAfterBinding() {
         initBottomNavigation()
-        initNoticeDialog()
-
-        checkBadgeExist()
+        initDialog()
         observe()
+
+        /* (1) 공지사항 확인 */
+        mainVm.getKeyNotice()
     }
 
-    /* Init - BottomNavigation, Notice, Badge */
     private fun initBottomNavigation() {
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
 
-        val navController: NavController = navHostFragment.findNavController()
+        navController = navHostFragment.findNavController()
+        setChangeListener()
 
         binding.mainBottomNavigation.setupWithNavController(navController)
         binding.mainBottomNavigation.itemIconTintList = null
     }
 
-    private fun initNoticeDialog(){
-        mainVm.getKeyNotice()
+    private fun setChangeListener(){
+        navController.addOnDestinationChangedListener { _, _, _ ->
 
+            // 홈화면에서 아직 확인하지 않은 주요 공지사항이 있다면 모달을 띄워줌
+            val isHomeFragment = navHostFragment.findNavController().currentDestination!!.id == R.id.homeFragment
+            if (isHomeFragment && notices.isNotEmpty()){
+                showKeyNotice()
+            }
+        }
+    }
+
+    private fun initDialog(){
+        // 공지사항 다이얼로그
         noticeDialogFragment = NoticeDialogFragment()
         noticeDialogFragment.setMyDialogCallback(object : NoticeDialogFragment.MyDialogCallback{
             override fun isDismissed() {
-                if(acquireNotices.isNotEmpty())
-                    showKeyNotice(acquireNotices.removeAt(0))
+                if(notices.isNotEmpty()){
+                    showKeyNotice()
+                }
+                else{ /* 1-2) 공지사항을 다 띄워준 경우 -> (2) 이달의 뱃지 확인 */
+                    checkMonthBadge()
+                }
             }
+        })
 
-            override fun showingDetail() { // 자세히 보기 버튼을 통해 Detail로 이동 시, 마이페이지로 바텀 아이콘 이동
-                binding.mainBottomNavigation.menu.findItem(R.id.mypageFragment).isChecked = true
+        // 이달의 뱃지 다이얼로그
+        newBadgeDialogFragment = NewBadgeDialogFragment()
+        newBadgeDialogFragment.setMyDialogCallback(object : NewBadgeDialogFragment.MyDialogCallback{
+            override fun confirm() { /* 2-2) 뱃지 확인 완료한 경우 -> (3) 임시 저장 산책 확인  */
+
             }
 
         })
     }
 
-    private fun checkBadgeExist(){
+    private fun checkMonthBadge(){
         if (intent.hasExtra("badgeCheck") && intent.getBooleanExtra("badgeCheck", false)){
-            //badgeCheck가 true면 badge API 호출
             mainVm.getMonthBadge()
+        }else{ /* (1) 확인할 뱃지가 없는 경우 -> 3) 임시저장 확인 */
+
         }
     }
 
-    /* Dialog */
+    /* Show Dialog */
     private fun showMonthBadge(badgeInfo: String) {
         val bundle = Bundle()
         bundle.putString("badge", badgeInfo)
 
-        val newBadgeDialogFragment = NewBadgeDialogFragment()
         newBadgeDialogFragment.arguments = bundle
         newBadgeDialogFragment.show(supportFragmentManager, null)
     }
 
-    private fun showKeyNotice(notice: NoticeDto) {
-        val bundle = Bundle()
-        bundle.putString("notice", Gson().toJson(notice))
+    private fun showKeyNotice() {
+        if (navHostFragment.findNavController().currentDestination!!.id == R.id.homeFragment){
+            val notice = notices.removeAt(0)
+            val bundle = Bundle()
+            bundle.putString("notice", Gson().toJson(notice))
 
-        noticeDialogFragment.arguments = bundle
-        noticeDialogFragment.show(supportFragmentManager, null)
+            noticeDialogFragment.arguments = bundle
+            noticeDialogFragment.show(supportFragmentManager, null)
+        }
     }
 
     private fun observe(){
@@ -100,8 +124,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     }
                     networkErrSb.show()
                 }
-                ErrorType.NO_BADGE -> { // 이번 달에 획득한 뱃지가 없습니다 -> 무시
-                    LogUtils.d("Main", "이번 달에 획득한 뱃지가 없습니다")
+                ErrorType.NO_BADGE -> { /* 2-1) 뱃지가 없는 경우 -> (3) 임시 저장 산책 확인  */
+
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
                     startErrorActivity("MainActivity")
@@ -115,10 +139,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         })
 
         mainVm.thisKeyNoticeList.observe(this, Observer {
-            acquireNotices.addAll(it.keyNoticeList)
 
-            if(acquireNotices.isNotEmpty())
-                showKeyNotice(acquireNotices.removeAt(0))
+            if(it.keyNoticeList.isEmpty()){ /* 1-1) 공지사항이 없는 경우 -> (2) 이달의 뱃지 확인 */
+                checkMonthBadge()
+            }else{
+                notices.addAll(it.keyNoticeList)
+                showKeyNotice()
+            }
+
         })
     }
 
@@ -128,4 +156,5 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
     }
+
 }

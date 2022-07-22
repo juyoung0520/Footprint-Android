@@ -73,19 +73,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
-            android:layout_marginEnd="8dp"
+            android:layout_marginHorizontal="4dp"
             style="@style/tv_body_b_14"/>
         <TextView
             android:id="@+id/notice_page2_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
             style="@style/tv_body_b_14"/>
         <TextView
             android:id="@+id/notice_page3_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="4dp"
             style="@style/tv_body_b_14"/>
 
         <ImageView
@@ -105,7 +106,8 @@
         android:layout_height="0dp"
         android:background="@color/white_light"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notice_tb" />
+        app:layout_constraintTop_toBottomOf="@id/notice_tb"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/notice_loading_pb"
@@ -115,7 +117,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

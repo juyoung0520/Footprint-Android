@@ -352,6 +352,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                     googleUnlink()
                 }
                 reset()
+                removeOnboarding()
             }
         })
 
