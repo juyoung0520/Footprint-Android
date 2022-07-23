@@ -10,11 +10,9 @@ import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
-import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.NoticeDto
 import com.footprint.footprint.databinding.FragmentNoticeDialogBinding
 import com.footprint.footprint.ui.main.home.HomeFragmentDirections
-import com.footprint.footprint.ui.setting.NoticeDetailFragmentDirections
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.addReadNoticeList
 import com.google.gson.Gson
@@ -28,7 +26,6 @@ class NoticeDialogFragment() : DialogFragment() {
 
     interface MyDialogCallback {
         fun isDismissed()
-        fun showingDetail()
     }
 
     fun setMyDialogCallback(myDialogCallback: MyDialogCallback) {
@@ -57,20 +54,11 @@ class NoticeDialogFragment() : DialogFragment() {
         // 자세히 보기 클릭 시,
         binding.noticeDialogDetailTv.setOnClickListener {
             addReadNoticeList(notice.noticeIdx) // 읽은 공지사항 리스트에 추가
-
             dismiss()
-            myDialogCallback.isDismissed()
 
             // 개별 공지 화면으로 이동
-            lateinit var action: NavDirections
-
-            if (findNavController().currentDestination!!.id == R.id.homeFragment) // 홈프래그먼트 -> 자세히 보기
-                action = HomeFragmentDirections.actionHomeFragmentToNoticeDetailFragment(notice.noticeIdx.toString())
-            else if (findNavController().currentDestination!!.id == R.id.noticeDetailFragment) // 자세히 보기 -> 자세히 보기
-                action = NoticeDetailFragmentDirections.actionNoticeDetailFragmentToNoticeDetailFragment(notice.noticeIdx.toString())
-
+            val action: NavDirections = HomeFragmentDirections.actionHomeFragmentToNoticeDetailFragment(notice.noticeIdx.toString())
             findNavController().navigate(action)
-            myDialogCallback.showingDetail()
         }
 
         return binding.root

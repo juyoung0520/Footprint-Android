@@ -19,6 +19,13 @@ fun saveOnboarding(onboardingStatus: Boolean){
 
 fun getOnboarding() = mSharedPreferences.getBoolean("onboarding", false)
 
+fun removeOnboarding(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("onboarding")
+    editor.apply()
+}
+
 fun saveBackgroundGPS(backgroundGPSStatus: Boolean) {
     val editor = mSharedPreferences.edit()
 
@@ -148,12 +155,14 @@ fun removeNotification(){
     editor.apply()
 }
 
-/*초기화: loginStatus, PWD, JWT, Notification 초기화 */
+/*초기화: loginStatus, PWD, JWT, Notification, NoticeList 초기화 */
 fun reset(){
     removeLoginStatus()
-    removePWD()
     removeJwt()
+
+    removePWD()
     removeNotification()
+    removeReadNoticeList()
 }
 
 /* 주요 공지 */

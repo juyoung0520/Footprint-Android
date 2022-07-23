@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.error
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import com.footprint.footprint.databinding.ActivityErrorBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.getJwt
 
 class ErrorActivity : BaseActivity<ActivityErrorBinding>(ActivityErrorBinding::inflate) {
@@ -69,11 +71,7 @@ class ErrorActivity : BaseActivity<ActivityErrorBinding>(ActivityErrorBinding::i
                 putExtra(Intent.EXTRA_TEXT, content)
             }
 
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(Intent.createChooser(intent, "메일 전송하기"))
-        } else {
-          showToast("메일을 전송할 수 없습니다.")
-        }
+        startActivity(intent)
     }
 
 }
