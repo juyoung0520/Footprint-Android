@@ -36,6 +36,7 @@ class WalkAfterActivity :
     private lateinit var saveWalkEntity: SaveWalkEntity
     private lateinit var networkErrSb: Snackbar
     private lateinit var s3ErrorSb: Snackbar
+    private lateinit var map: NaverMap
 
     private var tempAddFootprintPosition: Int? = null   //발자국을 추가할 때 추가하려고 하는 위치를 임시 저장하는 변수
     private var tempUpdateFootprintPosition: Int? = null    //발자국을 수정할 때 수정하려고 하는 위치를 임시 저장하는 변수
@@ -103,6 +104,17 @@ class WalkAfterActivity :
             networkErrSb.dismiss()
         else if (::s3ErrorSb.isInitialized && s3ErrorSb.isShown)
             s3ErrorSb.dismiss()
+    }
+
+    @UiThread
+    override fun onMapReady(naverMap: NaverMap) {
+        map = naverMap
+
+        moveMapCamera(saveWalkEntity.coordinate, naverMap)
+
+        drawWalkPath(saveWalkEntity.coordinate, this, naverMap)
+
+        drawFootprints(saveWalkEntity.saveWalkFootprints, naverMap)
     }
 
     private fun saveWalk() {
@@ -186,7 +198,11 @@ class WalkAfterActivity :
             override fun action2(isAction: Boolean) {
                 if (isAction && isNetworkAvailable(applicationContext)) {   //저장 버튼 누르면 산책 정보 저장 API 호출
                     binding.walkAfterLoadingPb.visibility = View.VISIBLE    //로딩바 띄우기
-                    uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+
+                    map.takeSnapshot {  //저장 전 지도 캡쳐하기
+                        saveWalkEntity.pathImg = getAbsolutePathByBitmap(applicationContext, it)    //캡쳐 후 saveWalkEntity.pathImg 에 캡쳐한 이미지 Bitmap 저장
+                        uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+                    }
                 } else if (isAction && !isNetworkAvailable(applicationContext)) {    //저장을 눌렀는데 네트워크 연결이 안 돼 있는 경우
                     networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
                     networkErrSb.show()
@@ -350,6 +366,21 @@ class WalkAfterActivity :
         newBadgeDialogFragment.show(supportFragmentManager, null)
     }
 
+    private fun initWalkAfterMap() {
+        val options = NaverMapOptions()
+            .compassEnabled(false)
+
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.walk_after_map_fragment) as MapFragment?
+                ?: MapFragment.newInstance(options).also {
+                    supportFragmentManager.beginTransaction().add(R.id.walk_after_map_fragment, it)
+                        .commit()
+                }
+
+        // 지도 비동기 호출
+        mapFragment.getMapAsync(this)
+    }
+
     private fun observe() {
         walkVm.mutableErrorType.observe(this, Observer {
             binding.walkAfterLoadingPb.visibility = View.INVISIBLE
@@ -366,6 +397,8 @@ class WalkAfterActivity :
         })
 
         walkVm.badges.observe(this, Observer {
+            removeTempWalk()    //임시 저장해 놨던 산책 기록 데이터 삭제
+
             binding.walkAfterLoadingPb.visibility = View.INVISIBLE
 
             if (it.isEmpty()) {  //얻은 뱃지가 없을 때
@@ -376,29 +409,5 @@ class WalkAfterActivity :
                 showNewBadgeDialog(acquireBadges.removeAt(0))   //NewBadgeDialog 띄우기
             }
         })
-    }
-
-    private fun initWalkAfterMap() {
-        val options = NaverMapOptions()
-            .compassEnabled(false)
-
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.walk_after_map_fragment) as MapFragment?
-                ?: MapFragment.newInstance(options).also {
-                    supportFragmentManager.beginTransaction().add(R.id.walk_after_map_fragment, it)
-                        .commit()
-                }
-
-        // 지도 비동기 호출
-        mapFragment.getMapAsync(this)
-    }
-
-    @UiThread
-    override fun onMapReady(naverMap: NaverMap) {
-        moveMapCamera(saveWalkEntity.coordinate, naverMap)
-
-        drawWalkPath(saveWalkEntity.coordinate, this, naverMap)
-
-        drawFootprints(saveWalkEntity.saveWalkFootprints, naverMap)
     }
 }

@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -12,6 +13,8 @@ import com.footprint.footprint.databinding.ActivityMainBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.ui.dialog.NoticeDialogFragment
+import com.footprint.footprint.ui.dialog.TempWalkDialogFragment
+import com.footprint.footprint.ui.walk.WalkAfterActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -27,10 +30,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private lateinit var noticeDialogFragment: NoticeDialogFragment
     private lateinit var newBadgeDialogFragment:NewBadgeDialogFragment
+    private lateinit var tempWalkDialog: TempWalkDialogFragment //임시 저장 산책 다이얼로그
+
     private val notices: ArrayList<NoticeDto> = arrayListOf() //주요 공지사항 목록들
 
     override fun initAfterBinding() {
         initBottomNavigation()
+        initTempWalkDialog()
         initDialog()
         observe()
 
@@ -78,9 +84,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         newBadgeDialogFragment = NewBadgeDialogFragment()
         newBadgeDialogFragment.setMyDialogCallback(object : NewBadgeDialogFragment.MyDialogCallback{
             override fun confirm() { /* 2-2) 뱃지 확인 완료한 경우 -> (3) 임시 저장 산책 확인  */
-
+                if (getTempWalk() != null)    //임시 저장된 산책 정보가 있으면 TempWalkDialog 띄우기
+                    tempWalkDialog.show(supportFragmentManager, null)
             }
-
         })
     }
 
@@ -88,7 +94,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         if (intent.hasExtra("badgeCheck") && intent.getBooleanExtra("badgeCheck", false)){
             mainVm.getMonthBadge()
         }else{ /* (1) 확인할 뱃지가 없는 경우 -> 3) 임시저장 확인 */
-
+            if (getTempWalk() != null)    //임시 저장된 산책 정보가 있으면 TempWalkDialog 띄우기
+                tempWalkDialog.show(supportFragmentManager, null)
         }
     }
 
@@ -112,6 +119,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
     }
 
+    //임시 저장 산책 기록 다이얼로그 초기화 함수
+    private fun initTempWalkDialog() {
+        tempWalkDialog = TempWalkDialogFragment()
+
+        tempWalkDialog.setMyCallbackListener(object : TempWalkDialogFragment.MyCallbackListener {
+            override fun delete() {
+                removeTempWalk()    //임시 저장해 놨던 산책 기록 데이터 삭제
+            }
+
+            override fun followUp() {
+                val walkAfterIntent = Intent(this@MainActivity, WalkAfterActivity::class.java)
+                walkAfterIntent.putExtra("walk", getTempWalk())    //산책 정보 전달
+                startActivity(walkAfterIntent)
+            }
+        })
+    }
+
     private fun observe(){
         mainVm.mutableErrorType.observe(this, androidx.lifecycle.Observer {
             when (it) {
@@ -125,7 +149,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     networkErrSb.show()
                 }
                 ErrorType.NO_BADGE -> { /* 2-1) 뱃지가 없는 경우 -> (3) 임시 저장 산책 확인  */
-
+                    if (getTempWalk() != null)    //임시 저장된 산책 정보가 있으면 TempWalkDialog 띄우기
+                        tempWalkDialog.show(supportFragmentManager, null)
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
                     startErrorActivity("MainActivity")

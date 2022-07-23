@@ -150,6 +150,7 @@
     <string name="title_update">발자국 업데이트 안내</string>
     <string name="action_withdrawal">탈퇴하기</string>
     <string name="action_store">스토어 이동</string>
+    <string name="action_follow_up">이어서 작성하기</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -171,6 +172,7 @@
     <string name="msg_denied_walk_for_foreground_gps">산책을 시작하기 위해서는 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
     <string name="msg_denied_walk_for_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
     <string name="msg_denied_update">업데이트 후 사용 가능합니다.</string>
+    <string name="msg_temp_walk">임시 저장된 산책 기록이 있어요.\n이어서 기록을 작성하시겠어요?</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
@@ -311,4 +313,6 @@
     <string name="title_lock_unlock">잠금 해제</string>
     <string name="msg_lock_unlock">기존의 암호를 입력해 주세요</string>
     <string name="msg_lock_unlock_wrong">잘못된 암호를 입력하였습니다</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

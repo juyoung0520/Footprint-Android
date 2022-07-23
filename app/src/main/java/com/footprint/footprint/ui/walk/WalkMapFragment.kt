@@ -61,6 +61,16 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private val saveWalkEntity: SaveWalkEntity = SaveWalkEntity()  //산책 데이터
     private lateinit var userInfo: SimpleUserModel
 
+    //산책 기록 임시저장 Job
+    private val tempSaveWalkJob = CoroutineScope(Dispatchers.IO).launch (start = CoroutineStart.LAZY) {
+        while(true) {
+            bindSaveWalkEntity()
+            setTempWalk(Gson().toJson(saveWalkEntity))
+
+            delay(600000)   //10분에 한번씩 임시 저장
+        }
+    }
+
     override fun initAfterBinding() {
         if (::map.isInitialized) {
             return
@@ -242,6 +252,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         binding.walkmapStopIv.setOnClickListener {
             showStopWalkDialog()    //실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         }
+
+        tempSaveWalkJob.start() //산책 기록 임시 저장 Job START
     }
 
     private fun setWalkState(isWalking: Boolean) {
@@ -268,17 +280,13 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun goToWalkAfterActivity() {
-        map.takeSnapshot { bitmap ->    //산책 동선 사진
-            saveWalkEntity.pathImg = getAbsolutePathByBitmap(requireContext(), bitmap)
-            bindSaveWalkEntity()
+        bindSaveWalkEntity()
 
-            val intent: Intent =
-                Intent(requireActivity(), WalkAfterActivity::class.java)
-            intent.putExtra("walk", Gson().toJson(saveWalkEntity))    //산책 정보 전달
-            intent.putExtra("paths", Gson().toJson(paths))
-            startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
-            (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
-        }
+        val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
+        intent.putExtra("walk", Gson().toJson(saveWalkEntity))    //산책 정보 전달
+        intent.putExtra("paths", Gson().toJson(paths))
+        startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
+        (requireActivity() as WalkActivity).finish()    //해당 액티비티 종료
     }
 
     private fun updateLocation(location: Location) {
@@ -450,5 +458,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     override fun onDestroyView() {
         super.onDestroyView()
         sendCommandToService(BackgroundWalkService.TRACKING_STOP)
+        tempSaveWalkJob.cancel()    //산책 기록 임시 저장 종료
     }
 }
