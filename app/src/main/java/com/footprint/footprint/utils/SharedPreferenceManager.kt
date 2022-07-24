@@ -155,7 +155,7 @@ fun removeNotification(){
     editor.apply()
 }
 
-/*초기화: loginStatus, PWD, JWT, Notification, NoticeList 초기화 */
+/*초기화: loginStatus, PWD, JWT, Notification, NoticeList, TempWalk 초기화 */
 fun reset(){
     removeLoginStatus()
     removeJwt()
@@ -163,6 +163,8 @@ fun reset(){
     removePWD()
     removeNotification()
     removeReadNoticeList()
+
+    removeTempWalk()
 }
 
 /* 주요 공지 */
@@ -201,4 +203,20 @@ private fun convertString2IntArrayList(list: String): ArrayList<Int>{
 
 private fun convertIntArrayList2String(list: ArrayList<Int>): String{
     return Gson().toJson(list)
+}
+
+fun setTempWalk(walk: String) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putString("tempWalk", walk)
+    editor.apply()
+}
+
+fun getTempWalk(): String? =  mSharedPreferences.getString("tempWalk", null)
+
+fun removeTempWalk(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("tempWalk")
+    editor.apply()
 }

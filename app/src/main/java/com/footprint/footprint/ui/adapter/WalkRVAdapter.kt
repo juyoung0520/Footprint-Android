@@ -9,6 +9,10 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.DayWalkDTO
 import com.footprint.footprint.data.dto.UserDateWalkDTO
@@ -94,6 +98,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
             binding.walkTimeTv.text = String.format("%s~%s", walk.startTime, walk.endTime)
 
+            binding.walkPathIv.clipToOutline = true
             Glide.with(context).load(walk.pathImageUrl).into(binding.walkPathIv)
 
             val hashtag = walks[position].hashtag
