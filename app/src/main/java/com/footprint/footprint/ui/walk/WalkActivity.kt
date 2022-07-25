@@ -7,6 +7,7 @@ import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.removeTempWalk
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 
@@ -61,10 +62,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         actionDialogFragment.setMyDialogCallback(object :
             ActionDialogFragment.MyDialogCallback {
 
-            //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
+            //중지 텍스트뷰를 클릭하면
             override fun action1(isAction: Boolean) {
-                if (isAction)
-                    finish()
+                if (isAction) {
+                    removeTempWalk()    //임시저장 산책 삭제
+                    finish()    //액티비티 종료
+                }
             }
 
             override fun action2(isAction: Boolean) {
