@@ -27,6 +27,7 @@ import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.FootprintDialogFragment
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
@@ -264,21 +265,6 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         }
     }
 
-    private fun moveMapCamera() {
-        val bounds = getPathBounds(paths)
-        if (bounds == null) {
-            goToWalkAfterActivity()
-            return
-        }
-
-        val cameraUpdate = CameraUpdate.fitBounds(bounds)
-            .animate(CameraAnimation.Fly, 2000)
-            .finishCallback {
-                goToWalkAfterActivity()
-            }
-        map.moveCamera(cameraUpdate)
-    }
-
     private fun goToWalkAfterActivity() {
         bindSaveWalkEntity()
 
@@ -381,7 +367,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                                 getMarker(paths.last().last(), endMarkerImage).map = map
                             }
 
-                            moveMapCamera() // 경로 모두 포함하도록 지도 카메라 이동
+                            goToWalkAfterActivity()
                         }
                     }
                 }
