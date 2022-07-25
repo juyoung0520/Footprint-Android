@@ -21,6 +21,8 @@ import com.footprint.footprint.classes.type.NonNullMutableLiveData
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.ui.walk.WalkMapFragment
+import com.footprint.footprint.utils.GlobalApplication
+import com.footprint.footprint.utils.LogUtils
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.Job
@@ -79,7 +81,6 @@ class BackgroundWalkService : LifecycleService() {
                 }
             } else {
                 //LogUtils.d("${GlobalApplication.TAG}/BACKGROUND", "ISWALKING - false")
-                checkPathValid()
                 locationDeactivate()
             }
         })
@@ -289,17 +290,6 @@ class BackgroundWalkService : LifecycleService() {
             }
         }
     }
-    private fun checkPathValid() {
-        if (paths.value.isNotEmpty()) {
-            when(paths.value.last().size) {
-                0 -> return
-                1 -> {
-                    // 좌표 한개면 복사
-                    paths.value.last().add(paths.value.last().last())
-                }
-            }
-        }
-    }
 
     private fun addEmptyPath() {
         paths.value.apply {
@@ -315,6 +305,7 @@ class BackgroundWalkService : LifecycleService() {
             last().add(pos)
             paths.postValue(this)
         }
+        //LogUtils.d("${GlobalApplication.TAG}/paths", paths.value.toString())
     }
 
     private fun updateDistance(location: Location) {

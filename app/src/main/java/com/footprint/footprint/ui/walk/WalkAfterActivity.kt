@@ -110,6 +110,8 @@ class WalkAfterActivity :
     override fun onMapReady(naverMap: NaverMap) {
         map = naverMap
 
+        checkValidPath(saveWalkEntity.coordinate)
+
         moveMapCamera(saveWalkEntity.coordinate, naverMap)
 
         drawWalkPath(saveWalkEntity.coordinate, this, naverMap)

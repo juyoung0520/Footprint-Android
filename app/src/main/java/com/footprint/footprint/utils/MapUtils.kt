@@ -5,6 +5,7 @@ import android.graphics.PointF
 import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
+import com.footprint.footprint.service.BackgroundWalkService
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraUpdate
@@ -12,6 +13,7 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
+import okhttp3.internal.notify
 
 fun getPathBounds(paths: MutableList<MutableList<LatLng>>): LatLngBounds? {
     if (paths.isEmpty()) {
@@ -20,8 +22,8 @@ fun getPathBounds(paths: MutableList<MutableList<LatLng>>): LatLngBounds? {
 
     var latLngBounds = LatLngBounds.from(paths[0])
     if (paths.size > 1) {
-        for (index in 1 until paths.size) {
-            latLngBounds = latLngBounds.union(LatLngBounds.from(paths[index]))
+        for (i in 1 until paths.size) {
+            latLngBounds = latLngBounds.union(LatLngBounds.from(paths[i]))
         }
     }
 
@@ -103,7 +105,7 @@ fun drawWalkPath(paths: MutableList<MutableList<LatLng>>,context: Context, naver
     val midMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_middle_end)
     val endMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_end)
 
-    for (i in 0 until paths.size) {
+    for (i in paths.indices) {
         val pathOverlay = getPath(context)
         pathOverlay.coords = paths[i]
         pathOverlay.map = naverMap
@@ -123,6 +125,19 @@ fun drawWalkPath(paths: MutableList<MutableList<LatLng>>,context: Context, naver
         startMarker.map = naverMap
         endMarker.map = naverMap
     }
+}
+
+fun checkValidPath(paths: MutableList<MutableList<LatLng>>) {
+    val removeIndices = arrayListOf<Int>()
+
+    for (i in paths.indices) {
+        when (paths[i].size) {
+            0 -> removeIndices.add(i) // remove 바로하면 size 달라져서 에러남
+            1 -> paths[i].add(paths[i].last()) // 좌표 한개면 복사
+        }
+    }
+
+    removeIndices.forEach { paths.removeAt(it) }
 }
 
 fun moveMapCamera(
