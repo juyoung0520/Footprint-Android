@@ -192,8 +192,10 @@ class WalkAfterActivity :
 
             //‘OO번째 산책’ 작성을 취소할까요?
             override fun action1(isAction: Boolean) {
-                if (isAction)   //삭제 버튼 누르면 액티비티 종료
-                    finish()
+                if (isAction) {   //삭제 버튼 누르면
+                    removeTempWalk()    //임시 저장했던 산책 데이터 삭제
+                    finish()    //액티비티 종료
+                }
             }
 
             //‘OO번째 산책’을 저장할까요?
