@@ -28,18 +28,13 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
 
     private var max = 1
     private var current = 1
-    private var size = 1
+    private var size = 1 // 한 페이지에 보여줄 수 있는 목록의 개수
 
     override fun initAfterBinding() {
 
-        val heightDp = convertPxToDp(requireContext(), getDeviceHeight()) - (90 + 54 + 70) //툴바(90) + 하단 indicator(54) + 네비게이션 (70)
-        size = heightDp / 64
-
-        noticeRVAdapter = NoticeRVAdapter()
-        binding.noticeRv.adapter = noticeRVAdapter
-
-        observe()
+        initRVAdapter()
         setMyEventListener()
+        observe()
 
         // 로딩바 띄우기
         binding.noticeLoadingBgV.visibility = View.GONE
@@ -48,8 +43,17 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         noticeListVm.getNoticeList(1, size)
     }
 
+    private fun initRVAdapter() {
+        val heightDp = convertPxToDp(requireContext(), getDeviceHeight()) - (90 + 54 + 70) //툴바(90) + 하단 indicator(54) + 네비게이션 (70)
+        size = heightDp / 64
+
+        noticeRVAdapter = NoticeRVAdapter()
+        binding.noticeRv.adapter = noticeRVAdapter
+    }
+
     private fun setMyEventListener() {
-        //뒤로가기 이미지뷰 클릭 리스너 -> Setting fragment로 이동
+
+        //뒤로가기 이미지뷰 클릭 리스너 -> Setting fragment 이동
         binding.noticeBackIv.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -84,7 +88,6 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
         noticeRVAdapter.setMyItemClickListener(object : NoticeRVAdapter.MyItemClickListener{
             override fun showNoticeDetail(idx: Int) {
 
-                // Item 클릭 시, notice idx 정보 가지고 detail 화면으로 이동
                 val action = NoticeFragmentDirections.actionNoticeFragmentToNoticeDetailFragment(idx.toString())
                 findNavController().navigate(action)
             }

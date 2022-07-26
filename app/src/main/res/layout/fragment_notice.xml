@@ -51,7 +51,7 @@
     <LinearLayout
         android:id="@+id/notice_indicator_layout"
         android:layout_width="wrap_content"
-        android:layout_height="14dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
 
         android:orientation="horizontal"
@@ -66,7 +66,8 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_first"
             android:alpha="0.3"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:padding="2dp"/>
 
         <TextView
             android:id="@+id/notice_page1_tv"
@@ -74,20 +75,24 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
             android:layout_marginHorizontal="4dp"
-            style="@style/tv_body_b_14"/>
+            style="@style/tv_body_b_14"
+            android:padding="2dp"/>
         <TextView
             android:id="@+id/notice_page2_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black_light"
             android:layout_marginHorizontal="4dp"
-            style="@style/tv_body_b_14"/>
+            style="@style/tv_body_b_14"
+            android:padding="2dp"/>
         <TextView
             android:id="@+id/notice_page3_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
             android:layout_marginHorizontal="4dp"
-            style="@style/tv_body_b_14"/>
+            style="@style/tv_body_b_14"
+            android:padding="2dp"/>
 
         <ImageView
             android:id="@+id/notice_last_iv"
@@ -95,7 +100,8 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_last"
             android:alpha="0.3"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:padding="2dp"/>
 
     </LinearLayout>
 
