@@ -1,11 +1,13 @@
 package com.footprint.footprint.ui.main.course
 
+import android.content.pm.PackageManager
 import android.graphics.PointF
-import android.graphics.Rect
 import android.location.Location
-import android.location.LocationManager
+import android.os.Build
+import android.os.Bundle
+import android.os.Looper
 import android.view.View
-import androidx.lifecycle.LiveData
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.footprint.footprint.R
@@ -13,10 +15,10 @@ import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseMapBinding
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.SEARCH_IN_MAP
 import com.footprint.footprint.utils.SEARCH_IN_MY_LOCATION
 import com.footprint.footprint.viewmodel.CourseViewModel
+import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.LocationOverlay
@@ -30,12 +32,15 @@ class CourseMapFragment() :
         const val PIN_START = "start"
         const val PIN_END = "end"
     }
-
-    private var isCameraInitialized = false
     private var pinMode = MutableLiveData(PIN_START)
 
-    private lateinit var map: NaverMap
+    private var isCameraInitialized = false
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var currentLocation: Location
     private lateinit var locationOverlay: LocationOverlay
+
+    private lateinit var map: NaverMap
     private val markerList = arrayListOf<Marker>()
 
     private val courseVm: CourseViewModel by sharedViewModel()
@@ -67,9 +72,8 @@ class CourseMapFragment() :
 
     private fun initClickListener() {
         binding.courseMapCurrentLocationIv.setOnClickListener {
-            courseVm.currentLocation.value?.let { location ->
-                map.moveCamera(CameraUpdate.scrollTo(LatLng(location))) // 카메라 이동
-            }
+            if(::currentLocation.isInitialized)
+                map.moveCamera(CameraUpdate.scrollTo(LatLng(currentLocation))) // 카메라 이동
         }
     }
 
@@ -90,6 +94,7 @@ class CourseMapFragment() :
 
         setMap()
         initMapEvent()
+        locationActivate()
         initClickListener()
         observe()
     }
@@ -105,6 +110,7 @@ class CourseMapFragment() :
             anchor = PointF(0.5f, 0.5f)
             subIcon = null
         }
+        locationOverlay.isVisible = true
     }
 
     private fun initMapEvent() {
@@ -126,10 +132,136 @@ class CourseMapFragment() :
                 map.contentBounds.northWest,
                 map.contentBounds.northEast
             )
-            courseVm.setBounds(bounds)
+            courseVm.setMapBounds(bounds)
         }
     }
 
+    private fun observe() {
+        courseVm.filteredCourseList.observe(this, Observer {
+            // 기존 마커 다 지우기
+            // clearMarkers()
+
+            // 정렬된 리스트가 바뀌면 새로운 마커들을 띄워준다
+            // addMarkers()
+        })
+
+        pinMode.observe(this, Observer{
+            showToast(it.toString())
+
+/*          // 1) 리스트 자체가 비었음 -> return
+            if(courseVm.filteredCourseList.value.isEmpty())
+                return@Observer
+
+            // 로딩 ...
+            val courseList = courseVm.filteredCourseList.value.toList()
+            if(markerList.isEmpty()){ // marker 없음 -> addMarker
+                 //  addMarkers(courseList)
+            }else{ // marker 존재함 -> updateMarker
+                //  updateMarkers(courseList)
+            }*/
+        })
+    }
+
+    /* 현위치 */
+    private fun locationActivate() {
+        // Permission Check 여기 안넣으면 에러
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+        }
+
+        val locationRequest = LocationRequest.create().apply {
+            interval = 2000L // 위치 업데이트 주기
+            fastestInterval = 1000L // 가장 빠른 위치 업데이트 주기
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // 배터리 소모를 고려하지 않으며 정확도를 최우선으로 고려
+        }
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
+    }
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            super.onLocationResult(result)
+
+            result.lastLocation.let { location ->
+                binding.courseMapLoadingBgV.visibility = View.GONE
+                binding.courseMapLoadingPb.visibility = View.GONE
+
+                currentLocation = location
+
+                // 현위치 오버레이
+                val position = LatLng(location)
+                locationOverlay.apply {
+                    this.position = position
+                    bearing = location.bearing
+                }
+
+                // 처음에만 카메라 이동
+                if (!isCameraInitialized) {
+                    map.moveCamera(CameraUpdate.scrollTo(position))
+
+                    isCameraInitialized = true
+                }
+
+                // 내 위치 모드일 경우, 카메라 이동
+                if(courseVm.mode.value == SEARCH_IN_MY_LOCATION)
+                    map.moveCamera(CameraUpdate.scrollTo(position))
+
+                // 현위치 bounds
+                val bounds = BoundsModel(
+                    map.contentBounds.southWest,
+                    map.contentBounds.southEast,
+                    map.contentBounds.northWest,
+                    map.contentBounds.northEast
+                )
+                courseVm.setCurrentBounds(bounds)
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    /* 마커 관련 */
     private fun addMarker(courseList: ArrayList<CourseDTO>){
         if(courseList.isEmpty())
             return
@@ -139,7 +271,7 @@ class CourseMapFragment() :
             marker.position = course.latLng
             marker.map = map
             marker.icon = if(pinMode.value == PIN_START) OverlayImage.fromResource(R.drawable.ic_location_pin_start)
-                            else OverlayImage.fromResource(R.drawable.ic_location_pin_end)
+            else OverlayImage.fromResource(R.drawable.ic_location_pin_end)
 
             markerList.add(marker)
         }
@@ -163,51 +295,5 @@ class CourseMapFragment() :
         for(marker in markerList){
             marker.map = null
         }
-    }
-
-    private fun observe() {
-        courseVm.currentLocation.observe(this, Observer { location ->
-            if (location != null) {
-                val position = LatLng(location)
-                locationOverlay.apply {
-                    this.position = position
-                    bearing = location.bearing
-                }
-
-                if (!isCameraInitialized) {
-                    binding.courseMapLoadingBgV.visibility = View.GONE
-                    binding.courseMapLoadingPb.visibility = View.GONE
-
-                    locationOverlay.isVisible = true
-                    map.moveCamera(CameraUpdate.scrollTo(position))
-
-                    isCameraInitialized = true
-                }
-            }
-        })
-
-        courseVm.filteredCourseList.observe(this, Observer {
-            // 기존 마커 다 지우기
-            // clearMarkers()
-
-            // 정렬된 리스트가 바뀌면 새로운 마커들을 띄워준다
-            // addMarkers()
-        })
-
-        pinMode.observe(this, Observer{
-            showToast(it.toString())
-
-/*            // 1) 리스트 자체가 비었음 -> return
-            if(courseVm.filteredCourseList.value.isEmpty())
-                return@Observer
-
-            // 로딩 ...
-            val courseList = courseVm.filteredCourseList.value.toList()
-            if(markerList.isEmpty()){ // marker 없음 -> addMarker
-                  //  addMarkers(courseList)
-            }else{ // marker 존재함 -> updateMarker
-                //  updateMarkers(courseList)
-            }*/
-        })
     }
 }

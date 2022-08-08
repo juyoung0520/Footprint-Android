@@ -176,6 +176,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
-    // Lottie
+    //Lottie
     implementation 'com.airbnb.android:lottie:3.0.7'
+
+    //Seekbar
+    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
 }

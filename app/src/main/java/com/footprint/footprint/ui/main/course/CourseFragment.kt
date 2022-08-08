@@ -1,34 +1,23 @@
 package com.footprint.footprint.ui.main.course
 
-import android.content.pm.PackageManager
-import android.graphics.Paint
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.view.View
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.adapter.CourseFilterRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.utils.*
+import com.footprint.footprint.ui.main.course.Filtering.filters
+import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.getNumberOfActivateFilters
 import com.footprint.footprint.viewmodel.CourseViewModel
-import com.footprint.footprint.viewmodel.HomeViewModel
-import com.google.android.gms.location.*
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraUpdate
-import com.naver.maps.map.overlay.LocationOverlay
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBinding::inflate) {
+class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBinding::inflate) {
     private var mode: Int = 0   // 모드: 지도(0), 리스트(1)
-    private var filter: Int = 0 // 필터: off(0), on(1)
 
     private lateinit var mapFragment: CourseMapFragment
     private lateinit var listFragment: CourseListFragment
 
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val courseVm: CourseViewModel by sharedViewModel()
 
     override fun initAfterBinding() {
@@ -36,39 +25,9 @@ class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBindin
         setFilterSetting()
     }
 
-    private fun setFilterSetting() {
-        val widthDp = convertDpToPx(requireContext(),
-            convertPxToDp(requireContext(), getDeviceWidth()) - (53 + 20 + 12) // 필터 텍스트뷰(53) + 필터 마진(20) + 기본 마진 (12)
-        )
-        binding.courseBlankV.setWidth(widthDp)
-
-        binding.courseFilterLayout.setOnClickListener {
-            when (filter) {
-                0 -> { // 필터 on
-                    filter = 1
-                    it.alpha = 1F
-                    binding.courseFilterIv.setImageResource(R.drawable.ic_filter_on)
-                    binding.courseBlankV.visibility = View.GONE
-
-                    binding.courseFilterStateTv.text = getString(R.string.title_filter_on)
-                    binding.courseFilterStateTv.setTextColor(resources.getColor(R.color.primary))
-                    binding.courseFilterStateTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-                    binding.courseFilterTv.setTextColor(resources.getColor(R.color.primary))
-                }
-                1 -> { // 필터 off
-                    filter = 0
-                    it.alpha = 0.5F
-                    binding.courseFilterIv.setImageResource(R.drawable.ic_filter_off)
-                    binding.courseBlankV.visibility = View.VISIBLE
-
-
-                    binding.courseFilterStateTv.text = getString(R.string.title_filter_off)
-                    binding.courseFilterStateTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-                    binding.courseFilterStateTv.setTextColor(resources.getColor(R.color.black_light))
-                    binding.courseFilterTv.setTextColor(resources.getColor(R.color.black_light))
-                }
-            }
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        courseVm.getCourseList(this)
     }
 
     private fun setFragmentSetting() {
@@ -97,75 +56,33 @@ class CourseFragment(): BaseFragment<FragmentCourseBinding>(FragmentCourseBindin
         }
     }
 
-    /* 위치 */
-    private fun locationActivate(){
-        // Permission Check 여기 안넣으면 에러
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
+    private fun setFilterSetting() {
+        val filterState = courseVm.initFilters()
+        val filterRVAdapter = CourseFilterRVAdapter((activity as MainActivity).supportFragmentManager, filters, filterState as HashMap<String, Int?>)
+        binding.courseFilterRv.adapter = filterRVAdapter
+
+        filterRVAdapter.setMyListener(object : CourseFilterRVAdapter.MyListener {
+            override fun onChange(filterState: HashMap<String, Int?>) {
+                courseVm.updateFilteredCourseList(filterState)
+
+                // 초기화 버튼 상태 관리
+                LogUtils.d("Course", getNumberOfActivateFilters(filterState).toString())
+                if (getNumberOfActivateFilters(filterState) >= 1) {
+                    binding.courseResetIv.isSelected = true
+                    binding.courseResetTv.isSelected = true
+                } else {
+                    binding.courseResetIv.isSelected = false
+                    binding.courseResetTv.isSelected = false
+                }
             }
-        } else {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
+        })
+
+        binding.courseResetTv.setOnClickListener {
+            if (binding.courseResetTv.isSelected) {
+                filterRVAdapter.reset(courseVm.initFilters() as HashMap<String, Int?>)
+                binding.courseResetIv.isSelected = false
+                binding.courseResetTv.isSelected = false
             }
         }
-
-        val locationRequest = LocationRequest.create().apply {
-            interval = 2000L // 위치 업데이트 주기
-            fastestInterval = 1000L // 가장 빠른 위치 업데이트 주기
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // 배터리 소모를 고려하지 않으며 정확도를 최우선으로 고려
-        }
-
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
-    }
-
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(result: LocationResult) {
-            super.onLocationResult(result)
-
-            result.lastLocation.let { location ->
-                LogUtils.d("Course", location.toString())
-                courseVm.setCurrentLocation(location)
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        locationActivate()
-
-        courseVm.getCourseList(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetDashBoardLayout"
+    app:behavior_hideable="true"
+    app:behavior_draggable="true"
+    android:paddingBottom="30dp"
+    android:background="@drawable/bg_bottom_sheet"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/bottom_dialog_orderby_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_orderby"
+        style="@style/tv_headline_eb_16"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/bottom_dialog_orderby_divider_v"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_dark"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_orderby_title_tv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bottom_dialog_orderby_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_orderby_divider_v"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_orderby_list"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
