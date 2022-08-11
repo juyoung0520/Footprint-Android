@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main.course
 
+import android.content.Intent
 import android.os.Bundle
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
@@ -23,11 +24,24 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     override fun initAfterBinding() {
         setFragmentSetting()
         setFilterSetting()
+        setClickEvent()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         courseVm.getCourseList(this)
+    }
+
+    private fun setClickEvent(){
+        // 코스 검색으로 이동
+        binding.courseSearchIv.setOnClickListener {
+            startActivity(Intent(requireContext(), CourseSearchActivity::class.java))
+        }
+
+        // 마이 코스로 이동
+        binding.courseMyCourseIv.setOnClickListener {
+
+        }
     }
 
     private fun setFragmentSetting() {

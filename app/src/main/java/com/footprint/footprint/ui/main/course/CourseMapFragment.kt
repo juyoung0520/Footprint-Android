@@ -116,12 +116,10 @@ class CourseMapFragment() :
     private fun initMapEvent() {
         map.addOnCameraChangeListener { reason, _ ->
             when (reason) {
-                CameraUpdate.REASON_DEVELOPER -> { // 모드 변경: 내 위치 중심
-                    courseVm.setMode(SEARCH_IN_MY_LOCATION)
+                CameraUpdate.REASON_DEVELOPER -> {
                     binding.courseMapCurrentLocationIv.alpha = 1F
                 }
                 CameraUpdate.REASON_GESTURE -> {
-                    courseVm.setMode(SEARCH_IN_MAP) // 모드 변경: 지도 중심
                     binding.courseMapCurrentLocationIv.alpha = 0.5F
                 }
             }
@@ -146,8 +144,6 @@ class CourseMapFragment() :
         })
 
         pinMode.observe(this, Observer{
-            showToast(it.toString())
-
 /*          // 1) 리스트 자체가 비었음 -> return
             if(courseVm.filteredCourseList.value.isEmpty())
                 return@Observer

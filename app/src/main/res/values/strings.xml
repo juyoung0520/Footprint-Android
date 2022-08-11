@@ -213,6 +213,7 @@
 
     <!--코스추천-->
     <string name="title_course">코스추천</string>
+    <string name="title_course_search">코스검색</string>
 
     <!--목표 설정 화면-->
     <string name="msg_set_goal">목표를 설정해 주세요</string>
