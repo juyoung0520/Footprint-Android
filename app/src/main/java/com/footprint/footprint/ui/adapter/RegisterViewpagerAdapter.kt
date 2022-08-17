@@ -2,7 +2,7 @@ package com.footprint.footprint.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.domain.model.InitUserModel
 import com.footprint.footprint.ui.register.RegisterActivity
 import com.footprint.footprint.ui.register.goal.RegisterGoalFragment
 
@@ -23,7 +23,7 @@ class RegisterViewpagerAdapter(fragment: RegisterActivity) : FragmentStateAdapte
         this.fragments.addAll(fragments)
     }
 
-    fun sendUserToGoalFrag(user: UserModel) {
+    fun sendUserToGoalFrag(user: InitUserModel) {
         (fragments[1] as RegisterGoalFragment).deliverUser(user)
     }
 

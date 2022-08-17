@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.footprint.footprint.utils.GlobalApplication.Companion.X_ACCESS_TOKEN
 import com.footprint.footprint.utils.GlobalApplication.Companion.eSharedPreferences
 import com.footprint.footprint.utils.GlobalApplication.Companion.mSharedPreferences
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 /*Onboarding- true(온보딩 실행 이력 O), false(온보딩 실행 이력 X/첫 접속)*/
 fun saveOnboarding(onboardingStatus: Boolean){
@@ -17,6 +19,30 @@ fun saveOnboarding(onboardingStatus: Boolean){
 
 fun getOnboarding() = mSharedPreferences.getBoolean("onboarding", false)
 
+fun removeOnboarding(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("onboarding")
+    editor.apply()
+}
+
+fun saveBackgroundGPS(backgroundGPSStatus: Boolean) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putBoolean("backgroundGPS", backgroundGPSStatus)
+    editor.apply()
+}
+
+fun getBackgroundGPS() = mSharedPreferences.getBoolean("backgroundGPS", false)
+
+fun saveFirstBackgroundGPSCheck(isFirst: Boolean) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putBoolean("firstBackgroundGPSCheck", isFirst)
+    editor.apply()
+}
+
+fun getFirstBackgroundGPSCheck() = mSharedPreferences.getBoolean("firstBackgroundGPSCheck", false)
 
 /*Login Status - kakao, google, null*/
 fun saveLoginStatus(loginStatus: String){
@@ -57,7 +83,7 @@ fun removeJwt(){
 fun saveTags(context: Context,tags: ArrayList<String>) {
     val spf = context.getSharedPreferences("tag", AppCompatActivity.MODE_PRIVATE)
     val editor = spf.edit()
-    val json = gson.toJson(tags)
+    val json = Gson().toJson(tags)
 
     editor.putString("tags", json)
     editor.apply()
@@ -68,7 +94,7 @@ fun getTags(context: Context): ArrayList<String>? {
     val json = spf.getString("tags", null)
     val type = object : TypeToken<ArrayList<String>>() {}.type
 
-    return gson.fromJson(json, type)
+    return Gson().fromJson(json, type)
 }
 
 /*Password: 산책 일기 암호*/
@@ -129,10 +155,68 @@ fun removeNotification(){
     editor.apply()
 }
 
-/*초기화: loginStatus, PWD, JWT, Notification 초기화 */
+/*초기화: loginStatus, PWD, JWT, Notification, NoticeList, TempWalk 초기화 */
 fun reset(){
     removeLoginStatus()
-    removePWD()
     removeJwt()
+
+    removePWD()
     removeNotification()
+    removeReadNoticeList()
+
+    removeTempWalk()
+}
+
+/* 주요 공지 */
+fun addReadNoticeList(idx: Int){
+    val editor = mSharedPreferences.edit()
+
+    val noticeList: ArrayList<Int> = getReadNoticeList() as ArrayList<Int>
+    noticeList.add(idx)
+
+    editor.putString("readNotice", convertIntArrayList2String(noticeList))
+    editor.apply()
+}
+
+fun getReadNoticeList(): List<Int>{
+    val SnoticeList = mSharedPreferences.getString("readNotice", "null")
+    var noticeList: ArrayList<Int> = arrayListOf()
+
+    if(SnoticeList != "null"){
+        noticeList = convertString2IntArrayList(SnoticeList!!)
+    }
+
+    return noticeList as List<Int>
+}
+
+fun removeReadNoticeList(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("readNotice")
+    editor.apply()
+}
+
+private fun convertString2IntArrayList(list: String): ArrayList<Int>{
+    val type = object : TypeToken<ArrayList<Int>?>() {}.type
+    return Gson().fromJson(list, type)
+}
+
+private fun convertIntArrayList2String(list: ArrayList<Int>): String{
+    return Gson().toJson(list)
+}
+
+fun setTempWalk(walk: String) {
+    val editor = mSharedPreferences.edit()
+
+    editor.putString("tempWalk", walk)
+    editor.apply()
+}
+
+fun getTempWalk(): String? =  mSharedPreferences.getString("tempWalk", null)
+
+fun removeTempWalk(){
+    val editor = mSharedPreferences.edit()
+
+    editor.remove("tempWalk")
+    editor.apply()
 }

@@ -15,32 +15,36 @@ import com.kakao.sdk.user.UserApiClient
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
+import com.footprint.footprint.BuildConfig
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.SocialUserModel
-import com.footprint.footprint.data.remote.auth.AuthService
-import com.footprint.footprint.data.remote.auth.Login
-import com.footprint.footprint.data.remote.badge.BadgeInfo
-import com.footprint.footprint.data.remote.badge.BadgeService
+import com.footprint.footprint.domain.model.SocialUserModel
 import com.footprint.footprint.ui.agree.AgreeActivity
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.SignInViewModel
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate),
-    SignInView, MonthBadgeView{
+class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding::inflate){
+
+    private val signInVm: SignInViewModel by viewModel()
+    private lateinit var socialUserModel: SocialUserModel
+
+    private lateinit var networkErrSb: Snackbar
 
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var getResult: ActivityResultLauncher<Intent>
-    private lateinit var socialUserModel: SocialUserModel
+    private lateinit var getGoogleResult: ActivityResultLauncher<Intent>
 
     private var doubleBackToExit = false //뒤로가기 두 번 눌러야 종료 확인하는 변수
 
     override fun initAfterBinding() {
         setClickListener()
+        observe()
     }
 
     private fun setClickListener() {
@@ -51,15 +55,8 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
         //구글 로그인
         binding.signinGoogleloginBtnLayout.setOnClickListener {
-            getResult.launch(mGoogleSignInClient.signInIntent)
+            getGoogleResult.launch(mGoogleSignInClient.signInIntent)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //구글 로그인 API Result 처리 부분
-        googleClient()
     }
 
     /*Funtion-Kakao*/
@@ -127,13 +124,13 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     /*Function - Google*/
-    private fun googleClient(){
+    private fun initGoogleResult(){
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_login_server_id))
+            .requestIdToken(BuildConfig.google_login_server_id)
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        getResult = registerForActivityResult(
+        getGoogleResult = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
 
@@ -177,64 +174,15 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     /*로그인 API*/
     private fun callSignInAPI(){
-        AuthService.login(this, socialUserModel)
-    }
-
-    //-> Response
-    override fun onSignInSuccess(result: Login) {
-        val jwtId = result.jwtId
-        val status = result.status
-        val checkMonthChanged = result.checkMonthChanged
-
-        LogUtils.d("SIGNIN/API-SUCCESS", "status: $status login status: $socialUserModel checkedMonthChanged: $checkMonthChanged")
-
-        //1. spf에 jwtId 저장, 로그인 상태 저장
-        saveJwt(jwtId)
-        saveLoginStatus(socialUserModel.providerType)
-       
-
-        //2. STATUS에 따른 처리
-        // ACTIVE: 가입된 회원 -> 뱃지 API 호출
-        // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
-        when (status) {
-            "ACTIVE" -> {
-                if(checkMonthChanged){ // -> 뱃지 API 호출
-                    BadgeService.getMonthBadge(this)
-                }else{
-                    startMainActivity()
-                }
-            }
-            "ONGOING" -> startAgreeActivity()
-        }
-
-    }
-
-    override fun onSignInFailure(code: Int, message: String) {
-        LogUtils.d("SIGNIN/API-FAILURE", "code: $code message: $message")
-
-        signinErrorCheck("LOGIN")
-    }
-
-    /*이달의 뱃지 조회 API*/
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
-        LogUtils.d("SIGNIN(BADGE)/API-SUCCESS", monthBadge.toString())
-
-        val intent = Intent(this, MainActivity::class.java)
-        if(isBadgeExist)
-            intent.putExtra("badge", Gson().toJson(monthBadge))
-        startActivity(intent)
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-        LogUtils.d("SIGNIN(BADGE)/API-FAILURE", "code: $code message: $message")
-
-        signinErrorCheck("BADGE")
+        signInVm.login(socialUserModel)
     }
 
     /*액티비티 이동*/
     //Main Activity
-    private fun startMainActivity() {
-        startNextActivity(MainActivity::class.java)
+    private fun startMainActivity(badgeCheck: Boolean) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("badgeCheck", badgeCheck)
+        startActivity(intent)
         finish()
     }
 
@@ -246,28 +194,52 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
 
     /*에러 체크*/
     private fun signinErrorCheck(type: String){
-        val text = if(!isNetworkAvailable(this)){ //네트워크 에러
-            getString(R.string.error_network)
-        }else{ //나머지
-            getString(R.string.error_api_fail)
-        }
 
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+        if(!isNetworkAvailable(this)){ //네트워크 에러
+            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
             when(type){
                 "KAKAO" -> {
-                    setKakaoLogin()
+                    networkErrSb.setAction(getString(R.string.action_retry)) { setKakaoLogin() }
                 }
                 "GOOGLE" -> {
-                    getResult.launch(mGoogleSignInClient.signInIntent)
+                    networkErrSb.setAction(getString(R.string.action_retry)) { getGoogleResult.launch(mGoogleSignInClient.signInIntent) }
                 }
                 "LOGIN" -> {
-                    AuthService.login(this, socialUserModel)
-                }
-                "BADGE" -> {
-                    BadgeService.getMonthBadge(this)
+                    networkErrSb.setAction(getString(R.string.action_retry)) { signInVm.login(socialUserModel) }
                 }
             }
-        }.show()
+
+            networkErrSb.show()
+        }else{ /* UNKNOWN, DB_SERVER */
+            startErrorActivity("SignInActivity")
+        }
+
+    }
+
+    /*Observe*/
+    private fun observe(){
+        signInVm.mutableErrorType.observe(this, androidx.lifecycle.Observer {
+            signinErrorCheck("LOGIN")
+        })
+
+        signInVm.thisLogin.observe(this, Observer{
+            //1. spf에 jwtId 저장, 로그인 상태 저장
+            val jwt = signInVm.thisLogin.value!!.jwtId
+            saveJwt(jwt)
+            saveLoginStatus(socialUserModel.providerType)
+
+            //2. STATUS에 따른 처리
+            // ACTIVE: 가입된 회원 -> 뱃지 API 호출
+            // ONGOING: 가입 안된 회원/정보등록 안된 회원, Register Activity로
+            when(it.status){
+                "ACTIVE" -> {   // 가입된 회원
+                    startMainActivity(it.checkMonthChanged)
+                }
+                "ONGOING" -> { // 가입이 안된 회원 -> 회원가입 액티비티
+                    startAgreeActivity()
+                }
+            }
+        })
     }
 
     /*백버튼 처리: 두 번 누르면 앱 종료*/
@@ -283,7 +255,23 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
         }
     }
 
-    fun runDelayed(millis: Long, function: () -> Unit) {
+    private fun runDelayed(millis: Long, function: () -> Unit) {
         Handler(Looper.getMainLooper()).postDelayed(function, millis)
     }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initGoogleResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+    }
+
+
 }

@@ -2,24 +2,23 @@ package com.footprint.footprint.ui.main.calendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.walk.DayResult
-import com.footprint.footprint.data.remote.walk.DayWalkResult
-import com.footprint.footprint.data.remote.walk.UserDateWalk
-import com.footprint.footprint.data.remote.walk.WalkService
+import com.footprint.footprint.data.dto.DayWalkDTO
+import com.footprint.footprint.data.dto.UserDateWalkDTO
 import com.footprint.footprint.databinding.FragmentCalendarBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CalendarDayBinder
 import com.footprint.footprint.ui.adapter.WalkRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.utils.GlobalApplication.Companion.TAG
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 import com.footprint.footprint.utils.getDeviceWidth
-import com.footprint.footprint.utils.isNetworkAvailable
+import com.footprint.footprint.viewmodel.CalendarViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.kizitonwose.calendarview.Completion
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -30,46 +29,101 @@ import com.kizitonwose.calendarview.utils.previous
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.roundToInt
 
-class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate),
-    CalendarView {
+class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalendarBinding::inflate) {
     private lateinit var currentMonth: YearMonth
     private lateinit var calendarDayBinder: CalendarDayBinder
     private var isFromFragment = false
-    private var currentDeleteWalkIdx: Int?= null
+    private var currentDeleteWalkIdx: Int? = null
+
+    private val calendarVM: CalendarViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
 
     private val jobs = arrayListOf<Job>()
 
     override fun initAfterBinding() {
-        // SearchFragment에서 오거나 처음 생성됐을 때
-        if (isFromFragment || !::currentMonth.isInitialized) {
-            setBinding()
-            initCalendar()
-
-            if (isFromFragment) isFromFragment = false
+        // Activity에서 다시 온 경우
+        if (!isFromFragment && ::currentMonth.isInitialized) {
+            // API만 다시 호출
+            updateAll()
             return
         }
 
-        // API 호출
-        updateAll()
+        // Fragment에서 다시 온 경우
+        if (isFromFragment) isFromFragment = false
+
+        setBinding()
+        initCalendar()
+        observe()
+    }
+
+    private fun observe() {
+        calendarVM.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.calendarLoadingPb.visibility = View.VISIBLE
+
+            when (it) {
+                ErrorType.NETWORK -> showSnackBar(getString(R.string.error_network))
+                else -> startErrorActivity("CalendarFragment")
+            }
+        })
+
+        calendarVM.monthDays.observe(viewLifecycleOwner, Observer {
+            calendarDayBinder.setCurrentMonthResults(it)
+            binding.calendarWalkCv.notifyMonthChanged(currentMonth)
+
+            binding.calendarLoadingBgV.visibility = View.GONE
+            binding.calendarLoadingPb.visibility = View.GONE
+        })
+
+        calendarVM.dayWalks.observe(viewLifecycleOwner, Observer {
+            LogUtils.d("Calendar/dayWalks", it.toString())
+            initWalkAdapter(it)
+
+            if (it.isNotEmpty()) {
+                binding.calendarHintTv.visibility = View.GONE
+                binding.calendarWalkRv.visibility = View.VISIBLE
+            }
+        })
+
+        calendarVM.isDelete.observe(viewLifecycleOwner, Observer {
+            updateAll()
+        })
+
+    }
+
+    private fun getMonthWalks(year: Int, month: Int) {
+        calendarVM.getMonthWalks(year, month)
+        binding.calendarLoadingBgV.visibility = View.VISIBLE
+        binding.calendarLoadingPb.visibility = View.VISIBLE
+    }
+
+    private fun getDayWalks(date: LocalDate) {
+        calendarVM.getDayWalks(
+            String.format(
+                "%d-%02d-%02d",
+                date.year,
+                date.monthValue,
+                date.dayOfMonth
+            )
+        )
+        binding.calendarHintTv.visibility = View.VISIBLE
+        binding.calendarWalkRv.visibility = View.GONE
     }
 
     private fun updateAll() {
         // 선택된 날이 없으면 오늘 날짜 API 호출
         val date = calendarDayBinder.getSelectedDate() ?: LocalDate.now()
-        WalkService.getDayWalks(
-            this,
-            String.format("%d-%02d-%02d", date.year, date.monthValue, date.dayOfMonth)
-        )
+        getDayWalks(date)
 
         // currentMonth 초기화 됐으면 이번달 API 호출
         if (::currentMonth.isInitialized) {
-            WalkService.getMonthWalks(this, currentMonth.year, currentMonth.monthValue)
+            getMonthWalks(currentMonth.year, currentMonth.monthValue)
         }
     }
 
@@ -79,10 +133,13 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             findNavController().navigate(action)
         }
 
-        var date = LocalDate.now()
-        if (::calendarDayBinder.isInitialized && calendarDayBinder.getSelectedDate() != null) {
-            date = calendarDayBinder.getSelectedDate()
-        }
+        val date =
+            // fragement에서 돌아왔을 경우
+            if (::calendarDayBinder.isInitialized && calendarDayBinder.getSelectedDate() != null)
+                calendarDayBinder.getSelectedDate()!!
+            else
+                LocalDate.now()
+
         binding.calendarMonthTitleTv.text =
             String.format("%d.%d", date.year, date.monthValue)
         binding.calendarSelectedDayTv.text =
@@ -95,10 +152,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             )
 
         //DayWalk API 호출
-        WalkService.getDayWalks(
-            this,
-            String.format("%d-%02d-%02d", date.year, date.monthValue, date.dayOfMonth)
-        )
+        getDayWalks(date)
     }
 
     private fun initCalendar() {
@@ -152,11 +206,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             override fun invoke(p1: CalendarMonth) {
                 binding.calendarLoadingBgV.visibility = View.VISIBLE
                 binding.calendarLoadingPb.visibility = View.VISIBLE
+                binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
 
                 currentMonth = p1.yearMonth
                 // Month API 호출
-                WalkService.getMonthWalks(this@CalendarFragment, p1.year, p1.month)
-                binding.calendarMonthTitleTv.text = "${p1.year}.${p1.month}"
+                getMonthWalks(p1.year, p1.month)
             }
         }
 
@@ -182,14 +236,14 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     }
 
-    private fun initWalkAdapter(walks: List<DayWalkResult>) {
+    private fun initWalkAdapter(walks: List<DayWalkDTO>) {
         binding.calendarWalkNumber2Tv.text = " ${walks.size}"
 
         val adapter = WalkRVAdapter(requireContext())
         adapter.setWalks(walks)
 
         adapter.setOnItemClickListener(object : WalkRVAdapter.OnItemClickListener {
-            override fun onItemClick(walk: UserDateWalk) {
+            override fun onItemClick(walk: UserDateWalkDTO) {
                 goWalkDetailActivity(walk.walkIdx)
             }
         })
@@ -222,10 +276,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
                 changeDayOfWeek(selection.dayOfWeek.toString())
             )
         //DayWalk API 호출
-        WalkService.getDayWalks(
-            this,
-            String.format("%d-%02d-%02d", selection.year, selection.monthValue, selection.dayOfMonth)
-        )
+        getDayWalks(selection)
     }
 
     private fun changeDayOfWeek(dayOfWeek: String): String {
@@ -248,7 +299,7 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
             override fun action1(isAction: Boolean) {
                 if (isAction) {
                     // deleteWalk API
-                    WalkService.deleteWalk(this@CalendarFragment, walkIdx)
+                    calendarVM.deleteWalk(walkIdx)
                     currentDeleteWalkIdx = walkIdx
                 }
             }
@@ -267,92 +318,26 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
 
     //WalkDetailActivity 로 이동하는 함수
     fun goWalkDetailActivity(walkIdx: Int) {
-        val action = CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(walkIdx)   //날짜별 산책 데이터 조회 API 가 연결됐을 때 사용
+        val action =
+            CalendarFragmentDirections.actionCalendarFragmentToWalkDetailActivity2(walkIdx)   //날짜별 산책 데이터 조회 API 가 연결됐을 때 사용
         findNavController().navigate(action)
     }
 
-    override fun onMonthLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarLoadingBgV.visibility = View.VISIBLE
-                binding.calendarLoadingPb.visibility = View.VISIBLE
-            })
-        }
-    }
-
-    override fun onDayWalkLoading() {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                binding.calendarHintTv.visibility = View.VISIBLE
-                binding.calendarWalkRv.visibility = View.GONE
-            })
-        }
-    }
-
-    override fun onCalendarFailure(code: Int, message: String) {
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                if (!isNetworkAvailable(requireContext())) {
-                    showSnackBar(code, getString(R.string.error_network))
-                } else {
-                    showSnackBar(code, getString(R.string.error_api_fail))
-                }
-            })
-        }
-    }
-
-    private fun showSnackBar(code: Int, errorMessage: String) {
-        Snackbar.make(
+    private fun showSnackBar(errorMessage: String) {
+        networkErrSb = Snackbar.make(
             requireView(),
             errorMessage,
             Snackbar.LENGTH_INDEFINITE
         ).setAction(getString(R.string.action_retry)) {
-            if (code == 5000) {
-                LogUtils.d("calendar", "message")
+            if (calendarVM.getErrorType() == "deleteWalk") {
                 // 삭제 API이면
-                WalkService.deleteWalk(this, currentDeleteWalkIdx!!)
+                calendarVM.deleteWalk(currentDeleteWalkIdx!!)
             } else {
                 updateAll()
             }
-        }.show()
-    }
-
-    override fun onMonthSuccess(monthResult: List<DayResult>) {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/MONTH/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                calendarDayBinder.setCurrentMonthResults(monthResult)
-                binding.calendarWalkCv.notifyMonthChanged(currentMonth)
-
-                binding.calendarLoadingBgV.visibility = View.GONE
-                binding.calendarLoadingPb.visibility = View.GONE
-            })
         }
-    }
 
-    override fun onDayWalksSuccess(dayWalkResult: List<DayWalkResult>) {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DAY-WALK/success")
-
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                initWalkAdapter(dayWalkResult)
-
-                if (dayWalkResult.isNotEmpty()) {
-                    binding.calendarHintTv.visibility = View.GONE
-                    binding.calendarWalkRv.visibility = View.VISIBLE
-                }
-            })
-        }
-    }
-
-    override fun onDeleteWalkSuccess() {
-        LogUtils.d("$TAG/CALENDAR", "CALENDAR/DELETE-WALK/success")
-        if (view != null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-               updateAll()
-            })
-        }
+        networkErrSb.show()
     }
 
     override fun onDestroyView() {
@@ -364,5 +349,11 @@ class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(FragmentCalenda
         jobs.map {
             it.cancel()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

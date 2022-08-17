@@ -9,20 +9,24 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.walk.DayWalkResult
-import com.footprint.footprint.data.remote.walk.UserDateWalk
+import com.footprint.footprint.data.dto.DayWalkDTO
+import com.footprint.footprint.data.dto.UserDateWalkDTO
 import com.footprint.footprint.databinding.ItemWalkBinding
 
 class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.WalkViewHolder>() {
-    private val walks = arrayListOf<DayWalkResult>()
+    private val walks = arrayListOf<DayWalkDTO>()
     private var currentTag: String ?= null
 
     private lateinit var mOnItemClickListener: OnItemClickListener
     private lateinit var mOnItemRemoveClickListener: OnItemRemoveClickListener
 
     interface OnItemClickListener {
-        fun onItemClick(walk: UserDateWalk)
+        fun onItemClick(walk: UserDateWalkDTO)
     }
 
     interface OnItemRemoveClickListener {
@@ -30,7 +34,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setWalks(walks: List<DayWalkResult>) {
+    fun setWalks(walks: List<DayWalkDTO>) {
         this.walks.clear()
         this.walks.addAll(walks)
 
@@ -94,6 +98,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
             binding.walkTimeTv.text = String.format("%s~%s", walk.startTime, walk.endTime)
 
+            binding.walkPathIv.clipToOutline = true
             Glide.with(context).load(walk.pathImageUrl).into(binding.walkPathIv)
 
             val hashtag = walks[position].hashtag
@@ -110,7 +115,7 @@ class WalkRVAdapter(val context: Context) : RecyclerView.Adapter<WalkRVAdapter.W
 
         private fun initTag(textView: TextView, tag: String) {
             if (currentTag != null && currentTag == tag) {
-                textView.background = getDrawable(context, R.drawable.bg_primary_round_square)
+                textView.background = getDrawable(context, R.drawable.bg_primary55_round_square)
             }
 
             textView.visibility = View.VISIBLE

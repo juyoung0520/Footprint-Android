@@ -1,8 +1,9 @@
 package com.footprint.footprint.service
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -15,15 +16,18 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.footprint.footprint.R
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
+import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.walk.WalkActivity
+import com.footprint.footprint.ui.walk.WalkMapFragment
+import com.footprint.footprint.utils.GlobalApplication
+import com.footprint.footprint.utils.LogUtils
 import com.google.android.gms.location.*
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-typealias Path = MutableList<LatLng>
-typealias PathGroup = MutableList<Path>
 
 class BackgroundWalkService : LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -39,7 +43,7 @@ class BackgroundWalkService : LifecycleService() {
         val isWalking = NonNullMutableLiveData(false)
         val currentTime = NonNullMutableLiveData(0)
         val currentLocation = MutableLiveData<Location?>(null)
-        val paths = NonNullMutableLiveData<PathGroup>(mutableListOf())
+        val paths = NonNullMutableLiveData<MutableList<MutableList<LatLng>>>(mutableListOf())
         val totalDistance = NonNullMutableLiveData(0.0f)
         val pauseWalk = NonNullMutableLiveData(false)
         val gpsStatus = NonNullMutableLiveData(true)
@@ -60,21 +64,6 @@ class BackgroundWalkService : LifecycleService() {
         super.onCreate()
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_NAME,
-                NotificationManager.IMPORTANCE_LOW
-            )
-
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-
-            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).build()
-            startForeground(NOTIFICATION_ID, notification)
-        }
 
         isWalking.observe(this, Observer { state ->
             if (state) {
@@ -97,7 +86,37 @@ class BackgroundWalkService : LifecycleService() {
         })
     }
 
+    private fun createNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            )
+
+            val notificationManager =
+                getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            val intent = Intent(this, WalkActivity::class.java)
+                .setAction(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val notification = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_footprint)
+                .setContentText(getString(R.string.msg_notification))
+                .setContentIntent(pendingIntent)
+
+            startForeground(NOTIFICATION_ID, notification.build())
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        createNotification()
+
         if (intent != null) {
             when (intent.action) {
                 TRACKING_START_OR_RESUME -> {
@@ -193,11 +212,11 @@ class BackgroundWalkService : LifecycleService() {
                     this,
                     android.Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
+                || ContextCompat.checkSelfPermission(
                     this,
                     android.Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
+                || ContextCompat.checkSelfPermission(
                     this,
                     android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
@@ -273,16 +292,6 @@ class BackgroundWalkService : LifecycleService() {
     }
 
     private fun addEmptyPath() {
-        if (paths.value.isNotEmpty()) {
-            when(paths.value.last().size) {
-                0 -> return
-                1 -> {
-                    // 좌표 한개면 복사
-                    paths.value.last().add(paths.value.last().last())
-                }
-            }
-        }
-
         paths.value.apply {
             add(mutableListOf())
             paths.postValue(this)
@@ -296,6 +305,7 @@ class BackgroundWalkService : LifecycleService() {
             last().add(pos)
             paths.postValue(this)
         }
+        //LogUtils.d("${GlobalApplication.TAG}/paths", paths.value.toString())
     }
 
     private fun updateDistance(location: Location) {

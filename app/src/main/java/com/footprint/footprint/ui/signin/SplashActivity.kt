@@ -1,98 +1,104 @@
 package com.footprint.footprint.ui.signin
 
+import android.app.AlertDialog
 import android.content.Intent
-import android.os.Handler
-import com.footprint.footprint.data.remote.auth.AuthService
-import com.footprint.footprint.data.remote.auth.Login
-import com.footprint.footprint.data.remote.badge.BadgeInfo
-import com.footprint.footprint.data.remote.badge.BadgeService
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
+import com.footprint.footprint.BuildConfig
+import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivitySplashBinding
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.main.MainActivity
 import com.footprint.footprint.ui.onboarding.OnBoardingActivity
-import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.getJwt
-import com.footprint.footprint.utils.getOnboarding
-import com.footprint.footprint.utils.removeJwt
-import com.google.gson.Gson
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.SplashViewModel
+import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate){
 
-class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate),
-    SplashView, MonthBadgeView {
+    private val splashVm: SplashViewModel by viewModel()
+    private lateinit var networkErrSb: Snackbar
+    private lateinit var getResult: ActivityResultLauncher<Intent>
+
+    private var hasUpdate = false
 
     override fun initAfterBinding() {
-        //온보딩 화면 O/X => 1.5
-        val handler = Handler()
-        handler.postDelayed({
-            //1. 온보딩 실행 여부 spf에서 받아오기
-            if (!getOnboarding()) {
-                //2. false -> 온보딩 실행해야 함 -> OnboardingActivity
-                startNextActivity(OnBoardingActivity::class.java)
-                finish()
-            } else {
-                autoLogin()
-            }
-        }, 1500)
+        checkUpdate() // 업데이트 확인
+        observe()
     }
 
+    // 업데이트 확인
+    private fun checkUpdate(){
+        val version = BuildConfig.VERSION_NAME
+        splashVm.getVersion(version)
+    }
 
+    // 자동 로그인
     private fun autoLogin() {
         if (getJwt() != null) { // O -> 자동로그인 API 호출
-            AuthService.autoLogin(this)
+            splashVm.autoLogin()
         } else {  // X -> 로그인 액티비티
-            startNextActivity(SigninActivity::class.java)
-            finish()
+            startSignInActivity()
         }
     }
 
+    // 업데이트 다이얼로그 띄우기
+    private fun showUpdateDialog(version: String){
+        val msg = "발자국 ${version}이 업데이트 되었습니다. \n원활한 서비스 이용을 위해 업데이트를 진행해 주세요."
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.title_update))
+            .setMessage(msg)
+            .setPositiveButton(getString(R.string.action_store)) { _, _ -> goAppStore() }
+            .setOnDismissListener {
+                Snackbar.make(binding.root, getString(R.string.msg_denied_update), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
+                    goAppStore()
+                }.show()
+            }
+            .create()
+            .show()
+    }
 
-    /*자동 로그인 API*/
-    override fun onAutoLoginSuccess(result: Login?) {
-        if (result != null) {
-            when (result.status) {
-                "ACTIVE" -> {   // 가입된 회원
-                    if (result.checkMonthChanged) { // 첫 접속 -> 뱃지 API 호출
-                        BadgeService.getMonthBadge(this)
-                    } else { // -> 메인 액티비티
-                        startMainActivity()
-                    }
-                }
-                "ONGOING" -> { // 가입이 완료되지 않은 회원 -> 로그인 액티비티
-                    startSignInActivity()
-                }
+    private fun goAppStore(){
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse(
+                "https://play.google.com/store/apps/details?id=com.footprint.footprint")
+            setPackage("com.android.vending")
+        }
+        getResult.launch(intent)
+    }
+
+    private fun initActivityResult() {
+        getResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+
+            // 업데이트 하지 않고 돌아왔을 경우,
+            if(hasUpdate && result.resultCode != RESULT_OK){
+                Snackbar.make(binding.root, getString(R.string.msg_denied_update), Snackbar.LENGTH_INDEFINITE).setAction(
+                    R.string.action_retry) {
+                    goAppStore()
+                }.show()
+            }
+
+            if(result.resultCode == ErrorActivity.BACK || result.resultCode == ErrorActivity.CONTACT){
+                finishAffinity()
             }
         }
-
-        LogUtils.d("SPLASH/API-SUCCESS", "status: ${result!!.status}")
-    }
-
-    override fun onAutoLoginFailure(code: Int, message: String) {
-        LogUtils.d("SPLASH/API-FAILURE", "code: $code message: $message")
-        when(code){
-            2001, 2002, 2003, 2004 -> { // JWT 관련 오류 -> 로그인 액티비티,
-                removeJwt()
-                startSignInActivity()
-            }
-        }
-    }
-
-    /*뱃지 API*/
-    override fun onMonthBadgeSuccess(isBadgeExist: Boolean, monthBadge: BadgeInfo?) {
-        val intent = Intent(this, MainActivity::class.java)
-        if (isBadgeExist)
-            intent.putExtra("badge", Gson().toJson(monthBadge))
-        startActivity(intent)
-        LogUtils.d("SPLASH(BADGE)/API-SUCCESS", monthBadge.toString())
-    }
-
-    override fun onMonthBadgeFailure(code: Int, message: String) {
-        LogUtils.d("SPLASH(BADGE)/API-FAILURE", code.toString() + message)
     }
 
     /*액티비티 이동*/
     //Main Activity
-    private fun startMainActivity() {
-        startNextActivity(MainActivity::class.java)
+    private fun startMainActivity(badgeCheck: Boolean) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("badgeCheck", badgeCheck)
+        startActivity(intent)
         finish()
     }
 
@@ -102,4 +108,66 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(ActivitySplashBinding
         finish()
     }
 
+    //OnBoarding Activity
+    private fun startOnBoardingActivity() {
+        startNextActivity(OnBoardingActivity::class.java)
+        finish()
+    }
+
+    private fun observe(){
+        splashVm.mutableErrorType.observe(this, androidx.lifecycle.Observer {
+            when (it) {
+                ErrorType.JWT -> { //JWT 관련 에러 발생 시, jwt 지우고 로그인 액티비티로 이동
+                    removeJwt()
+                    startSignInActivity()
+                }
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { checkUpdate() }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("SplashActivity")
+                }
+            }
+        })
+
+        splashVm.thisLogin.observe(this, Observer {
+            when(it.status){
+                "ACTIVE" -> {   // 가입된 회원
+                    startMainActivity(it.checkMonthChanged)
+                }
+                "ONGOING" -> { // 가입이 완료되지 않은 회원 -> 로그인 액티비티
+                    startSignInActivity()
+                }
+            }
+        })
+
+        splashVm.thisVersion.observe(this, Observer {
+            if(it.whetherUpdate) { // true -> 강제 업데이트
+                hasUpdate = it.whetherUpdate
+                showUpdateDialog(it.serverVersion)
+            }
+            else { // false -> 온보딩 or 로그인
+                if (!getOnboarding()) { // false -> 온보딩 액티비티
+                    startOnBoardingActivity()
+                } else { // true -> 자동 로그인
+                    autoLogin()
+                }
+            }
+
+        })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initActivityResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+    }
 }

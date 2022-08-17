@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.achieve.TMonthDayRateRes
+import com.footprint.footprint.data.dto.TMonthDayRateResDTO
 import com.footprint.footprint.databinding.ItemHomeMonthBinding
 import com.footprint.footprint.ui.main.home.HomeMonthCalendar
 import java.util.*
 
 class HomeMonthRVAdapter(
     private val date: Date,
-    private var userDatas: ArrayList<TMonthDayRateRes>?,
+    private var userDatas: ArrayList<TMonthDayRateResDTO>?,
     private val widthPx: Int,
     private val vpAreaPx: Int,
     private val itemMaxPx: Int

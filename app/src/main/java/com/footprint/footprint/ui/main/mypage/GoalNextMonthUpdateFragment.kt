@@ -2,34 +2,31 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.model.UpdateGoalReqModel
-import com.footprint.footprint.data.remote.goal.GoalService
+import com.footprint.footprint.data.dto.GoalModel
 import com.footprint.footprint.databinding.FragmentGoalNextMonthUpdateBinding
+import com.footprint.footprint.domain.model.UpdateGoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.fadeIn
-import com.footprint.footprint.utils.fadeOut
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBinding>(FragmentGoalNextMonthUpdateBinding::inflate), GoalNextMonthUpdateView {
+class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBinding>(FragmentGoalNextMonthUpdateBinding::inflate) {
     private val args: GoalNextMonthUpdateFragmentArgs by navArgs()
-    private val jobs: ArrayList<Job> = arrayListOf()
-    private val updateGoal: UpdateGoalReqModel = UpdateGoalReqModel()  //사용자가 수정한 목표 데이터
+    private val goalVm: GoalViewModel by viewModel()
+    private val updateGoalEntity: UpdateGoalEntity = UpdateGoalEntity()  //사용자가 수정한 목표 데이터
 
     private lateinit var goal: GoalModel    //수정 전 목표 데이터
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
+    private lateinit var networkErrSb: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,38 +34,38 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         goal = Gson().fromJson(args.goal, GoalModel::class.java)    //이전 화면(GoalThisMonthFragment, GoalNextMonthFragment 로부터 전달 받은 goal 데이터)
 
         //수정할 데이터에 이번달 목표로 저장해놓기
-        updateGoal.dayIdx.addAll(goal.dayIdx)
-        updateGoal.walkGoalTime = goal.userGoalTime.walkGoalTime
-        updateGoal.walkTimeSlot = goal.userGoalTime.walkTimeSlot
+        updateGoalEntity.dayIdx.addAll(goal.dayIdx)
+        updateGoalEntity.walkGoalTime = goal.userGoalTime.walkGoalTime
+        updateGoalEntity.walkTimeSlot = goal.userGoalTime.walkTimeSlot
     }
 
     override fun initAfterBinding() {
         initAdapter()   //어댑터 초기화
         bind(goal.month!!)  //데이터 바인딩
+        observe()
         setMyEventListener()    //이벤트 리스너 설정
         initWalkTimeDialog()    //목표 산책 시간 직접 설정 다이얼로그 화면 초기화
     }
 
-    override fun onDestroyView() {
-        for (job in jobs) {
-            job.cancel()
-        }
+    override fun onStop() {
+        super.onStop()
 
-        super.onDestroyView()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     private fun initAdapter() {
         val deviceWidth = getDeviceWidth()
         dayRVAdapter = DayRVAdapter((deviceWidth - convertDpToPx(requireContext(), 88)) / 7)
-        dayRVAdapter.setUserGoalDay(updateGoal.dayIdx)   //어댑터에 사용자 목표 요일 데이터 전달
+        dayRVAdapter.setUserGoalDay(updateGoalEntity.dayIdx)   //어댑터에 사용자 목표 요일 데이터 전달
 
         dayRVAdapter.setMyItemClickListener(object : DayRVAdapter.MyItemClickListener {
             override fun saveDay(day: Int) {
-                updateGoal.dayIdx.add(day)
+                updateGoalEntity.dayIdx.add(day)
             }
 
             override fun removeDay(day: Int) {
-                updateGoal.dayIdx.remove(day)
+                updateGoalEntity.dayIdx.remove(day)
             }
 
         })
@@ -83,8 +80,8 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         binding.goalNextMonthUpdateMonthTv.text = " ${monthList[1]}"
 
         //목표 산책 시간
-        val hour = updateGoal.walkGoalTime!! / 60
-        val minute = updateGoal.walkGoalTime!! % 60
+        val hour = updateGoalEntity.walkGoalTime!! / 60
+        val minute = updateGoalEntity.walkGoalTime!! % 60
         binding.goalNextMonthUpdateGoalWalkTimeBtn.text = when {
             hour==0 -> "${minute}분"
             minute==0 -> "${hour}시간"
@@ -92,7 +89,7 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
         }
 
         //산책 시간대
-        binding.goalNextMonthUpdateGoalWalkSlotBtn.text = when(updateGoal.walkTimeSlot) {
+        binding.goalNextMonthUpdateGoalWalkSlotBtn.text = when(updateGoalEntity.walkTimeSlot) {
             1 -> getString(R.string.title_early_morning)
             2 -> getString(R.string.title_late_morning)
             3 -> getString(R.string.title_early_afternoon)
@@ -135,24 +132,24 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
                 when (i) {  //사용자가 선택한 목표 시간대에 맞춰 UI 업데이트
                     binding.goalNextMonthUpdate15minRb.id -> {
                         text = binding.goalNextMonthUpdate15minRb.text.toString()
-                        updateGoal.walkGoalTime = 15
+                        updateGoalEntity.walkGoalTime = 15
                     }
                     binding.goalNextMonthUpdate30minRb.id -> {
                         text = binding.goalNextMonthUpdate30minRb.text.toString()
-                        updateGoal.walkGoalTime = 30
+                        updateGoalEntity.walkGoalTime = 30
                     }
                     binding.goalNextMonthUpdate60minRb.id -> {
                         text = binding.goalNextMonthUpdate60minRb.text.toString()
-                        updateGoal.walkGoalTime = 60
+                        updateGoalEntity.walkGoalTime = 60
                     }
                     binding.goalNextMonthUpdate90minRb.id -> {
                         text = binding.goalNextMonthUpdate90minRb.text.toString()
-                        updateGoal.walkGoalTime = 90
+                        updateGoalEntity.walkGoalTime = 90
                     }
                     binding.goalNextMonthUpdateDirectSettingRb.id -> {
                         //우선 초기 상태로 돌려놨다가 목표 산책 시간 다이얼로그 화면에서 설정하면 그때 UI 업데이트
                         if (!walkTimeDialogFragment.isAdded) {
-                            updateGoal.walkGoalTime = null
+                            updateGoalEntity.walkGoalTime = null
 
                             radioGroup.clearCheck()
 
@@ -175,31 +172,31 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
                 when (i) {  //사용자가 선택한 라디오버튼에 따라 UI 업데이트
                     binding.goalNextMonthUpdateEarlyMorningRb.id -> {
                         text = binding.goalNextMonthUpdateEarlyMorningRb.text.toString()
-                        updateGoal.walkTimeSlot = 1
+                        updateGoalEntity.walkTimeSlot = 1
                     }
                     binding.goalNextMonthUpdateLateMorningRb.id -> {
                         text = binding.goalNextMonthUpdateLateMorningRb.text.toString()
-                        updateGoal.walkTimeSlot = 2
+                        updateGoalEntity.walkTimeSlot = 2
                     }
                     binding.goalNextMonthUpdateEarlyAfternoonRb.id -> {
                         text = binding.goalNextMonthUpdateEarlyAfternoonRb.text.toString()
-                        updateGoal.walkTimeSlot = 3
+                        updateGoalEntity.walkTimeSlot = 3
                     }
                     binding.goalNextMonthUpdateLateAfternoonRb.id -> {
                         text = binding.goalNextMonthUpdateLateAfternoonRb.text.toString()
-                        updateGoal.walkTimeSlot = 4
+                        updateGoalEntity.walkTimeSlot = 4
                     }
                     binding.goalNextMonthUpdateNightRb.id -> {
                         text = binding.goalNextMonthUpdateNightRb.text.toString()
-                        updateGoal.walkTimeSlot = 5
+                        updateGoalEntity.walkTimeSlot = 5
                     }
                     binding.goalNextMonthUpdateDawnRb.id -> {
                         text = binding.goalNextMonthUpdateDawnRb.text.toString()
-                        updateGoal.walkTimeSlot = 6
+                        updateGoalEntity.walkTimeSlot = 6
                     }
                     binding.goalNextMonthUpdateDifferentEveryTimeRb.id -> {
                         text = binding.goalNextMonthUpdateDifferentEveryTimeRb.text.toString()
-                        updateGoal.walkTimeSlot = 7
+                        updateGoalEntity.walkTimeSlot = 7
                     }
                 }
             }
@@ -226,50 +223,51 @@ class GoalNextMonthUpdateFragment : BaseFragment<FragmentGoalNextMonthUpdateBind
 
                 binding.goalNextMonthUpdateGoalWalkTimeRg.check(R.id.goal_setting_direct_setting_rb)
 
-                updateGoal.walkGoalTime = minute
+                updateGoalEntity.walkGoalTime = minute
             }
         })
     }
 
     private fun validate() {
-        if (updateGoal.dayIdx.isEmpty()) {  //목표 산책 요일을 선택하지 않았을 때
-            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_set_goal_walk_time))
-            findNavController().navigate(action)
-        } else if (isSame()) {    //변경된 내역이 없을 때
-            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_no_updating_goal))
-            findNavController().navigate(action)
-        } else {    //유효성 검사 통과
-            GoalService.updateGoal(this, updateGoal)
+        when {
+            updateGoalEntity.dayIdx.isEmpty() -> {  //목표 산책 요일을 선택하지 않았을 때
+                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_set_goal_walk_time))
+                findNavController().navigate(action)
+            }
+            isSame() -> {    //변경된 내역이 없을 때
+                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.error_no_updating_goal))
+                findNavController().navigate(action)
+            }
+            else -> {    //유효성 검사 통과
+                goalVm.updateGoal(goal.month!!, updateGoalEntity)
+                binding.goalNextMonthUpdatePb.visibility = View.VISIBLE
+            }
         }
     }
 
     private fun isSame(): Boolean {
-        return goal.dayIdx==updateGoal.dayIdx && goal.userGoalTime.walkGoalTime==updateGoal.walkGoalTime && goal.userGoalTime.walkTimeSlot==updateGoal.walkTimeSlot
+        return goal.dayIdx==updateGoalEntity.dayIdx && goal.userGoalTime.walkGoalTime==updateGoalEntity.walkGoalTime && goal.userGoalTime.walkTimeSlot==updateGoalEntity.walkTimeSlot
     }
 
-    override fun onGoalNextMonthUpdateSuccess() {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.msg_success_update_goal))
-                findNavController().navigate(action)
-            })
-        }
-    }
+    private fun observe() {
+        goalVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.goalNextMonthUpdatePb.visibility = View.INVISIBLE
 
-    override fun onGoalNextMonthUpdateFail(code: Int?, goal: UpdateGoalReqModel) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                when (code) {
-                    6000 -> showSnackBar(getString(R.string.error_network), goal)   //네트워크 연결 문제
-                    else -> showSnackBar(getString(R.string.error_api_fail), goal)   //그 이외 문제
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.updateGoal(goal.month!!, updateGoalEntity) }
+                    networkErrSb.show()
                 }
-            })
-        }
-    }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("GoalNextMonthUpdateFragment")
+                }
+            }
+        })
 
-    private fun showSnackBar(text: String, goal: UpdateGoalReqModel) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-            GoalService.updateGoal(this@GoalNextMonthUpdateFragment, goal)
-        }.show()
+        goalVm.nextMonthGoal.observe(viewLifecycleOwner, Observer {
+            binding.goalNextMonthUpdatePb.visibility = View.INVISIBLE
+            val action = GoalNextMonthUpdateFragmentDirections.actionGoalNextMonthUpdateFragmentToMsgDialogFragment2(getString(R.string.msg_success_update_goal))
+            findNavController().navigate(action)
+        })
     }
 }

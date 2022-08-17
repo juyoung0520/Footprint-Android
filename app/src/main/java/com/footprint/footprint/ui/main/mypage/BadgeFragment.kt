@@ -2,62 +2,50 @@ package com.footprint.footprint.ui.main.mypage
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import com.footprint.footprint.R
-import com.footprint.footprint.data.remote.badge.BadgeInfo
-import com.footprint.footprint.data.remote.badge.BadgeResponse
-import com.footprint.footprint.data.remote.badge.BadgeService
 import com.footprint.footprint.databinding.FragmentBadgeBinding
+import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.BadgeRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.getDeviceWidth
-import com.footprint.footprint.utils.loadSvg
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.BadgeViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate), BadgeView {
+class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::inflate) {
 
     private lateinit var badgeRVAdapter: BadgeRVAdapter
     private lateinit var actionDialogFragment: ActionDialogFragment
+    private lateinit var networkErrSbGet: Snackbar
+    private lateinit var networkErrSbPatch: Snackbar
 
     private var representativeBadgeIdx: Int? = null //대표 뱃지를 변경할 때 잠깐 변경할 대표 뱃지 인덱스를 담아 놓는 전역 변수
 
-    private val jobs: ArrayList<Job> = arrayListOf()
+    private val badgeVm: BadgeViewModel by viewModel()
 
     override fun initAfterBinding() {
-        BadgeService.getBadgeInfo(this) //뱃지 정보 요청 API 실행
+        setMyClickListener()
+        observe()
 
         if (!::actionDialogFragment.isInitialized)
             initActionDialog()
 
-        setMyClickListener()
+        badgeVm.getBadges()
+        binding.badgeLoadingPb.visibility = View.VISIBLE
     }
 
-    override fun onDestroy() {
-        for (job in jobs) {
-            job.cancel()
-        }
+    override fun onStop() {
+        super.onStop()
 
-        super.onDestroy()
+        if (::networkErrSbGet.isInitialized && networkErrSbGet.isShown)
+            networkErrSbGet.dismiss()
+        else if (::networkErrSbPatch.isInitialized && networkErrSbPatch.isShown)
+            networkErrSbPatch.dismiss()
     }
 
-    //대표 뱃지 데이터 바인딩
-    private fun bindRepresentativeBade(badge: BadgeInfo) {
-        if (badge.badgeIdx==0) { //얻은 뱃지가 없어서 대표 뱃지가 없을 때
-            binding.badgeRepresentativeBadgeIv.visibility = View.INVISIBLE
-            binding.badgeRepresentativeBadgeNameTv.visibility = View.INVISIBLE
-        } else {    //대표 뱃지가 있을 때
-            binding.badgeRepresentativeBadgeIv.visibility = View.VISIBLE
-            binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
-            binding.badgeRepresentativeBadgeNameTv.visibility = View.VISIBLE
-            binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
-        }
-    }
-
-    private fun initAdapter(badgeInfo: BadgeResponse) {
+    private fun initAdapter(badgeInfo: com.footprint.footprint.domain.model.BadgeInfo) {
         //디바이스 크기에 맞춰 뱃지 아이템의 크기 조정하기
         val size = (getDeviceWidth() - convertDpToPx(requireContext(), 74)) / 3
 
@@ -66,7 +54,7 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
 
         //대표뱃지 변경 클릭 리스너
         badgeRVAdapter.setMyItemClickListener(object : BadgeRVAdapter.MyItemClickListener {
-            override fun changeRepresentativeBadge(badge: BadgeInfo) {
+            override fun changeRepresentativeBadge(badge: Badge) {
                 representativeBadgeIdx = badge.badgeIdx //임시로 사용자가 선택한 대표뱃지 인덱스를 저장
 
                 //대표뱃지로 설정할까요? 다이얼로그 띄우기
@@ -89,13 +77,12 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
             override fun action1(isAction: Boolean) {
                 if (isAction) { //사용자가 설정을 누르면 -> 대표뱃지 변경 요청 API 실행
-                    BadgeService.changeRepresentativeBadge(this@BadgeFragment, representativeBadgeIdx!!)
+                    badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!)
                 }
             }
 
             override fun action2(isAction: Boolean) {
             }
-
         })
     }
 
@@ -106,70 +93,53 @@ class BadgeFragment : BaseFragment<FragmentBadgeBinding>(FragmentBadgeBinding::i
         }
     }
 
-    override fun onBadgeLoading() {
-        if (this != null) {
-            binding.badgeLoadingPb.visibility = View.VISIBLE
+    //대표 뱃지 데이터 바인딩
+    private fun bindRepresentativeBade(badge: Badge) {
+        if (badge.badgeIdx==0) { //얻은 뱃지가 없어서 대표 뱃지가 없을 때
+            binding.badgeRepresentativeBadgeIv.visibility = View.INVISIBLE
+            binding.badgeRepresentativeBadgeNameTv.visibility = View.INVISIBLE
+        } else {    //대표 뱃지가 있을 때
+            binding.badgeRepresentativeBadgeIv.visibility = View.VISIBLE
+            binding.badgeRepresentativeBadgeIv.loadSvg(requireContext(), badge.badgeUrl)
+            binding.badgeRepresentativeBadgeNameTv.visibility = View.VISIBLE
+            binding.badgeRepresentativeBadgeNameTv.text = badge.badgeName
         }
     }
 
-    override fun onGetBadgeSuccess(badgeInfo: BadgeResponse) {
-        if (this != null) {
+    private fun observe() {
+        badgeVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
             binding.badgeLoadingPb.visibility = View.INVISIBLE
-            bindRepresentativeBade(badgeInfo.repBadgeInfo)    //대표 뱃지 정보 UI 바인딩
-            initAdapter(badgeInfo)
-        }
-    }
 
-    override fun onChangeRepresentativeBadgeSuccess(representativeBadge: BadgeInfo) {
-        if (this != null) {
-            jobs.add(lifecycleScope.launch {
-                bindRepresentativeBade(representativeBadge) //변경된 대표뱃지로 UI 업데이트
-                badgeRVAdapter.changeRepresentativeBadge(representativeBadge)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
-            })
-        }
-    }
-
-    override fun onGetBadgeFail(code: Int?) {
-        if (this != null) {
-            jobs.add(lifecycleScope.launch {
-                binding.badgeLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
-
-                when (code) {
-                    6000 -> {   //네트워크 연결 문제
-                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                            BadgeService.getBadgeInfo(this@BadgeFragment)
-                        }.show()
-                    }
-
-                    else -> {   //그 이외 문제
-                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                            BadgeService.getBadgeInfo(this@BadgeFragment)
-                        }.show()
+            when (it) {
+                ErrorType.NETWORK -> {
+                    when (badgeVm.getErrorMethod()) {
+                        "getBadges" -> {
+                            networkErrSbGet = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { badgeVm.getBadges() }
+                            networkErrSbGet.show()
+                        }
+                        "changeRepresentativeBadge" -> {
+                            networkErrSbPatch = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { badgeVm.changeRepresentativeBadge(representativeBadgeIdx!!) }
+                            networkErrSbPatch.show()
+                        }
                     }
                 }
-            })
-        }
-    }
-
-    override fun onChangeRepresentativeBadgeFail(code: Int?, badgeIdx: Int) {
-        if (this != null) {
-            jobs.add(lifecycleScope.launch {
-                binding.badgeLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
-
-                when (code) {
-                    6000 -> {   //네트워크 연결 문제
-                        Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                            BadgeService.changeRepresentativeBadge(this@BadgeFragment, badgeIdx)
-                        }.show()
-                    }
-
-                    else -> {   //그 이외 문제
-                        Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-                            BadgeService.changeRepresentativeBadge(this@BadgeFragment, badgeIdx)
-                        }.show()
-                    }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("BadgeFragment")
                 }
-            })
-        }
+            }
+        })
+
+        badgeVm.badges.observe(viewLifecycleOwner, Observer {
+            LogUtils.d("BadgeFragment", "badges Observe!! -> $it")
+
+            binding.badgeLoadingPb.visibility = View.INVISIBLE //로딩 프로그래스바 INVISIBLE
+            bindRepresentativeBade(it.repBadgeInfo) //변경된 대표뱃지로 UI 업데이트
+            initAdapter(it)
+        })
+
+        badgeVm.representativeBadge.observe(viewLifecycleOwner, Observer {
+            bindRepresentativeBade(it) //변경된 대표뱃지로 UI 업데이트
+            badgeRVAdapter.changeRepresentativeBadge(it)   //어댑터에도 대표뱃지를 변경하는 메서드 호출
+        })
     }
 }

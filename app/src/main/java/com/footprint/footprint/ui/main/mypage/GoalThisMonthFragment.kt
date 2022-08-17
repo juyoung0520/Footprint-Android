@@ -1,43 +1,51 @@
 package com.footprint.footprint.ui.main.mypage
 
+import android.content.Intent
 import android.graphics.Paint
+import android.os.Bundle
+import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.lifecycleScope
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.GoalModel
-import com.footprint.footprint.data.remote.goal.GoalService
 import com.footprint.footprint.databinding.FragmentGoalThisMonthBinding
+import com.footprint.footprint.domain.model.GoalEntity
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
-import com.footprint.footprint.utils.convertDpToPx
-import com.footprint.footprint.utils.getDeviceWidth
+import com.footprint.footprint.ui.error.ErrorActivity
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.GoalViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
 class GoalThisMonthFragment :
-    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate), GoalView {
+    BaseFragment<FragmentGoalThisMonthBinding>(FragmentGoalThisMonthBinding::inflate) {
     private lateinit var dayRVAdapter: DayRVAdapter
-    private lateinit var goal: GoalModel
+    private lateinit var goal: GoalEntity
+    private lateinit var networkErrSb: Snackbar
 
-    private val jobs: ArrayList<Job> = arrayListOf()
+    private val goalVm: GoalViewModel by viewModel()
 
     override fun initAfterBinding() {
-        GoalService.getThisMonthGoal(this)
+        binding.goalThisMonthPb.visibility = View.VISIBLE
+        goalVm.getThisMonthGoal()
 
         setMyClickListener()
+        observe()
         binding.goalThisMonthChangeGoalTv.paintFlags = Paint.UNDERLINE_TEXT_FLAG    //"다음달부터 목표를 변경할래요 >" 텍스트뷰 밑줄 긋기
     }
 
-    override fun onDestroyView() {
-        for (job in jobs) {
-            job.cancel()
-        }
+    override fun onStop() {
+        super.onStop()
 
-        super.onDestroyView()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     private fun initAdapter() {
@@ -113,31 +121,28 @@ class GoalThisMonthFragment :
             "${yearFormat.format(currentTime)}년 ${monthFormat.format(currentTime).toInt() + 1}월"
     }
 
-    private fun showSnackBar(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) {
-            GoalService.getThisMonthGoal(this@GoalThisMonthFragment)
-        }.show()
-    }
+    private fun observe() {
+        goalVm.mutableErrorType.observe(viewLifecycleOwner, Observer {
+            binding.goalThisMonthPb.visibility = View.INVISIBLE
 
-    override fun onGetGoalSuccess(goal: GoalModel) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                this@GoalThisMonthFragment.goal = goal
-            })
-
-            initAdapter()  //어댑터 초기화
-            bind()  //유저 데이터 바인딩
-        }
-    }
-
-    override fun onGoalFail(code: Int?) {
-        if (view!=null) {
-            jobs.add(viewLifecycleOwner.lifecycleScope.launch {
-                when (code) {
-                    6000 -> showSnackBar(getString(R.string.error_network))   //네트워크 연결 문제
-                    else -> showSnackBar(getString(R.string.error_api_fail))   //그 이외 문제
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { goalVm.getThisMonthGoal() }
+                    networkErrSb.show()
                 }
-            })
-        }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("GoalThisMonthFragment")
+                }
+            }
+        })
+
+        goalVm.thisMonthGoal.observe(viewLifecycleOwner, Observer {
+            binding.goalThisMonthPb.visibility = View.INVISIBLE
+
+            this@GoalThisMonthFragment.goal = it
+
+            initAdapter()
+            bind()
+        })
     }
 }

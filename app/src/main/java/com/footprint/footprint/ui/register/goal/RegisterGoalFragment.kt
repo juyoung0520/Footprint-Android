@@ -1,34 +1,41 @@
 package com.footprint.footprint.ui.register.goal
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserModel
-import com.footprint.footprint.data.remote.user.UserService
+import com.footprint.footprint.domain.model.InitUserModel
 import com.footprint.footprint.databinding.FragmentRegisterGoalBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.DayRVAdapter
 import com.footprint.footprint.ui.dialog.WalkTimeDialogFragment
+import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.main.MainActivity
-import com.footprint.footprint.ui.register.RegisterView
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.RegisterViewModel
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterGoalFragment() :
-    BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate), RegisterView {
+    BaseFragment<FragmentRegisterGoalBinding>(FragmentRegisterGoalBinding::inflate) {
+    private lateinit var networkErrSb: Snackbar
+
     private lateinit var dayRVAdapter: DayRVAdapter
     private lateinit var walkTimeDialogFragment: WalkTimeDialogFragment
-    private lateinit var userModel: UserModel
+    private lateinit var userModel: InitUserModel
+
+    private val registerVm: RegisterViewModel by viewModel()
 
     override fun initAfterBinding() {
         initAdapter()
         initWalkTimeDialog()
         setMyEventListener()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        dayRVAdapter.setUserGoalDay(userModel.goalDay)
+        observe()
     }
 
     private fun initAdapter() {
@@ -186,7 +193,7 @@ class RegisterGoalFragment() :
             LogUtils.d("RegisterGoalFragment", "완료! -> $userModel")
 
             //정보 등록 API 호출
-            UserService.registerInfos(this, userModel)
+            registerVm.registerUser(userModel)
         }
     }
 
@@ -197,33 +204,42 @@ class RegisterGoalFragment() :
     }
 
     //InfoFragment 로부터 user 데이터를 전달 받는 함수
-    fun deliverUser(userModel: UserModel) {
+    fun deliverUser(userModel: InitUserModel) {
         this.userModel = userModel
     }
 
+    private fun observe(){
+        registerVm.mutableErrorType.observe(viewLifecycleOwner, Observer{
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(R.string.action_retry) { registerVm.registerUser(userModel) }
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("RegisterGoalFragment")
+                }
+            }
+        })
 
-    /*정보 등록 API -> Response*/
-
-    override fun onRegisterSuccess(result: String?) {
-        LogUtils.d("REGISTER/API-SUCCESS", "성공" + result.toString())
-
-            //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
-            val intent = Intent(requireActivity(), MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(Intent(intent))
+        registerVm.isRegistered.observe(viewLifecycleOwner, Observer{
+            if(it){
+                //MainActivity 로 이동(MainActivity 에서 뒤로 갔을 때 RegisterActivity 로 이동하지 않도록 flag 설정)
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(Intent(intent))
+            }
+        })
     }
 
-    override fun onRegisterFailure(code: Int, message: String) {
-        LogUtils.d("REGISTER/API-FAILURE", "code: $code message: $message")
-
-        val text = if(!isNetworkAvailable(requireContext())){ //네트워크 에러
-            getString(R.string.error_network)
-        }else{ //나머지
-            getString(R.string.error_api_fail)
-        }
-        Snackbar.make(requireView(), text, Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
-            UserService.registerInfos(this, userModel)
-        }.show()
+    override fun onResume() {
+        super.onResume()
+        dayRVAdapter.setUserGoalDay(userModel.goalDay)
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+    }
 }

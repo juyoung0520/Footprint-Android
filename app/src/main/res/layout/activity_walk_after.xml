@@ -59,11 +59,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/walk_after_title_tv" />
 
-        <ImageView
-            android:id="@+id/walk_after_map_iv"
+        <fragment
+            android:id="@+id/walk_after_map_fragment"
+            android:name="com.naver.maps.map.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="center"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.3"
             app:layout_constraintTop_toBottomOf="@id/walk_after_tb" />
@@ -74,7 +74,7 @@
             android:layout_height="0dp"
             app:layout_constraintHeight_default="percent"
             app:layout_constraintHeight_percent="0.12"
-            app:layout_constraintTop_toBottomOf="@+id/walk_after_map_iv">
+            app:layout_constraintTop_toBottomOf="@+id/walk_after_map_fragment">
 
             <TextView
                 android:id="@+id/walk_after_walk_time_title_tv"

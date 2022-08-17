@@ -22,7 +22,7 @@
 
 -keep class com.kakao.sdk.**.model.* { <fields>; }
 -keep class * extends com.google.gson.TypeAdapter
--keep class com.footprint.footprint.data.model.** { *; }
+-keep class com.footprint.footprint.data.dto.** { *; }
 -keep class com.footprint.footprint.data.remote.** { *; }
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
@@ -51,7 +51,7 @@
 
 # Top-level functions that can only be used by Kotlin.
 -dontwarn retrofit2.KotlinExtensions
--dontwarn retrofit2.KotlinExtensions$*
+-dontwarn retrofit2.KotlinExtensions
 
 # With R8 full mode, it sees no subtypes of Retrofit interfaces since they are created with a Proxy
 # and replaces all potential values with null. Explicitly keeping the interfaces prevents this.

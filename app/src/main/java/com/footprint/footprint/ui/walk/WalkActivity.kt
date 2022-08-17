@@ -1,18 +1,18 @@
 package com.footprint.footprint.ui.walk
 
 import android.os.Bundle
-import android.util.Log
 import com.footprint.footprint.R
-import com.footprint.footprint.data.model.UserModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.removeTempWalk
 import com.google.gson.Gson
 import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
-    var userInfo: UserModel?= null
+    var userInfo: SimpleUserModel?= null
     override fun initAfterBinding() {
     }
 
@@ -24,7 +24,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         // -> 사용자 정보 받아오기
         if (intent.hasExtra("userInfo")) {
             val userInfoJson = intent.getStringExtra("userInfo")
-            userInfo = Gson().fromJson(userInfoJson, UserModel::class.java)
+            userInfo = Gson().fromJson(userInfoJson, SimpleUserModel::class.java)
+
+            // 사용자 목표 없을 때 ??
+            if (userInfo!!.goalWalkTime == 0) {
+                userInfo!!.goalWalkTime = 60
+            }
 
             if (userInfo!!.weight == 0) {
                 userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
@@ -57,10 +62,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         actionDialogFragment.setMyDialogCallback(object :
             ActionDialogFragment.MyDialogCallback {
 
-            //중지 텍스트뷰를 클릭하면 -> 액티비티 종료
+            //중지 텍스트뷰를 클릭하면
             override fun action1(isAction: Boolean) {
-                if (isAction)
-                    finish()
+                if (isAction) {
+                    removeTempWalk()    //임시저장 산책 삭제
+                    finish()    //액티비티 종료
+                }
             }
 
             override fun action2(isAction: Boolean) {

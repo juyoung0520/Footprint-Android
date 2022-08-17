@@ -1,11 +1,6 @@
 <resources>
     <string name="app_name">발자국</string>
 
-    <string name="naver_map_sdk_client_id" translatable="false">9vdg59un1e</string>
-    <string name="google_login_server_id" translatable="false">275484626544-npc9k2gt2qmh36o90slhb73bmdgatrnk.apps.googleusercontent.com</string>
-    <string name="kakao_login_native_key" translatable="false">161a1c131c46a53483dd514f423cee43</string>
-    <string name="kakao_login_native_key_kakao" translatable="false">kakao161a1c131c46a53483dd514f423cee43</string>
-
     <!--공통-->
     <!--메뉴-->
     <string name="menu_home">홈</string>
@@ -25,9 +20,17 @@
     <string name="action_update">수정</string>
     <string name="action_stop">중지</string>
     <string name="action_retry">재시도</string>
+    <string name="action_not_agree">동의 안함</string>
+    <string name="action_agree">동의</string>
+    <string name="action_maintain_gps_access">위치 정보 권한 유지</string>
+    <string name="action_change_gps_access">권한 변경</string>
+    <string name="action_close">닫기</string>
+    <string name="action_detail">자세히 보기</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
+    <string name="action_gohome">홈으로 돌아가기</string>
+    <string name="action_contactus">문의하기</string>
 
     <!--설명-->
     <string name="msg_distacnce_unit">km</string>
@@ -48,6 +51,10 @@
     <string name="error_network">네트워크에 연결할 수 없습니다.</string>
     <string name="error_api_fail">오류가 발생했습니다. 다시 시도해 주세요.</string>
     <string name="error_gps_none">GPS를 사용할 수 없습니다.</string>
+    <string name="error_sorry">앱 상에 문제가 발생했습니다. 최대한 빠르게 해결하겠습니다. 죄송합니다.</string>
+    <string name="error_subtitle">ERROR</string>
+    <string name="error_title">앗! 오류가 발생했어요</string>
+    <string name="error_desc">서비스 이용에 불편을 드려 죄송합니다😭 \n잠시 후 다시 시도해 주세요!</string>
 
     <!--화면 별-->
     <!--온보딩-->
@@ -134,12 +141,16 @@
     <string name="title_sum_distance">누적 거리</string>
     <string name="title_avr_calorie">평균 칼로리</string>
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
+    <string name="msg_notification">발자국을 남기거나 산책을 종료하려면 터치해 주세요.</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
     <string name="title_hour">시간</string>
     <string name="title_minute">분</string>
+    <string name="title_update">발자국 업데이트 안내</string>
     <string name="action_withdrawal">탈퇴하기</string>
+    <string name="action_store">스토어 이동</string>
+    <string name="action_follow_up">이어서 작성하기</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -150,13 +161,22 @@
     <string name="msg_update_footprint">발자국을 수정했어요.</string>
     <string name="msg_change_representative_badge">대표뱃지로 설정할까요?</string>
     <string name="msg_logout">발자국에서 로그아웃하시겠어요?</string>
-    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요</string>
+    <string name="msg_logout_desc">*로그인하면 기록을 다시 볼 수 있어요\n(로그아웃이 정상적으로 이뤄지지 않을 경우\n앱을 지우고 다시 다운로드해주세요.)</string>
     <string name="msg_withdrawal">정말 발자국을 탈퇴하시겠어요?</string>
     <string name="msg_withdrawal_desc">*모든 기록이 삭제되고 복구할 수 없어요</string>
     <string name="msg_success_update_goal">다음달 목표를 변경했어요</string>
+    <string name="msg_gps">발자국은 앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 정확한 날씨 정보 제공 기능과 산책 중 이동 경로 표시, 실시간 산책 기록 기능을 지원합니다.</string>
+    <string name="msg_foreground_gps">발자국은 위치 데이터를 수집하여 정확한 날씨 정보 제공 기능과 산책 중 이동 경로 표시, 실시간 산책 기록 기능을 지원합니다.</string>
+    <string name="msg_background_gps">발자국의 위치 액세스 권한을 항상 허용으로 변경하시면 앱이 종료되었거나 사용 중이 아닐 때도 실시간 산책 관련 기능을 지원합니다. 변경하시겠습니까?</string>
+    <string name="msg_denied_foreground_gps">위치 권한 거절로 위치 정보를 활용하는 일부 기능이 제한됩니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
+    <string name="msg_denied_walk_for_foreground_gps">산책을 시작하기 위해서는 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 허용해야 제한된 기능을 사용할 수 있습니다.</string>
+    <string name="msg_denied_walk_for_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
+    <string name="msg_denied_update">업데이트 후 사용 가능합니다.</string>
+    <string name="msg_temp_walk">임시 저장된 산책 기록이 있어요.\n이어서 기록을 작성하시겠어요?</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
+    <string name="error_no_updating_content">변경된 내용이 없어요</string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>
@@ -252,13 +272,21 @@
     <string name="title_password_setting">암호 변경</string>
     <string name="title_logout">로그아웃</string>
     <string name="title_withdrawal">회원 탈퇴</string>
-    <string name="title_version_copyright">버전 1.0.0\nⓒ 2021. 발자국 all rights reserved.</string>
+    <string name="title_version_copyright">\nⓒ 2021. 발자국 all rights reserved.</string>
     <string name="title_privacy_policy">개인정보처리방침</string>
     <string name="title_terms_of_user">이용약관</string>
     <string name="title_location_terms_of_service">위치서비스이용약관</string>
 
     <!--내 정보-->
     <string name="title_my_info">내 정보</string>
+
+    <!--공지사항-->
+    <string name="title_notice">공지사항</string>
+    <string name="msg_notice">[공지] 새로운 기능이 업데이트됐어요!</string>
+    <string name="msg_new">new</string>
+    <string name="title_notice_prev">이전글</string>
+    <string name="title_notice_next">다음글</string>
+
 
     <!--이번달 목표-->
     <string name="title_goal_this_month">이번달 목표</string>
@@ -285,4 +313,6 @@
     <string name="title_lock_unlock">잠금 해제</string>
     <string name="msg_lock_unlock">기존의 암호를 입력해 주세요</string>
     <string name="msg_lock_unlock_wrong">잘못된 암호를 입력하였습니다</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

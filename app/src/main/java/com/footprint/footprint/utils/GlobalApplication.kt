@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.footprint.footprint.R
+import com.footprint.footprint.BuildConfig
 import com.footprint.footprint.config.XAccessTokenInterceptor
+import com.footprint.footprint.di.appModule
 import com.kakao.sdk.common.KakaoSdk
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -19,7 +22,7 @@ class GlobalApplication: Application() {
         const val TAG: String = "FOOTPRINT-APP"                 // SharedPreference
         const val PROD_URL: String = "https://prod.mysteps.shop/"    // 배포용 URI
         const val DEV_URL: String = "https://dev.mysteps.shop/" // 개발 URI
-        const val BASE_URL: String = PROD_URL
+        const val BASE_URL: String = DEV_URL
 
         lateinit var retrofit: Retrofit
         lateinit var mSharedPreferences: SharedPreferences         //APP 기본 SharedPreference
@@ -30,7 +33,12 @@ class GlobalApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        KakaoSdk.init(this, getString(R.string.kakao_login_native_key))
+        KakaoSdk.init(this, BuildConfig.kakao_login_native_key)
+
+        startKoin {
+            androidContext(this@GlobalApplication)
+            modules(appModule)
+        }
 
         val client: OkHttpClient = OkHttpClient.Builder()
             .readTimeout(30000, TimeUnit.MILLISECONDS)
