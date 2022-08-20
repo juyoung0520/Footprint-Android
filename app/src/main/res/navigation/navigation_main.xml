@@ -35,7 +35,11 @@
     <fragment
         android:id="@+id/courseFragment"
         android:name="com.footprint.footprint.ui.main.course.CourseFragment"
-        android:label="courseFragment" />
+        android:label="courseFragment" >
+        <action
+            android:id="@+id/action_courseFragment_to_courseDetailActivity"
+            app:destination="@id/courseDetailActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/mypageFragment"
@@ -249,6 +253,10 @@
             android:name="idx"
             app:argType="string" />
     </fragment>
+    <activity
+        android:id="@+id/courseDetailActivity"
+        android:name="com.footprint.footprint.ui.main.course.CourseDetailActivity"
+        android:label="CourseDetailActivity" />
 
 
 </navigation>
