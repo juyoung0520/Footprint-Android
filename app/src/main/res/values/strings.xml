@@ -142,6 +142,7 @@
     <string name="title_avr_calorie">평균 칼로리</string>
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
     <string name="msg_notification">발자국을 남기거나 산책을 종료하려면 터치해 주세요.</string>
+    <string name="title_course_info">산책중인 코스 정보</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
@@ -177,6 +178,12 @@
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
     <string name="error_no_updating_content">변경된 내용이 없어요</string>
+
+    <!--코스 평가 다이얼로그 프래그먼트-->
+    <string name="title_course_review">코스 평가하기</string>
+    <string name="msg_review_good">좋았어요!</string>
+    <string name="msg_review_next">다음에</string>
+    <string name="msg_declaration_report"><u>신고 레포트</u></string>
 
     <!--산책중지-->
     <string name="title_walk_time">산책시간</string>

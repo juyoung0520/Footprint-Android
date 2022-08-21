@@ -9,13 +9,11 @@ import com.footprint.footprint.databinding.ActivityWalkAfterBinding
 import com.footprint.footprint.service.S3UploadService
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
-import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.dialog.FootprintDialogFragment
-import com.footprint.footprint.ui.dialog.MsgDialogFragment
-import com.footprint.footprint.ui.dialog.NewBadgeDialogFragment
 import com.footprint.footprint.domain.model.*
+import com.footprint.footprint.ui.dialog.*
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.WalkViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.map.MapFragment
@@ -52,6 +50,11 @@ class WalkAfterActivity :
         setActionDialog()
         initFootprintDialog()
         initNewBadgeDialog()
+
+        // 추천 코스에서 왔는지
+        if (intent.hasExtra("course")) {
+            initCourseReviewDialog()
+        }
 
         //WalkMpFragment 로부터 전달 받은 walk 데이터
         val walkStr = intent.getStringExtra("walk")
@@ -273,6 +276,13 @@ class WalkAfterActivity :
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
             }
         })
+    }
+
+    private fun initCourseReviewDialog() {
+        val course = intent.getBooleanExtra("course", true)
+
+        val courseReviewDialog = CourseReviewDialogFragment()
+        courseReviewDialog.show(supportFragmentManager, null)
     }
 
     //산책 정보를 바인딩하는 함수

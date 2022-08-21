@@ -114,4 +114,14 @@
         <item name="android:textColor">@color/primary</item>
         <item name="android:textAppearance">@style/tv_subtitle_b_16</item>
     </style>
+
+    <!--바텀 시트 다이얼로그-->
+    <style name="RoundedBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
 </resources>
