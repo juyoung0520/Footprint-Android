@@ -6,6 +6,7 @@ import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.domain.model.FilteringMode
 import com.footprint.footprint.ui.main.course.Filtering
+import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.ui.main.course.Filtering.filters
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.SEARCH_IN
@@ -26,26 +27,11 @@ class CourseViewModel : ViewModel() {
 
     fun setMapBounds(boundsModel: BoundsModel){
         mapBounds.postValue(boundsModel)
-        //LogUtils.d("CourseVM", " bound ${boundsModel}")
     }
 
     /* 코스 리스트 */
     private val _courseList = NonNullMutableLiveData<MutableList<CourseDTO>>(mutableListOf()) /*수정*/
     val filteredCourseList = NonNullMutableLiveData<MutableList<CourseDTO>>(mutableListOf())
-
-//    fun getCourseList(observer: LifecycleOwner) {
-//        mapBounds.observe(observer, androidx.lifecycle.Observer {
-//            if (mapBounds.value == null)
-//                return@Observer
-//
-//            // 1. 중심점, 화면 크기, 배율 계산하기
-//            // 2. API 호출
-//            //  LogUtils.d("CourseVM", "[${mode.value}]" + _bounds.value.toString())
-//
-//            // 3. 응답이 오면, 필터링해서 저장
-//            // updateCourseList()
-//        })
-//    }
 
     fun getCourses(){
         var bound = mapBounds
@@ -54,17 +40,16 @@ class CourseViewModel : ViewModel() {
             bound = currentBounds
         }
 
-        LogUtils.d("CourseVM", "mode ${Filtering.filterState[SEARCH_IN]} bound ${bound.value}")
+        LogUtils.d("CourseVM[코스 검색]", "mode ${Filtering.filterState[SEARCH_IN]} bound ${bound.value}")
         // API 호출
+        // 응답 필터링해서 저장
     }
 
     /* 필터링 */
     // 필터: 거리, 시간 | 정렬: 내 위치 중심 vs 지도 중심, 거리 vs 인기 vs 좋아요순
      fun updateFilteredCourseList() {
-        val filterState = Filtering.filterState
-       // setMode(filters[0].contents[filterState[SEARCH_IN]!!])
 
-        LogUtils.d("CourseVm", filterState.toString())
+        LogUtils.d("CourseVM[코스 필터링]", filterState.toString())
 
 //        val filtered = getFilteredList(
 //            courseList = _courseList.value as ArrayList<CourseDTO>,

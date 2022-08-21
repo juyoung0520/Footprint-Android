@@ -7,8 +7,7 @@ import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ItemCourseBinding
 import com.footprint.footprint.databinding.ItemCourseTagBinding
 
-class CourseTagRVAdapter: RecyclerView.Adapter<CourseTagRVAdapter.ViewHolder>() {
-    private val tagList = arrayListOf<String>() /* 수정 */
+class CourseTagRVAdapter(private val tagList: List<String>): RecyclerView.Adapter<CourseTagRVAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemCourseTagBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tag: String) {
@@ -27,10 +26,4 @@ class CourseTagRVAdapter: RecyclerView.Adapter<CourseTagRVAdapter.ViewHolder>() 
 
     override fun getItemCount(): Int = tagList.size
 
-    /* 아이템 관리 */
-    fun addAll(list: ArrayList<String>){
-        tagList.clear()
-        tagList.addAll(list)
-        notifyDataSetChanged()
-    }
 }

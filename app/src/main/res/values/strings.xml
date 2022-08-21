@@ -312,13 +312,9 @@
 
     <!--코스 추천-->
     <string name="msg_search_course_hint">원하는 코스를 검색해 보세요</string>
-    <!--<string name="title_filter">필터</string>
-    <string name="title_filter_on"><u>on</u></string>
-    <string name="title_filter_off"><u>off</u></string>-->
     <string name="title_viewmode_start">코스 시작점 보기</string>
     <string name="title_viewmode_end">코스 끝점 보기</string>
 
-    <string name="action_reset">초기화</string>
     <string name="title_orderby">정렬기준</string>
     <string name="action_orderby_distance">거리순</string>
     <string name="action_orderby_popularity">인기순</string>
@@ -345,7 +341,9 @@
     <string name="unit_time_1h">1시간</string>
     <string name="msg_time_less_1h">1시간 이하</string>
     <string name="msg_time_more_1h">1시간 이상</string>
-    
+
+    <string name="action_reset">초기화</string>
     <string name="action_apply">적용하기</string>
+    <string name="action_re_search">현재 위치에서 검색</string>
 
 </resources>

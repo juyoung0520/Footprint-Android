@@ -126,7 +126,7 @@
             android:id="@+id/item_course_like_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_like_off"
+            android:src="@drawable/selector_course_wish"
             android:layout_margin="12dp"
             android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -69,8 +69,4 @@ val viewModelModule = module {
     viewModel{
         CourseViewModel()
     }
-
-    viewModel{
-        CourseSearchViewModel()
-    }
 }

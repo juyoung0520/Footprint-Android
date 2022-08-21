@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <TextView
-        android:id="@+id/course_list_hint_tv"
+        android:id="@+id/course_list_no_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/msg_no_search_result"
@@ -28,7 +28,8 @@
         android:scrollbars="none"
         android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="13dp" />
+        android:clipToPadding="false"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="13dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
