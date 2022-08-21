@@ -11,7 +11,7 @@ import com.footprint.footprint.domain.model.FilteringMode
 import com.footprint.footprint.domain.model.FilteringModel
 import com.footprint.footprint.ui.dialog.FilterBottomDialog
 import com.footprint.footprint.ui.dialog.OrderByBottomDialog
-import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.SEARCH_IN
 import com.footprint.footprint.utils.isDefault
 import com.google.gson.Gson
 
@@ -52,8 +52,9 @@ class CourseFilterRVAdapter(private val fragmentManager: FragmentManager, privat
                         filterState[filter.title] = selected
                         binding.itemOrderbyTv.text = filter.contents[selected]
 
-                        // 바뀐 기준 vm에 알려주기
-                        myListener.onChange(filterState)
+                        // 바뀐 기준 알려주기
+                        myListener.onChange()
+                        if(filter.title == SEARCH_IN) myListener.onModeChange(filter.contents[selected])
                         notifyItemChanged(position)
                     }
                 })
@@ -97,15 +98,15 @@ class CourseFilterRVAdapter(private val fragmentManager: FragmentManager, privat
                         filterState[filter.title] = selected
                         binding.itemFilterTv.text = filter.contents[selected]
 
-                        myListener.onChange(filterState)
+                        myListener.onChange()
                         notifyItemChanged(position)
                     }
 
                     override fun onReset() {
                         filterState[filter.title] = null
 
+                        myListener.onChange()
                         notifyItemChanged(position)
-                        myListener.onChange(filterState)
                     }
                 })
             }
@@ -150,7 +151,8 @@ class CourseFilterRVAdapter(private val fragmentManager: FragmentManager, privat
 
     /* 클릭 이벤트 관리 */
     interface MyListener {
-        fun onChange(filterState: HashMap<String, Int?>)
+        fun onChange()
+        fun onModeChange(mode: String)
     }
 
     private lateinit var myListener: MyListener

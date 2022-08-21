@@ -57,7 +57,7 @@
                 android:background="@drawable/bg_light_gray_round"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:text="힐링"
+                android:text=""
                 android:textAppearance="@style/tv_body_b_14"
                 android:textColorHint="@color/black_light"
                 android:textCursorDrawable="@drawable/bg_edittext_cursor"
@@ -128,10 +128,21 @@
                 app:layout_constraintTop_toTopOf="@id/course_search_reset_tv" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Sliding panel -->
+        <!-- 지도 -->
+        <fragment
+            android:id="@+id/course_search_map_fragment"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/course_search_top_layout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <!-- 현재 위치에서 검색 -->
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Sliding panel -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/course_search_slided_layout"
         android:layout_width="match_parent"

@@ -2,43 +2,54 @@ package com.footprint.footprint.ui.main.course
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CourseFilterRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
+import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.ui.main.course.Filtering.filters
-import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.getNumberOfActivateFilters
+import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseViewModel
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.logging.Filter
 
 class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBinding::inflate) {
+
     private var mode: Int = 0   // 모드: 지도(0), 리스트(1)
 
     private lateinit var mapFragment: CourseMapFragment
     private lateinit var listFragment: CourseListFragment
 
     private val courseVm: CourseViewModel by sharedViewModel()
+    private lateinit var filterRVAdapter: CourseFilterRVAdapter
 
     override fun initAfterBinding() {
         setFragmentSetting()
         setFilterSetting()
         setClickEvent()
-    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        courseVm.getCourseList(this)
+        observe()
     }
 
     private fun setClickEvent(){
         // 코스 검색으로 이동
         binding.courseSearchIv.setOnClickListener {
-            startActivity(Intent(requireContext(), CourseSearchActivity::class.java))
+            val searchWord = binding.courseSearchBarEt.text
+            val cameraPosition = (mapFragment as CourseMapFragment).getCameraPosition()
+
+            if(searchWord.isNotEmpty()){
+                val intent = Intent(requireContext(), CourseSearchActivity::class.java).apply {
+                    putExtra("searchWord", searchWord.toString())
+                    putExtra("cameraPosition", Gson().toJson(cameraPosition))
+                }
+                startActivity(intent)
+            }
         }
 
-        // 마이 코스로 이동
+        // 마이 코스로 이동 /* 갤럭시 */
         binding.courseMyCourseIv.setOnClickListener {
 
         }
@@ -71,16 +82,23 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     }
 
     private fun setFilterSetting() {
-        val filterState = courseVm.initFilters()
-        val filterRVAdapter = CourseFilterRVAdapter((activity as MainActivity).supportFragmentManager, filters, filterState as HashMap<String, Int?>)
+        filterRVAdapter = CourseFilterRVAdapter((activity as MainActivity).supportFragmentManager, filters, filterState)
         binding.courseFilterRv.adapter = filterRVAdapter
 
+        // 초기 초기화 버튼 설정
+        if (getNumberOfActivateFilters(filterState) >= 1) {
+            binding.courseResetIv.isSelected = true
+            binding.courseResetTv.isSelected = true
+        }else{
+            binding.courseResetIv.isSelected = false
+            binding.courseResetTv.isSelected = false
+        }
+
         filterRVAdapter.setMyListener(object : CourseFilterRVAdapter.MyListener {
-            override fun onChange(filterState: HashMap<String, Int?>) {
-                courseVm.updateFilteredCourseList(filterState)
+            override fun onChange() {
+                courseVm.updateFilteredCourseList()
 
                 // 초기화 버튼 상태 관리
-                LogUtils.d("Course", getNumberOfActivateFilters(filterState).toString())
                 if (getNumberOfActivateFilters(filterState) >= 1) {
                     binding.courseResetIv.isSelected = true
                     binding.courseResetTv.isSelected = true
@@ -89,14 +107,41 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
                     binding.courseResetTv.isSelected = false
                 }
             }
+
+            override fun onModeChange(mode: String) {
+                courseVm.getCourses()
+
+                if(mode == SEARCH_IN_MY_LOCATION) // 내 위치 모드
+                    mapFragment.setCameraPositionToCurrent()
+            }
         })
 
+        // 초기화 버튼 클릭 시,
         binding.courseResetTv.setOnClickListener {
             if (binding.courseResetTv.isSelected) {
-                filterRVAdapter.reset(courseVm.initFilters() as HashMap<String, Int?>)
+                // 필터링 state 리셋
+                Filtering.resetFilterState()
+                filterRVAdapter.reset(filterState)
+
                 binding.courseResetIv.isSelected = false
                 binding.courseResetTv.isSelected = false
+
+                // API 호출
+                courseVm.getCourses()
             }
         }
+    }
+
+    private fun observe(){
+        courseVm.mapBounds.observe(viewLifecycleOwner, Observer {
+            // 지도 움직일 때마다 API 호출
+            courseVm.getCourses()
+        })
+
+        courseVm.filteredCourseList.observe(viewLifecycleOwner, Observer {
+            // 필터링된 리스트 바뀔 때마다 UI 바꿔주기
+        })
+
+
     }
 }

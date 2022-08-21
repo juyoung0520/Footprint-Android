@@ -73,4 +73,26 @@ object Filtering {
     val filters: ArrayList<FilteringModel> by lazy {
         arrayListOf(sortBy, searchIn, distance, time)
     }
+
+    val filterState: HashMap<String, Int?> by lazy{
+       hashMapOf<String, Int?>().apply {
+           put(SORT_BY, 0)
+           put(SEARCH_IN, 0)
+           put(DISTANCE, null)
+           put(TIME, null)
+       }
+    }
+
+    // 필터링 초기화
+    fun resetFilterState(){
+        filterState.clear()
+        filterState.apply {
+            put(SORT_BY, 0)
+            put(SEARCH_IN, 0)
+            put(DISTANCE, null)
+            put(TIME, null)
+        }
+    }
+
+
 }

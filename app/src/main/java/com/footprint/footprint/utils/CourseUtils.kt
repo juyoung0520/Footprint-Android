@@ -2,6 +2,7 @@ package com.footprint.footprint.utils
 
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.domain.model.FilteringMode
+import com.footprint.footprint.ui.main.course.Filtering
 import com.footprint.footprint.ui.main.course.Filtering.filters
 
 /* 코스 필터링, 정렬 Utils*/
@@ -38,6 +39,13 @@ fun getFilteredList(courseList: ArrayList<CourseDTO>, sortBy: Int, searchIn: Int
     return courseList
 }
 
+fun getSearchedList(searchWord: String, courseList: ArrayList<CourseDTO>): ArrayList<CourseDTO>{
+    // 검색어로 필터링 후 반환
+
+    return courseList
+}
+
+/* */
 fun getNumberOfActivateFilters(filterState: HashMap<String, Int?>): Int{
     var num = 0
 
@@ -54,3 +62,4 @@ fun isDefault(type: Int, state: Int?): Boolean{
 
     return state == default
 }
+

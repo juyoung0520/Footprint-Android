@@ -15,6 +15,8 @@ import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseMapBinding
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.ui.main.course.Filtering.filterState
+import com.footprint.footprint.utils.SEARCH_IN
 import com.footprint.footprint.utils.SEARCH_IN_MAP
 import com.footprint.footprint.utils.SEARCH_IN_MY_LOCATION
 import com.footprint.footprint.viewmodel.CourseViewModel
@@ -72,8 +74,7 @@ class CourseMapFragment() :
 
     private fun initClickListener() {
         binding.courseMapCurrentLocationIv.setOnClickListener {
-            if(::currentLocation.isInitialized)
-                map.moveCamera(CameraUpdate.scrollTo(LatLng(currentLocation))) // 카메라 이동
+            setCameraPositionToCurrent() // 현위치로 카메라 이동
         }
     }
 
@@ -100,7 +101,7 @@ class CourseMapFragment() :
     }
 
     private fun setMap() {
-        map.moveCamera(CameraUpdate.zoomTo(17.0))
+        setCameraPositionToCurrent()
         map.uiSettings.isZoomControlEnabled = false
         map.uiSettings.isCompassEnabled = false
 
@@ -228,10 +229,6 @@ class CourseMapFragment() :
                     isCameraInitialized = true
                 }
 
-                // 내 위치 모드일 경우, 카메라 이동
-                if(courseVm.mode.value == SEARCH_IN_MY_LOCATION)
-                    map.moveCamera(CameraUpdate.scrollTo(position))
-
                 // 현위치 bounds
                 val bounds = BoundsModel(
                     map.contentBounds.southWest,
@@ -291,5 +288,15 @@ class CourseMapFragment() :
         for(marker in markerList){
             marker.map = null
         }
+    }
+
+    /* public */
+    fun getCameraPosition(): CameraPosition {
+        return map.cameraPosition
+    }
+
+    fun setCameraPositionToCurrent(){
+        if(::currentLocation.isInitialized)
+            map.moveCamera(CameraUpdate.scrollTo(LatLng(currentLocation))) // 카메라 이동
     }
 }

@@ -12,7 +12,7 @@ import com.footprint.footprint.utils.SEARCH_IN
 import com.footprint.footprint.utils.SEARCH_IN_MY_LOCATION
 import com.naver.maps.geometry.LatLng
 
-class CourseViewModel : ViewModel() {
+class CourseSearchViewModel : ViewModel() {
     /* 위치 */
     // 모드 (내 위치 중심 vs 지도 중심)
     // API 응답으로 받아온 자료들 <- 카메라 위치 바뀔 때마다 호출? -> 너무 자주는 아닐까.. 일정 거리 범위 내에서는 어떤지 물어봐야 할듯 ㅠ ㅠ
@@ -26,7 +26,7 @@ class CourseViewModel : ViewModel() {
 
     fun setMapBounds(boundsModel: BoundsModel){
         mapBounds.postValue(boundsModel)
-        //LogUtils.d("CourseVM", " bound ${boundsModel}")
+        LogUtils.d("CourseVM", " bound ${boundsModel}")
     }
 
     /* 코스 리스트 */
