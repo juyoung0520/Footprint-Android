@@ -19,8 +19,9 @@
         android:id="@+id/notice_back_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="14dp"
         android:src="@drawable/ic_back"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/notice_title_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/notice_title_tv" />

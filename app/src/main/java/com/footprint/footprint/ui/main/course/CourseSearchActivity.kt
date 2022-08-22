@@ -191,8 +191,10 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
     private fun setSlidingUpPanel(){
         val slidingPanel = binding.courseSearchSlidingUpPanelLayout
 
-        val panel = (13 + 28 + 15 + ((105+14)*2)) // 슬라이딩 패널 크기 (상단 드래그 이미지, 코스 2개)
-        slidingPanel.panelHeight = convertDpToPx(this, panel)
+        // 슬라이딩 패널 크기 (지도의 40% + marginTop 20dp)
+        val mapHeight = getDeviceHeight() - binding.courseSearchTopLayout.height
+        val panelHeight = (mapHeight*0.4)-convertDpToPx(this, 20)
+        slidingPanel.panelHeight = panelHeight.toInt()
     }
 
     override fun onBackPressed() {

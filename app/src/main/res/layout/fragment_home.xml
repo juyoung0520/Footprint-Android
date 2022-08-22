@@ -141,11 +141,12 @@
 
             <ImageView
                 android:id="@+id/home_setting_iv"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_setting"
-                app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
+                android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/home_top_line_iv"
                 app:layout_constraintTop_toTopOf="@+id/home_top_line_iv" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

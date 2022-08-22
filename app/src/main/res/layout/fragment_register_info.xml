@@ -95,6 +95,7 @@
                         android:maxLines="1"
                         android:paddingBottom="10dp"
 
+                        android:imeOptions="actionNext"
                         android:textColorHint="@color/white_dark"
                         android:textCursorDrawable="@drawable/bg_edittext_cursor"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -254,6 +255,7 @@
                         android:maxLength="4"
                         android:maxLines="1"
                         android:paddingBottom="10dp"
+                        android:imeOptions="actionNext"
 
                         android:textColorHint="@color/white_dark"
                         android:textCursorDrawable="@drawable/bg_edittext_cursor"
@@ -291,6 +293,7 @@
                         android:includeFontPadding="true"
 
                         android:inputType="number"
+                        android:imeOptions="actionNext"
                         android:maxLength="2"
                         android:maxLines="1"
                         android:paddingBottom="10dp"
@@ -329,6 +332,7 @@
                         android:includeFontPadding="true"
 
                         android:inputType="number"
+                        android:imeOptions="actionNext"
                         android:maxLength="2"
                         android:maxLines="1"
                         android:paddingBottom="10dp"
