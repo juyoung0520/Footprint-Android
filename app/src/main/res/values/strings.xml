@@ -224,6 +224,7 @@
 
     <!--코스 상세-->
     <string name="title_course_detail">코스 상세</string>
+    <string name="msg_course_walk_start">코스 산책하기</string>
 
     <!--목표 설정 화면-->
     <string name="msg_set_goal">목표를 설정해 주세요</string>

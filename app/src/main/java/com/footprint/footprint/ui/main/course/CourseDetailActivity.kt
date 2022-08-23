@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.main.course
 
 import android.graphics.PointF
+import android.view.Gravity
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityCourseDetailBinding
 import com.footprint.footprint.ui.BaseActivity
@@ -66,6 +67,10 @@ class CourseDetailActivity :
         binding.courseDetailBackIv.setOnClickListener {
             onBackPressed()
         }
+
+        binding.courseDetailWalkStartBtn.setOnClickListener {
+            // 산책 시작
+        }
     }
 
     private fun initCourseMap() {
@@ -87,17 +92,20 @@ class CourseDetailActivity :
         naverMap.uiSettings.apply {
             isCompassEnabled = false
             isZoomControlEnabled = false
+            isScaleBarEnabled = false
+            logoGravity = Gravity.BOTTOM
+            setLogoMargin(40, 0, 0, 80)
         }
 
         // 여러 코스 마커 생성 비동기 처리
         CoroutineScope(Dispatchers.Main).launch {
-            initMap(naverMap)
+            initOverlay(naverMap)
         }
     }
 
-    private fun initMap(naverMap: NaverMap) {
+    private fun initOverlay(naverMap: NaverMap) {
         val listener = Overlay.OnClickListener { overlay ->
-            updateMap(overlay.tag as Int, naverMap)
+            updateOverlay(overlay.tag as Int, naverMap)
             true
         }
 
@@ -142,7 +150,7 @@ class CourseDetailActivity :
         endMarker.map = naverMap
     }
 
-    private fun updateMap(
+    private fun updateOverlay(
         idx: Int,
         naverMap: NaverMap
     ) {
