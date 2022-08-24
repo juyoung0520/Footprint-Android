@@ -19,23 +19,25 @@
 
 
     <!--TabLayout-->
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/onboarding_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.099"
 
         app:tabBackground="@drawable/selector_onboarding_tablayout"
         app:tabGravity="center"
         app:tabIndicator="@null"
         app:tabPaddingEnd="5dp"
         app:tabPaddingStart="5dp"
-        app:tabRippleColor="@color/transparent"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"/>
+        app:tabRippleColor="@color/transparent" />
 
     <TextView
         android:id="@+id/onboarding_skip_tv"
@@ -45,7 +47,8 @@
         style="@style/tv_caption_12"
         android:textColor="@color/black_dark"
 
-        android:layout_marginEnd="24dp"
+        android:padding="10dp"
+        android:layout_marginEnd="14dp"
         app:layout_constraintTop_toTopOf="@id/onboarding_tb"
         app:layout_constraintBottom_toBottomOf="@id/onboarding_tb"
         app:layout_constraintEnd_toEndOf="parent" />

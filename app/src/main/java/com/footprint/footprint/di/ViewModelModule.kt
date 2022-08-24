@@ -65,4 +65,8 @@ val viewModelModule = module {
     viewModel {
         NoticeDetailViewModel(get())
     }
+
+    viewModel{
+        CourseViewModel()
+    }
 }

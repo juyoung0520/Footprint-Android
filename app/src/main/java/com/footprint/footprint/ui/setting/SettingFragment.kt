@@ -125,8 +125,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             findNavController().navigate(R.id.action_settingFragment_to_myInfoFragment)
         }
 
-        //로그아웃 텍스트뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
-        binding.settingLogoutTv.setOnClickListener {
+        //로그아웃 뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
+        binding.settingLogoutView.setOnClickListener {
             setActionDialogBundle(
                 getString(R.string.msg_logout),
                 getString(R.string.msg_logout_desc),
@@ -145,8 +145,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             })
         }
 
-        //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
-        binding.settingWithdrawalTv.setOnClickListener {
+        //회원탈퇴 뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
+        binding.settingWithdrawalView.setOnClickListener {
             setActionDialogBundle(
                 getString(R.string.msg_withdrawal),
                 getString(R.string.msg_withdrawal_desc),

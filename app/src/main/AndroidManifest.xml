@@ -83,12 +83,18 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <!-- main & walk & walkAfter & walkDetail -->
+        <!-- main & course -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.main.course.CourseSearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- walk & walkAfter & walkDetail -->
         <activity
             android:name=".ui.walk.WalkAfterActivity"
             android:exported="false"

@@ -13,13 +13,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import androidx.core.widget.NestedScrollView
 import com.footprint.footprint.R
 import com.github.twocoffeesoneteam.glidetovectoryou.GlideToVectorYou
+import com.google.android.material.internal.ViewUtils.dpToPx
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
@@ -65,6 +71,13 @@ fun View.setWidth(value: Int) {
     lp?.let {
         lp.width = value
         layoutParams = lp
+    }
+}
+
+
+fun View.setMargins(left: Int = this.marginLeft, top: Int = this.marginTop, right: Int = this.marginRight, bottom: Int = this.marginBottom) {
+    layoutParams = (layoutParams as ViewGroup.MarginLayoutParams).apply {
+        setMargins(left, top, right, bottom)
     }
 }
 
