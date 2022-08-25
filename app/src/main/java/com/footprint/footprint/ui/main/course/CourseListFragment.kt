@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.main.course
 
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseListBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -25,6 +26,8 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
         courseRVAdapter.setMyClickListener(object : CourseListRVAdapter.CourseClickListener{
             override fun onClick(course: CourseDTO) {
                 // 코스 상세보기로 이동
+                val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity()
+                findNavController().navigate(action)
             }
 
             override fun wishCourse(courseIdx: String) {
