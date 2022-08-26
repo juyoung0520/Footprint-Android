@@ -37,7 +37,7 @@
             android:ellipsize="marquee"
             android:layout_marginEnd="10dp"
             app:layout_constraintStart_toEndOf="@id/item_course_image_iv"
-            app:layout_constraintEnd_toStartOf="@id/item_course_participant_count_iv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_count_layout"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -54,28 +54,22 @@
 
 
         <!-- 참가자, 찜 -->
-        <TextView
-            android:id="@+id/item_course_like_count_tv"
+        <LinearLayout
+            android:id="@+id/item_course_count_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black_light"
-            style="@style/tv_body_b_11"
-            android:text="10개"
-            android:alpha="0.5"
+            android:orientation="horizontal"
             android:layout_marginEnd="13dp"
             app:layout_constraintTop_toTopOf="@id/item_course_title_tv"
             app:layout_constraintBottom_toBottomOf="@id/item_course_title_tv"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/item_course_like_count_iv"
+            android:id="@+id/item_course_participant_count_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_like_num"
-            android:alpha="0.5"
-            app:layout_constraintTop_toTopOf="@id/item_course_like_count_tv"
-            app:layout_constraintBottom_toBottomOf="@id/item_course_like_count_tv"
-            app:layout_constraintEnd_toStartOf="@id/item_course_like_count_tv" />
+            android:src="@drawable/ic_participant_num"
+            android:alpha="0.5" />
 
         <TextView
             android:id="@+id/item_course_participant_count_tv"
@@ -84,21 +78,26 @@
             android:textColor="@color/black_light"
             style="@style/tv_body_b_11"
             android:text="10명"
-            android:alpha="0.5"
-            android:layout_marginEnd="7dp"
-            app:layout_constraintTop_toTopOf="@id/item_course_title_tv"
-            app:layout_constraintBottom_toBottomOf="@id/item_course_title_tv"
-            app:layout_constraintEnd_toStartOf="@id/item_course_like_count_iv" />
+            android:alpha="0.5" />
 
         <ImageView
-            android:id="@+id/item_course_participant_count_iv"
+            android:id="@+id/item_course_like_count_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_course_footprint"
             android:alpha="0.5"
-            app:layout_constraintTop_toTopOf="@id/item_course_participant_count_tv"
-            app:layout_constraintBottom_toBottomOf="@id/item_course_participant_count_tv"
-            app:layout_constraintEnd_toStartOf="@id/item_course_participant_count_tv" />
+            android:layout_marginStart="7dp"/>
+
+        <TextView
+            android:id="@+id/item_course_like_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_light"
+            style="@style/tv_body_b_11"
+            android:text="10개"
+            android:alpha="0.5" />
+
+        </LinearLayout>
 
 
         <!-- 태그 -->

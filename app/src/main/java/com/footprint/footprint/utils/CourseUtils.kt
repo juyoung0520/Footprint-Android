@@ -33,16 +33,48 @@ const val TIME_LESS_30M = "30분 이하"
 const val TIME_LESS_1H = "1시간 이하"
 const val TIME_MORE_1H = "1시간 이상"
 
-fun getFilteredList(courseList: ArrayList<CourseDTO>, sortBy: Int, searchIn: Int, distance: Int?, time: Int?): ArrayList<CourseDTO> {
-    // 필터링 후 반환
+fun getFilteredList(courseList: List<CourseDTO>, sortBy: Int, distance: Int?, time: Int?): List<CourseDTO> {
+    var filteredList = courseList
 
-    return courseList
+    filteredList = sortBy(filteredList, sortBy)
+    if(distance != null) filteredList = filterWithDistance(filteredList, distance)
+    if(time != null) filteredList = filterWithTime(filteredList, time)
+
+    return filteredList
 }
 
-fun getSearchedList(searchWord: String, courseList: ArrayList<CourseDTO>): ArrayList<CourseDTO>{
-    // 검색어로 필터링 후 반환
+fun getSearchedList(searchWord: String, courseList: List<CourseDTO>): List<CourseDTO>{
+    // 제목, 태그에서 검색
+    return courseList.filter { it.courseName.contains(searchWord) || it.courseTags.contains(searchWord)}
+}
 
-    return courseList
+// 정렬
+fun sortBy(courseList: List<CourseDTO>, sortBy: Int): List<CourseDTO> {
+    return when(sortBy){
+        0 -> courseList.sortedBy { it.courseDist }
+        1 -> courseList.sortedByDescending { it.courseCount }
+        else -> courseList.sortedByDescending { it.courseLike }
+    }
+}
+
+// 필터링
+fun filterWithDistance(courseList: List<CourseDTO>, distance: Int): List<CourseDTO>{
+    return when(distance){
+        0 -> courseList.filter { it.courseDist < 1 }     // 1km 미만
+        1 -> courseList.filter { it.courseDist <= 1 }    // 1km 이하
+        2 -> courseList.filter { it.courseDist <= 2 }    // 2km 이하
+        3 -> courseList.filter { it.courseDist <= 3 }    // 3km 이하
+        else -> courseList.filter { it.courseDist >= 3 } // 3km 이상
+    }
+}
+
+fun filterWithTime(courseList: List<CourseDTO>, time: Int): List<CourseDTO>{
+    return when(time){
+        0 -> courseList.filter { it.courseTime < 30 }     // 30분 미만
+        1 -> courseList.filter { it.courseTime <= 30 }    // 30분 이상
+        2 -> courseList.filter { it.courseTime <= 60 }    // 1시간 이하
+        else -> courseList.filter { it.courseTime >= 60 } // 1시간 이상
+    }
 }
 
 /* */

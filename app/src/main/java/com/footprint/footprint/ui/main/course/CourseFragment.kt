@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
+import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CourseFilterRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
@@ -70,7 +71,8 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
         val searchWord = binding.courseSearchBarEt.text
         val cameraPosition: CameraPosition? = (mapFragment as CourseMapFragment).getCameraPosition()
 
-        if(searchWord.isEmpty() || cameraPosition == null) return // Validation
+        // Validation (1) 지도 초기화 (2) 검색어 입력 (3) 카메라 위치
+        if(!mapFragment.isInitialized() || searchWord.isEmpty() || cameraPosition == null) return
 
         val intent = Intent(requireContext(), CourseSearchActivity::class.java).apply {
             putExtra("searchWord", searchWord.toString())
@@ -88,6 +90,8 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             .replace(R.id.course_fragment_container, mapFragment).commit()
 
         binding.courseModeIv.setOnClickListener {
+            if(!mapFragment.isInitialized()) return@setOnClickListener // 지도 Init 후 프래그먼트 전환 가능
+
             when (mode) {
                 0 -> { // 지도 -> 리스트로 변경
                     mode = 1
@@ -134,7 +138,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             }
 
             override fun onModeChange(mode: String) {
-                courseVm.getCourses()
+                courseVm.getCourses(null)
 
                 if(mode == SEARCH_IN_MY_LOCATION) // 내 위치 모드
                     mapFragment.setCameraPositionToCurrent()
@@ -160,11 +164,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     private fun observe(){
         courseVm.mapBounds.observe(requireActivity(), Observer {
             // 지도 움직일 때마다 API 호출
-            courseVm.getCourses()
-        })
-
-        courseVm.filteredCourseList.observe(requireActivity(), Observer {
-            // 필터링된 리스트 바뀔 때마다 UI 바꿔주기
+            courseVm.getCourses(null)
         })
     }
 

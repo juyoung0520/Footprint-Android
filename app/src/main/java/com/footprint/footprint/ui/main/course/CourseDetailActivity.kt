@@ -4,8 +4,14 @@ import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.Gravity
+import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.CourseDTO
+import com.footprint.footprint.data.mapper.CourseMapper
 import com.footprint.footprint.databinding.ActivityCourseDetailBinding
 import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.domain.model.SimpleUserModel
@@ -14,8 +20,10 @@ import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.CourseWarningDialogFragment
 import com.footprint.footprint.ui.walk.WalkActivity
-import com.footprint.footprint.utils.getMarker
-import com.footprint.footprint.utils.getPath
+import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.CourseDetailViewModel
+import com.footprint.footprint.viewmodel.CourseViewModel
+import com.google.android.gms.common.util.MapUtils
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
@@ -28,19 +36,23 @@ import com.naver.maps.map.overlay.PathOverlay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CourseDetailActivity :
-    BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate),
-    OnMapReadyCallback {
+class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate), OnMapReadyCallback {
     private val args: CourseDetailActivityArgs by navArgs()
-    private val course: CourseInfoModel by lazy {
-        Gson().fromJson(args.course, CourseInfoModel::class.java)
+    private val courseDTO: CourseDTO by lazy {
+        Gson().fromJson(args.course, CourseDTO::class.java)
     }
 
-    override fun initAfterBinding() {
-        setBinding()
+    private lateinit var courseInfoModel: CourseInfoModel
+    private val courseDetailVm: CourseDetailViewModel by viewModel()
 
-        initCourseMap()
+    override fun initAfterBinding() {
+        courseDetailVm.getCourseInfo(courseDTO.courseIdx.toInt())
+
+        setBinding()
+        observe()
     }
 
     private fun setBinding() {
@@ -80,6 +92,11 @@ class CourseDetailActivity :
         // 유저 정보도 필요
         val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
         intent.putExtra("userInfo", Gson().toJson(tmpUser))
+            val intent = Intent(this, WalkActivity::class.java)
+            intent.putExtra("course", Gson().toJson(courseInfoModel))
+            // 유저 정보도 필요
+            val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
+            intent.putExtra("userInfo", Gson().toJson(tmpUser))
 
         startActivity(intent)
     }
@@ -115,7 +132,7 @@ class CourseDetailActivity :
     }
 
     private fun initOverlay(naverMap: NaverMap) {
-        course.coords.forEach {
+        courseInfoModel.coords.forEach {
             getPath(this@CourseDetailActivity).apply {
                 coords = it
                 map = naverMap
@@ -123,18 +140,40 @@ class CourseDetailActivity :
         }
 
         val startMarker = getMarker(
-            course.coords.first().first(),
+            courseInfoModel.coords.first().first(),
             OverlayImage.fromResource(R.drawable.ic_course_start),
             PointF(0.5f, 0.95f)
         )
         startMarker.map = naverMap
 
         val endMarker = getMarker(
-            course.coords.last().last(),
+            courseInfoModel.coords.last().last(),
             OverlayImage.fromResource(R.drawable.ic_course_end),
             PointF(0.5f, 0.95f)
         )
         endMarker.map = naverMap
+
+        moveMapCameraWithPadding(courseInfoModel.coords as MutableList<MutableList<LatLng>>, naverMap, 100)
+    }
+
+    private fun observe(){
+        courseDetailVm.courseInfo.observe(this, Observer {
+            courseInfoModel = CourseMapper.mapperToCourseInfoModel(courseDTO, it)
+            LogUtils.d("CourseDetail", courseInfoModel.toString())
+
+            initCourseMap()
+            bind()
+        })
+    }
+
+    private fun bind(){
+        binding.courseDetailCourseTitleTv.text = courseInfoModel.title
+        binding.courseDetailDescriptionTv.text = courseInfoModel.description
+        Glide.with(this)
+            .load(courseInfoModel.previewImageUrl)
+            .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
+            .into(binding.courseDetailPreviewIv)
+
     }
 
 }

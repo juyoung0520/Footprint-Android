@@ -1,8 +1,5 @@
 package com.footprint.footprint.di
 
-import com.footprint.footprint.data.datasource.remote.AchieveRemoteDataSourceImpl
-import com.footprint.footprint.data.datasource.remote.AuthRemoteDataSourceImpl
-import com.footprint.footprint.data.datasource.remote.BadgeRemoteDataSourceImpl
 import com.footprint.footprint.data.repository.remote.*
 import com.footprint.footprint.domain.usecase.*
 import org.koin.dsl.bind
@@ -48,6 +45,10 @@ val useCaseModule = module {
     single<GetVersionUseCase> { GetVersionUseCase(get()) }.bind(NoticeRepositoryImpl::class)
 
     single<GetAddressUseCase> { GetAddressUseCase((get())) }.bind(MapRepositoryImpl::class)
+
+    single<GetCoursesUseCase> { GetCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<MarkCourseUseCase> { MarkCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<GetCourseInfoUseCase> { GetCourseInfoUseCase(get()) }.bind(CourseRepositoryImpl::class)
 
     single<EvaluateCourseUseCase> { EvaluateCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
 }

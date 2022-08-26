@@ -2,6 +2,8 @@ package com.footprint.footprint.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.RoundedCorner
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -9,6 +11,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ItemCourseBinding
+import com.footprint.footprint.ui.main.course.CourseListFragment
+import com.footprint.footprint.utils.LogUtils
 
 class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseListRVAdapter.ViewHolder>() {
     private val courseList = arrayListOf<CourseDTO>() /* 수정 */
@@ -17,7 +21,9 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
         fun bind(course: CourseDTO, position: Int) {
             // 타이틀, 인포
             binding.itemCourseTitleTv.text = course.courseName
-            binding.itemCourseInfoTv.text = "${course.courseDist}km, 약 ${course.courseTime}분"
+            val dist = "${course.courseDist}km,"
+            val time = if(course.courseTime<60) "약 ${course.courseTime}분" else "약 ${course.courseTime/60}시간 ${course.courseTime%60}분"
+            binding.itemCourseInfoTv.text = dist + time
 
             // 이미지
             Glide.with(context)
@@ -25,7 +31,23 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
                 .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
                 .into(binding.itemCourseImageIv)
 
-            // 사람 수, 찜 수 /* 수정 */
+            // 사람 수, 찜 수
+            if(course.courseCount == 0){
+                binding.itemCourseParticipantCountIv.visibility = View.GONE
+                binding.itemCourseParticipantCountTv.visibility = View.GONE
+            }else{
+                binding.itemCourseParticipantCountIv.visibility = View.VISIBLE
+                binding.itemCourseParticipantCountTv.visibility = View.VISIBLE
+            }
+            if(course.courseLike == 0){
+                binding.itemCourseLikeCountIv.visibility = View.GONE
+                binding.itemCourseLikeCountTv.visibility = View.GONE
+            }else{
+                binding.itemCourseLikeCountIv.visibility = View.VISIBLE
+                binding.itemCourseLikeCountTv.visibility = View.VISIBLE
+            }
+            binding.itemCourseParticipantCountTv.text = "${course.courseCount}명"
+            binding.itemCourseLikeCountTv.text = "${course.courseLike}개"
 
             // tag RV
             val tagRVAdapter = CourseTagRVAdapter(course.courseTags)
@@ -33,11 +55,9 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
 
             // 찜하기 버튼 관련
             binding.itemCourseLikeIv.isSelected = course.userCourseMark
-
             binding.itemCourseLikeIv.setOnClickListener {
-                // courseIDX 가지고 찜하기 버튼 API 호출
-                myCourseClickListener.wishCourse(course.courseIdx)
-                binding.itemCourseLikeIv.isSelected = !binding.itemCourseLikeIv.isSelected
+                myCourseClickListener.markCourse(course.courseIdx)
+                //binding.itemCourseLikeIv.isSelected = !binding.itemCourseLikeIv.isSelected
             }
         }
     }
@@ -57,7 +77,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
     override fun getItemCount(): Int = courseList.size
 
     /* 아이템 관리 */
-    fun addAll(list: ArrayList<CourseDTO>){
+    fun addAll(list: List<CourseDTO>){
         courseList.clear()
         courseList.addAll(list)
         notifyDataSetChanged()
@@ -66,7 +86,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
     /* 클릭 이벤트 관리 */
     interface CourseClickListener{
         fun onClick(course: CourseDTO)
-        fun wishCourse(courseIdx: String)
+        fun markCourse(courseIdx: String)
     }
 
     private lateinit var myCourseClickListener: CourseClickListener

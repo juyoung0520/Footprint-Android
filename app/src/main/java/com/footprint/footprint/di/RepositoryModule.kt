@@ -16,6 +16,7 @@ val repositoryModule = module {
     single<FootprintRepository> { FootprintRepositoryImpl(get()) }.bind(FootprintRemoteDataSourceImpl::class)
     single<WeatherRepository> { WeatherRepositoryImpl(get()) }.bind(WeatherRemoteDataSourceImpl::class)
     single<NoticeRepository> { NoticeRepositoryImpl(get()) }.bind(NoticeRepositoryImpl::class)
+    single<CourseRepository> { CourseRepositoryImpl(get()) }.bind(CourseRemoteDataSourceImpl::class)
     single<MapRepository> { MapRepositoryImpl(get()) }.bind(MapRepositoryImpl::class)
     single<CourseRepository> { CourseRepositoryImpl(get()) }.bind(CourseRepositoryImpl::class)
 }
