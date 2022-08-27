@@ -407,6 +407,25 @@
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.4" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.45860566448801743" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.0" />
+        <entry key="app/src/main/res/drawable-v24/bg_dialog_fragment_15.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_gray_round_square.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_register_action_btn.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_walk_confirm_slided_layout.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_white_gradient.xml" value="0.1375" />
+        <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/activity_walk.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/activity_walk_after.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/activity_walk_detail.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_course_info_bottom_dialog.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_course_info_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_course_review_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_goal_next_month.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/item_tag.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/item_walk.xml" value="0.21784420289855072" />
       </map>
     </option>
   </component>
