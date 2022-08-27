@@ -102,8 +102,4 @@ class FilterBottomDialog: BottomSheetDialogFragment() {
     fun setMyItemClickListener(onDismissListener: OnDismissListener) {
         this.onDismissListener = onDismissListener
     }
-
-    override fun getTheme(): Int {
-        return com.footprint.footprint.R.style.AppBottomSheetDialogTheme
-    }
 }

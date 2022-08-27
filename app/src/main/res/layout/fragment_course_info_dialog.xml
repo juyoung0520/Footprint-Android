@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_fragment_15"
@@ -56,37 +57,24 @@
         app:layout_constraintStart_toStartOf="@id/course_info_title_tv"
         app:layout_constraintTop_toBottomOf="@id/course_info_title_tv" />
 
-
-    <TextView
-        android:id="@+id/course_info_tag_1_tv"
-        style="@style/tv_body_b_12"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/course_info_tag_rv"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
         android:layout_marginTop="13dp"
-        android:background="@drawable/bg_border_round_square"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="3dp"
-        android:text="#혼자서"
-        android:textColor="@color/black_light"
-        android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@id/course_info_preview_iv"
-        app:layout_constraintTop_toBottomOf="@+id/course_info_distance_time_tv" />
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="@id/course_info_distance_time_tv"
+        app:layout_constraintTop_toBottomOf="@id/course_info_distance_time_tv"
+        tools:listitem="@layout/item_course_tag" />
 
-    <TextView
-        android:id="@+id/course_info_tag_2_tv"
-        style="@style/tv_body_b_12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:background="@drawable/bg_border_round_square"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="3dp"
-        android:text="#힐링"
-        android:textColor="@color/black_light"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/course_info_tag_1_tv"
-        app:layout_constraintStart_toEndOf="@id/course_info_tag_1_tv" />
+    <View
+        android:layout_width="64dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_white_gradient"
+        app:layout_constraintBottom_toBottomOf="@id/course_info_tag_rv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/course_info_tag_rv" />
 
     <TextView
         android:id="@+id/course_info_description_tv"

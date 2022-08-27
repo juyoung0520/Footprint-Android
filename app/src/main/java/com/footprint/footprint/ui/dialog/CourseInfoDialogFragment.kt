@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
+import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseInfoDialogBinding
 import com.footprint.footprint.domain.model.CourseInfoModel
+import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.DialogFragmentUtils.dialogFragmentResizeWidth
 import com.google.gson.Gson
@@ -46,8 +48,9 @@ class CourseInfoDialogFragment : DialogFragment() {
         binding.courseInfoDistanceTimeTv.text =
             String.format("${course.distance}km, 약 ${course.time}분")
         binding.courseInfoDescriptionTv.text = course.description
-        binding.courseInfoTag1Tv.text = course.tags[0]
-        binding.courseInfoTag2Tv.text = course.tags[1]
+
+        val tagRVAdapter = CourseTagRVAdapter(course.tags)
+        binding.courseInfoTagRv.adapter = tagRVAdapter
 
         binding.courseInfoCloseIv.setOnClickListener {
             dismiss()
