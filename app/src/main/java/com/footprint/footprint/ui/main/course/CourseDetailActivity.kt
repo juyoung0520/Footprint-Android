@@ -1,43 +1,37 @@
 package com.footprint.footprint.ui.main.course
 
+import android.content.Intent
 import android.graphics.PointF
 import android.view.Gravity
+import androidx.navigation.navArgs
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityCourseDetailBinding
+import com.footprint.footprint.domain.model.CourseInfoModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.getMarker
 import com.footprint.footprint.utils.getPath
+import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
-data class TmpCourse(val coords: List<LatLng>)
-
 class CourseDetailActivity :
     BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate),
     OnMapReadyCallback {
-    private lateinit var pathOverlay: PathOverlay
-    private lateinit var startMarker: Marker
-    private lateinit var endMarker: Marker
-
-    private val course = TmpCourse(
-        listOf(
-            LatLng(37.57152, 126.97714),
-            LatLng(37.56607, 126.98268),
-            LatLng(37.56445, 126.97707),
-            LatLng(37.55855, 126.97822)
-        )
-    )
+    private val args: CourseDetailActivityArgs by navArgs()
+    private val course: CourseInfoModel by lazy {
+        Gson().fromJson(args.course, CourseInfoModel::class.java)
+    }
 
     override fun initAfterBinding() {
         setBinding()
@@ -51,7 +45,13 @@ class CourseDetailActivity :
         }
 
         binding.courseDetailWalkStartBtn.setOnClickListener {
-            // 산책 시작
+            val intent = Intent(this, WalkActivity::class.java)
+            intent.putExtra("course", Gson().toJson(course))
+            // 유저 정보도 필요
+            val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
+            intent.putExtra("userInfo", Gson().toJson(tmpUser))
+
+            startActivity(intent)
         }
     }
 
@@ -86,20 +86,22 @@ class CourseDetailActivity :
     }
 
     private fun initOverlay(naverMap: NaverMap) {
-        pathOverlay = getPath(this@CourseDetailActivity).apply {
-            coords = course.coords
-            map = naverMap
+        course.coords.forEach {
+            getPath(this@CourseDetailActivity).apply {
+                coords = it
+                map = naverMap
+            }
         }
 
-        startMarker = getMarker(
-            course.coords.first(),
+        val startMarker = getMarker(
+            course.coords.first().first(),
             OverlayImage.fromResource(R.drawable.ic_course_start),
             PointF(0.5f, 0.95f)
         )
         startMarker.map = naverMap
 
-        endMarker = getMarker(
-            course.coords.last(),
+        val endMarker = getMarker(
+            course.coords.last().last(),
             OverlayImage.fromResource(R.drawable.ic_course_end),
             PointF(0.5f, 0.95f)
         )

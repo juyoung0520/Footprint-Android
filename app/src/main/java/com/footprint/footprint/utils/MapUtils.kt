@@ -30,10 +30,10 @@ fun getPathBounds(paths: MutableList<MutableList<LatLng>>): LatLngBounds? {
     return latLngBounds
 }
 
-fun getPath(context: Context): PathOverlay {
+fun getPath(context: Context, color: Int = R.color.primary): PathOverlay {
     return PathOverlay().apply {
         width = 30
-        color = ContextCompat.getColor(context, R.color.primary)
+        this.color = ContextCompat.getColor(context, color)
         outlineWidth = 0
     }
 }
