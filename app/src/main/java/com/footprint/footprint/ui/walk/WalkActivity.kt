@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
+import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.LogUtils
@@ -13,7 +14,7 @@ import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
     lateinit var userInfo: SimpleUserModel
-    var isFromCourse: Boolean = false
+    var course: CourseInfoModel? = null
 
     override fun initAfterBinding() {}
 
@@ -22,21 +23,21 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
 
         setToastMessage()
 
-        if (intent.hasExtra("userInfo")) {
-            val userInfoJson = intent.getStringExtra("userInfo")
-            userInfo = Gson().fromJson(userInfoJson, SimpleUserModel::class.java)
+        intent.getStringExtra("userInfo")?.let {
+            userInfo = Gson().fromJson(it, SimpleUserModel::class.java)
 
-            if (userInfo.goalWalkTime == 0) {
-                userInfo.goalWalkTime = 60
-            }
+            if (userInfo.goalWalkTime == 0) userInfo.goalWalkTime = 60
 
-            if (userInfo.weight == 0) {
+            if (userInfo.weight == 0)
                 userInfo.weight = if (userInfo.gender == "male") 72 else 56
-            }
+
             LogUtils.d("userInfo", userInfo.toString())
         }
 
-        isFromCourse = intent.getBooleanExtra("isFromCourse", false)
+        course =
+            intent.getStringExtra("course")?.let {
+                Gson().fromJson(it, CourseInfoModel::class.java)
+            }
 
         //취소 텍스트뷰 클릭 리스너 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         binding.walkCancelTv.setOnClickListener {

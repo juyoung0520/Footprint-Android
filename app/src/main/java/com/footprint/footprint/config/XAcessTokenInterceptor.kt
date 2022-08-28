@@ -20,6 +20,7 @@ class XAccessTokenInterceptor : Interceptor {
         val builder: Request.Builder = chain.request().newBuilder()
 
         val jwtToken: String? = getJwt()
+        // LogUtils.d("jwt", jwtToken!!)
 
         builder.addHeader("isEncrypted", "yes")
         jwtToken?.let {

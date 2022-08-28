@@ -120,22 +120,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         setObserver()
 
-        if ((activity as WalkActivity).isFromCourse) {
-            // 추천 코스 경로
-            val tmpCourse = listOf(
-                LatLng(37.57152, 126.97714),
-                LatLng(37.56607, 126.98268),
-                LatLng(37.56445, 126.97707),
-                LatLng(37.55855, 126.97822)
-            )
-
-            // 나중에 MapUtils 함수 호출로 고치기
-            PathOverlay().apply {
-                coords = tmpCourse
-                width = 30
-                color = ContextCompat.getColor(requireContext(), R.color.black_light)
-                outlineWidth = 0
-                map = naverMap
+        (activity as WalkActivity).course?.let { course ->
+            CoroutineScope(Dispatchers.Main).apply {
+                initCourseOverlay(course, naverMap)
             }
         }
     }
@@ -281,22 +268,10 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun initBinding() {
         binding.walkmapProgressBar.isEnabled = false
 
-        if ((activity as WalkActivity).isFromCourse) {
+        (activity as WalkActivity).course?.let { course ->
             binding.walkmapCourseInfoTv.visibility = View.VISIBLE
 
             binding.walkmapCourseInfoTv.setOnClickListener {
-                // API 호출
-
-                // Observer로 이동
-                val tags = listOf<String>("행복", "힐링")
-                val course = CourseInfoModel(
-                    title = "산책 성공",
-                    distance = 11,
-                    time = 30,
-                    description = "오늘 기분 좋은 날!!dsjlfldjsljfksdjjflsjflsjfsjlfjdsklfjlsd kfjdljlsj djlsjfslkfjslfj",
-                    tags = tags
-                )
-
                 showCourseInfoDialog(course)
             }
         }
@@ -313,12 +288,12 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun goToWalkAfterActivity() {
         bindSaveWalkEntity()
 
-        val walkActivity = (requireActivity() as WalkActivity)
         val intent: Intent = Intent(requireActivity(), WalkAfterActivity::class.java)
         intent.putExtra("walk", Gson().toJson(saveWalkEntity))    //산책 정보 전달
-        // 나중에 코스 정보 넘겨야될듯?
-        if (walkActivity.isFromCourse) {
-            intent.putExtra("course", walkActivity.isFromCourse)
+
+        val walkActivity = (requireActivity() as WalkActivity)
+        walkActivity.course?.let {
+            intent.putExtra("course", Gson().toJson(it))
         }
 
         startActivity(intent)   //다음 화면(지금까지 기록된 산책, 기록 데이터 확인하는 화면)으로 이동
@@ -392,6 +367,18 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             )
         } else {
             spannable.setSpan(spanColor, 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
+
+    private fun initCourseOverlay(
+        course: CourseInfoModel,
+        naverMap: NaverMap
+    ) {
+        course.coords.forEach {
+            getPath(requireContext(), R.color.black_light).apply {
+                coords = it
+                map = naverMap
+            }
         }
     }
 
