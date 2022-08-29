@@ -30,48 +30,47 @@ fun getPathBounds(paths: MutableList<MutableList<LatLng>>): LatLngBounds? {
     return latLngBounds
 }
 
-fun getPath(context: Context): PathOverlay {
-    val path = PathOverlay()
-    path.apply {
+fun getPath(context: Context, color: Int = R.color.primary): PathOverlay {
+    return PathOverlay().apply {
         width = 30
-        color = ContextCompat.getColor(context, R.color.primary)
+        this.color = ContextCompat.getColor(context, color)
         outlineWidth = 0
     }
-
-    return path
 }
 
-fun getMarker(locationPosition: LatLng, image: OverlayImage): Marker{
-    val marker = Marker()
-    marker.position = locationPosition
-    marker.anchor = PointF(0.5f, 0.5f)
-    marker.icon = image
-
-    return marker
-}
-
-fun getFootPrintMarker(locationPosition: LatLng, footprintCount: Int): Marker{
-    val marker = Marker()
-    marker.position = locationPosition
-    marker.anchor = PointF(0.5f, 0.5f)
-    marker.width = 100
-    marker.height = 100
-    marker.zIndex = 100
-
-    marker.icon = when (footprintCount) {
-        1 -> OverlayImage.fromResource(R.drawable.ic_foot_print1)
-        2 -> OverlayImage.fromResource(R.drawable.ic_foot_print2)
-        3 -> OverlayImage.fromResource(R.drawable.ic_foot_print3)
-        4 -> OverlayImage.fromResource(R.drawable.ic_foot_print4)
-        5 -> OverlayImage.fromResource(R.drawable.ic_foot_print5)
-        6 -> OverlayImage.fromResource(R.drawable.ic_foot_print6)
-        7 -> OverlayImage.fromResource(R.drawable.ic_foot_print7)
-        8 -> OverlayImage.fromResource(R.drawable.ic_foot_print8)
-        9 -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
-        else -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
+fun getMarker(
+    locationPosition: LatLng,
+    image: OverlayImage,
+    anchor: PointF = PointF(0.5f, 0.5f)
+): Marker {
+    return Marker().apply {
+        position = locationPosition
+        icon = image
+        this.anchor = anchor
     }
+}
 
-    return marker
+fun getFootPrintMarker(locationPosition: LatLng, footprintCount: Int): Marker {
+    return Marker().apply {
+        position = locationPosition
+        anchor = PointF(0.5f, 0.5f)
+        width = 100
+        height = 100
+        zIndex = 100
+
+        icon = when (footprintCount) {
+            1 -> OverlayImage.fromResource(R.drawable.ic_foot_print1)
+            2 -> OverlayImage.fromResource(R.drawable.ic_foot_print2)
+            3 -> OverlayImage.fromResource(R.drawable.ic_foot_print3)
+            4 -> OverlayImage.fromResource(R.drawable.ic_foot_print4)
+            5 -> OverlayImage.fromResource(R.drawable.ic_foot_print5)
+            6 -> OverlayImage.fromResource(R.drawable.ic_foot_print6)
+            7 -> OverlayImage.fromResource(R.drawable.ic_foot_print7)
+            8 -> OverlayImage.fromResource(R.drawable.ic_foot_print8)
+            9 -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
+            else -> OverlayImage.fromResource(R.drawable.ic_foot_print9)
+        }
+    }
 }
 
 // WalkAfter
@@ -99,7 +98,7 @@ fun drawFootprints(
     }
 }
 
-fun drawWalkPath(paths: MutableList<MutableList<LatLng>>,context: Context, naverMap: NaverMap) {
+fun drawWalkPath(paths: MutableList<MutableList<LatLng>>, context: Context, naverMap: NaverMap) {
     // 경로 마크 찍기
     val startMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_start)
     val midMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_middle_end)

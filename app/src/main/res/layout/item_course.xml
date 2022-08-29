@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="14dp"
+    android:background="@color/white_light"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="105dp">
+
+        <!-- 사진 및 제목, 정보 -->
+        <ImageView
+            android:id="@+id/item_course_image_iv"
+            android:layout_width="78dp"
+            android:layout_height="78dp"
+            android:background="@drawable/bg_transparent_7_round"
+            android:layout_marginStart="13dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_course_title_tv"
+            style="@style/tv_subtitle_b_16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="19dp"
+            android:text="14번째 산책"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toEndOf="@id/item_course_image_iv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_participant_count_iv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_course_info_tv"
+            style="@style/tv_body_b_11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="10km, 약 n분"
+            android:textColor="@color/black_light"
+            android:alpha="0.5"
+            app:layout_constraintStart_toStartOf="@id/item_course_title_tv"
+            app:layout_constraintTop_toBottomOf="@id/item_course_title_tv" />
+
+
+        <!-- 참가자, 찜 -->
+        <TextView
+            android:id="@+id/item_course_like_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_light"
+            style="@style/tv_body_b_11"
+            android:text="10개"
+            android:alpha="0.5"
+            android:layout_marginEnd="13dp"
+            app:layout_constraintTop_toTopOf="@id/item_course_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_title_tv"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/item_course_like_count_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_like_num"
+            android:alpha="0.5"
+            app:layout_constraintTop_toTopOf="@id/item_course_like_count_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_like_count_tv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_like_count_tv" />
+
+        <TextView
+            android:id="@+id/item_course_participant_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_light"
+            style="@style/tv_body_b_11"
+            android:text="10명"
+            android:alpha="0.5"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintTop_toTopOf="@id/item_course_title_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_title_tv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_like_count_iv" />
+
+        <ImageView
+            android:id="@+id/item_course_participant_count_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_participant_num"
+            android:alpha="0.5"
+            app:layout_constraintTop_toTopOf="@id/item_course_participant_count_tv"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_participant_count_tv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_participant_count_tv" />
+
+
+        <!-- 태그 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_course_tag_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_course_tag"
+            app:layout_constraintStart_toStartOf="@id/item_course_title_tv"
+            app:layout_constraintEnd_toStartOf="@id/item_course_like_iv"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_like_iv" />
+
+        <View
+            android:layout_width="64dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_white_gradient"
+            app:layout_constraintBottom_toBottomOf="@id/item_course_like_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_course_like_iv" />
+
+        <!-- 찜하기 -->
+        <ImageView
+            android:id="@+id/item_course_like_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selector_course_wish"
+            android:layout_margin="12dp"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

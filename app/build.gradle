@@ -30,6 +30,8 @@ android {
         buildConfigField("String", "s3_secretkey", properties.getProperty("s3.secretkey"))
         buildConfigField("String", "s3_base_url", properties.getProperty("s3.baseurl"))
         buildConfigField("String", "s3_bucket", properties.getProperty("s3.bucket"))
+        buildConfigField("String", "naver_map_gc_client_id", properties.getProperty("naver.map.gc.client.id"))
+        buildConfigField("String", "naver_map_gc_client_secret", properties.getProperty("naver.map.gc.client.secret"))
 
         manifestPlaceholders["kakao_login_native_key_kakao"] = kakao_login_native_key_kakao
         manifestPlaceholders["naver_map_sdk_client_id"] = naver_map_sdk_client_id
@@ -76,6 +78,9 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -171,11 +176,18 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-s3:2.43.0'
     implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.43.0'
 
+    //RangeSeekBar
+    implementation 'com.github.Innovattic:range-seek-bar:v1.0.8'
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:30.2.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
-    // Lottie
+    //Lottie
     implementation 'com.airbnb.android:lottie:3.0.7'
+
+    //Seekbar
+    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
 }

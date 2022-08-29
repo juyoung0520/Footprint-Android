@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.footprint.footprint.R
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.databinding.ActivityWalkBinding
+import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.LogUtils
@@ -12,30 +13,31 @@ import com.google.gson.Gson
 import com.skydoves.balloon.*
 
 class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::inflate) {
-    var userInfo: SimpleUserModel?= null
-    override fun initAfterBinding() {
-    }
+    lateinit var userInfo: SimpleUserModel
+    var course: CourseInfoModel? = null
+
+    override fun initAfterBinding() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setToastMessage()
 
-        // -> 사용자 정보 받아오기
-        if (intent.hasExtra("userInfo")) {
-            val userInfoJson = intent.getStringExtra("userInfo")
-            userInfo = Gson().fromJson(userInfoJson, SimpleUserModel::class.java)
+        intent.getStringExtra("userInfo")?.let {
+            userInfo = Gson().fromJson(it, SimpleUserModel::class.java)
 
-            // 사용자 목표 없을 때 ??
-            if (userInfo!!.goalWalkTime == 0) {
-                userInfo!!.goalWalkTime = 60
-            }
+            if (userInfo.goalWalkTime == 0) userInfo.goalWalkTime = 60
 
-            if (userInfo!!.weight == 0) {
-                userInfo!!.weight = if (userInfo!!.gender == "male") 72 else 56
-            }
+            if (userInfo.weight == 0)
+                userInfo.weight = if (userInfo.gender == "male") 72 else 56
+
             LogUtils.d("userInfo", userInfo.toString())
         }
+
+        course =
+            intent.getStringExtra("course")?.let {
+                Gson().fromJson(it, CourseInfoModel::class.java)
+            }
 
         //취소 텍스트뷰 클릭 리스너 -> 실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
         binding.walkCancelTv.setOnClickListener {
@@ -52,7 +54,8 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
     private fun showStopWalkDialog() {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", getString(R.string.msg_stop_realtime_record))
-        bundle.putString("action", getString(R.string.action_stop))
+        bundle.putString("left", getString(R.string.action_cancel))
+        bundle.putString("right", getString(R.string.action_stop))
 
         val actionDialogFragment: ActionDialogFragment = ActionDialogFragment()
         actionDialogFragment.arguments = bundle
@@ -62,15 +65,12 @@ class WalkActivity : BaseActivity<ActivityWalkBinding>(ActivityWalkBinding::infl
         actionDialogFragment.setMyDialogCallback(object :
             ActionDialogFragment.MyDialogCallback {
 
-            //중지 텍스트뷰를 클릭하면
-            override fun action1(isAction: Boolean) {
-                if (isAction) {
-                    removeTempWalk()    //임시저장 산책 삭제
-                    finish()    //액티비티 종료
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                removeTempWalk()    //임시저장 산책 삭제
+                finish()    //액티비티 종료
             }
         })
     }

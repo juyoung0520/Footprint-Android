@@ -188,6 +188,23 @@
         android:thumb="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/walkmap_timer_layout" />
 
+    <TextView
+        android:id="@+id/walkmap_course_info_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_white_round_square_32"
+        android:elevation="4dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="22dp"
+        android:text="@string/title_course_info"
+        android:textColor="@color/primary"
+        android:visibility="gone"
+        style="@style/tv_headline_eb_14"
+        app:layout_constraintTop_toBottomOf="@id/walkmap_progress_bar"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/walkmap_stop_iv"
         android:layout_width="wrap_content"

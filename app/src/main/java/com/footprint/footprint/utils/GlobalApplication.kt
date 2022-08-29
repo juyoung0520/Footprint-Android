@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.footprint.footprint.BuildConfig
+import com.footprint.footprint.config.MapInterceptor
 import com.footprint.footprint.config.XAccessTokenInterceptor
 import com.footprint.footprint.di.appModule
 import com.kakao.sdk.common.KakaoSdk
@@ -22,9 +23,11 @@ class GlobalApplication: Application() {
         const val TAG: String = "FOOTPRINT-APP"                 // SharedPreference
         const val PROD_URL: String = "https://prod.mysteps.shop/"    // 배포용 URI
         const val DEV_URL: String = "https://dev.mysteps.shop/" // 개발 URI
-        const val BASE_URL: String = DEV_URL
+        const val BASE_URL: String = PROD_URL
+        const val MAP_URL: String = "https://naveropenapi.apigw.ntruss.com/"    //NAVER MAP URL
 
         lateinit var retrofit: Retrofit
+        lateinit var mapRetrofit: Retrofit
         lateinit var mSharedPreferences: SharedPreferences         //APP 기본 SharedPreference
         lateinit var eSharedPreferences: EncryptedSharedPreferences//암호화된  SharedPreference
     }
@@ -52,6 +55,17 @@ class GlobalApplication: Application() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+        val mapClient: OkHttpClient = OkHttpClient.Builder()
+            .readTimeout(30000, TimeUnit.MILLISECONDS)
+            .connectTimeout(30000, TimeUnit.MILLISECONDS)
+            .addInterceptor(MapInterceptor())
+            .build()
+
+        mapRetrofit = Retrofit.Builder()
+            .baseUrl(MAP_URL)
+            .client(mapClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
         //앱 sharedPreference
         mSharedPreferences = applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)

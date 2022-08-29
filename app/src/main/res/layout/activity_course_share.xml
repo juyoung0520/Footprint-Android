@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.course.CourseShareActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/course_share_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@color/primary"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/course_share_back_iv"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="14dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="@+id/course_share_title_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/course_share_title_tv" />
+
+        <TextView
+            android:id="@+id/course_share_title_tv"
+            style="@style/tv_headline_eb_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_course_sharing"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.72" />
+
+        <TextView
+            android:id="@+id/course_share_complete_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:enabled="false"
+            android:padding="10dp"
+            android:text="@string/action_complete"
+            android:textAppearance="@style/tv_headline_eb_16"
+            android:textColor="@drawable/selector_course_share_complete_tv_text"
+            app:layout_constraintBottom_toBottomOf="@+id/course_share_title_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/course_share_title_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/course_share_nsv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@+id/course_share_top_layout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/course_share_thumbnail_base_iv"
+                android:layout_width="105dp"
+                android:layout_height="105dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/bg_course_share_thumbnail_base_view"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_line_view1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/course_share_photo_iv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_plus_photo"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintEnd_toEndOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintStart_toStartOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintTop_toTopOf="@+id/course_share_thumbnail_base_iv" />
+
+            <ImageView
+                android:id="@+id/course_share_photo_edit_iv"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/ic_gallery_edit"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintEnd_toEndOf="@+id/course_share_thumbnail_base_iv" />
+
+            <TextView
+                android:id="@+id/course_share_course_location_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:text="@string/title_course_location"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toTopOf="@+id/course_share_course_length_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintTop_toTopOf="@+id/course_share_thumbnail_base_iv" />
+
+            <ImageView
+                android:id="@+id/course_share_location_pin_iv"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_location_pin"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_location_title_tv"
+                app:layout_constraintEnd_toStartOf="@+id/course_share_course_location_tv"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_location_title_tv" />
+
+            <TextView
+                android:id="@+id/course_share_course_location_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="41dp"
+                android:gravity="end|center"
+                android:maxWidth="100dp"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_location_title_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_location_title_tv" />
+
+            <EditText
+                android:id="@+id/course_share_location_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@null"
+                android:drawableEnd="@drawable/ic_modify_16"
+                android:drawablePadding="3dp"
+                android:gravity="center|end"
+                android:hint="@string/title_enter_in_person"
+                android:inputType="text"
+                android:textAppearance="@style/tv_body_b_12"
+                android:textColorHint="@color/white_dark"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_location_title_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/course_share_course_location_title_tv"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_location_title_tv" />
+
+            <TextView
+                android:id="@+id/course_share_course_length_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:text="@string/title_course_length"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toTopOf="@+id/course_share_course_time_title_tv"
+                app:layout_constraintStart_toEndOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_course_location_title_tv" />
+
+            <TextView
+                android:id="@+id/course_share_course_length_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="41dp"
+                android:gravity="end|center"
+                android:maxWidth="100dp"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_length_title_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_length_title_tv" />
+
+            <TextView
+                android:id="@+id/course_share_course_time_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:text="@string/title_time"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toBottomOf="@id/course_share_thumbnail_base_iv"
+                app:layout_constraintStart_toEndOf="@+id/course_share_thumbnail_base_iv"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_course_length_title_tv" />
+
+            <TextView
+                android:id="@+id/course_share_course_time_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="41dp"
+                android:gravity="end|center"
+                android:maxWidth="100dp"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_course_time_title_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/course_share_course_time_title_tv" />
+
+            <View
+                android:id="@+id/course_share_line_view1"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_marginTop="153dp"
+                android:background="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/course_share_course_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/title_course_name"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_line_view1" />
+
+            <EditText
+                android:id="@+id/course_share_course_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="23dp"
+                android:layout_marginVertical="18dp"
+                android:background="@null"
+                android:hint="@string/msg_input_course_name"
+                android:inputType="text"
+                android:textAppearance="@style/tv_subtitle_b_16"
+                android:textColorHint="@color/white_dark"
+                app:layout_constraintBottom_toTopOf="@+id/course_share_line_view2"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_course_name_tv" />
+
+            <View
+                android:id="@+id/course_share_line_view2"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_marginTop="245dp"
+                android:background="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/course_share_tag_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/title_tag"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_line_view2" />
+
+            <ImageView
+                android:id="@+id/course_share_question_iv"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_hint"
+                app:layout_constraintBottom_toBottomOf="@+id/course_share_tag_tv"
+                app:layout_constraintStart_toEndOf="@+id/course_share_tag_tv"
+                app:layout_constraintTop_toTopOf="@+id/course_share_tag_tv" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/course_share_tag_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/course_share_line_view3"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_tag_tv"
+                tools:listitem="@layout/item_tag_ver_cs" />
+
+            <View
+                android:id="@+id/course_share_line_view3"
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_marginTop="354dp"
+                android:background="@color/white"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/course_share_course_desc_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/title_course_desc"
+                android:textAppearance="@style/tv_body_b_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_line_view3" />
+
+            <EditText
+                android:id="@+id/course_share_course_desc_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="18dp"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/msg_input_course_desc"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"
+                android:textAppearance="@style/tv_subtitle_b_16"
+                android:textColorHint="@color/white_dark"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/course_share_course_desc_tv" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetDashBoardLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="30dp"
+    app:behavior_draggable="true"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/bottom_dialog_filter_title_tv"
+        style="@style/tv_headline_eb_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_choose_distance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bottom_dialog_filter_reset_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_reset_list"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_dialog_filter_divider_v"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/bottom_dialog_filter_divider_v"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/white_dark"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_filter_title_tv" />
+
+    <!-- 시크바 -->
+    <TextView
+        android:id="@+id/bottom_dialog_selected_tv"
+        style="@style/tv_headline_eb_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/msg_distance_under_1km"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_filter_divider_v" />
+
+    <com.warkiz.widget.IndicatorSeekBar
+        android:id="@+id/bottom_dialog_filter_seekbar_sb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:isb_show_indicator="none"
+        app:isb_thumb_drawable="@drawable/ic_seekbar_thumb"
+        app:isb_thumb_size="40dp"
+        app:isb_track_rounded_corners="true"
+        app:isb_track_background_color="@color/white_dark"
+        app:isb_track_background_size="8dp"
+        app:isb_track_progress_color="@color/primary"
+        app:isb_track_progress_size="8dp"
+
+        app:isb_seek_smoothly="true"
+        app:isb_ticks_count="5"
+        app:isb_show_tick_marks_type="square"
+        app:isb_tick_marks_color="@color/white_light"
+        app:isb_tick_marks_size="8dp"
+        app:isb_tick_marks_swept_hide="true"
+        app:isb_tick_marks_ends_hide="true"
+
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_selected_tv" />
+
+    <!-- 시크바 텍스트들 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_dialog_filter_seekbar_tick_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@id/bottom_dialog_filter_seekbar_sb"
+        app:layout_constraintEnd_toEndOf="@id/bottom_dialog_filter_seekbar_sb"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_filter_seekbar_sb">
+
+        <TextView
+            android:id="@+id/bottom_dialog_filter_tick1_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_distance_under_1km"
+            style="@style/tv_headline_eb_12"
+            android:textColor="@drawable/selector_tick_text"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/bottom_dialog_filter_tick2_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/bottom_dialog_filter_tick2_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_distance_under_1km"
+            style="@style/tv_body_b_12"
+            android:textColor="@drawable/selector_tick_text"
+            app:layout_constraintStart_toEndOf="@id/bottom_dialog_filter_tick1_tv"
+            app:layout_constraintEnd_toStartOf="@id/bottom_dialog_filter_tick3_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/bottom_dialog_filter_tick3_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_distance_under_1km"
+            style="@style/tv_body_b_12"
+            android:textColor="@drawable/selector_tick_text"
+            app:layout_constraintStart_toEndOf="@id/bottom_dialog_filter_tick2_tv"
+            app:layout_constraintEnd_toStartOf="@id/bottom_dialog_filter_tick4_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/bottom_dialog_filter_tick4_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_distance_under_1km"
+            style="@style/tv_body_b_12"
+            android:textColor="@drawable/selector_tick_text"
+            app:layout_constraintStart_toEndOf="@id/bottom_dialog_filter_tick3_tv"
+            app:layout_constraintEnd_toStartOf="@id/bottom_dialog_filter_tick5_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/bottom_dialog_filter_tick5_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_distance_under_1km"
+            style="@style/tv_body_b_12"
+            android:textColor="@drawable/selector_tick_text"
+            app:layout_constraintStart_toEndOf="@id/bottom_dialog_filter_tick4_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 버튼 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottom_dialog_filter_apply_btn"
+        style="@style/tv_headline_eb_18"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+
+        android:background="@drawable/bg_register_action_btn"
+        android:backgroundTint="@null"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:stateListAnimator="@null"
+        android:text="@string/action_apply"
+        android:textColor="@color/white"
+        android:elevation="5dp"
+
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toBottomOf="@id/bottom_dialog_filter_seekbar_tick_layout"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

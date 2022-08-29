@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/course_top_layout"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:background="@color/primary"
-        android:paddingHorizontal="24dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white_light"
+        android:elevation="10dp"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- 앱바 정보 -->
+        <ImageView
+            android:id="@+id/course_mode_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_list"
+            android:padding="10dp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/course_title_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/course_title_tv" />
 
         <TextView
             android:id="@+id/course_title_tv"
@@ -23,40 +35,109 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.72" />
+            app:layout_constraintVertical_bias="0.38" />
+
+        <ImageView
+            android:id="@+id/course_my_course_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mycourse"
+            android:padding="10dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/course_title_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/course_title_tv" />
+
+        <!-- 검색 창 -->
+        <EditText
+            android:id="@+id/course_search_bar_et"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_light_gray_round"
+            android:hint="@string/msg_search_course_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="20dp"
+            android:layout_marginHorizontal="12dp"
+            android:textAppearance="@style/tv_body_b_14"
+            android:textColorHint="@color/black_light"
+            android:textCursorDrawable="@drawable/bg_edittext_cursor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/course_title_tv" />
+
+        <ImageView
+            android:id="@+id/course_search_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginEnd="4dp"
+            android:alpha="0.5"
+            android:src="@drawable/ic_search_18"
+            app:layout_constraintBottom_toBottomOf="@id/course_search_bar_et"
+            app:layout_constraintEnd_toEndOf="@+id/course_search_bar_et"
+            app:layout_constraintTop_toTopOf="@id/course_search_bar_et" />
+
+        <!-- 필터 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/course_filter_rv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            tools:listitem="@layout/item_filter"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            android:layout_marginStart="6dp"
+            app:layout_constraintStart_toEndOf="@id/course_reset_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/course_reset_tv"
+            app:layout_constraintBottom_toBottomOf="@id/course_reset_tv" />
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_white_gradient_reverse"
+            app:layout_constraintStart_toStartOf="@id/course_reset_tv"
+            app:layout_constraintTop_toBottomOf="@id/course_search_bar_et"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/course_reset_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text="@string/action_reset"
+            style="@style/tv_body_b_12"
+            android:textColor="@drawable/selector_item_orderby_text"
+            android:gravity="center"
+
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginVertical="18dp"
+            android:background="@drawable/selector_item_orderby"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/course_search_bar_et"
+            app:layout_constraintBottom_toBottomOf="@id/course_top_layout" />
+
+        <ImageView
+            android:id="@+id/course_reset_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/selector_icon_reset"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="@id/course_reset_tv"
+            app:layout_constraintTop_toTopOf="@id/course_reset_tv"
+            app:layout_constraintBottom_toBottomOf="@id/course_reset_tv"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/course_background_iv"
+    <FrameLayout
+        android:id="@+id/course_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="103dp"
-        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/course_top_layout" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:text="@string/title_comming_soon"
-        android:textAppearance="@style/tv_headline_eb_24"
-        android:textColor="@color/primary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/course_background_iv" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
-        android:gravity="center"
-        android:lineSpacingExtra="4dp"
-        android:text="@string/msg_prepare_service"
-        android:textAppearance="@style/tv_body_b_14"
-        android:textColor="@color/white_underline"
-        app:layout_constraintBottom_toBottomOf="@+id/course_background_iv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/course_top_layout"
+        app:layout_constraintVertical_weight="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

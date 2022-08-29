@@ -48,6 +48,10 @@ class SigninActivity : BaseActivity<ActivitySigninBinding>(ActivitySigninBinding
     }
 
     private fun setClickListener() {
+        binding.signinBackIv.setOnClickListener {
+            finishAffinity()
+        }
+
         //카카오 로그인
         binding.signinKakaologinBtnLayout.setOnClickListener {
             setKakaoLogin()

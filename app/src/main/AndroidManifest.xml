@@ -27,6 +27,18 @@
         android:theme="@style/Theme.Footprint"
         android:usesCleartextTraffic="false"
         tools:replace="android:allowBackup">
+        <activity
+            android:name=".ui.main.course.CourseSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.course.CourseShareActivity"
+            android:exported="false"
+            android:taskAffinity="com.footprint.footprint.multiFinish"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.main.course.CourseSetActivity"
+            android:exported="false"
+            android:taskAffinity="com.footprint.footprint.multiFinish" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -83,12 +95,18 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <!-- main & walk & walkAfter & walkDetail -->
+        <!-- main & course -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.main.course.CourseSearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <!-- walk & walkAfter & walkDetail -->
         <activity
             android:name=".ui.walk.WalkAfterActivity"
             android:exported="false"
@@ -102,6 +120,11 @@
 
         <activity
             android:name=".ui.walk.WalkDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.main.course.CourseDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

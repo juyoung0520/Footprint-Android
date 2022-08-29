@@ -4,9 +4,6 @@ import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.BuildConfig
@@ -14,7 +11,6 @@ import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentSettingBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.ui.error.ErrorActivity
 import com.footprint.footprint.ui.signin.SplashActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.SettingViewModel
@@ -23,7 +19,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.kakao.sdk.user.UserApiClient
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -97,17 +92,19 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-            override fun action1(isAction: Boolean) {   //로그아웃
-                if (isAction) { //1. 로그아웃 요청    2. SignInActivity 로 이동  3. 현재 액티비티(MainActivity) 종료
-                    findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
-                    (requireActivity()).finish()
-                }
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {   //회원탈퇴
-                if (isAction) { //1. 회원탈퇴 요청    2. SignInActivity 로 이동  3. 현재 액티비티(MainActivity) 종료
-                    findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
-                    (requireActivity()).finish()
+            override fun rightAction(action: String) {
+                when (action) {
+                    getString(R.string.msg_logout) -> {
+                        findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
+                        (requireActivity()).finish()
+                    }
+                    else -> {   //회원탈퇴
+                        findNavController().navigate(R.id.action_settingFragment_to_signinActivity)
+                        (requireActivity()).finish()
+                    }
                 }
             }
 
@@ -125,46 +122,44 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             findNavController().navigate(R.id.action_settingFragment_to_myInfoFragment)
         }
 
-        //로그아웃 텍스트뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
-        binding.settingLogoutTv.setOnClickListener {
+        //로그아웃 뷰 클릭 리스너 -> 로그아웃 관련 ActionDialogFragment 띄우기
+        binding.settingLogoutView.setOnClickListener {
             setActionDialogBundle(
                 getString(R.string.msg_logout),
                 getString(R.string.msg_logout_desc),
+                getString(R.string.action_cancel),
                 getString(R.string.title_logout)
             )
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
-                //로그아웃
-                override fun action1(isAction: Boolean) {
-                    if (isAction)
-                        logout()
+                override fun leftAction(action: String) {
                 }
 
-                override fun action2(isAction: Boolean) {}
+                override fun rightAction(action: String) {
+                    logout()
+                }
             })
         }
 
-        //회원탈퇴 텍스트뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
-        binding.settingWithdrawalTv.setOnClickListener {
+        //회원탈퇴 뷰 클릭 리스너 -> 회원탈퇴 관련 ActionDialogFragment 띄우기
+        binding.settingWithdrawalView.setOnClickListener {
             setActionDialogBundle(
                 getString(R.string.msg_withdrawal),
                 getString(R.string.msg_withdrawal_desc),
+                getString(R.string.action_cancel),
                 getString(R.string.action_withdrawal)
             )
             actionDialogFragment.show(requireActivity().supportFragmentManager, null)
             actionDialogFragment.setMyDialogCallback(object :
                 ActionDialogFragment.MyDialogCallback {
-                override fun action1(isAction: Boolean) {}
-
-                //탈퇴
-                override fun action2(isAction: Boolean) {
-                    if (isAction) {
-                        //회원 탈퇴 API 호출
-                        settingVm.unRegister()
-                    }
+                override fun leftAction(action: String) {
                 }
 
+                override fun rightAction(action: String) {
+                    //회원 탈퇴 API 호출
+                    settingVm.unRegister()
+                }
             })
         }
 
@@ -231,11 +226,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         }
     }
 
-    private fun setActionDialogBundle(msg: String, desc: String, action: String) {
+    private fun setActionDialogBundle(msg: String, desc: String, left: String, right: String) {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", msg)
         bundle.putString("desc", desc)
-        bundle.putString("action", action)
+        bundle.putString("left", left)
+        bundle.putString("right", right)
         actionDialogFragment.arguments = bundle
     }
 
