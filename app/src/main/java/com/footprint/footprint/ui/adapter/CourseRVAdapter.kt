@@ -3,11 +3,10 @@ package com.footprint.footprint.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.databinding.ItemCourseBinding
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.convertDpToPx
 
 class CourseRVAdapter: RecyclerView.Adapter<CourseRVAdapter.CourseViewHolder>() {
@@ -56,8 +55,8 @@ class CourseRVAdapter: RecyclerView.Adapter<CourseRVAdapter.CourseViewHolder>() 
     }
 
     inner class CourseViewHolder(binding: ItemCourseBinding): RecyclerView.ViewHolder(binding.root) {
-        val root: ConstraintLayout = binding.root
-        val rv: RecyclerView = binding.itemCourseHashtagRv
+        val root: CardView = binding.root
+        val rv: RecyclerView = binding.itemCourseTagRv
         val tv: TextView = binding.itemCourseTitleTv
     }
 }

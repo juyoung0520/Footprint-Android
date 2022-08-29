@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentMyBottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -29,8 +28,6 @@ class MyBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         return binding.root
     }
-
-    override fun getTheme(): Int = R.style.BottomSheetDialog
 
     private fun setEventListener() {
         binding.myBsdViewCourseTv.setOnClickListener {  //코스 보기

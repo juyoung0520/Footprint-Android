@@ -27,6 +27,7 @@
     <string name="action_close">닫기</string>
     <string name="action_detail">자세히 보기</string>
     <string name="action_share">공유</string>
+    <string name="action_reset">초기화</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -356,12 +357,10 @@
     <string name="msg_time_less_1h">1시간 이하</string>
     <string name="msg_time_more_1h">1시간 이상</string>
 
-    <string name="action_reset">초기화</string>
     <string name="action_apply">적용하기</string>
     <string name="action_re_search">현재 위치에서 검색</string>
 
     <!-- 산책종료 후 코스등록 -->
-    <string name="action_reset">초기화</string>
     <string name="title_specify_which_courses_to_share">공유할 코스 지정</string>
     <string name="title_start">시작</string>
     <string name="title_course_sharing">코스 공유하기</string>

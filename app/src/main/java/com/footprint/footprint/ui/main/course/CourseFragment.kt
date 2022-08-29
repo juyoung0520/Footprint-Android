@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
 import com.footprint.footprint.ui.BaseFragment
@@ -61,7 +62,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
 
         // 마이 코스로 이동 /* 갤럭시 */
         binding.courseMyCourseIv.setOnClickListener {
-
+            findNavController().navigate(R.id.action_courseFragment_to_myFragment)
         }
     }
 

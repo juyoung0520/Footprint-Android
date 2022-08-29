@@ -92,6 +92,9 @@
         <action
             android:id="@+id/action_courseFragment_to_courseDetailActivity"
             app:destination="@id/courseDetailActivity" />
+        <action
+            android:id="@+id/action_courseFragment_to_myFragment"
+            app:destination="@id/myFragment" />
     </fragment>
     <activity
         android:id="@+id/courseDetailActivity"
