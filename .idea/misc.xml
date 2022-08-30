@@ -420,6 +420,7 @@
         <entry key="app/src/main/res/drawable/bg_white_round_square.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_whiteround.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/ic_course_on.xml" value="0.211" />
+        <entry key="app/src/main/res/drawable/selector_course_wish.xml" value="0.1505" />
         <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.45" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk.xml" value="0.21784420289855072" />
