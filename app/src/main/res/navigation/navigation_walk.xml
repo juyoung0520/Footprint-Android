@@ -12,9 +12,6 @@
         <argument
             android:name="msg"
             app:argType="string" />
-        <action
-            android:id="@+id/action_walkMapFragment_to_courseInfoDialogFragment"
-            app:destination="@id/courseInfoDialogFragment" />
     </fragment>
 
     <dialog
@@ -30,14 +27,5 @@
     <action
         android:id="@+id/action_global_msgDialogFragment"
         app:destination="@id/msgDialogFragment" />
-
-    <dialog
-        android:id="@+id/courseInfoDialogFragment"
-        android:name="com.footprint.footprint.ui.dialog.CourseInfoDialogFragment"
-        android:label="CourseInfoDialogFragment" >
-        <argument
-            android:name="course"
-            app:argType="string" />
-    </dialog>
 
 </navigation>

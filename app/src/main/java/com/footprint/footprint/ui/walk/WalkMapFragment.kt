@@ -268,10 +268,14 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         binding.walkmapProgressBar.isEnabled = false
 
         (activity as WalkActivity).course?.let { course ->
-            binding.walkmapCourseInfoTv.visibility = View.VISIBLE
+            binding.walkmapCourseInfoLayout.visibility = View.VISIBLE
 
             binding.walkmapCourseInfoTv.setOnClickListener {
                 showCourseInfoDialog(course)
+            }
+
+            binding.walkmapShowCourseBtn.setOnClickListener {
+                moveMapCamera(course.coords, map)
             }
         }
     }
@@ -382,10 +386,17 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     }
 
     private fun showCourseInfoDialog(course: CourseInfoModel) {
-        val courseJson = Gson().toJson(course)
-        val action =
-            WalkMapFragmentDirections.actionWalkMapFragmentToCourseInfoDialogFragment(courseJson)
-        findNavController().navigate(action)
+        val courseInfoDialogFragment = CourseInfoDialogFragment()
+        val bundle = Bundle()
+        bundle.putString("course", Gson().toJson(course))
+        courseInfoDialogFragment.arguments = bundle
+
+        courseInfoDialogFragment.setMyCallbackListener(object: CourseInfoDialogFragment.MyCallbackListener {
+            override fun showCourse() {
+                moveMapCamera(course.coords, map)
+            }
+        })
+        courseInfoDialogFragment.show(requireActivity().supportFragmentManager, null)
     }
 
     //실시간 기록을 중지할까요? 다이얼로그 화면 띄우기
