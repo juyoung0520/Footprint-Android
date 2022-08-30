@@ -14,6 +14,7 @@ import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.ui.dialog.*
 import com.footprint.footprint.ui.main.course.CourseSetActivity
 import com.footprint.footprint.utils.*
+import com.footprint.footprint.viewmodel.CourseWalkViewModel
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -28,10 +29,11 @@ import java.io.File
 import kotlin.collections.ArrayList
 
 class WalkAfterActivity :
-    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), OnMapReadyCallback  {
+    BaseActivity<ActivityWalkAfterBinding>(ActivityWalkAfterBinding::inflate), OnMapReadyCallback {
     private lateinit var actionDialogFragment: ActionDialogFragment
     private lateinit var footprintDialogFragment: FootprintDialogFragment
     private lateinit var newBadgeDialogFragment: NewBadgeDialogFragment
+    private lateinit var courseReviewDialogFragment: CourseReviewDialogFragment
     private lateinit var footprintRVAdapter: FootprintRVAdapter
     private lateinit var saveWalkEntity: SaveWalkEntity
     private lateinit var networkErrSb: Snackbar
@@ -43,8 +45,11 @@ class WalkAfterActivity :
     private var s3ReqCnt: Int = 0
     private var s3ResCnt: Int = 0
 
-    private val acquireBadges: ArrayList<BadgeEntity> = arrayListOf() //산책 저장 후 얻은 뱃지 리스트를 저장하는 전역 변수
+    private val acquireBadges: ArrayList<BadgeEntity> =
+        arrayListOf() //산책 저장 후 얻은 뱃지 리스트를 저장하는 전역 변수
     private val walkVm: WalkViewModel by viewModel<WalkViewModel>()
+
+    private val courseWalkVm: CourseWalkViewModel by viewModel()
 
     override fun initAfterBinding() {
         observe()
@@ -77,7 +82,11 @@ class WalkAfterActivity :
             override fun failWalkImg() {
                 binding.walkAfterLoadingPb.visibility = View.VISIBLE
 
-                s3ErrorSb = Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                s3ErrorSb = Snackbar.make(
+                    binding.root,
+                    getString(R.string.error_api_fail),
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction(getString(R.string.action_retry)) {
                     uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
                 }
                 s3ErrorSb.show()
@@ -87,14 +96,18 @@ class WalkAfterActivity :
                 saveWalkEntity.saveWalkFootprints[footprintIdx].photos[imgIdx] = img
                 s3ResCnt++
 
-                if (s3ReqCnt==s3ResCnt)
+                if (s3ReqCnt == s3ResCnt)
                     saveWalk()
             }
 
             override fun failFootprintImg(footprintIdx: Int, imgIdx: Int) {
                 binding.walkAfterLoadingPb.visibility = View.VISIBLE
 
-                s3ErrorSb = Snackbar.make(binding.root, getString(R.string.error_api_fail), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                s3ErrorSb = Snackbar.make(
+                    binding.root,
+                    getString(R.string.error_api_fail),
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction(getString(R.string.action_retry)) {
                     uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
                 }
                 s3ErrorSb.show()
@@ -139,7 +152,11 @@ class WalkAfterActivity :
         if (!isNetworkAvailable(applicationContext)) {
             binding.walkAfterLoadingPb.visibility = View.VISIBLE
 
-            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+            networkErrSb = Snackbar.make(
+                binding.root,
+                getString(R.string.error_network),
+                Snackbar.LENGTH_INDEFINITE
+            )
             networkErrSb.show()
         } else
             walkVm.saveWalk(saveWalkEntity)
@@ -153,14 +170,23 @@ class WalkAfterActivity :
                 havePhotos = true
 
                 if (!isNetworkAvailable(applicationContext)) {
-                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) {
+                    networkErrSb = Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    ).setAction(getString(R.string.action_retry)) {
                         uploadFootprintPhotos(footprintIndex, photoIndex)
                     }
                     networkErrSb.show()
 
                     break@loop
                 } else {
-                    S3UploadService.uploadFootprintImg(applicationContext, File(saveWalkEntity.saveWalkFootprints[footprintIndex].photos[photoIndex]), footprintIndex, photoIndex)
+                    S3UploadService.uploadFootprintImg(
+                        applicationContext,
+                        File(saveWalkEntity.saveWalkFootprints[footprintIndex].photos[photoIndex]),
+                        footprintIndex,
+                        photoIndex
+                    )
                     s3ReqCnt++
                 }
             }
@@ -239,7 +265,11 @@ class WalkAfterActivity :
         if (!isNetworkAvailable(applicationContext)) {
             binding.walkAfterLoadingPb.visibility = View.VISIBLE
 
-            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+            networkErrSb = Snackbar.make(
+                binding.root,
+                getString(R.string.error_network),
+                Snackbar.LENGTH_INDEFINITE
+            )
             networkErrSb.show()
         } else
             S3UploadService.uploadWalkImg(applicationContext, file)  //산책 이미지 저장
@@ -249,7 +279,8 @@ class WalkAfterActivity :
     private fun initFootprintDialog() {
         footprintDialogFragment = FootprintDialogFragment()
 
-        footprintDialogFragment.setMyDialogCallback(object : FootprintDialogFragment.MyDialogCallback {
+        footprintDialogFragment.setMyDialogCallback(object :
+            FootprintDialogFragment.MyDialogCallback {
             //발자국 추가
             override fun sendFootprint(saveWalkFootprint: SaveWalkFootprintEntity) {
                 //발자국을 남겼어요 메세지 다이얼로그 띄우기
@@ -261,14 +292,18 @@ class WalkAfterActivity :
 
                 saveWalkFootprint.onWalk = 0  //얘는 산책 중에 남긴 게 아니니까 0으로 변경
 
-                if (tempAddFootprintPosition==null) {   //첫번째 발자국을 남긴 경우: 산책 기록이 없어요! -> 발자국 RV
-                   footprintRVAdapter.addData(saveWalkFootprint, 0)   //어댑터에 데이터 추가하여 UI 업데이트
+                if (tempAddFootprintPosition == null) {   //첫번째 발자국을 남긴 경우: 산책 기록이 없어요! -> 발자국 RV
+                    footprintRVAdapter.addData(saveWalkFootprint, 0)   //어댑터에 데이터 추가하여 UI 업데이트
                     binding.walkAfterPostRv.visibility = View.VISIBLE
                     binding.walkAfterPlusLineView.visibility = View.INVISIBLE
                     binding.walkAfterPlusTv.visibility = View.INVISIBLE
                 } else
-                    footprintRVAdapter.addData(saveWalkFootprint, tempAddFootprintPosition!!)   //어댑터에 데이터 추가하여 UI 업데이트
-                binding.walkAfterRecordTv.text = saveWalkEntity.saveWalkFootprints.size.toString()    //기록 수를 보여주는 텍스트뷰도 증가
+                    footprintRVAdapter.addData(
+                        saveWalkFootprint,
+                        tempAddFootprintPosition!!
+                    )   //어댑터에 데이터 추가하여 UI 업데이트
+                binding.walkAfterRecordTv.text =
+                    saveWalkEntity.saveWalkFootprints.size.toString()    //기록 수를 보여주는 텍스트뷰도 증가
             }
 
             //발자국 수정
@@ -280,7 +315,10 @@ class WalkAfterActivity :
                 msgDialogFragment.arguments = bundle
                 msgDialogFragment.show(supportFragmentManager, null)
 
-                footprintRVAdapter.updateDataVerAfter(saveWalkFootprint, tempUpdateFootprintPosition!!) //수정된 발자국으로 어댑터 UI 업데이트
+                footprintRVAdapter.updateDataVerAfter(
+                    saveWalkFootprint,
+                    tempUpdateFootprintPosition!!
+                ) //수정된 발자국으로 어댑터 UI 업데이트
 
                 footprintDialogFragment.dismiss()
                 initFootprintDialog()   //발자국 남기기 다이얼로그 프래그먼트 초기화
@@ -296,10 +334,21 @@ class WalkAfterActivity :
     }
 
     private fun initCourseReviewDialog() {
-        val course = intent.getBooleanExtra("course", true)
+        val course = intent.getStringExtra("course").let {
+            Gson().fromJson(it, CourseInfoModel::class.java)
+        }
 
-        val courseReviewDialog = CourseReviewDialogFragment()
-        courseReviewDialog.show(supportFragmentManager, null)
+        courseReviewDialogFragment = CourseReviewDialogFragment()
+        courseReviewDialogFragment.setReviewCallback(object :
+            CourseReviewDialogFragment.ReviewCallback {
+            override fun review(isGood: Boolean) {
+                binding.walkAfterLoadingPb.visibility = View.VISIBLE
+
+                val evaluate = if (isGood) 1 else 0
+                courseWalkVm.evaluateCourse(course.idx, evaluate)
+            }
+        })
+        courseReviewDialogFragment.show(supportFragmentManager, null)
     }
 
     //산책 정보를 바인딩하는 함수
@@ -308,10 +357,24 @@ class WalkAfterActivity :
         binding.walkAfterWalkTimeTv.text = saveWalkEntity.walkTime    //산책 시간
         binding.walkAfterCalorieTv.text = saveWalkEntity.calorie.toString()   //칼로리
         binding.walkAfterDistanceTv.text = saveWalkEntity.distance.toString() //산책 거리
-        binding.walkAfterRecordTv.text = saveWalkEntity.saveWalkFootprints.size.toString()    //발자국 수
-        binding.walkAfterTimeDescTv.text = "${saveWalkEntity.startAt.split(" ")[0].replace("-", ".")} ${saveWalkEntity.startAt.split(" ")[1].substring(0, 5)}~${saveWalkEntity.endAt.split(" ")[1].substring(0, 5)}"  //산책 날짜
+        binding.walkAfterRecordTv.text =
+            saveWalkEntity.saveWalkFootprints.size.toString()    //발자국 수
+        binding.walkAfterTimeDescTv.text = "${
+            saveWalkEntity.startAt.split(" ")[0].replace(
+                "-",
+                "."
+            )
+        } ${
+            saveWalkEntity.startAt.split(" ")[1].substring(
+                0,
+                5
+            )
+        }~${saveWalkEntity.endAt.split(" ")[1].substring(0, 5)}"  //산책 날짜
 
-        binding.walkAfterSlidingUpPanelLayout.panelHeight = (getDeviceHeight() - convertDpToPx(this, 90) - (getDeviceHeight() * 0.42)).toInt()  //SlidingPanelLayout 높이 설정
+        binding.walkAfterSlidingUpPanelLayout.panelHeight = (getDeviceHeight() - convertDpToPx(
+            this,
+            90
+        ) - (getDeviceHeight() * 0.42)).toInt()  //SlidingPanelLayout 높이 설정
 
         if (saveWalkEntity.saveWalkFootprints.isEmpty()) {  //산책 도중 기록을 남기지 않았을 때 -> 산책 기록이 없어요!
             binding.walkAfterPostRv.visibility = View.INVISIBLE
@@ -333,7 +396,7 @@ class WalkAfterActivity :
         footprintRVAdapter.setMyItemClickListener(object : FootprintRVAdapter.MyItemClickListener {
             //발자국 추가 텍스트뷰 클릭 리스너
             override fun addFootprint(position: Int) {
-                if (saveWalkEntity.saveWalkFootprints.size>=9) {  //현재 발자국 개수가 9개인 경우 -> "발자국은 최대 9개까지 남길 수 있어요" 메세지 다이얼로그 프래그먼트 띄우기
+                if (saveWalkEntity.saveWalkFootprints.size >= 9) {  //현재 발자국 개수가 9개인 경우 -> "발자국은 최대 9개까지 남길 수 있어요" 메세지 다이얼로그 프래그먼트 띄우기
                     val msgDialogFragment: MsgDialogFragment = MsgDialogFragment()
                     val bundle: Bundle = Bundle()
                     bundle.putString("msg", getString(R.string.error_post_cnt_exceed))
@@ -346,7 +409,10 @@ class WalkAfterActivity :
             }
 
             //발자국 편집 텍스트뷰 클릭 리스너
-            override fun updateFootprintVerAfter(position: Int, saveWalkFootprint: SaveWalkFootprintEntity) {
+            override fun updateFootprintVerAfter(
+                position: Int,
+                saveWalkFootprint: SaveWalkFootprintEntity
+            ) {
                 tempUpdateFootprintPosition = position  //수정하고자 하는 발자국 데이터의 위치 저장
 
                 //수정할 발자국 데이터와 함께 FootprintDialogFragment 띄우기
@@ -357,7 +423,10 @@ class WalkAfterActivity :
                 footprintDialogFragment.show(supportFragmentManager, null)
             }
 
-            override fun updateFootprintVerDetail(position: Int, saveWalkFootprint: GetFootprintEntity) {
+            override fun updateFootprintVerDetail(
+                position: Int,
+                saveWalkFootprint: GetFootprintEntity
+            ) {
             }
         })
 
@@ -380,7 +449,8 @@ class WalkAfterActivity :
     private fun initNewBadgeDialog() {
         newBadgeDialogFragment = NewBadgeDialogFragment()
 
-        newBadgeDialogFragment.setMyDialogCallback(object : NewBadgeDialogFragment.MyDialogCallback {
+        newBadgeDialogFragment.setMyDialogCallback(object :
+            NewBadgeDialogFragment.MyDialogCallback {
             override fun confirm() {
                 if (acquireBadges.isEmpty()) {   //모든 뱃지를 보여주면 액티비티 종료
                     setWalkDialogBundle(
@@ -425,7 +495,11 @@ class WalkAfterActivity :
 
             when (it) {
                 ErrorType.NETWORK -> {
-                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                    networkErrSb = Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    )
                     networkErrSb.show()
                 }
                 ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
@@ -447,5 +521,29 @@ class WalkAfterActivity :
                 showNewBadgeDialog(acquireBadges.removeAt(0))   //NewBadgeDialog 띄우기
             }
         })
+
+        courseWalkVm.mutableErrorType.observe(this) {
+            binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN -> {
+                    startErrorActivity("WalkAfterActivity")
+                }
+            }
+        }
+
+        courseWalkVm.isReviewed.observe(this) {
+            binding.walkAfterLoadingPb.visibility = View.INVISIBLE
+
+            courseReviewDialogFragment.dismiss()
+        }
     }
 }

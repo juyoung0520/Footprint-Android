@@ -18,31 +18,31 @@ val viewModelModule = module {
         WalkViewModel(get(), get(), get(), get(), get())
     }
 
-    viewModel{
+    viewModel {
         HomeViewModel(get(), get(), get(), get())
     }
 
-    viewModel{
+    viewModel {
         MyInfoViewModel(get(), get())
     }
 
-    viewModel{
+    viewModel {
         RegisterViewModel(get())
     }
 
-    viewModel{
+    viewModel {
         SplashViewModel(get(), get())
     }
 
-    viewModel{
+    viewModel {
         SignInViewModel(get())
     }
 
-    viewModel{
+    viewModel {
         SettingViewModel(get(), get())
     }
 
-    viewModel{
+    viewModel {
         MainViewModel(get(), get())
     }
 
@@ -66,11 +66,15 @@ val viewModelModule = module {
         NoticeDetailViewModel(get())
     }
 
-    viewModel{
+    viewModel {
         CourseViewModel()
     }
 
     viewModel {
         MapViewModel(get())
+    }
+
+    viewModel {
+        CourseWalkViewModel(get())
     }
 }
