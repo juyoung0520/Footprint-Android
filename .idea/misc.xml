@@ -427,13 +427,18 @@
         <entry key="app/src/main/res/layout/activity_walk_after.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk_detail.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_action_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_bottom_dialog_orderby.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_course.xml" value="0.2651699029126214" />
         <entry key="app/src/main/res/layout/fragment_course_info_bottom_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_course_info_dialog.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_course_review_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_course_warning_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_goal_next_month.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_notice_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_temp_walk_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.6101354626641757" />
         <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/item_course.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/item_tag.xml" value="0.21784420289855072" />
