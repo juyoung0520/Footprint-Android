@@ -9,6 +9,7 @@ import com.footprint.footprint.databinding.ActivityCourseDetailBinding
 import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.getMarker
 import com.footprint.footprint.utils.getPath
@@ -42,6 +43,16 @@ class CourseDetailActivity :
     private fun setBinding() {
         binding.courseDetailBackIv.setOnClickListener {
             onBackPressed()
+        }
+
+        val tagRVAdapter = CourseTagRVAdapter(course.tags)
+        binding.courseDetailTagRv.adapter = tagRVAdapter
+
+        // 찜하기 버튼 관련
+        binding.courseDetailLikeIv.isSelected = false
+        binding.courseDetailLikeIv.setOnClickListener {
+            // courseIDX 가지고 찜하기 버튼 API 호출
+            binding.courseDetailLikeIv.isSelected = !binding.courseDetailLikeIv.isSelected
         }
 
         binding.courseDetailWalkStartBtn.setOnClickListener {
