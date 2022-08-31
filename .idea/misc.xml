@@ -413,7 +413,9 @@
         <entry key="app/src/main/res/drawable/bg_bottom_sheet.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_calweekbackground.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_dialog_fragment.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_gray_round_opacity_70.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_gray_round_square.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_grayround.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_my_info_et_primary.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_primary_right_round_square.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_primary_round.xml" value="0.1505" />
@@ -429,8 +431,10 @@
         <entry key="app/src/main/res/drawable/bg_white_round_square.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_white_round_square_32.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_whiteround.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/btn_pause.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_course_on.xml" value="0.211" />
         <entry key="app/src/main/res/drawable/selector_course_wish.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/selector_walk_start_btn.xml" value="0.1505" />
         <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.5494995117187501" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk.xml" value="0.21784420289855072" />
@@ -445,11 +449,12 @@
         <entry key="app/src/main/res/layout/fragment_course_warning_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_goal_next_month.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_home_day.xml" value="0.16484375" />
         <entry key="app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_notice_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_temp_walk_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.6101354626641757" />
-        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.4363327674023769" />
+        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.289532293986637" />
         <entry key="app/src/main/res/layout/item_course.xml" value="0.7149405618315762" />
         <entry key="app/src/main/res/layout/item_tag.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/item_walk.xml" value="0.21784420289855072" />

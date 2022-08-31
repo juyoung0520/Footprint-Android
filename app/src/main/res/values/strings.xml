@@ -146,6 +146,9 @@
     <string name="msg_notification">발자국을 남기거나 산책을 종료하려면 터치해 주세요.</string>
     <string name="title_course_info">산책중인 코스 정보</string>
     <string name="title_show_course_in_map">지도에서 코스 보기</string>
+    <string name="action_store_walk">산책 저장</string>
+    <string name="action_add_footprint">발자국 남기기</string>
+    <string name="action_pause">일시정지</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
@@ -229,11 +232,11 @@
 
     <!--코스 상세-->
     <string name="title_course_detail">코스 상세</string>
-    <string name="title_course_walk_start">코스 산책하기</string>
+    <string name="action_course_walk_start">코스 산책하기</string>
     <string name="msg_course_is_far">현재 위치와 코스의 거리가\n5km 이상이에요</string>
     <string name="msg_ask_course_walk_start">해당 코스로 산책을 시작하시겠어요?</string>
-    <string name="msg_go_back">돌아가기</string>
-    <string name="msg_yes_course_start">네, 산책을 시작할래요!</string>
+    <string name="action_go_back">돌아가기</string>
+    <string name="action_yes_course_start">네, 산책을 시작할래요!</string>
 
     <!--목표 설정 화면-->
     <string name="msg_set_goal">목표를 설정해 주세요</string>

@@ -143,7 +143,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             isWalking = state
             // 산책 중이면
             if (isWalking) {
-                binding.walkmapMiddleIv.isSelected = true
+                binding.walkmapPauseIv.isSelected = true
                 // 발자국으로 인한 재시작이면
                 if (isFootprint) {
                     isFootprint = false
@@ -152,7 +152,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 }
             } else { // 산책 중 아니면
                 //LogUtils.d("$TAG/WALKMAP", "ISWALKING - false")
-                binding.walkmapMiddleIv.isSelected = false
+                binding.walkmapPauseIv.isSelected = false
                 locationOverlay.isVisible = false
 
                 if (paths.isNotEmpty() && paths.last().isNotEmpty() && !isFootprint) {
@@ -221,7 +221,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private fun afterFirstLocationBinding() {
         binding.walkLoadingPb.visibility = View.GONE
 
-        binding.walkmapPlusIv.setOnClickListener {
+        binding.walkmapMiddleIv.setOnClickListener {
             isFootprint = true
             setWalkState(false)
 
@@ -237,7 +237,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
                 footprintDialogFragment.show(requireActivity().supportFragmentManager, null)
         }
 
-        binding.walkmapMiddleIv.setOnClickListener {
+        binding.walkmapPauseIv.setOnClickListener {
             setWalkState(!isWalking)
         }
 

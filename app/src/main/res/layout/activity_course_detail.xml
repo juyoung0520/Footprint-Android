@@ -202,7 +202,7 @@
             android:background="@drawable/bg_register_action_btn"
             android:elevation="4dp"
             android:stateListAnimator="@null"
-            android:text="@string/title_course_walk_start"
+            android:text="@string/action_course_walk_start"
             android:textAppearance="@style/tv_headline_eb_18"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
