@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walkmap_timer_layout"
@@ -23,13 +26,24 @@
 
         <TextView
             android:id="@+id/walkmap_walktime_title_tv"
-            style="@style/tv_body_b_14"
+            style="@style/tv_body_b_12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_walktime"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/walkmap_clock_iv"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/walkmap_walktime_number_tv"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/walkmap_clock_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:src="@drawable/ic_clock"
+            app:layout_constraintEnd_toEndOf="@id/walkmap_walktime_number_tv"
+            app:layout_constraintStart_toEndOf="@id/walkmap_walktime_title_tv"
+            app:layout_constraintTop_toTopOf="@id/walkmap_walktime_title_tv" />
 
         <TextView
             android:id="@+id/walkmap_walktime_number_tv"
@@ -176,7 +190,7 @@
         android:id="@+id/walkmap_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/white_dark"
+        android:background="@color/black_light"
         android:max="100"
         android:paddingStart="0dp"
         android:paddingTop="0dp"
@@ -188,52 +202,121 @@
         android:thumb="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/walkmap_timer_layout" />
 
-    <TextView
-        android:id="@+id/walkmap_course_info_tv"
+    <LinearLayout
+        android:id="@+id/walkmap_course_info_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_white_round_square_32"
-        android:elevation="4dp"
-        android:paddingVertical="10dp"
-        android:paddingHorizontal="22dp"
-        android:text="@string/title_course_info"
-        android:textColor="@color/primary"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:padding="5dp"
         android:visibility="gone"
-        style="@style/tv_headline_eb_14"
-        app:layout_constraintTop_toBottomOf="@id/walkmap_progress_bar"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/walkmap_progress_bar">
+
+        <TextView
+            android:id="@+id/walkmap_course_info_tv"
+            style="@style/tv_headline_eb_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_left_round_square"
+            android:elevation="4dp"
+            android:paddingVertical="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="12dp"
+            android:text="@string/title_course_info"
+            android:textColor="@color/primary" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/walkmap_show_course_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="3dp"
+            android:background="@drawable/bg_primary_right_round_square"
+            android:elevation="4dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/walkmap_stop_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:src="@drawable/btn_stop"
         app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv"
         app:layout_constraintEnd_toStartOf="@+id/walkmap_middle_iv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gray_round_opacity_70"
+        android:paddingHorizontal="11dp"
+        android:paddingVertical="5dp"
+        android:text="@string/action_store_walk"
+        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_description_tv"
+        app:layout_constraintEnd_toEndOf="@id/walkmap_stop_iv"
+        app:layout_constraintStart_toStartOf="@id/walkmap_stop_iv"
+        app:layout_constraintTop_toTopOf="@id/walkmap_middle_description_tv" />
+
     <ImageView
         android:id="@+id/walkmap_middle_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="61dp"
-        android:src="@drawable/selector_walk_start_btn"
+        android:layout_marginBottom="82dp"
+        android:elevation="4dp"
+        android:src="@drawable/btn_plus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/walkmap_plus_iv"
+        app:layout_constraintEnd_toStartOf="@+id/walkmap_pause_iv"
         app:layout_constraintStart_toEndOf="@+id/walkmap_stop_iv" />
 
-    <ImageView
-        android:id="@+id/walkmap_plus_iv"
+    <TextView
+        android:id="@+id/walkmap_middle_description_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/btn_plus"
+        android:background="@drawable/bg_gray_round_opacity_70"
+        android:paddingHorizontal="11dp"
+        android:paddingVertical="5dp"
+        android:text="@string/action_add_footprint"
+        app:layout_constraintEnd_toEndOf="@id/walkmap_middle_iv"
+        app:layout_constraintStart_toStartOf="@id/walkmap_middle_iv"
+        app:layout_constraintTop_toBottomOf="@id/walkmap_middle_iv" />
+
+    <ImageView
+        android:id="@+id/walkmap_pause_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:src="@drawable/selector_walk_start_btn"
         app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_iv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/walkmap_middle_iv"
         app:layout_constraintTop_toTopOf="@+id/walkmap_middle_iv" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gray_round_opacity_70"
+        android:paddingHorizontal="11dp"
+        android:paddingVertical="5dp"
+        android:text="@string/action_pause"
+        app:layout_constraintBottom_toBottomOf="@id/walkmap_middle_description_tv"
+        app:layout_constraintEnd_toEndOf="@id/walkmap_pause_iv"
+        app:layout_constraintStart_toStartOf="@id/walkmap_pause_iv"
+        app:layout_constraintTop_toTopOf="@id/walkmap_middle_description_tv" />
 
     <ProgressBar
         android:id="@+id/walk_loading_pb"

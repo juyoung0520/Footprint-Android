@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_dialog_fragment">
+
+    <TextView
+        android:id="@+id/course_warning_dialog_msg_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/msg_course_is_far"
+        app:layout_constraintVertical_bias="0.55"
+        android:textAppearance="@style/tv_headline_eb_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/course_warning_dialog_desc_tv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/course_warning_dialog_desc_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/msg_ask_course_walk_start"
+        android:textAppearance="@style/tv_caption_12"
+        android:textColor="@color/black_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/action_dialog_line_view"
+        app:layout_constraintTop_toBottomOf="@id/course_warning_dialog_msg_tv" />
+
+    <View
+        android:id="@+id/action_dialog_line_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_dark"
+        app:layout_constraintBottom_toTopOf="@+id/course_warning_dialog_cancel_tv" />
+
+    <TextView
+        android:id="@+id/course_warning_dialog_cancel_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="20dp"
+        android:text="@string/action_go_back"
+        android:textAppearance="@style/tv_headline_eb_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/course_warning_dialog_action_tv"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/course_warning_dialog_action_tv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="@string/action_yes_course_start"
+        android:textAppearance="@style/tv_headline_eb_14"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@+id/course_warning_dialog_cancel_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/course_warning_dialog_cancel_tv"
+        app:layout_constraintTop_toTopOf="@+id/course_warning_dialog_cancel_tv" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

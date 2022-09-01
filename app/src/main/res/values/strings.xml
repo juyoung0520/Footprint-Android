@@ -26,6 +26,8 @@
     <string name="action_change_gps_access">권한 변경</string>
     <string name="action_close">닫기</string>
     <string name="action_detail">자세히 보기</string>
+    <string name="action_share">공유</string>
+    <string name="action_reset">초기화</string>
 
     <!--액션-->
     <string name="action_startwalk">산책 시작</string>
@@ -143,6 +145,10 @@
     <string name="msg_question">발자국은 최대 9개까지 남길 수 있어요</string>
     <string name="msg_notification">발자국을 남기거나 산책을 종료하려면 터치해 주세요.</string>
     <string name="title_course_info">산책중인 코스 정보</string>
+    <string name="title_show_course_in_map">지도에서 코스 보기</string>
+    <string name="action_store_walk">산책 저장</string>
+    <string name="action_add_footprint">발자국 남기기</string>
+    <string name="action_pause">일시정지</string>
 
     <!--다이얼로그 프래그먼트-->
     <string name="title_goal_walk_time_direct_setting">목표산책시간 직접설정</string>
@@ -152,6 +158,7 @@
     <string name="action_withdrawal">탈퇴하기</string>
     <string name="action_store">스토어 이동</string>
     <string name="action_follow_up">이어서 작성하기</string>
+    <string name="action_later">나중에</string>
     <string name="msg_delete_footprint">해당 발자국을 삭제할까요?</string>
     <string name="msg_save_walk">‘OO번째 산책’을 저장할까요?</string>
     <string name="msg_cancel_walk">‘OO번째 산책’ 작성을 취소할까요?</string>
@@ -174,6 +181,7 @@
     <string name="msg_denied_walk_for_background_gps">산책을 시작하기 위해서는 백그라운드 위치 권한이 필요합니다. [설정] > [권한] 에서 위치 권한을 항상 허용으로 변경해 주세요.</string>
     <string name="msg_denied_update">업데이트 후 사용 가능합니다.</string>
     <string name="msg_temp_walk">임시 저장된 산책 기록이 있어요.\n이어서 기록을 작성하시겠어요?</string>
+    <string name="msg_course_share">이 코스를 다른사람들에게 공유할까요?</string>
     <string name="error_post_cnt_exceed">발자국은 최대 9개까지 남길 수 있어요.</string>
     <string name="error_set_goal_walk_time">목표 산책 시간을 설정해 주세요.</string>
     <string name="error_no_updating_goal">변경된 목표가 없어요</string>
@@ -224,7 +232,11 @@
 
     <!--코스 상세-->
     <string name="title_course_detail">코스 상세</string>
-    <string name="msg_course_walk_start">코스 산책하기</string>
+    <string name="action_course_walk_start">코스 산책하기</string>
+    <string name="msg_course_is_far">현재 위치와 코스의 거리가\n5km 이상이에요</string>
+    <string name="msg_ask_course_walk_start">해당 코스로 산책을 시작하시겠어요?</string>
+    <string name="action_go_back">돌아가기</string>
+    <string name="action_yes_course_start">네, 산책을 시작할래요!</string>
 
     <!--목표 설정 화면-->
     <string name="msg_set_goal">목표를 설정해 주세요</string>
@@ -353,8 +365,36 @@
     <string name="msg_time_less_1h">1시간 이하</string>
     <string name="msg_time_more_1h">1시간 이상</string>
 
-    <string name="action_reset">초기화</string>
     <string name="action_apply">적용하기</string>
     <string name="action_re_search">현재 위치에서 검색</string>
 
+    <!-- 산책종료 후 코스등록 -->
+    <string name="title_specify_which_courses_to_share">공유할 코스 지정</string>
+    <string name="title_start">시작</string>
+    <string name="title_course_sharing">코스 공유하기</string>
+    <string name="title_course_location">코스 위치</string>
+    <string name="title_course_length">코스 길이</string>
+    <string name="title_time">소요시간</string>
+    <string name="title_course_name">코스 이름 (필수)</string>
+    <string name="title_tag">태그</string>
+    <string name="title_course_desc">코스 설명</string>
+    <string name="title_enter_in_person">직접 입력</string>
+    <string name="msg_course_select_explanation">시작점과 끝점을 끌어 코스를 지정해 주세요</string>
+    <string name="msg_cancel_course_share">코스 공유를 취소하시겠어요?</string>
+    <string name="msg_no_restore_shared_content">*공유 내용을 복구할 수 없어요</string>
+    <string name="msg_input_course_name">산책코스 이름을 입력해 주세요</string>
+    <string name="msg_input_course_desc">산책코스 설명을 입력해주세요</string>
+    <string name="msg_course_share_tag_desc">실시간 기록 시 추가한 태그 중에서 선택할 수 있어요</string>
+
+    <!-- 마이 -->
+    <string name="title_my">마이</string>
+    <string name="title_wish_list">찜한목록</string>
+    <string name="title_my_recommended_course">내 추천코스</string>
+    <string name="title_view_course">코스 보기</string>
+    <string name="title_update_course">코스 수정</string>
+    <string name="title_delete_course">코스 삭제</string>
+
+    <!--코스 선택-->
+    <string name="title_course_select">코스 선택</string>
+    <string name="msg_select_shared_course">공유할 코스를 선택해 주세요</string>
 </resources>

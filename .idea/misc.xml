@@ -258,29 +258,6 @@
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_photo.xml" value="0.25677083333333334" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.2293859649122807" />
         <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_walk_date.xml" value="0.2293859649122807" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_primary_round_square.xml" value="0.23" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_round.xml" value="0.163" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable/bg_primary_round_square.xml" value="0.163" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_error.xml" value="0.264" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_lock.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_onboarding.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/activity_signin.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_action_dialog.xml" value="0.264" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_agree.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_error.xml" value="0.2" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.4" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_goal_next_month.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home.xml" value="0.264" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_day.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_home_month.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_notice.xml" value="0.4" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_onboarding_first.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_setting.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_update_dialog.xml" value="0.264" />
-        <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.19490740740740742" />
-        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_tag.xml" value="0.2293859649122807" />
-        <entry key="..\:/Users/Win10/Desktop/Footprint-Android/app/src/main/res/layout/item_walk_date.xml" value="0.2293859649122807" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_filter.xml" value="0.23" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_filter_checked.xml" value="0.1495" />
         <entry key="..\:/Users/kysle/AndroidStudioProjects/Footprint-Android/app/src/main/res/drawable-v24/bg_primary_round_square.xml" value="0.23" />
@@ -432,52 +409,53 @@
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/fragment_mypage.xml" value="0.45860566448801743" />
         <entry key="..\:/Users/kysle/Desktop/Footprint-Android/app/src/main/res/layout/item_home_month.xml" value="1.0" />
         <entry key="app/src/main/res/drawable-v24/bg_dialog_fragment_15.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable-v24/bg_primary55_round_square.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_bottom_sheet.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_calweekbackground.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_dialog_fragment.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_gray_round_opacity_70.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_gray_round_square.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_grayround.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_my_info_et_primary.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_primary_right_round_square.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/bg_primary_round.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/bg_primary_round_square.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/bg_primary_round_square_36.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/bg_primary_stroke_round.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_register_action_btn.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_register_action_btn_disabled.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/bg_transparent_7_round.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_walk_confirm_slided_layout.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/bg_white_gradient.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_white_left_round_square.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_white_round_square.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/bg_white_round_square_32.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/bg_whiteround.xml" value="0.1375" />
-        <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.22330097087378642" />
+        <entry key="app/src/main/res/drawable/btn_pause.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/ic_course_on.xml" value="0.211" />
+        <entry key="app/src/main/res/drawable/selector_course_wish.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/selector_walk_start_btn.xml" value="0.1505" />
+        <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.5494995117187501" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk_after.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_walk_detail.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_action_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_bottom_dialog_orderby.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_course.xml" value="0.2651699029126214" />
         <entry key="app/src/main/res/layout/fragment_course_info_bottom_dialog.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_course_info_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_course_info_dialog.xml" value="0.5803762463555819" />
         <entry key="app/src/main/res/layout/fragment_course_review_dialog.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_course_warning_dialog.xml" value="0.2712378640776699" />
         <entry key="app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/fragment_goal_next_month.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/item_tag.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/item_walk.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/drawable/ic_course_on.xml" value="0.211" />
-        <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.2006340579710145" />
-        <entry key="app/src/main/res/layout/activity_walk.xml" value="0.2006340579710145" />
-        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.2006340579710145" />
-        <entry key="app/src/main/res/drawable-v24/bg_dialog_fragment_15.xml" value="0.1375" />
-        <entry key="app/src/main/res/drawable/bg_gray_round_square.xml" value="0.1375" />
-        <entry key="app/src/main/res/drawable/bg_register_action_btn.xml" value="0.1375" />
-        <entry key="app/src/main/res/drawable/bg_walk_confirm_slided_layout.xml" value="0.1375" />
-        <entry key="app/src/main/res/drawable/bg_white_gradient.xml" value="0.1375" />
-        <entry key="app/src/main/res/layout/activity_course_detail.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/activity_walk.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/activity_walk_after.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/activity_walk_detail.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_course_info_bottom_dialog.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_course_info_dialog.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_course_review_dialog.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_footprint_dialog.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_goal_next_month.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.21784420289855072" />
-        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.21784420289855072" />
+        <entry key="app/src/main/res/layout/fragment_home_day.xml" value="0.16484375" />
+        <entry key="app/src/main/res/layout/fragment_new_badge_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_notice_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_temp_walk_dialog.xml" value="0.2712378640776699" />
+        <entry key="app/src/main/res/layout/fragment_walk_time_dialog.xml" value="0.6101354626641757" />
+        <entry key="app/src/main/res/layout/fragment_walkmap.xml" value="0.289532293986637" />
+        <entry key="app/src/main/res/layout/item_course.xml" value="0.7149405618315762" />
         <entry key="app/src/main/res/layout/item_tag.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/item_walk.xml" value="0.21784420289855072" />
       </map>

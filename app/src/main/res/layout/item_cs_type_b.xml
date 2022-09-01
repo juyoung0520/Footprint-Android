@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="3dp"
+    android:background="@color/white_light"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="3dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingVertical="14dp"
+        android:paddingStart="13dp"
+        android:paddingEnd="7dp">
+
+        <ImageView
+            android:id="@+id/item_walk_cs_thumbnail_iv"
+            android:layout_width="78dp"
+            android:layout_height="78dp"
+            android:background="@drawable/bg_item_walk_cs_thumbnail_iv"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_walk_cs_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="13dp"
+            android:text="15번째 산책"
+            android:textAppearance="@style/tv_subtitle_b_16"
+            app:layout_constraintEnd_toStartOf="@+id/item_walk_cs_next_iv"
+            app:layout_constraintStart_toEndOf="@+id/item_walk_cs_thumbnail_iv"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_walk_cs_walk_time_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="13:40~14:01"
+            android:textAppearance="@style/tv_overline_10"
+            android:textColor="@color/black_light"
+            app:layout_constraintEnd_toEndOf="@+id/item_walk_cs_title_tv"
+            app:layout_constraintStart_toStartOf="@+id/item_walk_cs_title_tv"
+            app:layout_constraintTop_toBottomOf="@+id/item_walk_cs_title_tv" />
+
+        <ImageView
+            android:id="@+id/item_walk_cs_next_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_left_6_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_walk_cs_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@+id/item_walk_cs_thumbnail_iv"
+            app:layout_constraintEnd_toEndOf="@+id/item_walk_cs_title_tv"
+            app:layout_constraintStart_toStartOf="@+id/item_walk_cs_title_tv"
+            tools:listitem="@layout/item_tag_ver_walk_cs" />
+
+        <View
+            android:layout_width="64dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_white_gradient"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_walk_cs_rv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

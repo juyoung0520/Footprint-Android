@@ -85,7 +85,8 @@ class WalkDetailActivity :
             val bundle: Bundle = Bundle()
             bundle.putString("msg", "'${args.walkIdx}번째 산책' 을 삭제하시겠어요?")
             bundle.putString("desc", "*동선을 제외한 발자국이 모두 삭제되고 \n해당 기록은 복구할 수 없어요")
-            bundle.putString("action", getString(R.string.action_delete))
+            bundle.putString("left", getString(R.string.action_cancel))
+            bundle.putString("right", getString(R.string.action_delete))
 
             actionDialogFragment.arguments = bundle
             actionDialogFragment.show(supportFragmentManager, null)
@@ -96,16 +97,12 @@ class WalkDetailActivity :
     private fun setActionDialog() {
         actionDialogFragment = ActionDialogFragment()
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-
-            //'OO번째 산책' 을 삭제하시겠어요? 다이얼로그 프래그먼트 콜백 함수
-            override fun action1(isAction: Boolean) {
-                if (isAction)   //사용자가 삭제 버튼을 누른 경우
-                    walkVm.deleteWalk(args.walkIdx) //산책 정보 삭제 API 호출
+            override fun leftAction(action: String) {
             }
 
-            override fun action2(isAction: Boolean) {
+            override fun rightAction(action: String) {
+                walkVm.deleteWalk(args.walkIdx) //산책 정보 삭제 API 호출
             }
-
         })
     }
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.course.RecommendedCourseFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recommended_course_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingHorizontal="14dp"
+        android:scrollbars="none"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_course" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/recommended_course_fac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="14dp"
+        android:backgroundTint="@color/primary"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:rippleColor="@color/white"
+        app:srcCompat="@drawable/ic_plus"
+        app:tint="@color/white_light" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

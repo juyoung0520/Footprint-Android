@@ -7,7 +7,6 @@ import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.usecase.GetKeyNoticeUseCase
 import com.footprint.footprint.domain.usecase.GetMonthBadgeUseCase
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.LogUtils
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val getMonthBadgeUseCase: GetMonthBadgeUseCase, private val getKeyNoticeUseCase: GetKeyNoticeUseCase): BaseViewModel() {

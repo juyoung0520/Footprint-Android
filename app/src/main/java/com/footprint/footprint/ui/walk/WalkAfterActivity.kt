@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.walk
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.UiThread
@@ -11,11 +12,12 @@ import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.FootprintRVAdapter
 import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.ui.dialog.*
+import com.footprint.footprint.ui.main.course.CourseSetActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.WalkViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
@@ -109,6 +111,17 @@ class WalkAfterActivity :
             s3ErrorSb.dismiss()
     }
 
+    override fun onBackPressed() {
+        binding.walkAfterSlidingUpPanelLayout.apply {
+            if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)   //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
+                panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+            else {    //그렇지 않으면 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
+                setWalkDialogBundle("'${saveWalkEntity.walkTitle}' 작성을 취소할까요?", null, getString(R.string.action_cancel), getString(R.string.action_delete))
+                actionDialogFragment.show(supportFragmentManager, null)
+            }
+        }
+    }
+
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
         map = naverMap
@@ -157,27 +170,16 @@ class WalkAfterActivity :
             saveWalk()
     }
 
-    override fun onBackPressed() {
-        binding.walkAfterSlidingUpPanelLayout.apply {
-            if (panelState == SlidingUpPanelLayout.PanelState.EXPANDED || panelState == SlidingUpPanelLayout.PanelState.ANCHORED)   //SlidingUpPanelLayout 이 위로 올라가 있으면 아래로 내리기
-                panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
-            else {    //그렇지 않으면 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
-                setWalkDialogBundle("'${saveWalkEntity.walkTitle}' 작성을 취소할까요?", getString(R.string.action_delete))
-                actionDialogFragment.show(supportFragmentManager, null)
-            }
-        }
-    }
-
     private fun setMyClickListener() {
         //취소 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’ 작성을 취소할까요? 다이얼로그 화면 띄우기
         binding.walkAfterCancelTv.setOnClickListener {
-            setWalkDialogBundle("'${saveWalkEntity.walkTitle}' 작성을 취소할까요?", getString(R.string.action_delete))
+            setWalkDialogBundle("'${saveWalkEntity.walkTitle}' 작성을 취소할까요?", null, getString(R.string.action_cancel), getString(R.string.action_delete))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
         //저장 텍스트뷰 클릭 리스너 -> ‘OO번째 산책’을 저장할까요? 다이얼로그 화면 띄우기
         binding.walkAfterSaveTv.setOnClickListener {
-            setWalkDialogBundle("'${saveWalkEntity.walkTitle}'을 저장할까요?", getString(R.string.action_save))
+            setWalkDialogBundle("'${saveWalkEntity.walkTitle}'을 저장할까요?", null, getString(R.string.action_cancel), getString(R.string.action_save))
             actionDialogFragment.show(supportFragmentManager, null)
         }
 
@@ -192,27 +194,42 @@ class WalkAfterActivity :
         actionDialogFragment = ActionDialogFragment()
 
         actionDialogFragment.setMyDialogCallback(object : ActionDialogFragment.MyDialogCallback {
-
-            //‘OO번째 산책’ 작성을 취소할까요?
-            override fun action1(isAction: Boolean) {
-                if (isAction) {   //삭제 버튼 누르면
-                    removeTempWalk()    //임시 저장했던 산책 데이터 삭제
-                    finish()    //액티비티 종료
+            override fun leftAction(action: String) {
+                when (action) {
+                    getString(R.string.action_cancel) -> {
+                    }
+                    else -> {   //action_later
+                        removeTempWalk()    //임시 저장했던 산책 데이터 삭제
+                        finish()    //액티비티 종료
+                    }
                 }
             }
 
-            //‘OO번째 산책’을 저장할까요?
-            override fun action2(isAction: Boolean) {
-                if (isAction && isNetworkAvailable(applicationContext)) {   //저장 버튼 누르면 산책 정보 저장 API 호출
-                    binding.walkAfterLoadingPb.visibility = View.VISIBLE    //로딩바 띄우기
-
-                    map.takeSnapshot {  //저장 전 지도 캡쳐하기
-                        saveWalkEntity.pathImg = getAbsolutePathByBitmap(applicationContext, it)    //캡쳐 후 saveWalkEntity.pathImg 에 캡쳐한 이미지 Bitmap 저장
-                        uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+            override fun rightAction(action: String) {
+                when (action) {
+                    getString(R.string.action_delete) -> {
+                        removeTempWalk()    //임시 저장했던 산책 데이터 삭제
+                        finish()    //액티비티 종료
                     }
-                } else if (isAction && !isNetworkAvailable(applicationContext)) {    //저장을 눌렀는데 네트워크 연결이 안 돼 있는 경우
-                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
-                    networkErrSb.show()
+                    getString(R.string.action_save) -> {
+                        if (isNetworkAvailable(applicationContext)) {   //네트워크 연결 돼 있으면 산책 정보 저장 API 호출
+                            binding.walkAfterLoadingPb.visibility = View.VISIBLE    //로딩바 띄우기
+
+                            map.takeSnapshot {  //저장 전 지도 캡쳐하기
+                                saveWalkEntity.pathImg = getAbsolutePathByBitmap(applicationContext, it)    //캡쳐 후 saveWalkEntity.pathImg 에 캡쳐한 이미지 Bitmap 저장
+                                uploadWalkImg(File(saveWalkEntity.pathImg))    //산책 이미지를 S3에 저장
+                            }
+                        } else {    //네트워크 연결이 안 돼 있는 경우
+                            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                            networkErrSb.show()
+                        }
+                    }
+                    else -> {   //action_share
+                        val intent: Intent = Intent(this@WalkAfterActivity, CourseSetActivity::class.java)
+                        intent.putExtra("paths", saveWalkEntity.coordinate as ArrayList<ArrayList<LatLng>>)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             }
         })
@@ -350,10 +367,12 @@ class WalkAfterActivity :
     }
 
     //WalkDialogFragment 에 넘겨준 메세지(ex.‘OO번째 산책’을 저장할까요?)를 저장하는 함수
-    private fun setWalkDialogBundle(msg: String, action: String) {
+    private fun setWalkDialogBundle(msg: String, desc: String?, leftAction: String, rightAction: String) {
         val bundle: Bundle = Bundle()
         bundle.putString("msg", msg)
-        bundle.putString("action", action)
+        bundle.putString("desc", desc)
+        bundle.putString("left", leftAction)
+        bundle.putString("right", rightAction)
 
         actionDialogFragment.arguments = bundle
     }
@@ -363,12 +382,17 @@ class WalkAfterActivity :
 
         newBadgeDialogFragment.setMyDialogCallback(object : NewBadgeDialogFragment.MyDialogCallback {
             override fun confirm() {
-                if (acquireBadges.isEmpty())    //모든 뱃지를 보여주면 액티비티 종료
-                    finish()
-                else    //다음 뱃지 보여주기
+                if (acquireBadges.isEmpty()) {   //모든 뱃지를 보여주면 액티비티 종료
+                    setWalkDialogBundle(
+                        "'${saveWalkEntity.walkTitle}'이 저장되었어요!",
+                        getString(R.string.msg_course_share),
+                        getString(R.string.action_later),
+                        getString(R.string.action_share)
+                    )
+                    actionDialogFragment.show(supportFragmentManager, null)
+                } else    //다음 뱃지 보여주기
                     showNewBadgeDialog(acquireBadges.removeAt(0))
             }
-
         })
     }
 
@@ -416,8 +440,8 @@ class WalkAfterActivity :
             binding.walkAfterLoadingPb.visibility = View.INVISIBLE
 
             if (it.isEmpty()) {  //얻은 뱃지가 없을 때
-                showToast(getString(R.string.msg_save_walk_success))
-                finish()
+                setWalkDialogBundle("'${saveWalkEntity.walkTitle}'이 저장되었어요!", getString(R.string.msg_course_share), getString(R.string.action_later), getString(R.string.action_share))
+                actionDialogFragment.show(supportFragmentManager, null)
             } else {  //얻은 뱃지가 있을 때
                 acquireBadges.addAll(it) //전역 변수에 얻은 뱃지 리스트를 저장
                 showNewBadgeDialog(acquireBadges.removeAt(0))   //NewBadgeDialog 띄우기

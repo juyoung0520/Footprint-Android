@@ -2,6 +2,7 @@ package com.footprint.footprint.ui.main.course
 
 import android.content.Intent
 import android.graphics.PointF
+import android.os.Bundle
 import android.view.Gravity
 import androidx.navigation.navArgs
 import com.footprint.footprint.R
@@ -9,6 +10,9 @@ import com.footprint.footprint.databinding.ActivityCourseDetailBinding
 import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.ui.BaseActivity
+import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
+import com.footprint.footprint.ui.dialog.ActionDialogFragment
+import com.footprint.footprint.ui.dialog.CourseWarningDialogFragment
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.getMarker
 import com.footprint.footprint.utils.getPath
@@ -44,15 +48,40 @@ class CourseDetailActivity :
             onBackPressed()
         }
 
-        binding.courseDetailWalkStartBtn.setOnClickListener {
-            val intent = Intent(this, WalkActivity::class.java)
-            intent.putExtra("course", Gson().toJson(course))
-            // 유저 정보도 필요
-            val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
-            intent.putExtra("userInfo", Gson().toJson(tmpUser))
+        val tagRVAdapter = CourseTagRVAdapter(course.tags)
+        binding.courseDetailTagRv.adapter = tagRVAdapter
 
-            startActivity(intent)
+        // 찜하기 버튼 관련
+        binding.courseDetailLikeIv.isSelected = false
+        binding.courseDetailLikeIv.setOnClickListener {
+            // courseIDX 가지고 찜하기 버튼 API 호출
+            binding.courseDetailLikeIv.isSelected = !binding.courseDetailLikeIv.isSelected
         }
+
+        binding.courseDetailWalkStartBtn.setOnClickListener {
+            val courseWarningDialogFragment = CourseWarningDialogFragment()
+
+            courseWarningDialogFragment.setMyCallbackListener(object : CourseWarningDialogFragment.MyCallbackListener {
+                override fun goBack() {
+                    courseWarningDialogFragment.dismiss()
+                }
+
+                override fun walk() {
+                    starWalkActivity()
+                }
+            })
+            courseWarningDialogFragment.show(this.supportFragmentManager, null)
+        }
+    }
+
+    private fun starWalkActivity() {
+        val intent = Intent(this, WalkActivity::class.java)
+        intent.putExtra("course", Gson().toJson(course))
+        // 유저 정보도 필요
+        val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
+        intent.putExtra("userInfo", Gson().toJson(tmpUser))
+
+        startActivity(intent)
     }
 
     private fun initCourseMap() {

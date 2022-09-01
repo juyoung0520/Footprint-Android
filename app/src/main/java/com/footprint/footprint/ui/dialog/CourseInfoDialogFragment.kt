@@ -15,9 +15,16 @@ import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
 import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.DialogFragmentUtils.dialogFragmentResizeWidth
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 class CourseInfoDialogFragment : DialogFragment() {
     private lateinit var binding: FragmentCourseInfoDialogBinding
+    private lateinit var myCallbackListener: MyCallbackListener
+
+    interface MyCallbackListener {
+        fun showCourse()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +62,14 @@ class CourseInfoDialogFragment : DialogFragment() {
         binding.courseInfoCloseIv.setOnClickListener {
             dismiss()
         }
+
+        binding.courseInfoShowCourseBtn.setOnClickListener {
+            dismiss()
+            myCallbackListener.showCourse()
+        }
     }
 
+    fun setMyCallbackListener(myCallbackListener: MyCallbackListener) {
+        this.myCallbackListener = myCallbackListener
+    }
 }
