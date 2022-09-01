@@ -15,7 +15,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.overlay.PathOverlay
 import okhttp3.internal.notify
 
-fun getPathBounds(paths: MutableList<MutableList<LatLng>>): LatLngBounds? {
+fun getPathBounds(paths: List<List<LatLng>>): LatLngBounds? {
     if (paths.isEmpty()) {
         return null
     }
@@ -98,7 +98,7 @@ fun drawFootprints(
     }
 }
 
-fun drawWalkPath(paths: MutableList<MutableList<LatLng>>, context: Context, naverMap: NaverMap) {
+fun drawWalkPath(paths: List<List<LatLng>>, context: Context, naverMap: NaverMap) {
     // 경로 마크 찍기
     val startMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_start)
     val midMarkerImage = OverlayImage.fromResource(R.drawable.ic_marker_middle_end)
@@ -140,7 +140,7 @@ fun checkValidPath(paths: MutableList<MutableList<LatLng>>) {
 }
 
 fun moveMapCamera(
-    paths: MutableList<MutableList<LatLng>>,
+    paths: List<List<LatLng>>,
     naverMap: NaverMap
 ) {
     getPathBounds(paths)?.let {
