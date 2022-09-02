@@ -9,4 +9,12 @@ class CourseRemoteDataSourceImpl(private val api: CourseService): BaseRepository
     override suspend fun evaluateCourse(courseIdx: Int, evaluate: Int): Result<BaseResponse> {
         return safeApiCall { api.evaluateCourse(courseIdx, evaluate).body()!! }
     }
+
+    override suspend fun getMarkedCourses(): Result<BaseResponse> {
+        return safeApiCall { api.getMarkedCourses().body()!! }
+    }
+
+    override suspend fun getMyRecommendedCourses(): Result<BaseResponse> {
+        return safeApiCall { api.getMyRecommendedCourses().body()!! }
+    }
 }
