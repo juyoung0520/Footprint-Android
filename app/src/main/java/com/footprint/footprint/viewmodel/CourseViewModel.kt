@@ -89,16 +89,20 @@ class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private 
     }
 
     /* 코스 북마크 */
-    private val _isUpdate: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val isUpdate: SingleLiveEvent<Boolean> get() = _isUpdate
+    private val _isMarked: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isMarked: SingleLiveEvent<Boolean> get() = _isMarked
 
     fun markCourse(courseIdx: Int){
         viewModelScope.launch {
             when (val response = markCourseUseCase.invoke(courseIdx)) {
                 is Result.Success -> {
                     when(response.value.code){
-                        1000 -> _isUpdate.postValue(true)
-                        else-> _isUpdate.postValue(false)
+                        1000 -> {
+                            if(response.value.result=="찜하기")
+                                _isMarked.postValue(true)
+                            else
+                                _isMarked.postValue(false)
+                        }
                     }
                 }
                 is Result.NetworkError -> {

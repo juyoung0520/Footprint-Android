@@ -26,31 +26,17 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
         binding.courseListRv.adapter = courseRVAdapter
 
         courseRVAdapter.setMyClickListener(object : CourseListRVAdapter.CourseClickListener{
-            override fun onClick(course: CourseDTO) {
-//                // 임시 코스
-//                val course = CourseInfoModel(
-//                    title = "산책 성공",
-//                    distance = 11,
-//                    time = 30,
-//                    description = "오늘 기분 좋은 날!!dsjlfldjsljfksdjjflsjflsjfsjlfjdsklfjlsd kfjdljlsj djlsjfslkfjslfj",
-//                    tags = listOf<String>("행복", "힐링"),
-//                    coords = listOf(listOf(
-//                        LatLng(37.57152, 126.97714),
-//                        LatLng(37.56607, 126.98268),
-//                        LatLng(37.56445, 126.97707),
-//                        LatLng(37.55855, 126.97822)
-//                    ))
-//                )
 
-                // 코스 상세보기로 이동
+            // 코스 상세보기로 이동
+            override fun onClick(course: CourseDTO) {
                 val courseJson = Gson().toJson(course)
                 val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
                 findNavController().navigate(action)
             }
 
+            // 찜하기 API 호출
             override fun markCourse(courseIdx: String) {
-                // 찜하기 API 호출
-                //courseVm.markCourse(courseIdx.toInt())
+                courseVm.markCourse(courseIdx.toInt())
             }
         })
 
@@ -63,9 +49,8 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
                 courseRVAdapter.addAll(it as List<CourseDTO>)
         })
 
-        courseVm.isUpdate.observe(requireActivity(), Observer {
+        courseVm.isMarked.observe(requireActivity(), Observer {
             courseVm.getCourses(null)
-            showToast("updated")
         })
     }
 }

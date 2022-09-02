@@ -57,7 +57,6 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
             binding.itemCourseLikeIv.isSelected = course.userCourseMark
             binding.itemCourseLikeIv.setOnClickListener {
                 myCourseClickListener.markCourse(course.courseIdx)
-                //binding.itemCourseLikeIv.isSelected = !binding.itemCourseLikeIv.isSelected
             }
         }
     }

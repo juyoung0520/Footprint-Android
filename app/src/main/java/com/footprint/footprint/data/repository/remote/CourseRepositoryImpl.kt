@@ -2,10 +2,7 @@ package com.footprint.footprint.data.repository.remote
 
 import com.footprint.footprint.data.datasource.remote.CourseRemoteDataSource
 import com.footprint.footprint.data.datasource.remote.WeatherRemoteDataSource
-import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.dto.CourseDTO
-import com.footprint.footprint.data.dto.CourseInfoDTO
-import com.footprint.footprint.data.dto.Result
+import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.domain.repository.CourseRepository
 import com.footprint.footprint.utils.LogUtils
@@ -24,8 +21,7 @@ class CourseRepositoryImpl(private val dataSource: CourseRemoteDataSource): Cour
         return when(val response = dataSource.getCourses(data)){
             is Result.Success -> {
                 if (response.value.isSuccess){
-                    val type = object : TypeToken<List<CourseDTO>>() {}.type
-                    Result.Success(NetworkUtils.decrypt(response.value.result, type))
+                    Result.Success(NetworkUtils.decrypt(response.value.result, getCourseLists::class.java).getCourseLists)
                 }
                 else{
                     Result.GenericError(response.value.code, "")

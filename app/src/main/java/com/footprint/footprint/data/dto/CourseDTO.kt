@@ -3,6 +3,7 @@ package com.footprint.footprint.data.dto
 import com.google.gson.annotations.SerializedName
 
 // 코스 조회 API에서 사용
+data class getCourseLists(@SerializedName("getCourseLists") val getCourseLists: List<CourseDTO>)
 data class CourseDTO(
     @SerializedName("courseIdx") val courseIdx: String,
     @SerializedName("startLat") val startLat: Double,

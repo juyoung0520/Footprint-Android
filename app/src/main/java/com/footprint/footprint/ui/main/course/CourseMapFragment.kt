@@ -237,10 +237,17 @@ class CourseMapFragment() :
             marker.map = map
             marker.icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
 
+            // 코스 상세보기로 이동
+            marker.setOnClickListener {
+                val courseJson = Gson().toJson(course)
+                val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
+                findNavController().navigate(action)
+
+                true
+            }
             markerList.add(marker)
         }
 
-        setMarkersClickListener()
     }
 
     private fun clearMarkers(){
@@ -251,35 +258,6 @@ class CourseMapFragment() :
             marker.map = null
         }
     }
-
-    private fun setMarkersClickListener(){
-        for(marker in markerList){
-           marker.setOnClickListener {
-               // 임시 코스
-               val course = CourseInfoModel(
-                   title = "산책 성공",
-                   distance = 11.0,
-                   time = 30,
-                   description = "오늘 기분 좋은 날!!dsjlfldjsljfksdjjflsjflsjfsjlfjdsklfjlsd kfjdljlsj djlsjfslkfjslfj",
-                   tags = listOf<String>("행복", "힐링"),
-                   coords = listOf(listOf(
-                       LatLng(37.57152, 126.97714),
-                       LatLng(37.56607, 126.98268),
-                       LatLng(37.56445, 126.97707),
-                       LatLng(37.55855, 126.97822)
-                   ))
-               )
-
-               // 코스 상세보기로 이동
-               val courseJson = Gson().toJson(course)
-               val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
-               findNavController().navigate(action)
-
-               true
-           }
-        }
-    }
-
 
     /* public */
      var lastCameraPosition: CameraPosition? = null // 코스 검색 액티비티에서 돌아왔을 때, 동기화할 카메라 위치
@@ -302,6 +280,6 @@ class CourseMapFragment() :
     }
 
     fun isInitialized(): Boolean{
-        return isCameraInitialized
+        return (::map.isInitialized)
     }
 }

@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main.course
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.location.Location
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.WindowInsetsAnimation
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ActivityCourseSearchBinding
@@ -162,12 +164,18 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         binding.courseSearchResultRv.adapter = courseRVAdapter
 
         courseRVAdapter.setMyClickListener(object : CourseListRVAdapter.CourseClickListener{
+
+            // 코스 상세보기로 이동
             override fun onClick(course: CourseDTO) {
-                // 코스 상세보기로 이동
+                startDetailActivity(course)
+//                val courseJson = Gson().toJson(course)
+//                val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
+//                findNavController().navigate(action)
             }
 
+            // 찜하기 API 호출
             override fun markCourse(courseIdx: String) {
-                // 찜하기 API 호출
+                courseVm.markCourse(courseIdx.toInt())
             }
         })
     }
@@ -194,6 +202,14 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
                 super.onBackPressed()
             }
         }
+    }
+
+    private fun startDetailActivity(course: CourseDTO){
+        val intent = Intent(this, CourseDetailActivity::class.java).apply {
+            putExtra("course", Gson().toJson(course))
+        }
+
+        startActivity(intent)
     }
 
     /* 지도 */
@@ -268,6 +284,12 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             marker.position = LatLng(course.startLat, course.startLong)
             marker.map = map
             marker.icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
+
+            marker.setOnClickListener {
+                startDetailActivity(course)
+
+                true
+            }
 
             markerList.add(marker)
         }
@@ -379,6 +401,10 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             clearMarkers()
             addMarker(it as List<CourseDTO>)
             courseRVAdapter.addAll(it as List<CourseDTO>)
+        })
+
+        courseVm.isMarked.observe(this, Observer {
+            courseVm.getCourses(searchWord)
         })
     }
 }

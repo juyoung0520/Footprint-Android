@@ -5,6 +5,7 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.view.Gravity
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,6 +20,7 @@ import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.CourseWarningDialogFragment
+import com.footprint.footprint.ui.dialog.MsgDialogFragmentArgs
 import com.footprint.footprint.ui.walk.WalkActivity
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseDetailViewModel
@@ -41,17 +43,19 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate), OnMapReadyCallback {
     private val args: CourseDetailActivityArgs by navArgs()
-    private val courseDTO: CourseDTO by lazy {
-        Gson().fromJson(args.course, CourseDTO::class.java)
-    }
+    private lateinit var courseDTO: CourseDTO
 
     private lateinit var courseInfoModel: CourseInfoModel
     private val courseDetailVm: CourseDetailViewModel by viewModel()
 
     override fun initAfterBinding() {
+        courseDTO = if(intent.hasExtra("course"))
+            Gson().fromJson(intent.getStringExtra("course"), CourseDTO::class.java)
+        else
+            Gson().fromJson(args.course, CourseDTO::class.java)
+
         courseDetailVm.getCourseInfo(courseDTO.courseIdx.toInt())
 
-        setBinding()
         observe()
     }
 
@@ -60,14 +64,13 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
             onBackPressed()
         }
 
-        val tagRVAdapter = CourseTagRVAdapter(course.tags)
+        val tagRVAdapter = CourseTagRVAdapter(courseInfoModel.tags)
         binding.courseDetailTagRv.adapter = tagRVAdapter
 
         // 찜하기 버튼 관련
-        binding.courseDetailLikeIv.isSelected = false
+        binding.courseDetailLikeIv.isSelected = courseDTO.userCourseMark
         binding.courseDetailLikeIv.setOnClickListener {
-            // courseIDX 가지고 찜하기 버튼 API 호출
-            binding.courseDetailLikeIv.isSelected = !binding.courseDetailLikeIv.isSelected
+           courseDetailVm.markCourse(courseDTO.courseIdx.toInt())
         }
 
         binding.courseDetailWalkStartBtn.setOnClickListener {
@@ -88,15 +91,10 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
 
     private fun starWalkActivity() {
         val intent = Intent(this, WalkActivity::class.java)
-        intent.putExtra("course", Gson().toJson(course))
+        intent.putExtra("course", Gson().toJson(courseInfoModel))
         // 유저 정보도 필요
         val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
         intent.putExtra("userInfo", Gson().toJson(tmpUser))
-            val intent = Intent(this, WalkActivity::class.java)
-            intent.putExtra("course", Gson().toJson(courseInfoModel))
-            // 유저 정보도 필요
-            val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
-            intent.putExtra("userInfo", Gson().toJson(tmpUser))
 
         startActivity(intent)
     }
@@ -163,6 +161,11 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
 
             initCourseMap()
             bind()
+            setBinding()
+        })
+
+        courseDetailVm.isMarked.observe(this, Observer{
+            binding.courseDetailLikeIv.isSelected = it ?: false
         })
     }
 

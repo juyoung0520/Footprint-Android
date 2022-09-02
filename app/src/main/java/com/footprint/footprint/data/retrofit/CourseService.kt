@@ -12,8 +12,8 @@ interface CourseService {
     suspend fun getCourses(@Body bounds: RequestBody) : Response<BaseResponse>
 
     //코스 북마크 API
-    @PATCH("courses/mark")
-    suspend fun markCourse(@Query("courseIdx")courseIdx: Int) : Response<BaseResponse>
+    @PATCH("courses/mark/{courseIdx}")
+    suspend fun markCourse(@Path("courseIdx")courseIdx: Int) : Response<BaseResponse>
 
     //코스 상세정보 API
     @GET("courses/{courseIdx}/infos")

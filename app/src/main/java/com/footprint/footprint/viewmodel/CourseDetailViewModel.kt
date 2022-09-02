@@ -15,7 +15,7 @@ import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.launch
 
-class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCase) : BaseViewModel() {
+class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCase, private val markCourseUseCase: MarkCourseUseCase) : BaseViewModel() {
     private var errorMethod: String? = null
 
     private val _courseInfo: MutableLiveData<CourseInfoDTO> = MutableLiveData()
@@ -35,6 +35,41 @@ class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCa
                 }
                 is Result.GenericError -> {
                     errorMethod = "getCourses"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
+            }
+        }
+    }
+
+    /* 코스 북마크 */
+    private val _isMarked: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isMarked: SingleLiveEvent<Boolean> get() = _isMarked
+
+    fun markCourse(courseIdx: Int){
+        LogUtils.d("responseJson-decrypt", courseIdx.toString())
+        viewModelScope.launch {
+            when (val response = markCourseUseCase.invoke(courseIdx)) {
+                is Result.Success -> {
+                    when(response.value.code){
+                        1000 -> {
+                            if(response.value.result=="찜하기")
+                                _isMarked.postValue(true)
+                            else
+                                _isMarked.postValue(false)
+                        }
+                    }
+                }
+                is Result.NetworkError -> {
+                    errorMethod = "markCourse"
+
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "markCourse"
 
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)
