@@ -276,6 +276,9 @@
         <action
             android:id="@+id/action_myFragment_to_courseShareActivity"
             app:destination="@id/courseShareActivity" />
+        <action
+            android:id="@+id/action_myFragment_to_courseDetailActivity"
+            app:destination="@id/courseDetailActivity" />
     </fragment>
     <activity
         android:id="@+id/courseSelectActivity"
