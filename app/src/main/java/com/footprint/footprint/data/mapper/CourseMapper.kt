@@ -1,15 +1,59 @@
 package com.footprint.footprint.data.mapper
 
-import com.footprint.footprint.data.dto.CourseDTO
+import com.footprint.footprint.data.dto.*
+import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.data.dto.CourseInfoDTO
-import com.footprint.footprint.data.dto.UserDTO
 import com.footprint.footprint.data.mapper.WalkMapper.convertToPaths
-import com.footprint.footprint.domain.model.CourseInfoModel
-import com.footprint.footprint.domain.model.MyInfoUserModel
-import com.footprint.footprint.domain.model.SimpleUserModel
-import com.naver.maps.geometry.LatLng
 
 object CourseMapper {
+    private fun mapperToHashtagEntity(hashtags: List<CourseHashtagDTO>): List<CourseHashtagEntity> {
+        val courseHashtagEntities: MutableList<CourseHashtagEntity> = mutableListOf()
+
+        for (hashtag in hashtags) {
+            courseHashtagEntities.add(CourseHashtagEntity(hashtag.hashtagIdx, hashtag.hashtag))
+        }
+
+        return courseHashtagEntities
+    }
+
+    private fun mapperToHashtagDTO(hashtags: List<CourseHashtagEntity>): List<CourseHashtagDTO> {
+        val courseHashtagDTOs: MutableList<CourseHashtagDTO> = mutableListOf()
+
+        for (hashtag in hashtags) {
+            courseHashtagDTOs.add(CourseHashtagDTO(hashtag.hashtagIdx, hashtag.hashtag))
+        }
+
+        return courseHashtagDTOs
+    }
+
+    private fun mapperToGetSelfCourseEntity(selfCourseDTO: SelfCourseDTO): SelfCourseEntity {
+        return selfCourseDTO.run {
+            SelfCourseEntity(userDateWalk.walkIdx, "${userDateWalk.startTime}~${userDateWalk.endTime}", userDateWalk.pathImageUrl, hashtag)
+        }
+    }
+
+    fun mapperToRecommendDTO(recommendEntity: RecommendEntity): RecommendDTO {
+        recommendEntity.run {
+            return RecommendDTO(courseName, courseImg, WalkMapper.convertToCoordinates(coordinates), mapperToHashtagDTO(hashtags), address, length, courseTime, walkIdx, description)
+        }
+    }
+
+    fun mapperToWalkDetailCEntity(walkDetailCDTO: WalkDetailCDTO): WalkDetailCEntity {
+        walkDetailCDTO.run {
+            return WalkDetailCEntity(walkIdx,  walkTime, distance, WalkMapper.convertToPaths(coordinates), mapperToHashtagEntity(hashtags), photos)
+        }
+    }
+
+    fun mapperToGetSelfCourseListEntity(getSelfCourseDTOs: List<SelfCourseDTO>): List<SelfCourseEntity> {
+        val selfCourseEntities: MutableList<SelfCourseEntity> = mutableListOf()
+
+        for (getSelfCourse in getSelfCourseDTOs) {
+            selfCourseEntities.add(mapperToGetSelfCourseEntity(getSelfCourse))
+        }
+
+        return selfCourseEntities
+    }
+
     fun mapperToCourseInfoModel(courseDTO: CourseDTO, courseInfoDTO: CourseInfoDTO): CourseInfoModel{
         return CourseInfoModel(
             previewImageUrl = courseDTO.courseImg,
@@ -21,4 +65,5 @@ object CourseMapper {
             description = courseInfoDTO.courseDisc
         )
     }
+
 }

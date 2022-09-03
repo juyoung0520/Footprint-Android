@@ -18,4 +18,5 @@ val repositoryModule = module {
     single<NoticeRepository> { NoticeRepositoryImpl(get()) }.bind(NoticeRepositoryImpl::class)
     single<CourseRepository> { CourseRepositoryImpl(get()) }.bind(CourseRemoteDataSourceImpl::class)
     single<MapRepository> { MapRepositoryImpl(get()) }.bind(MapRepositoryImpl::class)
+    single<CourseRepository> {CourseRepositoryImpl(get())}.bind(CourseRemoteDataSourceImpl::class)
 }

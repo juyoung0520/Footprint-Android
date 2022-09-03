@@ -14,6 +14,7 @@ val serviceModule = module {
     single<FootprintService> { GlobalApplication.retrofit.create(FootprintService::class.java) }
     single<WeatherService> { GlobalApplication.retrofit.create(WeatherService::class.java) }
     single<NoticeService> { GlobalApplication.retrofit.create(NoticeService::class.java) }
+    single<CourseService> {GlobalApplication.retrofit.create(CourseService::class.java)}
     single<MapService> { GlobalApplication.mapRetrofit.create(MapService::class.java) }
     single<CourseService> { GlobalApplication.retrofit.create(CourseService::class.java) }
 }

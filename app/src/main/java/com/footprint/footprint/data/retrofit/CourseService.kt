@@ -27,4 +27,16 @@ interface CourseService {
 
     @GET("courses/list/recommend")
     suspend fun getMyRecommendedCourses(): Response<BaseResponse>
+
+    //코스 저장
+    @POST("/courses/recommend")
+    suspend fun saveCourse(@Body request: RequestBody): Response<BaseResponse>
+
+    //산책 코스를 저장하기 위해 필요한 산책 상세 정보를 조회하는 API
+    @GET("/courses/path/{walkNumber}")
+    suspend fun getWalkDetailForMakeCourse(@Path("walkNumber") walkNumber: Int): Response<BaseResponse>
+
+    //나의 모든 코스(산책) 목록 조회
+    @GET("/courses/list/self")
+    suspend fun getSelfCourseList(): Response<BaseResponse>
 }

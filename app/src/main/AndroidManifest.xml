@@ -29,15 +29,19 @@
         tools:replace="android:allowBackup">
         <activity
             android:name=".ui.main.course.CourseSelectActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.footprint.footprint.multiFinish" />
         <activity
             android:name=".ui.main.course.CourseShareActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:taskAffinity="com.footprint.footprint.multiFinish"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.main.course.CourseSetActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:taskAffinity="com.footprint.footprint.multiFinish" />
 
         <meta-data

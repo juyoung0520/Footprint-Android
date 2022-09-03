@@ -45,6 +45,9 @@ val useCaseModule = module {
     single<GetVersionUseCase> { GetVersionUseCase(get()) }.bind(NoticeRepositoryImpl::class)
 
     single<GetAddressUseCase> { GetAddressUseCase((get())) }.bind(MapRepositoryImpl::class)
+    single<GetWalkDetailCUseCase> {GetWalkDetailCUseCase(get())}.bind(CourseRepositoryImpl::class)
+    single<SaveCourseUseCase> {SaveCourseUseCase((get()))}.bind(CourseRepositoryImpl::class)
+    single<GetSelfCourseListUseCase> {GetSelfCourseListUseCase((get()))}.bind(CourseRepositoryImpl::class)
 
     single<GetCoursesUseCase> { GetCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<MarkCourseUseCase> { MarkCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)

@@ -9,14 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemTagVerCsBinding
+import com.footprint.footprint.domain.model.CourseHashtagEntity
 
 class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAdapter.TagVerCSViewHolder>() {
     interface MyClickListener {
         fun checked(isChecked: Boolean)
     }
 
-    private val checkedTags: ArrayList<String> = arrayListOf()
-    private var tags: ArrayList<String> = arrayListOf()
+    private var checkedTags: MutableList<CourseHashtagEntity> = mutableListOf()
+    private var tags: List<CourseHashtagEntity> = listOf()
     private lateinit var myClickListener: MyClickListener
 
     override fun onCreateViewHolder(
@@ -33,8 +34,9 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
 
     override fun getItemCount(): Int = tags.size
 
-    fun setData(tags: ArrayList<String>) {
+    fun setData(tags: List<CourseHashtagEntity>) {
         this.tags = tags
+        this.checkedTags.addAll(tags)
         notifyDataSetChanged()
     }
 
@@ -42,11 +44,11 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
         this.myClickListener = myClickListener
     }
 
-    fun getCheckedTags(): ArrayList<String> = checkedTags
+    fun getCheckedTags(): MutableList<CourseHashtagEntity> = checkedTags
 
     inner class TagVerCSViewHolder(val binding: ItemTagVerCsBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.tagVerCsTagTv.text = tags[position]
+            binding.tagVerCsTagTv.text = tags[position].hashtag
 
             binding.root.setOnClickListener {
                 if (binding.tagVerCsClearIv.visibility==View.GONE) {    //클릭
