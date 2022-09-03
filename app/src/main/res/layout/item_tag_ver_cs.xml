@@ -21,7 +21,7 @@
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_marginStart="10dp"
-        android:src="@drawable/ic_clear"
+        android:src="@drawable/ic_clear_bg_black"
         app:layout_constraintBottom_toBottomOf="@+id/tag_ver_cs_tag_tv"
         app:layout_constraintStart_toEndOf="@+id/tag_ver_cs_tag_tv"
         app:layout_constraintTop_toTopOf="@+id/tag_ver_cs_tag_tv" />
