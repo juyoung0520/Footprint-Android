@@ -17,8 +17,8 @@ import java.util.*
 
 object S3UploadService {
     interface Callback {
-        fun successWalkImg(img: String)
-        fun failWalkImg()
+        fun successUploadImg(img: String)
+        fun failUploadImg()
         fun successFootprintImg(img: String, footprintIdx: Int, imgIdx: Int)
         fun failFootprintImg(footprintIdx: Int, imgIdx: Int)
     }
@@ -57,7 +57,7 @@ object S3UploadService {
         })
     }
 
-    fun uploadWalkImg(context: Context, file: File) {
+    fun uploadImg(context: Context, file: File) {
         val transferUtility = TransferUtility.builder().s3Client(s3Client).context(context).build()
         TransferNetworkLossHandler.getInstance(context)
 
@@ -67,9 +67,9 @@ object S3UploadService {
         uploadObserver.setTransferListener(object : TransferListener {
             override fun onStateChanged(id: Int, state: TransferState) {
                 if (state == TransferState.COMPLETED)
-                    callback.successWalkImg("${BuildConfig.s3_base_url}/$name")
+                    callback.successUploadImg("${BuildConfig.s3_base_url}/$name")
                 else if (state == TransferState.FAILED)
-                    callback.failWalkImg()
+                    callback.failUploadImg()
             }
 
             override fun onProgressChanged(id: Int, current: Long, total: Long) {
@@ -77,7 +77,7 @@ object S3UploadService {
 
             override fun onError(id: Int, ex: Exception) {
                 LogUtils.d("S3UploadService", "UPLOAD ERROR - - ID: \$id - - EX:$ex")
-                callback.failWalkImg()
+                callback.failUploadImg()
             }
         })
     }

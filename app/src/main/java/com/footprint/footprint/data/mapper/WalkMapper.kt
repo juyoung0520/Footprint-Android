@@ -54,7 +54,7 @@ object WalkMapper {
         )
     }
 
-    private fun convertToCoordinates(paths: MutableList<MutableList<LatLng>>): List<List<Double>> {
+    fun convertToCoordinates(paths: MutableList<MutableList<LatLng>>): List<List<Double>> {
         val coordinate = arrayListOf<ArrayList<Double>>()
 
         paths.forEach {
