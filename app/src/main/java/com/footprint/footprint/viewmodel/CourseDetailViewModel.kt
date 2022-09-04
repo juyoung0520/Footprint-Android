@@ -7,18 +7,21 @@ import com.footprint.footprint.data.dto.CourseInfoDTO
 import com.footprint.footprint.data.dto.MonthBadgeInfoDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.BoundsModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.domain.usecase.GetCourseInfoUseCase
 import com.footprint.footprint.domain.usecase.GetCoursesUseCase
+import com.footprint.footprint.domain.usecase.GetSimpleUserUseCase
 import com.footprint.footprint.domain.usecase.MarkCourseUseCase
 import com.footprint.footprint.ui.main.course.Filtering
 import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.launch
 
-class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCase, private val markCourseUseCase: MarkCourseUseCase) : BaseViewModel() {
+class CourseDetailViewModel(private val getSimpleUserUseCase: GetSimpleUserUseCase, private val getCourseInfoUseCase: GetCourseInfoUseCase, private val markCourseUseCase: MarkCourseUseCase) : BaseViewModel() {
     private var errorMethod: String? = null
     fun getErrorType(): String = this.errorMethod.toString()
 
+    /* 코스 조회 */
     private val _courseInfo: MutableLiveData<CourseInfoDTO> = MutableLiveData()
     val courseInfo: LiveData<CourseInfoDTO> get() = _courseInfo
 
@@ -69,6 +72,30 @@ class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCa
                 }
                 is Result.GenericError -> {
                     errorMethod = "markCourse"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
+            }
+        }
+    }
+
+    /* 유저 정보 */
+    private val _user: MutableLiveData<SimpleUserModel> = MutableLiveData()
+    val user: LiveData<SimpleUserModel> get() = _user
+
+    fun getUser(){
+        viewModelScope.launch {
+            when(val response = getSimpleUserUseCase.invoke()) {
+                is Result.Success -> _user.value = response.value
+                is Result.NetworkError -> {
+                    errorMethod = "getUser"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getUser"
 
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)

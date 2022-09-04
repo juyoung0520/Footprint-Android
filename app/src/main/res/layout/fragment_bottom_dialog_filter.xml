@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/msg_distance_under_1km"
-            style="@style/tv_headline_eb_12"
+            style="@style/tv_body_b_12"
             android:textColor="@drawable/selector_tick_text"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"

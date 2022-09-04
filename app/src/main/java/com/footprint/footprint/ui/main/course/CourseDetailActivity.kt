@@ -85,19 +85,17 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
                 }
 
                 override fun walk() {
-                    starWalkActivity()
+                    courseDetailVm.getUser()
                 }
             })
             courseWarningDialogFragment.show(this.supportFragmentManager, null)
         }
     }
 
-    private fun starWalkActivity() {
+    private fun starWalkActivity(userModel: SimpleUserModel) {
         val intent = Intent(this, WalkActivity::class.java)
         intent.putExtra("course", Gson().toJson(courseInfoModel))
-        // 유저 정보도 필요
-        val tmpUser = SimpleUserModel(weight = 0, height = 0, goalWalkTime = 30, walkNumber = 1)
-        intent.putExtra("userInfo", Gson().toJson(tmpUser))
+        intent.putExtra("userInfo", Gson().toJson(userModel))
 
         startActivity(intent)
     }
@@ -186,6 +184,10 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
 
         courseDetailVm.isMarked.observe(this, Observer{
             binding.courseDetailLikeIv.isSelected = it ?: false
+        })
+
+        courseDetailVm.user.observe(this, Observer {
+            starWalkActivity(it)
         })
     }
 
