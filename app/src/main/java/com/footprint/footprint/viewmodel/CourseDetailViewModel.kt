@@ -17,24 +17,24 @@ import kotlinx.coroutines.launch
 
 class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCase, private val markCourseUseCase: MarkCourseUseCase) : BaseViewModel() {
     private var errorMethod: String? = null
+    fun getErrorType(): String = this.errorMethod.toString()
 
     private val _courseInfo: MutableLiveData<CourseInfoDTO> = MutableLiveData()
     val courseInfo: LiveData<CourseInfoDTO> get() = _courseInfo
 
     fun getCourseInfo(courseIdx: Int){
-
         viewModelScope.launch {
             when (val response = getCourseInfoUseCase.invoke(courseIdx)) {
                 is Result.Success -> {
                     _courseInfo.postValue(response.value)
                 }
                 is Result.NetworkError -> {
-                    errorMethod = "getCourses"
+                    errorMethod = "getCourseInfo"
 
                     mutableErrorType.postValue(ErrorType.NETWORK)
                 }
                 is Result.GenericError -> {
-                    errorMethod = "getCourses"
+                    errorMethod = "getCourseInfo"
 
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)
@@ -50,7 +50,6 @@ class CourseDetailViewModel(private val getCourseInfoUseCase: GetCourseInfoUseCa
     val isMarked: SingleLiveEvent<Boolean> get() = _isMarked
 
     fun markCourse(courseIdx: Int){
-        LogUtils.d("responseJson-decrypt", courseIdx.toString())
         viewModelScope.launch {
             when (val response = markCourseUseCase.invoke(courseIdx)) {
                 is Result.Success -> {

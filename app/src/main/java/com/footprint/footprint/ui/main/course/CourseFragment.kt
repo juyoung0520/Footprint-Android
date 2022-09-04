@@ -20,12 +20,13 @@ import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.ui.main.course.Filtering.filters
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.map.CameraPosition
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBinding::inflate) {
-
+    private lateinit var networkErrSb: Snackbar
     private var mode: Int = 0   // 모드: 지도(0), 리스트(1)
 
     private lateinit var mapFragment: CourseMapFragment
@@ -61,7 +62,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             }
         })
 
-        // 마이 코스로 이동 /* 갤럭시 */
+        // 마이 코스로 이동
         binding.courseMyCourseIv.setOnClickListener {
             findNavController().navigate(R.id.action_courseFragment_to_myFragment)
         }
@@ -162,8 +163,22 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     }
 
     private fun observe(){
+        courseVm.mutableErrorType.observe(requireActivity(), Observer {
+            when(it){
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getString(R.string.action_retry)){ courseVm.getCourses(null) }
+
+                    networkErrSb.show()
+                }
+                else -> {
+                    startErrorActivity("CourseFragment")
+                }
+            }
+        })
+
+        // 지도 움직일 때마다 API 호출
         courseVm.mapBounds.observe(requireActivity(), Observer {
-            // 지도 움직일 때마다 API 호출
             courseVm.getCourses(null)
         })
     }
@@ -190,5 +205,12 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initActivityResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

@@ -68,7 +68,7 @@
             android:id="@+id/item_course_participant_count_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_participant_num"
+            android:src="@drawable/ic_course_footprint"
             android:alpha="0.5" />
 
         <TextView
@@ -84,7 +84,7 @@
             android:id="@+id/item_course_like_count_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_course_footprint"
+            android:src="@drawable/ic_like_num"
             android:alpha="0.5"
             android:layout_marginStart="7dp"/>
 

@@ -24,6 +24,7 @@ import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.naver.maps.geometry.LatLng
@@ -36,6 +37,7 @@ import okhttp3.internal.checkOffsetAndCount
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCourseSearchBinding::inflate), OnMapReadyCallback{
+    private lateinit var networkErrSb: Snackbar
     companion object{
         const val CLEARED = 111
     }
@@ -168,9 +170,6 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             // 코스 상세보기로 이동
             override fun onClick(course: CourseDTO) {
                 startDetailActivity(course)
-//                val courseJson = Gson().toJson(course)
-//                val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
-//                findNavController().navigate(action)
             }
 
             // 찜하기 API 호출
@@ -391,6 +390,28 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
 
     /* Observe */
     private fun observe(){
+        courseVm.mutableErrorType.observe(this, Observer {
+            when(it){
+
+                ErrorType.NETWORK -> {
+                    when(courseVm.getErrorType()){
+                        "getCourses" -> {
+                            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getString(R.string.action_retry)){ courseVm.getCourses(null) }
+                        }
+                        "markCourse" -> {
+                            networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
+                        }
+                    }
+
+                    networkErrSb.show()
+                }
+                else -> {
+                    startErrorActivity("CourseSearchActivity")
+                }
+            }
+        })
+
         courseVm.filteredCourseList.observe(this, Observer {
             binding.courseSearchSearchAgainTv.visibility = View.GONE
             binding.courseSearchSearchAgainIv.visibility = View.GONE
@@ -406,5 +427,12 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         courseVm.isMarked.observe(this, Observer {
             courseVm.getCourses(searchWord)
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

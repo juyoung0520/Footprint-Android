@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private val markCourseUseCase: MarkCourseUseCase, private val getCourseInfoUseCase: GetCourseInfoUseCase) : BaseViewModel() {
     private var errorMethod: String? = null
+    fun getErrorType(): String = this.errorMethod.toString()
 
     /* 위치, 경계 */
     private val currentBounds = MutableLiveData<BoundsModel>(null)
@@ -32,7 +33,7 @@ class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private 
     private val _courseList: MutableLiveData<List<CourseDTO>> = MutableLiveData()
     val filteredCourseList: MutableLiveData<List<CourseDTO>> = MutableLiveData()
 
-    // 코스 검색 화면에서 검색어 입력해서 사용
+
     fun getCourses(searchWord: String?){
 
         var bound = mapBounds.value

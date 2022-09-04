@@ -14,11 +14,12 @@ import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseMapBinding
 import com.footprint.footprint.domain.model.BoundsModel
-import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.ui.BaseFragment
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*

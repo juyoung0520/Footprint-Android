@@ -26,6 +26,7 @@ import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseDetailViewModel
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.common.util.MapUtils
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
@@ -42,6 +43,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate), OnMapReadyCallback {
+    private lateinit var networkErrSb: Snackbar
+
     private val args: CourseDetailActivityArgs by navArgs()
     private lateinit var courseDTO: CourseDTO
 
@@ -155,9 +158,26 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
     }
 
     private fun observe(){
+        courseDetailVm.mutableErrorType.observe(this, Observer {
+            when(it){
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+
+                    when(courseDetailVm.getErrorType()){
+                        "getCourseInfo" -> networkErrSb.setAction(getString(R.string.action_retry)){ courseDetailVm.getCourseInfo(courseDTO.courseIdx.toInt()) }
+                        "markCourse" -> networkErrSb.setAction(getString(R.string.action_retry)){ courseDetailVm.markCourse(courseDTO.courseIdx.toInt()) }
+                    }
+
+                    networkErrSb.show()
+                }
+                else -> {
+                    startErrorActivity("CourseSearchActivity")
+                }
+            }
+        })
+
         courseDetailVm.courseInfo.observe(this, Observer {
             courseInfoModel = CourseMapper.mapperToCourseInfoModel(courseDTO, it)
-            LogUtils.d("CourseDetail", courseInfoModel.toString())
 
             initCourseMap()
             bind()
@@ -179,4 +199,10 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
 
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
+    }
 }
