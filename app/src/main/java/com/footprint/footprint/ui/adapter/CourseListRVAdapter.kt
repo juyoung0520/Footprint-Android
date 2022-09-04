@@ -1,9 +1,7 @@
 package com.footprint.footprint.ui.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.RoundedCorner
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -11,7 +9,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ItemCourseBinding
-import com.footprint.footprint.ui.main.course.CourseListFragment
 
 class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseListRVAdapter.ViewHolder>() {
     private val courseList = arrayListOf<CourseDTO>() /* 수정 */
@@ -35,7 +32,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
             binding.itemCourseTagRv.adapter = tagRVAdapter
 
             // 찜하기 버튼 관련
-            binding.itemCourseLikeIv.isSelected = course.userCourseLike
+            binding.itemCourseLikeIv.isSelected = course.userCourseMark
 
             binding.itemCourseLikeIv.setOnClickListener {
                 // courseIDX 가지고 찜하기 버튼 API 호출
