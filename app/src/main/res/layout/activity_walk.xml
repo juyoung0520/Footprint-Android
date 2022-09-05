@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/walk_top_layout"
@@ -15,34 +15,35 @@
 
         <TextView
             android:id="@+id/walk_cancel_tv"
+            style="@style/tv_subtitle_b_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/action_cancel"
-            style="@style/tv_subtitle_b_16"
-            app:layout_constraintTop_toTopOf="@+id/walk_title_tv"
+            android:textColor="@color/red"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_title_tv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/walk_title_tv"/>
+            app:layout_constraintTop_toTopOf="@+id/walk_title_tv" />
 
         <TextView
             android:id="@+id/walk_title_tv"
+            style="@style/tv_headline_eb_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_realtime_record"
-            style="@style/tv_headline_eb_16"
-            app:layout_constraintVertical_bias="0.72"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/walk_cancel_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/walk_help_iv"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toEndOf="@id/walk_cancel_tv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.72" />
 
         <ImageView
             android:id="@+id/walk_help_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_help"
-            app:layout_constraintTop_toTopOf="@+id/walk_title_tv"
+            app:layout_constraintBottom_toBottomOf="@+id/walk_title_tv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/walk_title_tv"/>
+            app:layout_constraintTop_toTopOf="@+id/walk_title_tv" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -50,9 +51,9 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintVertical_weight="1"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/navigation_walk"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/walk_top_layout"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintVertical_weight="1"
+        app:navGraph="@navigation/navigation_walk" />
 </androidx.constraintlayout.widget.ConstraintLayout>
