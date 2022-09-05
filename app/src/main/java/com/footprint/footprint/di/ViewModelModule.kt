@@ -81,4 +81,8 @@ val viewModelModule = module {
     viewModel {
         CourseWalkViewModel(get())
     }
+
+    viewModel {
+        CourseWishViewModel(get())
+    }
 }

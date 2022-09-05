@@ -23,3 +23,7 @@ data class CourseInfoDTO(
     @SerializedName("coordinate") val coordinate: List<ArrayList<Double>>, // 코스 동선 좌표들
     @SerializedName("courseDisc") val courseDisc: String,                  // 코스 상세 설명
 )
+
+data class CourseListDTO(
+    @SerializedName("getCourseLists") val courses: List<CourseDTO>
+)
