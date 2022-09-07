@@ -12,7 +12,7 @@ val dataSourceModule = module {
     single<WalkRemoteDataSource> { WalkRemoteDataSourceImpl(get()) }
     single<FootprintRemoteDataSource> { FootprintRemoteDataSourceImpl(get()) }
     single<WeatherRemoteDataSource> { WeatherRemoteDataSourceImpl(get()) }
-    single<NoticeDataSource> { NoticeDataSourceImpl(get())}
+    single<NoticeRemoteDataSource> { NoticeRemoteDataSourceImpl(get())}
+    single<CourseRemoteDataSource> { CourseRemoteDataSourceImpl(get())}
     single<MapRemoteDataSource> { MapRemoteDataSourceImpl(get()) }
-    single<CourseRemoteDataSource> { CourseRemoteDataSourceImpl(get()) }
 }

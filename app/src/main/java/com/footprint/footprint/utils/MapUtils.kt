@@ -148,3 +148,14 @@ fun moveMapCamera(
     }
     naverMap.uiSettings.isZoomControlEnabled = false
 }
+
+fun moveMapCameraWithPadding(
+    paths: MutableList<MutableList<LatLng>>,
+    naverMap: NaverMap,
+    padding: Int
+) {
+    getPathBounds(paths)?.let {
+        naverMap.moveCamera(CameraUpdate.fitBounds(it, padding, 0, padding, 0))
+    }
+    naverMap.uiSettings.isZoomControlEnabled = false
+}

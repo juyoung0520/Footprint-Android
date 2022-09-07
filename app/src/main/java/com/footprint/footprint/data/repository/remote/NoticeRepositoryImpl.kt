@@ -1,6 +1,6 @@
 package com.footprint.footprint.data.repository.remote
 
-import com.footprint.footprint.data.datasource.remote.NoticeDataSource
+import com.footprint.footprint.data.datasource.remote.NoticeRemoteDataSource
 import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.ReadNoticeListModel
 import com.footprint.footprint.domain.repository.NoticeRepository
@@ -10,7 +10,7 @@ import com.footprint.footprint.utils.getReadNoticeList
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class NoticeRepositoryImpl(private val dataSource: NoticeDataSource): NoticeRepository {
+class NoticeRepositoryImpl(private val dataSource: NoticeRemoteDataSource): NoticeRepository {
 
     override suspend fun getNoticeList(page: Int, size: Int): Result<NoticeListDto> {
         return when(val response = dataSource.getNoticeList(page, size)){

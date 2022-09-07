@@ -7,7 +7,7 @@ import com.footprint.footprint.data.retrofit.NoticeService
 import com.footprint.footprint.utils.LogUtils
 import okhttp3.RequestBody
 
-class NoticeDataSourceImpl(private val api: NoticeService): BaseRepository(), NoticeDataSource {
+class NoticeRemoteDataSourceImpl(private val api: NoticeService): BaseRepository(), NoticeRemoteDataSource {
     override suspend fun getNoticeList(page: Int, size: Int): Result<BaseResponse> {
         LogUtils.d("NoticeDataSourceImpl", "getNoticeList")
         return safeApiCall { api.getNoticeList(page, size).body()!! }

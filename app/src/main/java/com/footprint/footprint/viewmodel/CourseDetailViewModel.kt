@@ -3,61 +3,41 @@ package com.footprint.footprint.viewmodel
 import androidx.lifecycle.*
 import com.footprint.footprint.classes.type.NonNullMutableLiveData
 import com.footprint.footprint.data.dto.CourseDTO
+import com.footprint.footprint.data.dto.CourseInfoDTO
+import com.footprint.footprint.data.dto.MonthBadgeInfoDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.BoundsModel
+import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.domain.usecase.GetCourseInfoUseCase
 import com.footprint.footprint.domain.usecase.GetCoursesUseCase
+import com.footprint.footprint.domain.usecase.GetSimpleUserUseCase
 import com.footprint.footprint.domain.usecase.MarkCourseUseCase
 import com.footprint.footprint.ui.main.course.Filtering
 import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.utils.*
 import kotlinx.coroutines.launch
 
-class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private val markCourseUseCase: MarkCourseUseCase, private val getCourseInfoUseCase: GetCourseInfoUseCase) : BaseViewModel() {
+class CourseDetailViewModel(private val getSimpleUserUseCase: GetSimpleUserUseCase, private val getCourseInfoUseCase: GetCourseInfoUseCase, private val markCourseUseCase: MarkCourseUseCase) : BaseViewModel() {
     private var errorMethod: String? = null
     fun getErrorType(): String = this.errorMethod.toString()
 
-    /* 위치, 경계 */
-    private val currentBounds = MutableLiveData<BoundsModel>(null)
-    val mapBounds = MutableLiveData<BoundsModel>(null)
+    /* 코스 조회 */
+    private val _courseInfo: MutableLiveData<CourseInfoDTO> = MutableLiveData()
+    val courseInfo: LiveData<CourseInfoDTO> get() = _courseInfo
 
-    fun setCurrentBounds(boundsModel: BoundsModel){
-        currentBounds.value = boundsModel
-    }
-
-    fun setMapBounds(boundsModel: BoundsModel){
-        mapBounds.value = boundsModel
-    }
-
-    /* 코스 리스트 */
-    private val _courseList: MutableLiveData<List<CourseDTO>> = MutableLiveData()
-    val filteredCourseList: MutableLiveData<List<CourseDTO>> = MutableLiveData()
-
-
-    fun getCourses(searchWord: String?){
-
-        var bound = mapBounds.value
-        if(filterState[SEARCH_IN] == 1) bound = currentBounds.value // 내 위치 중심
-        LogUtils.d("CourseVM[코스 조회]", "mode ${Filtering.filterState[SEARCH_IN]} bound $bound")
-
-        if(bound == null)
-            return
-
+    fun getCourseInfo(courseIdx: Int){
         viewModelScope.launch {
-            when (val response = getCoursesUseCase.invoke(bound)) {
+            when (val response = getCourseInfoUseCase.invoke(courseIdx)) {
                 is Result.Success -> {
-                    if(searchWord == null) _courseList.value = response.value
-                    else _courseList.value = getSearchedList(searchWord = searchWord, courseList = response.value)
-
-                    updateFilteredCourseList()
+                    _courseInfo.postValue(response.value)
                 }
                 is Result.NetworkError -> {
-                    errorMethod = "getCourses"
+                    errorMethod = "getCourseInfo"
 
                     mutableErrorType.postValue(ErrorType.NETWORK)
                 }
                 is Result.GenericError -> {
-                    errorMethod = "getCourses"
+                    errorMethod = "getCourseInfo"
 
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)
@@ -66,27 +46,6 @@ class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private 
                 }
             }
         }
-    }
-
-    /* 필터링 */
-    // 필터: 거리, 시간 | 정렬: 내 위치 중심 vs 지도 중심, 거리 vs 인기 vs 좋아요순
-    fun updateFilteredCourseList() {
-        LogUtils.d("CourseVM[코스 필터링]", filterState.toString() + _courseList.value.toString())
-
-        if(_courseList.value.isNullOrEmpty()){
-            filteredCourseList.postValue(mutableListOf())
-            return
-        }
-
-        val filtered = getFilteredList(
-            courseList = _courseList.value!!,
-            sortBy = filterState[SORT_BY]!!,
-            distance = filterState[DISTANCE],
-            time = filterState[TIME]
-        )
-
-        filteredCourseList.postValue(filtered as MutableList<CourseDTO>)
-        LogUtils.d("CourseVM[코스 필터링-코스]", filtered.toString())
     }
 
     /* 코스 북마크 */
@@ -113,6 +72,30 @@ class CourseViewModel(private val getCoursesUseCase: GetCoursesUseCase, private 
                 }
                 is Result.GenericError -> {
                     errorMethod = "markCourse"
+
+                    if (response.code==600)
+                        mutableErrorType.postValue(ErrorType.UNKNOWN)
+                    else
+                        mutableErrorType.postValue(ErrorType.DB_SERVER)
+                }
+            }
+        }
+    }
+
+    /* 유저 정보 */
+    private val _user: MutableLiveData<SimpleUserModel> = MutableLiveData()
+    val user: LiveData<SimpleUserModel> get() = _user
+
+    fun getUser(){
+        viewModelScope.launch {
+            when(val response = getSimpleUserUseCase.invoke()) {
+                is Result.Success -> _user.value = response.value
+                is Result.NetworkError -> {
+                    errorMethod = "getUser"
+                    mutableErrorType.postValue(ErrorType.NETWORK)
+                }
+                is Result.GenericError -> {
+                    errorMethod = "getUser"
 
                     if (response.code==600)
                         mutableErrorType.postValue(ErrorType.UNKNOWN)

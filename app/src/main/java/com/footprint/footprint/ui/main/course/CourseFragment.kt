@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentCourseBinding
+import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CourseFilterRVAdapter
 import com.footprint.footprint.ui.main.MainActivity
@@ -19,12 +20,13 @@ import com.footprint.footprint.ui.main.course.Filtering.filterState
 import com.footprint.footprint.ui.main.course.Filtering.filters
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.map.CameraPosition
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBinding::inflate) {
-
+    private lateinit var networkErrSb: Snackbar
     private var mode: Int = 0   // 모드: 지도(0), 리스트(1)
 
     private lateinit var mapFragment: CourseMapFragment
@@ -60,7 +62,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             }
         })
 
-        // 마이 코스로 이동 /* 갤럭시 */
+        // 마이 코스로 이동
         binding.courseMyCourseIv.setOnClickListener {
             findNavController().navigate(R.id.action_courseFragment_to_myFragment)
         }
@@ -70,7 +72,8 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
         val searchWord = binding.courseSearchBarEt.text
         val cameraPosition: CameraPosition? = (mapFragment as CourseMapFragment).getCameraPosition()
 
-        if(searchWord.isEmpty() || cameraPosition == null) return // Validation
+        // Validation (1) 지도 초기화 (2) 검색어 입력 (3) 카메라 위치
+        if(!mapFragment.isInitialized() || searchWord.isEmpty() || cameraPosition == null) return
 
         val intent = Intent(requireContext(), CourseSearchActivity::class.java).apply {
             putExtra("searchWord", searchWord.toString())
@@ -88,6 +91,8 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             .replace(R.id.course_fragment_container, mapFragment).commit()
 
         binding.courseModeIv.setOnClickListener {
+            if(!mapFragment.isInitialized()) return@setOnClickListener // 지도 Init 후 프래그먼트 전환 가능
+
             when (mode) {
                 0 -> { // 지도 -> 리스트로 변경
                     mode = 1
@@ -134,7 +139,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             }
 
             override fun onModeChange(mode: String) {
-                courseVm.getCourses()
+                courseVm.getCourses(null)
 
                 if(mode == SEARCH_IN_MY_LOCATION) // 내 위치 모드
                     mapFragment.setCameraPositionToCurrent()
@@ -158,13 +163,23 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     }
 
     private fun observe(){
-        courseVm.mapBounds.observe(requireActivity(), Observer {
-            // 지도 움직일 때마다 API 호출
-            courseVm.getCourses()
+        courseVm.mutableErrorType.observe(requireActivity(), Observer {
+            when(it){
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(requireView(), getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getString(R.string.action_retry)){ courseVm.getCourses(null) }
+
+                    networkErrSb.show()
+                }
+                else -> {
+                    startErrorActivity("CourseFragment")
+                }
+            }
         })
 
-        courseVm.filteredCourseList.observe(requireActivity(), Observer {
-            // 필터링된 리스트 바뀔 때마다 UI 바꿔주기
+        // 지도 움직일 때마다 API 호출
+        courseVm.mapBounds.observe(requireActivity(), Observer {
+            courseVm.getCourses(null)
         })
     }
 
@@ -190,5 +205,12 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initActivityResult()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 }

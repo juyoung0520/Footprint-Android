@@ -8,21 +8,19 @@ import android.os.Bundle
 import android.os.Looper
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseMapBinding
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.ui.main.course.Filtering.filterState
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.utils.SEARCH_IN
-import com.footprint.footprint.utils.SEARCH_IN_MAP
-import com.footprint.footprint.utils.SEARCH_IN_MY_LOCATION
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.LocationOverlay
@@ -105,10 +103,10 @@ class CourseMapFragment() :
             }
 
             val bounds = BoundsModel(
-                map.contentBounds.southWest,
-                map.contentBounds.southEast,
-                map.contentBounds.northWest,
-                map.contentBounds.northEast
+                north = map.contentBounds.northLatitude,
+                south = map.contentBounds.southLatitude,
+                east = map.contentBounds.eastLongitude,
+                west = map.contentBounds.westLongitude
             )
             courseVm.setMapBounds(bounds)
         }
@@ -116,11 +114,14 @@ class CourseMapFragment() :
 
     private fun observe() {
         courseVm.filteredCourseList.observe(requireActivity(), Observer {
+            if(!::map.isInitialized) return@Observer
+
             // 기존 마커 다 지우기
-            // clearMarkers()
+             clearMarkers()
 
             // 정렬된 리스트가 바뀌면 새로운 마커들을 띄워준다
-            // addMarkers()
+            addMarker(it as List<CourseDTO>)
+            LogUtils.d("CourseVM[코스 필터링]/MapFrg", it.toString())
         })
     }
 
@@ -197,10 +198,10 @@ class CourseMapFragment() :
 
                 // 현위치 bounds
                 val bounds = BoundsModel(
-                    map.contentBounds.southWest,
-                    map.contentBounds.southEast,
-                    map.contentBounds.northWest,
-                    map.contentBounds.northEast
+                    north = map.contentBounds.northLatitude,
+                    south = map.contentBounds.southLatitude,
+                    east = map.contentBounds.eastLongitude,
+                    west = map.contentBounds.westLongitude
                 )
                 courseVm.setCurrentBounds(bounds)
             }
@@ -220,8 +221,14 @@ class CourseMapFragment() :
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        isCameraInitialized = false
+    }
+
     /* 마커 관련 */
-    private fun addMarker(courseList: ArrayList<CourseDTO>){
+    private fun addMarker(courseList: List<CourseDTO>){
         if(courseList.isEmpty())
             return
 
@@ -231,18 +238,17 @@ class CourseMapFragment() :
             marker.map = map
             marker.icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
 
+            // 코스 상세보기로 이동
+            marker.setOnClickListener {
+                val courseJson = Gson().toJson(course)
+                val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
+                findNavController().navigate(action)
+
+                true
+            }
             markerList.add(marker)
         }
-    }
 
-    private fun updateMarkers(courseList: ArrayList<CourseDTO>){
-        if(markerList.isEmpty() || courseList.isEmpty())
-            return
-
-        for(i in markerList.indices){
-            markerList[i].position = LatLng(courseList[i].startLat, courseList[i].startLong)
-            markerList[i].icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
-        }
     }
 
     private fun clearMarkers(){
@@ -269,9 +275,12 @@ class CourseMapFragment() :
             map.moveCamera(CameraUpdate.scrollTo(LatLng(currentLocation)).animate(CameraAnimation.Easing))
     }
 
-    fun setCameraPosition(cameraPosition: CameraPosition){
+    private fun setCameraPosition(cameraPosition: CameraPosition){
         map.moveCamera(CameraUpdate.toCameraPosition(cameraPosition))
         lastCameraPosition = null
     }
 
+    fun isInitialized(): Boolean{
+        return (::map.isInitialized)
+    }
 }
