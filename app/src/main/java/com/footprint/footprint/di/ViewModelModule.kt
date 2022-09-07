@@ -83,6 +83,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        CourseWishViewModel(get())
+        MyViewModel(get(), get())
     }
 }

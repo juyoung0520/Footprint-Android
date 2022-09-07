@@ -33,7 +33,7 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
         courseRVAdapter.setMyClickListener(object : CourseListRVAdapter.CourseClickListener{
 
             // 코스 상세보기로 이동
-            override fun onClick(course: CourseDTO) {
+            override fun onClick(course: CourseDTO, position: Int) {
                 val courseJson = Gson().toJson(course)
                 val action = CourseFragmentDirections.actionCourseFragmentToCourseDetailActivity(courseJson)
                 findNavController().navigate(action)

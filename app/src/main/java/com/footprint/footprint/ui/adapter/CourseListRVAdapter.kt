@@ -69,7 +69,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(courseList[position], position)
         holder.binding.root.setOnClickListener{
-            myCourseClickListener.onClick(courseList[position])
+            myCourseClickListener.onClick(courseList[position], position)
         }
     }
 
@@ -84,7 +84,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
 
     /* 클릭 이벤트 관리 */
     interface CourseClickListener{
-        fun onClick(course: CourseDTO)
+        fun onClick(course: CourseDTO, position: Int)
         fun markCourse(courseIdx: String)
     }
 
@@ -93,4 +93,12 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
     fun setMyClickListener(myCourseClickListener: CourseClickListener){
         this.myCourseClickListener = myCourseClickListener
     }
+
+    fun removeData(position: Int) {
+        courseList.removeAt(position)
+
+        notifyItemRemoved(position)
+        notifyItemRangeRemoved(position, courseList.size - position)
+    }
+
 }
