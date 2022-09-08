@@ -1,12 +1,20 @@
 package com.footprint.footprint.ui.main.course
 
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.footprint.footprint.R
+import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentMyBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.MyVPAdapter
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.viewmodel.MyViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
     private var currentItem: Int = -1   //현재 ViewPager 의 currentItem 을 저장하는 변수
@@ -14,10 +22,17 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
     private lateinit var myVpAdapter: MyVPAdapter
     private lateinit var backPressedCallback: OnBackPressedCallback
 
+    private val myViewModel: MyViewModel by viewModel()
+
+    interface CoursesListener {
+        fun observer(courses: List<CourseDTO>)
+    }
+
     override fun initAfterBinding() {
         setBackPressedCallback()
         initVPAdapter()
         setMyEventListener()
+        observe()
     }
 
     override fun onStop() {
@@ -54,6 +69,18 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
             }
         }.attach()
 
+        binding.myVp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.myLoadingPb.visibility = View.VISIBLE
+
+                when (position) {
+                    0 -> myViewModel.getMarkedCourses()
+                    1 -> myViewModel.getRecommendedCourses()
+                }
+            }
+        })
+
         if (this.currentItem!=-1)   //다른 화면에서 뒤로가기로 인해 돌아온 화면이면
             binding.myVp.currentItem = this.currentItem //맨 마지막 ViewPager 의 currentItem 으로 돌아가 있는다.
     }
@@ -62,6 +89,37 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
         //뒤로가기 아이콘 이미지뷰 클릭 리스너
         binding.myBackIv.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun observe() {
+        myViewModel.markedCourses.observe(viewLifecycleOwner) {
+            binding.myLoadingPb.visibility = View.INVISIBLE
+            myVpAdapter.callObserver(binding.myVp.currentItem, it)
+        }
+
+        myViewModel.recommendedCourses.observe(viewLifecycleOwner) {
+            binding.myLoadingPb.visibility = View.INVISIBLE
+            myVpAdapter.callObserver(binding.myVp.currentItem, it)
+        }
+
+        myViewModel.mutableErrorType.observe(viewLifecycleOwner) {
+            when (it) {
+                ErrorType.NETWORK -> {
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    ).setAction("재시도") {
+                        if (binding.myVp.currentItem == 0) myViewModel.getMarkedCourses()
+                        else myViewModel.getRecommendedCourses()
+                    }.show()
+                }
+                ErrorType.UNKNOWN -> {
+                    startErrorActivity("MyFragment")
+                }
+                else -> {}
+            }
         }
     }
 }

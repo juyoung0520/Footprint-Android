@@ -168,7 +168,7 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         courseRVAdapter.setMyClickListener(object : CourseListRVAdapter.CourseClickListener{
 
             // 코스 상세보기로 이동
-            override fun onClick(course: CourseDTO) {
+            override fun onClick(course: CourseDTO, position: Int) {
                 startDetailActivity(course)
             }
 
