@@ -21,6 +21,14 @@ class CourseRemoteDataSourceImpl(private val api: CourseService): BaseRepository
         return safeApiCall2 { api.getSelfCourseList() }
     }
 
+    override suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse> {
+        return safeApiCall2 { api.deleteCourse(courseIdx) }
+    }
+
+    override suspend fun updateCourse(request: RequestBody): Result<BaseResponse> {
+        return safeApiCall2 { api.updateCourse(request) }
+    }
+
     override suspend fun getCourses(bounds: RequestBody): Result<BaseResponse> {
         LogUtils.d("CourseRemoteDataSourceImpl", "getCourses")
         return safeApiCall() { api.getCourses(bounds).body()!! }

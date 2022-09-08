@@ -161,4 +161,17 @@ class CourseRepositoryImpl(private val dataSource: CourseRemoteDataSource): Cour
             is Result.GenericError -> response
         }
     }
+
+    override suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse> {
+        return when (val response = dataSource.deleteCourse(courseIdx)) {
+            is Result.Success -> {
+                if (response.value.isSuccess) {
+                    Result.Success(response.value)
+                } else
+                    Result.GenericError(response.value.code, response.value.message)
+            }
+            is Result.NetworkError -> response
+            is Result.GenericError -> response
+        }
+    }
 }

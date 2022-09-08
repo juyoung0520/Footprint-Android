@@ -1,6 +1,7 @@
 package com.footprint.footprint.ui.main.course
 
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
@@ -12,8 +13,12 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.google.android.material.snackbar.Snackbar
+import com.footprint.footprint.viewmodel.RecommendedCourseViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>(FragmentRecommendedCourseBinding::inflate), MyFragment.CoursesListener {
+    private val vm: RecommendedCourseViewModel by viewModel()
+
     private var selectedPosition: Int = -1
 
     private lateinit var myBottomSheetDialogFragment: MyBottomSheetDialogFragment
@@ -25,6 +30,7 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
         initRVAdapter()
         initActionFrag()
         setMyEventListener()
+        observe()
     }
 
     override fun onPause() {
@@ -87,6 +93,12 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
         binding.recommendedCourseFac.setOnClickListener {
             findNavController().navigate(R.id.action_myFragment_to_courseSelectActivity)
         }
+    }
+
+    private fun observe() {
+        vm.deleteResultCode.observe(this, Observer {
+            LogUtils.d("RecommendedCourseFragment", "deleteResultCode Observe!! -> $it")
+        })
     }
 
     override fun observer(courses: List<CourseDTO>) {

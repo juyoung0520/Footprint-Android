@@ -19,4 +19,5 @@ interface CourseRepository {
     suspend fun saveCourse(course: RecommendEntity): Result<BaseResponse>
     suspend fun getWalkDetailC(walkNumber: Int): Result<WalkDetailCEntity>
     suspend fun getSelfCourseList(): Result<List<SelfCourseEntity>>
+    suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse>
 }

@@ -93,4 +93,8 @@ val viewModelModule = module {
     viewModel {
         MyViewModel(get(), get())
     }
+
+    viewModel {
+        RecommendedCourseViewModel(get(), get())
+    }
 }

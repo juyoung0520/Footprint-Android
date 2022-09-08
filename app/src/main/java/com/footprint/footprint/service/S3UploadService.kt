@@ -11,6 +11,7 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.footprint.footprint.BuildConfig
+import com.footprint.footprint.utils.AES128
 import com.footprint.footprint.utils.LogUtils
 import java.io.File
 import java.util.*
@@ -23,7 +24,7 @@ object S3UploadService {
         fun failFootprintImg(footprintIdx: Int, imgIdx: Int)
     }
 
-    private val awsCredentials: AWSCredentials = BasicAWSCredentials(BuildConfig.s3_accesskey, BuildConfig.s3_secretkey) // IAM 생성하며 받은 것 입력
+    private val awsCredentials: AWSCredentials = BasicAWSCredentials(decrypt(BuildConfig.s3_accesskey), decrypt(BuildConfig.s3_secretkey)) // IAM 생성하며 받은 것 입력
     private val s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
 
     private lateinit var callback: Callback
@@ -37,12 +38,12 @@ object S3UploadService {
         TransferNetworkLossHandler.getInstance(context)
 
         val name: String = createFileName(file.name, file.extension)
-        val uploadObserver = transferUtility.upload(BuildConfig.s3_bucket, name, file) // (bucket api, file이름, file객체)
+        val uploadObserver = transferUtility.upload(decrypt(BuildConfig.s3_bucket), name, file) // (bucket api, file이름, file객체)
 
         uploadObserver.setTransferListener(object : TransferListener {
             override fun onStateChanged(id: Int, state: TransferState) {
                 if (state == TransferState.COMPLETED)
-                    callback.successFootprintImg("${BuildConfig.s3_base_url}/$name", footprintIdx, imgIdx)
+                    callback.successFootprintImg("${decrypt(BuildConfig.s3_base_url)}/$name", footprintIdx, imgIdx)
                 else if (state == TransferState.FAILED)
                     callback.failFootprintImg(footprintIdx, imgIdx)
             }
@@ -62,12 +63,12 @@ object S3UploadService {
         TransferNetworkLossHandler.getInstance(context)
 
         val name: String = createFileName(file.name, file.extension)
-        val uploadObserver = transferUtility.upload(BuildConfig.s3_bucket, name, file) // (bucket api, file이름, file객체)
+        val uploadObserver = transferUtility.upload(decrypt(BuildConfig.s3_bucket), name, file) // (bucket api, file이름, file객체)
 
         uploadObserver.setTransferListener(object : TransferListener {
             override fun onStateChanged(id: Int, state: TransferState) {
                 if (state == TransferState.COMPLETED)
-                    callback.successUploadImg("${BuildConfig.s3_base_url}/$name")
+                    callback.successUploadImg("${decrypt(BuildConfig.s3_base_url)}/$name")
                 else if (state == TransferState.FAILED)
                     callback.failUploadImg()
             }
@@ -84,5 +85,9 @@ object S3UploadService {
 
     private fun createFileName(fileName: String, extension: String): String { // 먼저 파일 업로드 시, 파일명을 난수화하기 위해 random으로 돌립니다.
         return "${UUID.nameUUIDFromBytes(fileName.toByteArray(Charsets.UTF_8))}.$extension"
+    }
+
+    private fun decrypt(data: String): String {
+        return AES128(BuildConfig.encrypt_key).decrypt(data)
     }
 }

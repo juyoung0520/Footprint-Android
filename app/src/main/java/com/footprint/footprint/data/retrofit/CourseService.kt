@@ -39,4 +39,12 @@ interface CourseService {
     //나의 모든 코스(산책) 목록 조회
     @GET("/courses/list/self")
     suspend fun getSelfCourseList(): Response<BaseResponse>
+
+    //코스 수정
+    @PATCH("/courses/recommend")
+    suspend fun updateCourse(@Body request: RequestBody): Response<BaseResponse>
+
+    //코스 삭제
+    @PATCH("/courses/recommend/{courseIdx}/status")
+    suspend fun deleteCourse(@Path("courseIdx") courseIdx: Int): Response<BaseResponse>
 }

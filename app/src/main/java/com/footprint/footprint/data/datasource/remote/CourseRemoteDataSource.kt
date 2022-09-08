@@ -19,4 +19,8 @@ interface CourseRemoteDataSource {
     suspend fun getWalkDetailForMakeCourse(walkNumber: Int): Result<BaseResponse>
     //나의 모든 코스(산책) 목록 조회
     suspend fun getSelfCourseLise(): Result<BaseResponse>
+    //코스 삭제
+    suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse>
+    //코스 수정
+    suspend fun updateCourse(request: RequestBody): Result<BaseResponse>
 }

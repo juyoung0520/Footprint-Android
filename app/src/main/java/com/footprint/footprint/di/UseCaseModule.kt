@@ -56,4 +56,6 @@ val useCaseModule = module {
     single<EvaluateCourseUseCase> { EvaluateCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<GetMarkedCoursesUseCase> { GetMarkedCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<GetMyRecommendedCoursesUseCase> { GetMyRecommendedCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<GetMyRecommendedCoursesUseCase> { GetMyRecommendedCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<DeleteCourseUseCase> { DeleteCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
 }
