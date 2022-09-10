@@ -9,10 +9,8 @@ import android.os.Bundle
 import android.os.Looper
 import android.view.Gravity
 import android.view.View
-import android.view.WindowInsetsAnimation
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ActivityCourseSearchBinding
@@ -26,14 +24,12 @@ import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import okhttp3.internal.checkOffsetAndCount
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCourseSearchBinding::inflate), OnMapReadyCallback{
@@ -173,8 +169,8 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             }
 
             // 찜하기 API 호출
-            override fun markCourse(courseIdx: String) {
-                courseVm.markCourse(courseIdx.toInt())
+            override fun markCourse(courseIdx: Int) {
+                courseVm.markCourse(courseIdx)
             }
         })
     }

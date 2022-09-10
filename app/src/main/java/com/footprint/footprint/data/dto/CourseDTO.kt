@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 // 코스 조회 API에서 사용
 data class getCourseLists(@SerializedName("getCourseLists") val getCourseLists: List<CourseDTO>)
 data class CourseDTO(
-    @SerializedName("courseIdx") val courseIdx: String,
+    @SerializedName("courseIdx") val courseIdx: Int,
     @SerializedName("startLat") val startLat: Double,
     @SerializedName("startLong") val startLong: Double,
     @SerializedName("courseName") val courseName: String,

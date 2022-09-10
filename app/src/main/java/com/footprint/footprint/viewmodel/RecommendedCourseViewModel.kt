@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.usecase.DeleteCourseUseCase
+import com.footprint.footprint.domain.usecase.GetMarkedCoursesUseCase
 import com.footprint.footprint.domain.usecase.GetMyRecommendedCoursesUseCase
 import com.footprint.footprint.utils.ErrorType
 import kotlinx.coroutines.launch
@@ -16,6 +17,9 @@ class RecommendedCourseViewModel(private val getMarkedCoursesUseCase: GetMarkedC
 
     private val _deleteResultCode = MutableLiveData<Int>()
     val deleteResultCode: LiveData<Int> get() = _deleteResultCode
+
+    private val _markedCourses = SingleLiveEvent<List<CourseDTO>>()
+    val markedCourses: LiveData<List<CourseDTO>> get() = _markedCourses
 
     fun getMarkedCourses() {
         viewModelScope.launch {
