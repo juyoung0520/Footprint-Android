@@ -23,4 +23,6 @@ interface CourseRemoteDataSource {
     suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse>
     //코스 수정
     suspend fun updateCourse(request: RequestBody): Result<BaseResponse>
+    //코스 수정 시 필요한 코스 정보 조회
+    suspend fun getCourseByCourseName(courseName: String): Result<BaseResponse>
 }

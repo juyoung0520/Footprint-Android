@@ -32,6 +32,12 @@ object CourseMapper {
         }
     }
 
+    fun mapperToGetCourseByCourseNameEntity(courseName: String, getCourseByCourseNameDTO: GetCourseByCourseNameDTO): GetCourseByCourseNameEntity {
+        return getCourseByCourseNameDTO.run {
+            GetCourseByCourseNameEntity(courseIdx, "", distance, courseTime, "", courseName, mapperToHashtagEntity(hashtags), "")
+        }
+    }
+
     fun mapperToRecommendDTO(recommendEntity: RecommendEntity): RecommendDTO {
         recommendEntity.run {
             return RecommendDTO(courseName, courseImg, WalkMapper.convertToCoordinates(coordinates), mapperToHashtagDTO(hashtags), address, length, courseTime, walkIdx, description)
@@ -66,4 +72,9 @@ object CourseMapper {
         )
     }
 
+    fun mapperToUpdateCourseReqDTO(updateCourseReqEntity: UpdateCourseReqEntity): UpdateCourseReqDTO {
+        return updateCourseReqEntity.run {
+            UpdateCourseReqDTO(courseIdx, courseName, courseImg, mapperToHashtagDTO(hashtags), description)
+        }
+    }
 }

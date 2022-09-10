@@ -1,7 +1,6 @@
 package com.footprint.footprint.data.datasource.remote
 
 import com.footprint.footprint.data.dto.BaseResponse
-import com.footprint.footprint.data.dto.CourseInfoDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.data.repository.remote.BaseRepository
 import com.footprint.footprint.data.retrofit.CourseService
@@ -27,6 +26,10 @@ class CourseRemoteDataSourceImpl(private val api: CourseService): BaseRepository
 
     override suspend fun updateCourse(request: RequestBody): Result<BaseResponse> {
         return safeApiCall2 { api.updateCourse(request) }
+    }
+
+    override suspend fun getCourseByCourseName(courseName: String): Result<BaseResponse> {
+        return safeApiCall2 { api.getCourseByCourseName(courseName) }
     }
 
     override suspend fun getCourses(bounds: RequestBody): Result<BaseResponse> {

@@ -1,13 +1,10 @@
 package com.footprint.footprint.domain.repository
 
 import com.footprint.footprint.data.dto.*
-import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.data.dto.BaseResponse
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.data.dto.Result
-import com.footprint.footprint.domain.model.SelfCourseEntity
-import com.footprint.footprint.domain.model.RecommendEntity
-import com.footprint.footprint.domain.model.WalkDetailCEntity
+import com.footprint.footprint.domain.model.*
 
 interface CourseRepository {
     suspend fun getCourses(bounds: BoundsModel): Result<List<CourseDTO>>
@@ -20,4 +17,6 @@ interface CourseRepository {
     suspend fun getWalkDetailC(walkNumber: Int): Result<WalkDetailCEntity>
     suspend fun getSelfCourseList(): Result<List<SelfCourseEntity>>
     suspend fun deleteCourse(courseIdx: Int): Result<BaseResponse>
+    suspend fun getCourseByCourseName(courseName: String): Result<GetCourseByCourseNameEntity>
+    suspend fun updateCourse(updateCourseReqEntity: UpdateCourseReqEntity): Result<BaseResponse>
 }

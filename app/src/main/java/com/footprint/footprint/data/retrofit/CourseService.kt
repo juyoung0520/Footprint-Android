@@ -40,6 +40,10 @@ interface CourseService {
     @GET("/courses/list/self")
     suspend fun getSelfCourseList(): Response<BaseResponse>
 
+    //코스 수정 시 필요한 코스 정보를 조회
+    @GET("/courses/path")
+    suspend fun getCourseByCourseName(@Query("courseName") courseName: String): Response<BaseResponse>
+
     //코스 수정
     @PATCH("/courses/recommend")
     suspend fun updateCourse(@Body request: RequestBody): Response<BaseResponse>

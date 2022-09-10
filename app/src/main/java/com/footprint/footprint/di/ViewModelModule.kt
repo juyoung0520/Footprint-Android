@@ -79,7 +79,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        CourseShareViewModel(get(), get())
+        CourseShareViewModel(get(), get(), get(), get())
     }
 
     viewModel {
@@ -91,10 +91,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        MyViewModel(get(), get())
-    }
-
-    viewModel {
-        RecommendedCourseViewModel(get(), get())
+        RecommendedCourseViewModel(get(), get(), get())
     }
 }

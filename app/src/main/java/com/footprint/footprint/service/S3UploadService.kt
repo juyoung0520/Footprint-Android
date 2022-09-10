@@ -87,7 +87,7 @@ object S3UploadService {
         return "${UUID.nameUUIDFromBytes(fileName.toByteArray(Charsets.UTF_8))}.$extension"
     }
 
-    private fun decrypt(data: String): String {
-        return AES128(BuildConfig.encrypt_key).decrypt(data)
+    private fun decrypt(encryptedText: String): String {
+        return AES128(BuildConfig.encrypt_key).decrypt(encryptedText)
     }
 }
