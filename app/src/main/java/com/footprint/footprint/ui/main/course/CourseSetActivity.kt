@@ -15,6 +15,7 @@ import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.main.course.model.CourseSetModel
 import com.footprint.footprint.utils.*
 import com.footprint.footprint.viewmodel.CourseSetViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.jaygoo.widget.OnRangeChangedListener
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -28,6 +29,7 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
     private val multipartPaths: MutableList<MultipartPathOverlay> = mutableListOf()
     private val courseSetModels: MutableList<CourseSetModel> = mutableListOf()
 
+    private var walkNumber: Int = -1
     private var selectingPathIndex: Int = 0
 
     private lateinit var startMarker: Marker
@@ -36,12 +38,20 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
     private lateinit var actionFrag: ActionDialogFragment
     private lateinit var clickedCourseIndex: MutableList<Int>
     private lateinit var walkDetailCEntity: WalkDetailCEntity
+    private lateinit var networkErrSb: Snackbar
 
     override fun initAfterBinding() {
         initWalkAfterMap()
         setMyEventListener()
         initActionFrag()
         observe()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     //뒤로가기 버튼 누르면 공유를 취소할건지 물어보는 action 다이얼로그 화면 띄우기
@@ -59,7 +69,7 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
         binding.courseSetRsb.rightSeekBar.thumbDrawableId = R.drawable.ic_end_marker
 
         //전달 받은 walkNumber 로 산책 코스 저장을 위해 필요한 데이터 조회 API 호출
-        val walkNumber = intent.getIntExtra("walkNumber", -1)
+        walkNumber = intent.getIntExtra("walkNumber", -1)
         vm.getWalkDetailCEntity(walkNumber)
     }
 
@@ -157,10 +167,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                 paths.lastIndex -> {
                     multipartPath.colorParts = listOf(
                         MultipartPathOverlay.ColorPart(
-                            getColor(R.color.white_dark),
+                            getColor(R.color.black_light),
                             Color.WHITE,
-                            getColor(R.color.white_dark),
-                            getColor(R.color.white_dark)
+                            getColor(R.color.black_light),
+                            getColor(R.color.black_light)
                         )
                     )
                     endMarker = getMarker(
@@ -172,10 +182,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                 else -> {
                     multipartPath.colorParts = listOf(
                         MultipartPathOverlay.ColorPart(
-                            getColor(R.color.white_dark),
+                            getColor(R.color.black_light),
                             Color.WHITE,
-                            getColor(R.color.white_dark),
-                            getColor(R.color.white_dark)
+                            getColor(R.color.black_light),
+                            getColor(R.color.black_light)
                         )
                     )
                 }
@@ -190,10 +200,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                         multipartPath.coordParts = listOf(walkDetailCEntity.coordinates[index])
                         multipartPath.colorParts = listOf(
                             MultipartPathOverlay.ColorPart(
-                                getColor(R.color.white_dark),
+                                getColor(R.color.black_light),
                                 Color.WHITE,
-                                getColor(R.color.white_dark),
-                                getColor(R.color.white_dark)
+                                getColor(R.color.black_light),
+                                getColor(R.color.black_light)
                             )
                         )
 
@@ -323,10 +333,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                                 getColor(R.color.primary)
                             ),
                             MultipartPathOverlay.ColorPart(
-                                getColor(R.color.white_dark),
+                                getColor(R.color.black_light),
                                 Color.WHITE,
-                                getColor(R.color.white_dark),
-                                getColor(R.color.white_dark)
+                                getColor(R.color.black_light),
+                                getColor(R.color.black_light)
                             )
                         )
                     } else if (maxMapIdx == walkDetailCEntity.coordinates[selectingPathIndex].lastIndex) {   //시작점만 움직였을 때
@@ -336,10 +346,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                         )
                         multipartPaths[selectingPathIndex].colorParts = listOf(
                             MultipartPathOverlay.ColorPart(
-                                getColor(R.color.white_dark),
+                                getColor(R.color.black_light),
                                 Color.WHITE,
-                                getColor(R.color.white_dark),
-                                getColor(R.color.white_dark)
+                                getColor(R.color.black_light),
+                                getColor(R.color.black_light)
                             ),
                             MultipartPathOverlay.ColorPart(
                                 getColor(R.color.primary),
@@ -356,10 +366,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                         )
                         multipartPaths[selectingPathIndex].colorParts = listOf(
                             MultipartPathOverlay.ColorPart(
-                                getColor(R.color.white_dark),
+                                getColor(R.color.black_light),
                                 Color.WHITE,
-                                getColor(R.color.white_dark),
-                                getColor(R.color.white_dark)
+                                getColor(R.color.black_light),
+                                getColor(R.color.black_light)
                             ),
                             MultipartPathOverlay.ColorPart(
                                 getColor(R.color.primary),
@@ -368,10 +378,10 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
                                 getColor(R.color.primary)
                             ),
                             MultipartPathOverlay.ColorPart(
-                                getColor(R.color.white_dark),
+                                getColor(R.color.black_light),
                                 Color.WHITE,
-                                getColor(R.color.white_dark),
-                                getColor(R.color.white_dark)
+                                getColor(R.color.black_light),
+                                getColor(R.color.black_light)
                             )
                         )
                     }
@@ -500,6 +510,28 @@ class CourseSetActivity : BaseActivity<ActivityCourseSetBinding>(ActivityCourseS
     }
 
     private fun observe() {
+        vm.mutableErrorType.observe(this, Observer {
+            binding.courseSetLoadingPb.visibility = View.INVISIBLE
+
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    ).setAction(getString(R.string.action_retry)) {
+                        binding.courseSetLoadingPb.visibility = View.VISIBLE
+                        vm.getWalkDetailCEntity(walkNumber)
+                    }
+
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                    startErrorActivity("CourseSetActivity")
+                }
+            }
+        })
+
         vm.walkDetailCEntity.observe(this, Observer {
             binding.courseSetLoadingPb.visibility = View.INVISIBLE
 
