@@ -55,7 +55,7 @@ class CourseShareViewModel(private val saveCourseUseCase: SaveCourseUseCase, pri
     private fun callUpdateCourseAPI(updateCourseReqEntity: UpdateCourseReqEntity) {
         viewModelScope.launch {
             when (val response = updateCourseUseCase.invoke(updateCourseReqEntity)) {
-                is Result.Success -> _saveCourseRes.value = response.value
+                is Result.Success -> _updateCourseRes.value = response.value
                 is Result.NetworkError -> mutableErrorType.postValue(ErrorType.NETWORK)
                 is Result.GenericError -> {
                     when (response.code) {
@@ -128,7 +128,7 @@ class CourseShareViewModel(private val saveCourseUseCase: SaveCourseUseCase, pri
     fun updateCourse(context: Context, updateCourseReqEntity: UpdateCourseReqEntity) {
         errorMethod = "updateCourse"
 
-        if (updateCourseReqEntity.courseImg.isNotBlank()) {  //이미지가 있으면 S3에 저장해서 URL 받아오기
+        if (updateCourseReqEntity.courseImg.isNotBlank() && !updateCourseReqEntity.courseImg.startsWith("https://")) {  //이미지가 있으면 S3에 저장해서 URL 받아오기
             val path: String = getAbsolutePathByBitmap(context, uriToBitmap(context, Uri.parse(updateCourseReqEntity.courseImg)))
             S3UploadService.uploadImg(context, File(path))  //산책 이미지 저장
         } else {

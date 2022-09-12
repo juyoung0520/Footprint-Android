@@ -26,10 +26,11 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
 
     override fun initAfterBinding() {
         initBottomSheetDialogFragment()
-        initRVAdapter()
         initActionFrag()
         setMyEventListener()
         observe()
+
+        vm.getRecommendedCourses()
     }
 
     override fun onPause() {
@@ -99,14 +100,13 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
     }
 
     private fun observe() {
-        vm.deleteResultCode.observe(this, Observer {
-            LogUtils.d("RecommendedCourseFragment", "deleteResultCode Observe!! -> $it")
+        vm.deleteResultCode.observe(viewLifecycleOwner, Observer {
             courseRVAdapter.removeData(selectedCourse)    //데이터 삭제
         })
     }
 
     override fun observer(courses: List<CourseDTO>) {
-        LogUtils.d("courses-recommend", courses.toString())
+        initRVAdapter()
         courseRVAdapter.addAll(courses as ArrayList<CourseDTO>)
     }
 }

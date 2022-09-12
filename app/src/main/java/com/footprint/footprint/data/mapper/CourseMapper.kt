@@ -4,6 +4,7 @@ import com.footprint.footprint.data.dto.*
 import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.data.dto.CourseInfoDTO
 import com.footprint.footprint.data.mapper.WalkMapper.convertToPaths
+import com.naver.maps.geometry.LatLng
 
 object CourseMapper {
     private fun mapperToHashtagEntity(hashtags: List<CourseHashtagDTO>): List<CourseHashtagEntity> {
@@ -34,7 +35,7 @@ object CourseMapper {
 
     fun mapperToGetCourseByCourseNameEntity(courseName: String, getCourseByCourseNameDTO: GetCourseByCourseNameDTO): GetCourseByCourseNameEntity {
         return getCourseByCourseNameDTO.run {
-            GetCourseByCourseNameEntity(courseIdx, "", distance, courseTime, "", courseName, mapperToHashtagEntity(hashtags), "")
+            GetCourseByCourseNameEntity(courseName, address, mapperToHashtagEntity(allHashtags), WalkMapper.convertToPaths(coordinates), courseIdx, courseImg, courseTime, description, distance, mapperToHashtagEntity(selectedHashtags), walkIdx)
         }
     }
 
@@ -74,7 +75,18 @@ object CourseMapper {
 
     fun mapperToUpdateCourseReqDTO(updateCourseReqEntity: UpdateCourseReqEntity): UpdateCourseReqDTO {
         return updateCourseReqEntity.run {
-            UpdateCourseReqDTO(courseIdx, courseName, courseImg, mapperToHashtagDTO(hashtags), description)
+            UpdateCourseReqDTO(
+                courseIdx,
+                courseName,
+                courseImg,
+                WalkMapper.convertToCoordinates(coordinates as MutableList<MutableList<LatLng>>),
+                mapperToHashtagDTO(hashtags),
+                address,
+                length,
+                courseTime,
+                walkIdx,
+                description
+            )
         }
     }
 }

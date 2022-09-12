@@ -100,7 +100,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             mode = "create"
             //CourseSetActivity 로부터 전달 받은 recommendEntity 를 활용하여 데이터 바인딩 시작
             recommendEntity = intent.getParcelableExtra<RecommendEntity>("recommendEntity")!!   //CourseShareActivity 로부터 전달받은 코스 상세정보 데이터
-            bindData()
+            bindDataVerCreate()
         }
     }
 
@@ -190,7 +190,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
         binding.courseShareCompleteTv.setOnClickListener {
             hideKeyboard(binding.root)  //키보드 숨기기
 
-            if (mode=="write") {
+            if (mode=="create") {
                 val bundle: Bundle = Bundle()
                 bundle.putString("msg", "‘${binding.courseShareCourseNameEt.text}’을 공유할까요?")
                 bundle.putString("left", getString(R.string.action_cancel))
@@ -203,6 +203,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
 
                 updateCourseReqEntity.courseName = binding.courseShareCourseNameEt.text.toString()
                 updateCourseReqEntity.hashtags = tagVerCSRVAdapter.getCheckedTags()
+                LogUtils.d("CourseShareActivity", "updateCourseReqEntity.hashtags -> ${updateCourseReqEntity.hashtags}")
                 updateCourseReqEntity.description = binding.courseShareCourseDescEt.text.toString()
 
                 vm.updateCourse(baseContext, updateCourseReqEntity)
@@ -210,14 +211,14 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
         }
     }
 
-    private fun bindData() {
+    private fun bindDataVerCreate() {
         getAddress(recommendEntity.coordinates[0][0])   //코스 위치
         binding.courseShareCourseLengthTv.text = "${String.format("%.2f", recommendEntity.length)}km"  //코스 길이
         binding.courseShareCourseTimeTv.text = "약 ${recommendEntity.courseTime}분"    //소요 시간
 
         //해시태그
         if (recommendEntity.hashtags != null)
-            tagVerCSRVAdapter.setData(recommendEntity.hashtags!!)
+            tagVerCSRVAdapter.setData(recommendEntity.hashtags!!, recommendEntity.hashtags!!)
 
         //바인딩 끝났으니까 프로그래스바 INVISIBLE
         binding.courseShareLoadingPb.visibility = View.INVISIBLE
@@ -275,7 +276,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
     private fun goGallery() {
         TedImagePicker.with(this)
             .start { uri ->
-                if (mode=="write") {    //생성
+                if (mode=="create") {    //생성
                     recommendEntity.courseImg = uri.toString()  //recommentEntity 의 courseImg 에 uri String 형태로 저장
                 } else {    //수정
                     updateCourseReqEntity.courseImg = uri.toString()    //updateCourseReqEntity 의 courseImg 에 uri String 형태로 저장
@@ -296,7 +297,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
     private fun changePhotoIvUI(url: String) {
         binding.courseSharePhotoIv.visibility = View.INVISIBLE  //갤러리 아이콘 감추기
         binding.courseSharePhotoEditIv.visibility = View.VISIBLE    //갤러리 편집 아이콘 보이기
-        Glide.with(this).load(url).into(binding.courseSharePhotoIv)
+        Glide.with(this).load(url).into(binding.courseShareThumbnailBaseIv)
     }
 
     private fun observe() {
@@ -307,9 +308,9 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
                 ErrorType.NETWORK -> {  //네트워크 에러
                     when (vm.getErrorType()) {
                         "getAddress" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.getAddress("${recommendEntity.coordinates[0][0].longitude},${recommendEntity.coordinates[0][0].latitude}") }
-                        "saveCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.saveCourse(baseContext, recommendEntity) }
+                        "saveCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
                         "getCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.getCourse(intent.getStringExtra("courseName")!!) }
-                        "updateCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.updateCourse(baseContext, updateCourseReqEntity) }
+                        "updateCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
                     }
 
                     networkErrSb.show()
@@ -351,21 +352,19 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
         vm.course.observe(this, Observer {
             binding.courseShareLoadingPb.visibility = View.INVISIBLE
 
-            it.run {
-                updateCourseReqEntity = UpdateCourseReqEntity(courseIdx, courseName, photo, hashtags, description)
+            updateCourseReqEntity = it.run {
+                 UpdateCourseReqEntity(courseIdx, courseName, courseImg, coordinates, allHashtags, address, distance, courseTime, walkIdx, description)
             }
 
-            if (it.photo.isNotBlank())
-                changePhotoIvUI(it.photo)
+            if (updateCourseReqEntity.courseImg.isNotBlank())
+                changePhotoIvUI(updateCourseReqEntity.courseImg)
 
-            binding.courseShareCourseLocationTv.text = it.address
-            binding.courseShareCourseLengthTv.text = "${it.distance}km"
-            binding.courseShareCourseTimeTv.text = "약 ${it.courseTime}분"
-            binding.courseShareCourseNameEt.setText(it.courseName)
-            tagVerCSRVAdapter.setData(it.hashtags)
-
-            if (it.description.isNotBlank())
-                binding.courseShareCourseDescEt.setText(it.description)
+            binding.courseShareCourseLocationTv.text = updateCourseReqEntity.address
+            binding.courseShareCourseLengthTv.text = "${updateCourseReqEntity.length}km"
+            binding.courseShareCourseTimeTv.text = "약 ${updateCourseReqEntity.courseTime}분"
+            binding.courseShareCourseNameEt.setText(updateCourseReqEntity.courseName)
+            tagVerCSRVAdapter.setData(updateCourseReqEntity.hashtags, it.selectedHashtags)
+            binding.courseShareCourseDescEt.setText(updateCourseReqEntity.description)
         })
 
         vm.updateCourseRes.observe(this, Observer {

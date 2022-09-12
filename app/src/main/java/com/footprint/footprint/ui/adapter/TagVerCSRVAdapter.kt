@@ -34,9 +34,10 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
 
     override fun getItemCount(): Int = tags.size
 
-    fun setData(tags: List<CourseHashtagEntity>) {
+    fun setData(tags: List<CourseHashtagEntity>, checkedTags: List<CourseHashtagEntity>) {
         this.tags = tags
-        this.checkedTags.addAll(tags)
+        this.checkedTags.addAll(checkedTags)
+
         notifyDataSetChanged()
     }
 
@@ -50,21 +51,35 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
         fun bind(position: Int) {
             binding.tagVerCsTagTv.text = tags[position].hashtag
 
+            if (checkedTags.contains(tags[position])) {
+                setCheckedUI()
+            } else {
+                setUncheckedUI()
+            }
+
             binding.root.setOnClickListener {
                 if (binding.tagVerCsClearIv.visibility==View.GONE) {    //클릭
                     checkedTags.add(tags[position])
-                    binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.white_light))
-                    binding.tagVerCsClearIv.visibility = View.VISIBLE
-                    (it as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_clicked)
                     myClickListener.checked(true)
+                    setCheckedUI()
                 } else {    //클릭 취소
                     checkedTags.remove(tags[position])
-                    binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.primary))
-                    binding.tagVerCsClearIv.visibility = View.GONE
-                    (it as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_not_clicked)
                     myClickListener.checked(false)
+                    setUncheckedUI()
                 }
             }
+        }
+
+        private fun setCheckedUI() {
+            binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.white_light))
+            binding.tagVerCsClearIv.visibility = View.VISIBLE
+            (binding.root as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_clicked)
+        }
+
+        private fun setUncheckedUI() {
+            binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.primary))
+            binding.tagVerCsClearIv.visibility = View.GONE
+            (binding.root as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_not_clicked)
         }
     }
 }

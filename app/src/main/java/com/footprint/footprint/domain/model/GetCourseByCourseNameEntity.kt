@@ -1,12 +1,17 @@
 package com.footprint.footprint.domain.model
 
+import com.naver.maps.geometry.LatLng
+
 data class GetCourseByCourseNameEntity(
-    val courseIdx: Int,
-    val address: String,
-    val distance: Double,
-    val courseTime: Int,
-    val photo: String,
     val courseName: String,
-    val hashtags: List<CourseHashtagEntity>,
-    val description: String
+    val address: String,
+    val allHashtags: List<CourseHashtagEntity>,
+    val coordinates: List<List<LatLng>>,
+    val courseIdx: Int,
+    val courseImg: String,
+    val courseTime: Int,
+    val description: String,
+    val distance: Double,
+    val selectedHashtags: List<CourseHashtagEntity>,
+    val walkIdx: Int
 )
