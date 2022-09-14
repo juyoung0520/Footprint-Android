@@ -10,19 +10,22 @@ import com.footprint.footprint.databinding.FragmentRecommendedCourseBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CourseListRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
-import com.footprint.footprint.utils.LogUtils
+import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.viewmodel.RecommendedCourseViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>(FragmentRecommendedCourseBinding::inflate), MyFragment.CoursesListener {
     private val vm: RecommendedCourseViewModel by viewModel()
 
-    private lateinit var selectedCourse: CourseDTO
+    private var markedCourseIdx: Int = -1
 
+    private lateinit var selectedCourse: CourseDTO
     private lateinit var myBottomSheetDialogFragment: MyBottomSheetDialogFragment
     private lateinit var courseRVAdapter: CourseListRVAdapter
     private lateinit var actionFrag: ActionDialogFragment
+    private lateinit var networkErrSb: Snackbar
 
     override fun initAfterBinding() {
         initBottomSheetDialogFragment()
@@ -38,6 +41,13 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
 
         if (::myBottomSheetDialogFragment.isInitialized && myBottomSheetDialogFragment.isAdded)
             myBottomSheetDialogFragment.dismiss()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
     }
 
     private fun initBottomSheetDialogFragment() {
@@ -75,7 +85,10 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
                 myBottomSheetDialogFragment.show(requireActivity().supportFragmentManager, null)
             }
 
-            override fun markCourse(courseIdx: Int) {}
+            override fun markCourse(courseIdx: Int) {
+                markedCourseIdx = courseIdx
+                vm.markCourse(courseIdx)
+            }
         })
         binding.recommendedCourseRv.adapter = courseRVAdapter
     }
@@ -87,7 +100,6 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
             }
 
             override fun rightAction(action: String) {
-                showToast(selectedCourse.courseIdx.toString())
                 vm.deleteCourse(selectedCourse.courseIdx)
             }
         })
@@ -100,8 +112,36 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
     }
 
     private fun observe() {
+        (requireParentFragment() as MyFragment).hidePb()
+
+        vm.mutableErrorType.observe(this, Observer {
+            when (it) {
+                ErrorType.NETWORK -> {  //네트워크 에러
+                    when (vm.getErrorType()) {
+                        "getMarkedCourses",  "deleteCourse", "markCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
+                        "getRecommendedCourses" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.getRecommendedCourses() }
+                    }
+
+                    networkErrSb.show()
+                }
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER, ErrorType.S3 -> {
+                    startErrorActivity("RecommendedCourseFragment")
+                }
+            }
+        })
+
         vm.deleteResultCode.observe(viewLifecycleOwner, Observer {
-            courseRVAdapter.removeData(selectedCourse)    //데이터 삭제
+            if (it==1000) {
+                courseRVAdapter.removeData(selectedCourse)    //데이터 삭제
+            }
+        })
+
+        vm.markCourseResultCode.observe(viewLifecycleOwner, Observer {
+            if (it==1000) {
+                courseRVAdapter.changeUserCourseMark(markedCourseIdx)
+            } else {
+                showToast(getString(R.string.error_api_fail))
+            }
         })
     }
 

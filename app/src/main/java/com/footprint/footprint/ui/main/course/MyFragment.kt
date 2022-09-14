@@ -121,4 +121,8 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
             }
         }
     }
+
+    fun hidePb() {
+        binding.myLoadingPb.visibility = View.INVISIBLE
+    }
 }

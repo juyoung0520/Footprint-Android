@@ -99,4 +99,10 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
         notifyItemRangeRemoved(position, courseList.size - position)
     }
 
+    fun changeUserCourseMark(courseIdx: Int) {
+        val idx: Int = courseList.indexOf(courseList.find { it.courseIdx==courseIdx })
+        courseList[idx].userCourseMark = !courseList[idx].userCourseMark
+        notifyItemChanged(idx)
+    }
+
 }

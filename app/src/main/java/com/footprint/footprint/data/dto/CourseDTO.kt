@@ -15,7 +15,7 @@ data class CourseDTO(
     @SerializedName("courseLike") val courseLike: Int,   // 좋아요 수
     @SerializedName("courseTags") val courseTags: List<String>,
     @SerializedName("courseImg") val courseImg: String,
-    @SerializedName("userCourseMark") val userCourseMark: Boolean, // 유저가 해당코스 북마크 여부
+    @SerializedName("userCourseMark") var userCourseMark: Boolean, // 유저가 해당코스 북마크 여부
 )
 
 // 코스 상세 API에서 사용

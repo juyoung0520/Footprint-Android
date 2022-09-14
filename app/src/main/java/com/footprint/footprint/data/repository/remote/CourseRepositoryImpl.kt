@@ -164,8 +164,9 @@ class CourseRepositoryImpl(private val dataSource: CourseRemoteDataSource): Cour
             is Result.Success -> {
                 if (response.value.isSuccess) {
                     Result.Success(response.value)
-                } else
+                } else {
                     Result.GenericError(response.value.code, response.value.message)
+                }
             }
             is Result.NetworkError -> response
             is Result.GenericError -> response
