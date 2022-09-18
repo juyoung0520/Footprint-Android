@@ -7,13 +7,16 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ActivityCourseShareBinding
+import com.footprint.footprint.domain.model.RecommendEntity
+import com.footprint.footprint.domain.model.UpdateCourseReqEntity
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.TagVerCSRVAdapter
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.utils.*
-import com.footprint.footprint.viewmodel.MapViewModel
+import com.footprint.footprint.viewmodel.CourseShareViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -23,14 +26,16 @@ import gun0912.tedimagepicker.builder.TedImagePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCourseShareBinding::inflate), TextWatcher {
-    private val mapVm: MapViewModel by viewModel<MapViewModel>()
+    private val vm: CourseShareViewModel by viewModel()
 
+    private lateinit var mode: String
     private lateinit var tagVerCSRVAdapter: TagVerCSRVAdapter
     private lateinit var balloon: Balloon
     private lateinit var actionFrag: ActionDialogFragment
     private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
-    private lateinit var selectedCoords: MutableList<MutableList<LatLng>>
     private lateinit var networkErrSb: Snackbar
+    private lateinit var recommendEntity: RecommendEntity
+    private lateinit var updateCourseReqEntity: UpdateCourseReqEntity
 
     //퍼미션 확인 후 콜백 리스너
     private val permissionListener: PermissionListener = object : PermissionListener {
@@ -43,8 +48,6 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
     }
 
     override fun initAfterBinding() {
-        selectedCoords = intent.getSerializableExtra("coords") as MutableList<MutableList<LatLng>> //CourseSetActivity 에서 전달받은 선택된 좌표 리스트
-
         //키보드 감지 도구 설정
         keyboardVisibilityUtils = KeyboardVisibilityUtils(window,
             //키보드가 올라와 있을 땐 NestedScrollView 의 높이를 '(전체 디바이스 높이) - (키보드 높이) - 18dp' 로 설정.
@@ -61,15 +64,6 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
                 binding.courseShareNsv.layoutParams = params
             }
         )
-
-        initAdapter()
-        setMyEventListener()
-        observe()
-
-        getAddress(selectedCoords[0][0])   //코스 위치
-        binding.courseShareCourseLengthTv.text = "${String.format("%.2f", calDistance(selectedCoords))}km"  //코스 길이
-        binding.courseShareCourseTimeTv.text = "약 ${intent.getIntExtra("time", 0)}분"    //소요 시간
-        binding.courseShareThumbnailBaseIv.clipToOutline = true //이미지뷰 테두리 라운드 적용
 
         //태그 설명 말풍선 설정
         balloon = Balloon.Builder(applicationContext)
@@ -91,6 +85,23 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             .setBalloonAnimation(BalloonAnimation.FADE)
             .setAutoDismissDuration(3000L)
             .build()
+
+        binding.courseShareThumbnailBaseIv.clipToOutline = true //이미지뷰 테두리 라운드 적용
+
+        initAdapter()
+        initDialog()
+        setMyEventListener()
+        observe()
+
+        if (intent.hasExtra("courseName")) {
+            mode = "update"
+            vm.getCourse(intent.getStringExtra("courseName")!!)
+        } else {
+            mode = "create"
+            //CourseSetActivity 로부터 전달 받은 recommendEntity 를 활용하여 데이터 바인딩 시작
+            recommendEntity = intent.getParcelableExtra<RecommendEntity>("recommendEntity")!!   //CourseShareActivity 로부터 전달받은 코스 상세정보 데이터
+            bindDataVerCreate()
+        }
     }
 
     override fun onStop() {
@@ -117,7 +128,6 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
 
     private fun initAdapter() {
         tagVerCSRVAdapter = TagVerCSRVAdapter(applicationContext)
-        tagVerCSRVAdapter.setData(arrayListOf<String>("#서울 망원동", "#혼자서", "#어쩌구", "#저쩌구"))
         tagVerCSRVAdapter.setMyClickListener(object : TagVerCSRVAdapter.MyClickListener {
             override fun checked(isChecked: Boolean) {
                 hideKeyboard(binding.root)  //키보드 숨기기
@@ -129,6 +139,23 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             }
         })
         binding.courseShareTagRv.adapter = tagVerCSRVAdapter
+    }
+
+    private fun initDialog() {
+        actionFrag = ActionDialogFragment()
+        actionFrag.setMyDialogCallback(object: ActionDialogFragment.MyDialogCallback {
+            override fun leftAction(action: String) {
+            }
+
+            //공유 버튼 클릭 리스너
+            override fun rightAction(action: String) {
+                //프로그래스바 VISIBLE
+                binding.courseShareLoadingPb.visibility = View.VISIBLE
+
+                //사용자가 입력한 데이터들을 recommendEntity 에 저장하는 함수 호출
+                setRecommendEntity()
+            }
+        })
     }
 
     private fun setMyEventListener() {
@@ -159,32 +186,77 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             binding.courseShareCourseDescEt.clearFocus()    //설명 EditText 포커스 제거
         }
 
+        //완료 버튼 클릭 리스너 -> AcitionDialog 띄우기
         binding.courseShareCompleteTv.setOnClickListener {
             hideKeyboard(binding.root)  //키보드 숨기기
 
-            val bundle: Bundle = Bundle()
-            bundle.putString("msg", "‘${binding.courseShareCourseNameEt.text}’을 공유할까요?")
-            bundle.putString("left", getString(R.string.action_cancel))
-            bundle.putString("right", getString(R.string.action_share))
+            if (mode=="create") {
+                val bundle: Bundle = Bundle()
+                bundle.putString("msg", "‘${binding.courseShareCourseNameEt.text}’을 공유할까요?")
+                bundle.putString("left", getString(R.string.action_cancel))
+                bundle.putString("right", getString(R.string.action_share))
 
-            actionFrag = ActionDialogFragment()
-            actionFrag.arguments = bundle
-            actionFrag.setMyDialogCallback(object: ActionDialogFragment.MyDialogCallback {
-                override fun leftAction(action: String) {
-                }
+                actionFrag.arguments = bundle
+                actionFrag.show(supportFragmentManager, null)
+            } else {
+                binding.courseShareLoadingPb.visibility = View.VISIBLE
 
-                override fun rightAction(action: String) {
-                    this@CourseShareActivity.finishAffinity()   //CourseSelectActivity, CourseShareActivity 모두 종료
-                }
-            })
+                updateCourseReqEntity.courseName = binding.courseShareCourseNameEt.text.toString()
+                updateCourseReqEntity.hashtags = tagVerCSRVAdapter.getCheckedTags()
+                LogUtils.d("CourseShareActivity", "updateCourseReqEntity.hashtags -> ${updateCourseReqEntity.hashtags}")
+                updateCourseReqEntity.description = binding.courseShareCourseDescEt.text.toString()
 
-            actionFrag.show(supportFragmentManager, null)
+                vm.updateCourse(baseContext, updateCourseReqEntity)
+            }
         }
+    }
+
+    private fun bindDataVerCreate() {
+        getAddress(recommendEntity.coordinates[0][0])   //코스 위치
+        binding.courseShareCourseLengthTv.text = "${String.format("%.2f", recommendEntity.length)}km"  //코스 길이
+        binding.courseShareCourseTimeTv.text = "약 ${recommendEntity.courseTime}분"    //소요 시간
+
+        //해시태그
+        if (recommendEntity.hashtags != null)
+            tagVerCSRVAdapter.setData(recommendEntity.hashtags!!, recommendEntity.hashtags!!)
+
+        //바인딩 끝났으니까 프로그래스바 INVISIBLE
+        binding.courseShareLoadingPb.visibility = View.INVISIBLE
     }
 
     // 좌표 -> 주소 변환
     private fun getAddress(coords: LatLng) {
-        mapVm.getAddress("${coords.longitude},${coords.latitude}")
+        if (!isNetworkAvailable(applicationContext)) {
+            binding.courseShareLoadingPb.visibility = View.INVISIBLE
+
+            networkErrSb = Snackbar.make(
+                binding.root,
+                getString(R.string.error_network),
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(getString(R.string.action_retry)) {
+                binding.courseShareLoadingPb.visibility = View.VISIBLE
+                vm.getAddress("${coords.longitude},${coords.latitude}")
+            }
+
+            networkErrSb.show()
+        } else {
+            vm.getAddress("${coords.longitude},${coords.latitude}")
+        }
+    }
+
+    //코스 저장 전 recommendEntity 에 데이터 저장하기
+    private fun setRecommendEntity() {
+        //주소
+        if (binding.courseShareLocationEt.visibility==View.VISIBLE)
+            recommendEntity.address = binding.courseShareLocationEt.text.toString()
+        else
+            recommendEntity.address = binding.courseShareCourseLocationTv.text.toString()
+        recommendEntity.courseName = binding.courseShareCourseNameEt.text.toString()    //코스 이름
+        recommendEntity.hashtags = tagVerCSRVAdapter.getCheckedTags()   //해시 태그
+        recommendEntity.description = binding.courseShareCourseDescEt.text.toString()   //코스 설명
+
+        //recommendEntity 에 저장 끝나면 코스 저장 API 호출
+        vm.saveCourse(baseContext, recommendEntity)
     }
 
     //카메라, 저장소 퍼미션 확인
@@ -204,9 +276,13 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
     private fun goGallery() {
         TedImagePicker.with(this)
             .start { uri ->
-                binding.courseSharePhotoIv.visibility = View.INVISIBLE  //갤러리 아이콘 감추기
-                binding.courseSharePhotoEditIv.visibility = View.VISIBLE    //갤러리 편집 아이콘 보이기
-                binding.courseShareThumbnailBaseIv.setImageURI(uri) //선택한 이미지 보여주기
+                if (mode=="create") {    //생성
+                    recommendEntity.courseImg = uri.toString()  //recommentEntity 의 courseImg 에 uri String 형태로 저장
+                } else {    //수정
+                    updateCourseReqEntity.courseImg = uri.toString()    //updateCourseReqEntity 의 courseImg 에 uri String 형태로 저장
+                }
+
+                changePhotoIvUI(uri.toString())
             }
     }
 
@@ -218,28 +294,23 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
         }
     }
 
-    //거리 계산 함수
-    private fun calDistance(coords: List<List<LatLng>>): Double {
-        var distance: Double = 0.0
-
-        for (section in coords) {
-            var sectionDistance: Double = 0.0
-            for (i in 0 until section.size-1) {
-                sectionDistance += section[i].distanceTo(section[i+1])
-            }
-            distance += sectionDistance
-        }
-
-        return distance / 1000  //m -> km
+    private fun changePhotoIvUI(url: String) {
+        binding.courseSharePhotoIv.visibility = View.INVISIBLE  //갤러리 아이콘 감추기
+        binding.courseSharePhotoEditIv.visibility = View.VISIBLE    //갤러리 편집 아이콘 보이기
+        Glide.with(this).load(url).into(binding.courseShareThumbnailBaseIv)
     }
 
     private fun observe() {
-        mapVm.mutableErrorType.observe(this, Observer {
+        vm.mutableErrorType.observe(this, Observer {
+            binding.courseShareLoadingPb.visibility = View.INVISIBLE
 
             when (it) {
-                ErrorType.NETWORK -> {
-                    when (mapVm.getErrorType()) {
-                        "getAddress" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { mapVm.getAddress("${selectedCoords[0][0].longitude},${selectedCoords[0][0].latitude}") }
+                ErrorType.NETWORK -> {  //네트워크 에러
+                    when (vm.getErrorType()) {
+                        "getAddress" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.getAddress("${recommendEntity.coordinates[0][0].longitude},${recommendEntity.coordinates[0][0].latitude}") }
+                        "saveCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
+                        "getCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.action_retry)) { vm.getCourse(intent.getStringExtra("courseName")!!) }
+                        "updateCourse" -> networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_LONG)
                     }
 
                     networkErrSb.show()
@@ -249,19 +320,65 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
                     binding.courseShareLocationPinIv.visibility = View.INVISIBLE
                     binding.courseShareLocationEt.visibility = View.VISIBLE
                 }
-                ErrorType.UNKNOWN, ErrorType.DB_SERVER -> {
+                ErrorType.UNKNOWN, ErrorType.DB_SERVER, ErrorType.S3 -> {
                     startErrorActivity("CourseShareActivity")
                 }
             }
         })
 
+        vm.saveCourseRes.observe(this, Observer {
+            binding.courseShareLoadingPb.visibility = View.INVISIBLE
+
+            if (it.isSuccess) {
+                showToast(it.result!!)  //코스가 등록되었습니다 토스트 메시지 띄우기
+                this@CourseShareActivity.finishAffinity()   //CourseSelectActivity, CourseShareActivity 모두 종료 -> 마이-내 추천코스 화면으로 이동
+            } else {
+                when (it.code) {
+                    2151 -> showToast(it.message)   //중복된 이름
+                    else -> startErrorActivity("CourseShareActivity")
+                }
+            }
+        })
+
         //주소 받아오면 -> 주소 보여주기
-        mapVm.address.observe(this, Observer {
+        vm.address.observe(this, Observer {
             binding.courseShareCourseLocationTv.visibility = View.VISIBLE
             binding.courseShareLocationPinIv.visibility = View.VISIBLE
             binding.courseShareLocationEt.visibility = View.INVISIBLE
 
             binding.courseShareCourseLocationTv.text = it
+        })
+
+        vm.course.observe(this, Observer {
+            binding.courseShareLoadingPb.visibility = View.INVISIBLE
+
+            updateCourseReqEntity = it.run {
+                 UpdateCourseReqEntity(courseIdx, courseName, courseImg, coordinates, allHashtags, address, distance, courseTime, walkIdx, description)
+            }
+
+            if (updateCourseReqEntity.courseImg.isNotBlank())
+                changePhotoIvUI(updateCourseReqEntity.courseImg)
+
+            binding.courseShareCourseLocationTv.text = updateCourseReqEntity.address
+            binding.courseShareCourseLengthTv.text = "${updateCourseReqEntity.length}km"
+            binding.courseShareCourseTimeTv.text = "약 ${updateCourseReqEntity.courseTime}분"
+            binding.courseShareCourseNameEt.setText(updateCourseReqEntity.courseName)
+            tagVerCSRVAdapter.setData(updateCourseReqEntity.hashtags, it.selectedHashtags)
+            binding.courseShareCourseDescEt.setText(updateCourseReqEntity.description)
+        })
+
+        vm.updateCourseRes.observe(this, Observer {
+            binding.courseShareLoadingPb.visibility = View.INVISIBLE
+
+            if (it.isSuccess) {
+                showToast(it.result!!)  //코스가 수정되었습니다 토스트 메시지 띄우기
+                this@CourseShareActivity.finishAffinity()   //CourseSelectActivity, CourseShareActivity 모두 종료 -> 마이-내 추천코스 화면으로 이동
+            } else {
+                when (it.code) {
+                    2151 -> showToast(it.message)   //중복된 이름
+                    else -> startErrorActivity("CourseShareActivity")
+                }
+            }
         })
     }
 }

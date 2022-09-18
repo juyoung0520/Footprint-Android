@@ -2,7 +2,6 @@ package com.footprint.footprint.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +10,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.ItemCourseBinding
-import com.footprint.footprint.ui.main.course.CourseListFragment
-import com.footprint.footprint.utils.LogUtils
+import kotlin.math.round
 
 class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseListRVAdapter.ViewHolder>() {
     private val courseList = arrayListOf<CourseDTO>() /* 수정 */
@@ -21,7 +19,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
         fun bind(course: CourseDTO, position: Int) {
             // 타이틀, 인포
             binding.itemCourseTitleTv.text = course.courseName
-            val dist = "${course.courseDist}km,"
+            val dist = "${round(course.courseDist*100)/100}km,"
             val time = if(course.courseTime<60) "약 ${course.courseTime}분" else "약 ${course.courseTime/60}시간 ${course.courseTime%60}분"
             binding.itemCourseInfoTv.text = dist + time
 
@@ -85,7 +83,7 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
     /* 클릭 이벤트 관리 */
     interface CourseClickListener{
         fun onClick(course: CourseDTO, position: Int)
-        fun markCourse(courseIdx: String)
+        fun markCourse(courseIdx: Int)
     }
 
     private lateinit var myCourseClickListener: CourseClickListener
@@ -94,11 +92,17 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
         this.myCourseClickListener = myCourseClickListener
     }
 
-    fun removeData(position: Int) {
+    fun removeData(course: CourseDTO) {
+        val position = courseList.indexOf(course)
         courseList.removeAt(position)
-
         notifyItemRemoved(position)
         notifyItemRangeRemoved(position, courseList.size - position)
+    }
+
+    fun changeUserCourseMark(courseIdx: Int) {
+        val idx: Int = courseList.indexOf(courseList.find { it.courseIdx==courseIdx })
+        courseList[idx].userCourseMark = !courseList[idx].userCourseMark
+        notifyItemChanged(idx)
     }
 
 }

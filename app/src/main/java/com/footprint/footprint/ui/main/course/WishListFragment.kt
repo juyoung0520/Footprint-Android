@@ -22,6 +22,4 @@ class WishListFragment : BaseFragment<FragmentWishListBinding>(FragmentWishListB
         LogUtils.d("courses", courses.toString())
         courseRVAdapter.addAll(courses as ArrayList<CourseDTO>)
     }
-
-
 }

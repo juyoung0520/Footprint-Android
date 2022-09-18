@@ -8,5 +8,6 @@ enum class ErrorType {
     DB_SERVER, //DB, 서버 통신 에러(Ex. 4000, 4001)
     JWT,       //JWT 관련 에러(Ex. 2001-2004)
     NO_BADGE,   //뱃지 관련 에러
-    ADDRESS //네이버 맵에서 주소 가져올 때 발생한 에러
+    ADDRESS, //네이버 맵에서 주소 가져올 때 발생한 에러
+    S3,     //S3 저장 시 발생한 에러
 }

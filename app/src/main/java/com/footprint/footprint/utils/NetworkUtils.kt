@@ -1,15 +1,8 @@
 package com.footprint.footprint.utils
 
-import android.util.Log
 import com.footprint.footprint.BuildConfig
 import com.google.gson.*
-import com.google.gson.JsonParseException
 import java.lang.reflect.Type
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
-
 
 object NetworkUtils {
     fun <T> encrypt(data: T): String {

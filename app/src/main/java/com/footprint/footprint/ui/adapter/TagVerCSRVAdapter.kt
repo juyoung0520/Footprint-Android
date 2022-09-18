@@ -9,14 +9,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemTagVerCsBinding
+import com.footprint.footprint.domain.model.CourseHashtagEntity
 
 class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAdapter.TagVerCSViewHolder>() {
     interface MyClickListener {
         fun checked(isChecked: Boolean)
     }
 
-    private val checkedTags: ArrayList<String> = arrayListOf()
-    private var tags: ArrayList<String> = arrayListOf()
+    private var checkedTags: MutableList<CourseHashtagEntity> = mutableListOf()
+    private var tags: List<CourseHashtagEntity> = listOf()
     private lateinit var myClickListener: MyClickListener
 
     override fun onCreateViewHolder(
@@ -33,8 +34,10 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
 
     override fun getItemCount(): Int = tags.size
 
-    fun setData(tags: ArrayList<String>) {
+    fun setData(tags: List<CourseHashtagEntity>, checkedTags: List<CourseHashtagEntity>) {
         this.tags = tags
+        this.checkedTags.addAll(checkedTags)
+
         notifyDataSetChanged()
     }
 
@@ -42,27 +45,41 @@ class TagVerCSRVAdapter(val context: Context): RecyclerView.Adapter<TagVerCSRVAd
         this.myClickListener = myClickListener
     }
 
-    fun getCheckedTags(): ArrayList<String> = checkedTags
+    fun getCheckedTags(): MutableList<CourseHashtagEntity> = checkedTags
 
     inner class TagVerCSViewHolder(val binding: ItemTagVerCsBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.tagVerCsTagTv.text = tags[position]
+            binding.tagVerCsTagTv.text = tags[position].hashtag
+
+            if (checkedTags.contains(tags[position])) {
+                setCheckedUI()
+            } else {
+                setUncheckedUI()
+            }
 
             binding.root.setOnClickListener {
                 if (binding.tagVerCsClearIv.visibility==View.GONE) {    //클릭
                     checkedTags.add(tags[position])
-                    binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.white_light))
-                    binding.tagVerCsClearIv.visibility = View.VISIBLE
-                    (it as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_clicked)
                     myClickListener.checked(true)
+                    setCheckedUI()
                 } else {    //클릭 취소
                     checkedTags.remove(tags[position])
-                    binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.primary))
-                    binding.tagVerCsClearIv.visibility = View.GONE
-                    (it as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_not_clicked)
                     myClickListener.checked(false)
+                    setUncheckedUI()
                 }
             }
+        }
+
+        private fun setCheckedUI() {
+            binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.white_light))
+            binding.tagVerCsClearIv.visibility = View.VISIBLE
+            (binding.root as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_clicked)
+        }
+
+        private fun setUncheckedUI() {
+            binding.tagVerCsTagTv.setTextColor(ContextCompat.getColor(context, R.color.primary))
+            binding.tagVerCsClearIv.visibility = View.GONE
+            (binding.root as ConstraintLayout).setBackgroundResource(R.drawable.bg_course_share_tag_not_clicked)
         }
     }
 }

@@ -5,15 +5,12 @@ import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseListBinding
-import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.CourseListRVAdapter
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.naver.maps.geometry.LatLng
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCourseListBinding::inflate) {
@@ -40,8 +37,8 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
             }
 
             // 찜하기 API 호출
-            override fun markCourse(courseIdx: String) {
-                courseVm.markCourse(courseIdx.toInt())
+            override fun markCourse(courseIdx: Int) {
+                courseVm.markCourse(courseIdx)
             }
         })
 

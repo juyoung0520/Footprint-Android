@@ -45,6 +45,11 @@ val useCaseModule = module {
     single<GetVersionUseCase> { GetVersionUseCase(get()) }.bind(NoticeRepositoryImpl::class)
 
     single<GetAddressUseCase> { GetAddressUseCase((get())) }.bind(MapRepositoryImpl::class)
+    single<GetWalkDetailCUseCase> {GetWalkDetailCUseCase(get())}.bind(CourseRepositoryImpl::class)
+    single<SaveCourseUseCase> {SaveCourseUseCase((get()))}.bind(CourseRepositoryImpl::class)
+    single<GetSelfCourseListUseCase> {GetSelfCourseListUseCase((get()))}.bind(CourseRepositoryImpl::class)
+    single<GetCourseByCourseNameUseCase> { GetCourseByCourseNameUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<UpdateCourseUseCase> { UpdateCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
 
     single<GetCoursesUseCase> { GetCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<MarkCourseUseCase> { MarkCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
@@ -53,4 +58,5 @@ val useCaseModule = module {
     single<EvaluateCourseUseCase> { EvaluateCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<GetMarkedCoursesUseCase> { GetMarkedCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
     single<GetMyRecommendedCoursesUseCase> { GetMyRecommendedCoursesUseCase(get()) }.bind(CourseRepositoryImpl::class)
+    single<DeleteCourseUseCase> { DeleteCourseUseCase(get()) }.bind(CourseRepositoryImpl::class)
 }

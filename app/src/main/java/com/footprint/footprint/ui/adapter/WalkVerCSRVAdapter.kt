@@ -3,15 +3,19 @@ package com.footprint.footprint.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.footprint.footprint.databinding.ItemCsTypeABinding
 import com.footprint.footprint.databinding.ItemCsTypeBBinding
 import com.footprint.footprint.ui.adapter.viewtype.WalkVerCSVT
 
-class WalkVerCSRVAdapter(private val items: ArrayList<WalkVerCSVT>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WalkVerCSRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface MyClickListener {
-        fun click()
+        fun click(position: Int)
     }
+
+    private var items: MutableList<WalkVerCSVT> = mutableListOf()
 
     private lateinit var bindingTypeA: ItemCsTypeABinding
     private lateinit var bindingTypeB: ItemCsTypeBBinding
@@ -35,12 +39,17 @@ class WalkVerCSRVAdapter(private val items: ArrayList<WalkVerCSVT>): RecyclerVie
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            WalkVerCSVT.TYPE_A -> {
-                // 이 위치에 view에 데이터를 적용시켜 주시면 됩니다.
-            }
+            WalkVerCSVT.TYPE_A -> {}
             WalkVerCSVT.TYPE_B -> {
-                (holder as ViewHolderTypeB).nextIv.setOnClickListener {
-                    myClickListener.click()
+                (holder as ViewHolderTypeB).run {
+                    rv.adapter = TagVerWalkCSRVAdapter(items[position].data!!.hashtag)
+                    Glide.with(pathIv.context).load(items[position].data!!.pathImageUrl).into(pathIv)
+                    titleTv.text = "$position 번째 산책"
+                    timeTv.text = items[position].data!!.walkTime
+
+                    nextIv.setOnClickListener {
+                        myClickListener.click(position)
+                    }
                 }
             }
         }
@@ -51,6 +60,11 @@ class WalkVerCSRVAdapter(private val items: ArrayList<WalkVerCSVT>): RecyclerVie
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun setData(items: MutableList<WalkVerCSVT>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
 
     fun setMyClickListener(myClickListener: MyClickListener) {
         this.myClickListener = myClickListener
@@ -64,10 +78,9 @@ class WalkVerCSRVAdapter(private val items: ArrayList<WalkVerCSVT>): RecyclerVie
 
     inner class ViewHolderTypeB(itemView: ItemCsTypeBBinding): RecyclerView.ViewHolder(itemView.root) {
         val rv: RecyclerView = itemView.itemWalkCsRv
+        val pathIv: ImageView = itemView.itemWalkCsThumbnailIv
+        val titleTv: TextView = itemView.itemWalkCsTitleTv
+        val timeTv: TextView = itemView.itemWalkCsWalkTimeTv
         val nextIv: ImageView = itemView.itemWalkCsNextIv
-
-        init {
-            rv.adapter = TagVerWalkCSRVAdapter()
-        }
     }
 }

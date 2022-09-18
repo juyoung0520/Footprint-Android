@@ -10,8 +10,7 @@ import com.footprint.footprint.databinding.FragmentMyBinding
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.adapter.MyVPAdapter
 import com.footprint.footprint.utils.ErrorType
-import com.footprint.footprint.utils.LogUtils
-import com.footprint.footprint.viewmodel.MyViewModel
+import com.footprint.footprint.viewmodel.RecommendedCourseViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,7 +21,7 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
     private lateinit var myVpAdapter: MyVPAdapter
     private lateinit var backPressedCallback: OnBackPressedCallback
 
-    private val myViewModel: MyViewModel by viewModel()
+    private val myViewModel: RecommendedCourseViewModel by viewModel()
 
     interface CoursesListener {
         fun observer(courses: List<CourseDTO>)
@@ -121,5 +120,9 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
                 else -> {}
             }
         }
+    }
+
+    fun hidePb() {
+        binding.myLoadingPb.visibility = View.INVISIBLE
     }
 }

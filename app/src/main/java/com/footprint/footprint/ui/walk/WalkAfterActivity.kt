@@ -18,7 +18,6 @@ import com.footprint.footprint.viewmodel.CourseWalkViewModel
 import com.footprint.footprint.viewmodel.WalkViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
-import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
@@ -70,7 +69,7 @@ class WalkAfterActivity :
         bindWalkData()  //데이터 바인딩
 
         S3UploadService.setCallback(object : S3UploadService.Callback {
-            override fun successWalkImg(img: String) {
+            override fun successUploadImg(img: String) {
                 saveWalkEntity.pathImg = img
 
                 if (saveWalkEntity.saveWalkFootprints.isNotEmpty())
@@ -79,7 +78,7 @@ class WalkAfterActivity :
                     saveWalk()
             }
 
-            override fun failWalkImg() {
+            override fun failUploadImg() {
                 binding.walkAfterLoadingPb.visibility = View.VISIBLE
 
                 s3ErrorSb = Snackbar.make(
@@ -252,7 +251,8 @@ class WalkAfterActivity :
                     }
                     else -> {   //action_share
                         val intent: Intent = Intent(this@WalkAfterActivity, CourseSetActivity::class.java)
-                        intent.putExtra("paths", saveWalkEntity.coordinate as ArrayList<ArrayList<LatLng>>)
+//                        intent.putExtra("walkNumber", 18)
+                        intent.putExtra("walkNumber", saveWalkEntity.walkTitle.replace("[^0-9]".toRegex(), "").toInt())
                         startActivity(intent)
                         finish()
                     }
@@ -272,7 +272,7 @@ class WalkAfterActivity :
             )
             networkErrSb.show()
         } else
-            S3UploadService.uploadWalkImg(applicationContext, file)  //산책 이미지 저장
+            S3UploadService.uploadImg(applicationContext, file)  //산책 이미지 저장
     }
 
     //FootprintDialogFragment 초기화 함수
