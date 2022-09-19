@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.footprint.footprint.R
@@ -53,15 +52,11 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             //키보드가 올라와 있을 땐 NestedScrollView 의 높이를 '(전체 디바이스 높이) - (키보드 높이) - 18dp' 로 설정.
             //이렇게 해야 산책 코스 설명에서 줄바꿈이 발생했을 때 스크롤이 잘됨.
             onShowKeyboard = { keyboardHeight ->
-                var params: ViewGroup.LayoutParams = binding.courseShareNsv.layoutParams
-                params.height = getDeviceHeight() - keyboardHeight - convertDpToPx(applicationContext, 18)
-                binding.courseShareNsv.layoutParams = params
+                binding.courseShareCourseDescEt.setPadding(0, 0, 0, keyboardHeight)
             },
             //키보드가 내려갔을 땐 NestedScrollView 의 높이를 WRAP_CONTENT 로 설정.
             onHideKeyboard = {
-                var params: ViewGroup.LayoutParams = binding.courseShareNsv.layoutParams
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                binding.courseShareNsv.layoutParams = params
+                binding.courseShareCourseDescEt.setPadding(0, 0, 0, convertDpToPx(baseContext, 18))
             }
         )
 
@@ -203,7 +198,6 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
 
                 updateCourseReqEntity.courseName = binding.courseShareCourseNameEt.text.toString()
                 updateCourseReqEntity.hashtags = tagVerCSRVAdapter.getCheckedTags()
-                LogUtils.d("CourseShareActivity", "updateCourseReqEntity.hashtags -> ${updateCourseReqEntity.hashtags}")
                 updateCourseReqEntity.description = binding.courseShareCourseDescEt.text.toString()
 
                 vm.updateCourse(baseContext, updateCourseReqEntity)
