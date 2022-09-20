@@ -92,6 +92,15 @@ class CourseMapFragment() :
     }
 
     private fun initMapEvent() {
+        map.addOnCameraIdleListener {
+            val bounds = BoundsModel(
+                north = map.contentBounds.northLatitude,
+                south = map.contentBounds.southLatitude,
+                east = map.contentBounds.eastLongitude,
+                west = map.contentBounds.westLongitude
+            )
+            courseVm.setMapBounds(bounds)
+        }
         map.addOnCameraChangeListener { reason, _ ->
             when (reason) {
                 CameraUpdate.REASON_DEVELOPER -> {
@@ -101,14 +110,6 @@ class CourseMapFragment() :
                     binding.courseMapCurrentLocationIv.alpha = 0.5F
                 }
             }
-
-            val bounds = BoundsModel(
-                north = map.contentBounds.northLatitude,
-                south = map.contentBounds.southLatitude,
-                east = map.contentBounds.eastLongitude,
-                west = map.contentBounds.westLongitude
-            )
-            courseVm.setMapBounds(bounds)
         }
     }
 
@@ -281,6 +282,6 @@ class CourseMapFragment() :
     }
 
     fun isInitialized(): Boolean{
-        return (::map.isInitialized)
+        return (::map.isInitialized && isCameraInitialized)
     }
 }

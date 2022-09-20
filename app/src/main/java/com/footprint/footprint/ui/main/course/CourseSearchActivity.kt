@@ -30,6 +30,7 @@ import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import okhttp3.internal.notify
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCourseSearchBinding::inflate), OnMapReadyCallback{
@@ -409,6 +410,11 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         })
 
         courseVm.filteredCourseList.observe(this, Observer {
+            // 검색 결과가 없어요!
+            if(it.isNullOrEmpty()) binding.courseSearchResultNoTv.visibility = View.VISIBLE
+            else  binding.courseSearchResultNoTv.visibility = View.GONE
+
+            // 현재 위치에서 재검색
             binding.courseSearchSearchAgainTv.visibility = View.GONE
             binding.courseSearchSearchAgainIv.visibility = View.GONE
 

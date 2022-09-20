@@ -10,14 +10,14 @@
         android:id="@+id/course_list_no_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/msg_no_search_result"
+        android:text="@string/msg_no_course_result"
         android:textColor="@color/white_caption"
         android:textAppearance="@style/tv_body_b_14"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/course_list_rv"

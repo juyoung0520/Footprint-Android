@@ -48,6 +48,7 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     private fun setClickEvent(){
         // 코스 검색으로 이동
         binding.courseSearchIv.setOnClickListener {
+            if(!mapFragment.isInitialized()) return@setOnClickListener
             startSearchActivity()
         }
 
@@ -91,10 +92,10 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
             .replace(R.id.course_fragment_container, mapFragment).commit()
 
         binding.courseModeIv.setOnClickListener {
-            if(!mapFragment.isInitialized()) return@setOnClickListener // 지도 Init 후 프래그먼트 전환 가능
-
             when (mode) {
                 0 -> { // 지도 -> 리스트로 변경
+                    if(!mapFragment.isInitialized()) return@setOnClickListener // 지도 Init 후 프래그먼트 전환 가능
+
                     mode = 1
                     binding.courseModeIv.setImageResource(R.drawable.ic_map)
                     (requireActivity() as MainActivity).supportFragmentManager.beginTransaction()

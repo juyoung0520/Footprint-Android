@@ -288,6 +288,7 @@
 
     <!--태그 검색 결과-->
     <string name="msg_no_search_result">검색 결과가 없어요!</string>
+    <string name="msg_no_course_result">발견된 코스가 없어요!</string>
 
     <!--설정-->
     <string name="title_setting">설정</string>
