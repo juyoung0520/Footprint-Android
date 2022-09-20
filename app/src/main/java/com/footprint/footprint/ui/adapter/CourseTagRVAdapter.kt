@@ -11,7 +11,7 @@ class CourseTagRVAdapter(private val tagList: List<String>): RecyclerView.Adapte
 
     inner class ViewHolder(val binding: ItemCourseTagBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tag: String) {
-            binding.itemCourseTagTv.text = "#$tag"
+            binding.itemCourseTagTv.text = "$tag"
         }
     }
 
