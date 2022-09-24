@@ -1,5 +1,6 @@
 package com.footprint.footprint.ui.main.course
 
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
@@ -69,6 +70,10 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
         })
 
         courseVm.filteredCourseList.observe(requireActivity(), Observer {
+            if(view == null) return@Observer
+            if(it.isNullOrEmpty()) binding.courseListNoTv.visibility = View.VISIBLE
+            else binding.courseListNoTv.visibility = View.GONE
+
             if(::courseRVAdapter.isInitialized)
                 courseRVAdapter.addAll(it as List<CourseDTO>)
         })
@@ -84,4 +89,10 @@ class CourseListFragment(): BaseFragment<FragmentCourseListBinding>(FragmentCour
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
     }
+
+    // 검색 결과가 없어요
+//     fun showNoTv(boolean: Boolean){
+//        if(boolean) binding.courseListNoTv.visibility = View.VISIBLE
+//        binding.courseListNoTv.visibility = View.GONE
+//    }
 }
