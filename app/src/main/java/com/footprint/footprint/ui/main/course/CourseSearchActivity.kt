@@ -46,10 +46,13 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
 
     private lateinit var map: NaverMap
     private val markerList = arrayListOf<Marker>()
+    val icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationOverlay: LocationOverlay
     private lateinit var currentLocation: Location
+
+    private var callApi = true // getCourse 여부 확인
 
     override fun initAfterBinding() {
         initMap()
@@ -153,6 +156,7 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
 
                 if(mode == SEARCH_IN_MY_LOCATION && ::currentLocation.isInitialized){
                     moveCamera(CameraPosition(LatLng(currentLocation), map.cameraPosition.zoom))
+                    callApi = true
                 }
             }
         })
@@ -182,6 +186,8 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         val mapHeight = getDeviceHeight() - binding.courseSearchTopLayout.height
         val panelHeight = (mapHeight*0.4)-convertDpToPx(this, 20)
         slidingPanel.panelHeight = panelHeight.toInt()
+
+        binding.courseSearchView.setHeight(panelHeight.toInt()-convertDpToPx(this, 20)) // 데이터가 없는 경우를 위한 빈 뷰 (minHeight)
     }
 
     override fun onBackPressed() {
@@ -248,7 +254,7 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
     }
 
     private fun initMapEvent() {
-        map.addOnCameraChangeListener { reason, _ ->
+        map.addOnCameraIdleListener {
             val bounds = BoundsModel(
                 north = map.contentBounds.northLatitude,
                 south = map.cameraPosition.target.latitude,
@@ -257,10 +263,13 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             )
             courseVm.setMapBounds(bounds)
 
+            if(callApi){
+                courseVm.getCourses(searchWord)
+                callApi = false
+            }
+
             binding.courseSearchSearchAgainTv.visibility = View.VISIBLE
             binding.courseSearchSearchAgainIv.visibility = View.VISIBLE
-
-            if(reason == CameraUpdate.REASON_DEVELOPER) courseVm.getCourses(searchWord)
         }
     }
 
@@ -278,7 +287,7 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
             val marker = Marker()
             marker.position = LatLng(course.startLat, course.startLong)
             marker.map = map
-            marker.icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
+            marker.icon = icon
 
             marker.setOnClickListener {
                 startDetailActivity(course)
@@ -428,6 +437,8 @@ class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCo
         courseVm.isMarked.observe(this, Observer {
             courseVm.getCourses(searchWord)
         })
+
+
     }
 
     override fun onStop() {
