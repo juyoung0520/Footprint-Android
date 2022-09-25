@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:text="발자국"
+                android:text="   "
                 android:textAppearance="@style/tv_headline_eb_18"
                 app:layout_constraintBottom_toBottomOf="@id/mypage_rep_badge_iv"
                 app:layout_constraintStart_toEndOf="@id/mypage_rep_badge_iv"
