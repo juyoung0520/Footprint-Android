@@ -82,7 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="26dp"
-            android:text="힐링코스"
             app:layout_constraintStart_toEndOf="@+id/course_detail_preview_iv"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="10km, 약 N분"
+            android:text="- km, 약 - 분"
             android:textColor="@color/black_light"
             app:layout_constraintStart_toStartOf="@id/course_detail_course_title_tv"
             app:layout_constraintTop_toBottomOf="@id/course_detail_course_title_tv" />
@@ -104,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:alpha="0.5"
-            android:text="10개"
+            android:text="- 개"
             android:textColor="@color/black_light"
             app:layout_constraintBottom_toBottomOf="@id/course_detail_course_title_tv"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="7dp"
             android:alpha="0.5"
-            android:text="10명"
+            android:text="- 명"
             android:textColor="@color/black_light"
             app:layout_constraintBottom_toBottomOf="@id/course_detail_course_title_tv"
             app:layout_constraintEnd_toStartOf="@id/course_detail_like_count_iv"

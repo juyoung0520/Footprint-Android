@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="13dp"
             android:layout_marginTop="19dp"
-            android:text="14번째 산책"
             android:maxLines="1"
             android:ellipsize="marquee"
             android:layout_marginEnd="10dp"
@@ -46,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:text="10km, 약 n분"
+            android:text="- km, 약  - 분"
             android:textColor="@color/black_light"
             android:alpha="0.5"
             app:layout_constraintStart_toStartOf="@id/item_course_title_tv"
@@ -77,7 +76,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
             style="@style/tv_body_b_11"
-            android:text="10명"
+            android:text="- 명"
             android:alpha="0.5" />
 
         <ImageView
@@ -94,7 +93,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black_light"
             style="@style/tv_body_b_11"
-            android:text="10개"
+            android:text="- 개"
             android:alpha="0.5" />
 
         </LinearLayout>
