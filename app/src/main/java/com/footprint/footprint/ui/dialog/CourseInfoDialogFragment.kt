@@ -8,15 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.footprint.footprint.data.dto.CourseDTO
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.footprint.footprint.databinding.FragmentCourseInfoDialogBinding
 import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
-import com.footprint.footprint.utils.DialogFragmentUtils
 import com.footprint.footprint.utils.DialogFragmentUtils.dialogFragmentResizeWidth
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 
 class CourseInfoDialogFragment : DialogFragment() {
     private lateinit var binding: FragmentCourseInfoDialogBinding
@@ -51,13 +50,20 @@ class CourseInfoDialogFragment : DialogFragment() {
         val argument = arguments?.getString("course")
         val course = Gson().fromJson(argument, CourseInfoModel::class.java)
 
-        binding.courseInfoTitleTv.text = course.title
-        binding.courseInfoDistanceTimeTv.text =
-            String.format("${course.distance}km, 약 ${course.time}분")
-        binding.courseInfoDescriptionTv.text = course.description
+        course.let {
+            binding.courseInfoTitleTv.text = it.title
+            binding.courseInfoDistanceTimeTv.text =
+                String.format("%.2fkm, 약 %d분", it.distance, it.time)
+            binding.courseInfoDescriptionTv.text = it.description
 
-        val tagRVAdapter = CourseTagRVAdapter(course.tags)
-        binding.courseInfoTagRv.adapter = tagRVAdapter
+            val tagRVAdapter = CourseTagRVAdapter(it.tags)
+            binding.courseInfoTagRv.adapter = tagRVAdapter
+
+            Glide.with(this)
+                .load(it.previewImageUrl)
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
+                .into(binding.courseInfoPreviewIv)
+        }
 
         binding.courseInfoCloseIv.setOnClickListener {
             dismiss()

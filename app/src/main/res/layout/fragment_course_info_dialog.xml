@@ -24,22 +24,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.cardview.widget.CardView
+        <ImageView
             android:id="@+id/course_info_preview_iv"
             android:layout_width="71dp"
             android:layout_height="71dp"
             android:layout_marginTop="24dp"
-            android:elevation="0dp"
-            app:cardCornerRadius="8dp"
+            android:elevation="10dp"
+            android:scaleType="centerCrop"
+            android:src="@color/black_20"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@color/black_20" />
-        </androidx.cardview.widget.CardView>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/course_info_title_tv"

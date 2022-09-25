@@ -12,18 +12,13 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.annotation.UiThread
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.FragmentWalkmapBinding
-import com.footprint.footprint.domain.model.CourseInfoModel
-import com.footprint.footprint.domain.model.GetFootprintEntity
-import com.footprint.footprint.domain.model.SaveWalkEntity
-import com.footprint.footprint.domain.model.SaveWalkFootprintEntity
-import com.footprint.footprint.domain.model.SimpleUserModel
+import com.footprint.footprint.domain.model.*
 import com.footprint.footprint.service.BackgroundWalkService
 import com.footprint.footprint.ui.BaseFragment
 import com.footprint.footprint.ui.dialog.ActionDialogFragment
@@ -34,7 +29,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
-import com.naver.maps.map.overlay.*
+import com.naver.maps.map.overlay.LocationOverlay
+import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.PathOverlay
 import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -120,7 +117,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         setObserver()
 
         (activity as WalkActivity).course?.let { course ->
-            CoroutineScope(Dispatchers.Main).apply {
+            viewLifecycleOwner.lifecycleScope.launch {
                 initCourseOverlay(course, naverMap)
             }
         }
@@ -391,7 +388,8 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         bundle.putString("course", Gson().toJson(course))
         courseInfoDialogFragment.arguments = bundle
 
-        courseInfoDialogFragment.setMyCallbackListener(object: CourseInfoDialogFragment.MyCallbackListener {
+        courseInfoDialogFragment.setMyCallbackListener(object :
+            CourseInfoDialogFragment.MyCallbackListener {
             override fun showCourse() {
                 moveMapCamera(course.coords, map)
             }

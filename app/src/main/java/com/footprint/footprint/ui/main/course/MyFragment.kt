@@ -17,6 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
     private var currentItem: Int = -1   //현재 ViewPager 의 currentItem 을 저장하는 변수
+    private lateinit var networkErrSb: Snackbar
 
     private lateinit var myVpAdapter: MyVPAdapter
     private lateinit var backPressedCallback: OnBackPressedCallback
@@ -35,8 +36,10 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
     }
 
     override fun onStop() {
-        super.onStop()
+        if (::networkErrSb.isInitialized && networkErrSb.isShown)
+            networkErrSb.dismiss()
         this.currentItem = binding.myVp.currentItem //화면이 가려지면 현재 탭의 currentItem 을 저장한다.
+        super.onStop()
     }
 
     override fun onDetach() {
@@ -105,14 +108,15 @@ class MyFragment : BaseFragment<FragmentMyBinding>(FragmentMyBinding::inflate) {
         myViewModel.mutableErrorType.observe(viewLifecycleOwner) {
             when (it) {
                 ErrorType.NETWORK -> {
-                    Snackbar.make(
+                    networkErrSb = Snackbar.make(
                         binding.root,
                         getString(R.string.error_network),
                         Snackbar.LENGTH_INDEFINITE
                     ).setAction("재시도") {
                         if (binding.myVp.currentItem == 0) myViewModel.getMarkedCourses()
                         else myViewModel.getRecommendedCourses()
-                    }.show()
+                    }
+                    networkErrSb.show()
                 }
                 ErrorType.UNKNOWN -> {
                     startErrorActivity("MyFragment")
