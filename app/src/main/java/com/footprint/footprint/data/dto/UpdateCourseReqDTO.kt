@@ -4,7 +4,6 @@ data class UpdateCourseReqDTO(
     val courseIdx: Int,
     val courseName: String,
     val courseImg: String = "",
-    val coordinates: List<List<Double>>,
     val hashtags: List<CourseHashtagDTO> = listOf(),
     val address: String,
     val length: Double,
