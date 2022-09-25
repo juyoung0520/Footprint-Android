@@ -47,7 +47,7 @@ object CourseMapper {
 
     fun mapperToWalkDetailCEntity(walkDetailCDTO: WalkDetailCDTO): WalkDetailCEntity {
         walkDetailCDTO.run {
-            return WalkDetailCEntity(walkIdx,  walkTime, distance, WalkMapper.convertToPaths(coordinates), mapperToHashtagEntity(hashtags), photos)
+            return WalkDetailCEntity(walkIdx, walkTime, distance, WalkMapper.convertToPaths(coordinates), mapperToHashtagEntity(hashtags), photos)
         }
     }
 
@@ -61,31 +61,34 @@ object CourseMapper {
         return selfCourseEntities
     }
 
-    fun mapperToCourseInfoModel(courseDTO: CourseDTO, courseInfoDTO: CourseInfoDTO): CourseInfoModel{
+    fun mapperToCourseInfoModel(courseDTO: CourseDTO, courseInfoDTO: CourseInfoDTO): CourseInfoModel {
         return CourseInfoModel(
-            previewImageUrl = courseDTO.courseImg,
-            title = courseDTO.courseName,
-            distance = courseDTO.courseDist, // Double로 바꿔야 함
-            time = courseDTO.courseTime,
-            tags = courseDTO.courseTags,
-            coords = convertToPaths(courseInfoDTO.coordinate),
-            description = courseInfoDTO.courseDisc
+                idx = courseDTO.courseIdx,
+                previewImageUrl = courseDTO.courseImg,
+                title = courseDTO.courseName,
+                distance = courseDTO.courseDist,
+                time = courseDTO.courseTime,
+                courseCount = courseDTO.courseCount,
+                courseLike = courseDTO.courseLike,
+                tags = courseDTO.courseTags,
+                coords = convertToPaths(courseInfoDTO.coordinate),
+                description = courseInfoDTO.courseDisc
         )
     }
 
     fun mapperToUpdateCourseReqDTO(updateCourseReqEntity: UpdateCourseReqEntity): UpdateCourseReqDTO {
         return updateCourseReqEntity.run {
             UpdateCourseReqDTO(
-                courseIdx,
-                courseName,
-                courseImg,
-                WalkMapper.convertToCoordinates(coordinates as MutableList<MutableList<LatLng>>),
-                mapperToHashtagDTO(hashtags),
-                address,
-                length,
-                courseTime,
-                walkIdx,
-                description
+                    courseIdx,
+                    courseName,
+                    courseImg,
+                    WalkMapper.convertToCoordinates(coordinates as MutableList<MutableList<LatLng>>),
+                    mapperToHashtagDTO(hashtags),
+                    address,
+                    length,
+                    courseTime,
+                    walkIdx,
+                    description
             )
         }
     }

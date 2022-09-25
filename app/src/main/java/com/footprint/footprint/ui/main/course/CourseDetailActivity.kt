@@ -2,10 +2,11 @@ package com.footprint.footprint.ui.main.course
 
 import android.content.Intent
 import android.graphics.PointF
-import android.os.Bundle
+import android.location.Location
 import android.view.Gravity
+import android.view.View
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.navArgs
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,31 +19,25 @@ import com.footprint.footprint.domain.model.CourseInfoModel
 import com.footprint.footprint.domain.model.SimpleUserModel
 import com.footprint.footprint.ui.BaseActivity
 import com.footprint.footprint.ui.adapter.CourseTagRVAdapter
-import com.footprint.footprint.ui.dialog.ActionDialogFragment
 import com.footprint.footprint.ui.dialog.CourseWarningDialogFragment
-import com.footprint.footprint.ui.dialog.MsgDialogFragmentArgs
 import com.footprint.footprint.ui.walk.WalkActivity
-import com.footprint.footprint.utils.*
+import com.footprint.footprint.utils.ErrorType
+import com.footprint.footprint.utils.getMarker
+import com.footprint.footprint.utils.getPath
+import com.footprint.footprint.utils.moveMapCameraWithPadding
 import com.footprint.footprint.viewmodel.CourseDetailViewModel
-import com.footprint.footprint.viewmodel.CourseViewModel
-import com.google.android.gms.common.util.MapUtils
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.MapFragment
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.NaverMapOptions
-import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.*
 import com.naver.maps.map.overlay.OverlayImage
-import com.naver.maps.map.overlay.PathOverlay
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.naver.maps.map.util.FusedLocationSource
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate), OnMapReadyCallback {
+class CourseDetailActivity :
+    BaseActivity<ActivityCourseDetailBinding>(ActivityCourseDetailBinding::inflate),
+    OnMapReadyCallback {
     private lateinit var networkErrSb: Snackbar
 
     private val args: CourseDetailActivityArgs by navArgs()
@@ -51,45 +46,157 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
     private lateinit var courseInfoModel: CourseInfoModel
     private val courseDetailVm: CourseDetailViewModel by viewModel()
 
+    private lateinit var locationSource: FusedLocationSource
+    private var currentLocation: Location? = null
+    private lateinit var startLocation: Location
+    private lateinit var naverMap: NaverMap
+
     override fun initAfterBinding() {
-        courseDTO = if(intent.hasExtra("course"))
+        locationSource =
+            FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+
+        courseDTO = if (intent.hasExtra("course"))
             Gson().fromJson(intent.getStringExtra("course"), CourseDTO::class.java)
         else
             Gson().fromJson(args.course, CourseDTO::class.java)
 
-        courseDetailVm.getCourseInfo(courseDTO.courseIdx.toInt())
+        bindCourseDTO()
 
         observe()
-    }
 
-    private fun setBinding() {
+        courseDetailVm.getCourseInfo(courseDTO.courseIdx)
+
         binding.courseDetailBackIv.setOnClickListener {
             onBackPressed()
         }
+    }
 
-        val tagRVAdapter = CourseTagRVAdapter(courseInfoModel.tags)
-        binding.courseDetailTagRv.adapter = tagRVAdapter
+    private fun bindCourseDTO() {
+        startLocation = Location("start").apply {
+            latitude = courseDTO.startLat
+            longitude = courseDTO.startLong
+        }
 
         // 찜하기 버튼 관련
         binding.courseDetailLikeIv.isSelected = courseDTO.userCourseMark
         binding.courseDetailLikeIv.setOnClickListener {
-           courseDetailVm.markCourse(courseDTO.courseIdx.toInt())
+            courseDetailVm.markCourse(courseDTO.courseIdx)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (locationSource.onRequestPermissionsResult(
+                requestCode, permissions,
+                grantResults
+            )
+        ) {
+            if (!locationSource.isActivated) { // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+            }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun observe() {
+        courseDetailVm.mutableErrorType.observe(this, Observer {
+            when (it) {
+                ErrorType.NETWORK -> {
+                    networkErrSb = Snackbar.make(
+                        binding.root,
+                        getString(R.string.error_network),
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+
+                    when (courseDetailVm.getErrorType()) {
+                        "getCourseInfo" -> networkErrSb.setAction(getString(R.string.action_retry)) {
+                            courseDetailVm.getCourseInfo(
+                                courseDTO.courseIdx.toInt()
+                            )
+                        }
+                        "markCourse" -> networkErrSb.setAction(getString(R.string.action_retry)) {
+                            courseDetailVm.markCourse(
+                                courseDTO.courseIdx.toInt()
+                            )
+                        }
+                    }
+
+                    networkErrSb.show()
+                }
+                else -> {
+                    startErrorActivity("CourseSearchActivity")
+                }
+            }
+        })
+
+        courseDetailVm.courseInfo.observe(this, Observer {
+            binding.courseDetailLoadingPb.visibility = View.GONE
+            courseInfoModel = CourseMapper.mapperToCourseInfoModel(courseDTO, it)
+
+            initCourseMap()
+            bindCourseInfo()
+        })
+
+        courseDetailVm.isMarked.observe(this, Observer {
+            binding.courseDetailLikeIv.isSelected = it ?: false
+        })
+
+        courseDetailVm.user.observe(this, Observer {
+            starWalkActivity(it)
+        })
+    }
+
+    private fun bindCourseInfo() {
+        courseInfoModel.also {
+            binding.courseDetailCourseTitleTv.text = it.title
+            binding.courseDetailDescriptionTv.text = it.description
+            binding.courseDetailDistanceTimeTv.text =
+                String.format("%.2fkm 약 %d분", it.distance, it.time)
+            binding.courseDetailParticipantCountTv.text = String.format("%d명", it.courseCount)
+            binding.courseDetailLikeCountTv.text = String.format("%d개", it.courseLike)
+
+            val tagRVAdapter = CourseTagRVAdapter(it.tags)
+            binding.courseDetailTagRv.adapter = tagRVAdapter
+
+            Glide.with(this)
+                .load(it.previewImageUrl)
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
+                .into(binding.courseDetailPreviewIv)
         }
 
         binding.courseDetailWalkStartBtn.setOnClickListener {
-            val courseWarningDialogFragment = CourseWarningDialogFragment()
+            if (currentLocation == null) {
+                binding.courseDetailLoadingPb.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
 
-            courseWarningDialogFragment.setMyCallbackListener(object : CourseWarningDialogFragment.MyCallbackListener {
-                override fun goBack() {
-                    courseWarningDialogFragment.dismiss()
-                }
-
-                override fun walk() {
-                    courseDetailVm.getUser()
-                }
-            })
-            courseWarningDialogFragment.show(this.supportFragmentManager, null)
+            if (currentLocation!!.distanceTo(startLocation) >= 5000f) {
+                showCourseWarningDialog()
+            } else {
+                courseDetailVm.getUser()
+            }
         }
+
+    }
+
+    private fun showCourseWarningDialog() {
+        val courseWarningDialogFragment = CourseWarningDialogFragment()
+
+        courseWarningDialogFragment.setMyCallbackListener(object :
+            CourseWarningDialogFragment.MyCallbackListener {
+            override fun goBack() {
+                courseWarningDialogFragment.dismiss()
+            }
+
+            override fun walk() {
+                courseDetailVm.getUser()
+            }
+        })
+        courseWarningDialogFragment.show(this.supportFragmentManager, null)
     }
 
     private fun starWalkActivity(userModel: SimpleUserModel) {
@@ -116,7 +223,19 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap.apply {
+            locationSource = this@CourseDetailActivity.locationSource
+            locationTrackingMode = LocationTrackingMode.Follow
+        }
+
+        naverMap.addOnLocationChangeListener { location ->
+            binding.courseDetailLoadingPb.visibility = View.GONE
+            currentLocation = location
+            // LogUtils.d("location", currentLocation.toString())
+        }
+
         naverMap.uiSettings.apply {
+            isLocationButtonEnabled = false
             isCompassEnabled = false
             isZoomControlEnabled = false
             isScaleBarEnabled = false
@@ -125,15 +244,17 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
         }
 
         // 오버레이 생성
-        CoroutineScope(Dispatchers.Main).launch {
-            initOverlay(naverMap)
+        lifecycleScope.launch {
+            initOverlay()
         }
     }
 
-    private fun initOverlay(naverMap: NaverMap) {
-        courseInfoModel.coords.forEach {
+    private fun initOverlay() {
+        for (c in courseInfoModel.coords) {
+            if (c.size < 2) continue
+
             getPath(this@CourseDetailActivity).apply {
-                coords = it
+                coords = c
                 map = naverMap
             }
         }
@@ -152,53 +273,11 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
         )
         endMarker.map = naverMap
 
-        moveMapCameraWithPadding(courseInfoModel.coords as MutableList<MutableList<LatLng>>, naverMap, 100)
-    }
-
-    private fun observe(){
-        courseDetailVm.mutableErrorType.observe(this, Observer {
-            when(it){
-                ErrorType.NETWORK -> {
-                    networkErrSb = Snackbar.make(binding.root, getString(R.string.error_network), Snackbar.LENGTH_INDEFINITE)
-
-                    when(courseDetailVm.getErrorType()){
-                        "getCourseInfo" -> networkErrSb.setAction(getString(R.string.action_retry)){ courseDetailVm.getCourseInfo(courseDTO.courseIdx.toInt()) }
-                        "markCourse" -> networkErrSb.setAction(getString(R.string.action_retry)){ courseDetailVm.markCourse(courseDTO.courseIdx.toInt()) }
-                    }
-
-                    networkErrSb.show()
-                }
-                else -> {
-                    startErrorActivity("CourseSearchActivity")
-                }
-            }
-        })
-
-        courseDetailVm.courseInfo.observe(this, Observer {
-            courseInfoModel = CourseMapper.mapperToCourseInfoModel(courseDTO, it)
-
-            initCourseMap()
-            bind()
-            setBinding()
-        })
-
-        courseDetailVm.isMarked.observe(this, Observer{
-            binding.courseDetailLikeIv.isSelected = it ?: false
-        })
-
-        courseDetailVm.user.observe(this, Observer {
-            starWalkActivity(it)
-        })
-    }
-
-    private fun bind(){
-        binding.courseDetailCourseTitleTv.text = courseInfoModel.title
-        binding.courseDetailDescriptionTv.text = courseInfoModel.description
-        Glide.with(this)
-            .load(courseInfoModel.previewImageUrl)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
-            .into(binding.courseDetailPreviewIv)
-
+        moveMapCameraWithPadding(
+            courseInfoModel.coords as MutableList<MutableList<LatLng>>,
+            naverMap,
+            100
+        )
     }
 
     override fun onStop() {
@@ -206,5 +285,9 @@ class CourseDetailActivity : BaseActivity<ActivityCourseDetailBinding>(ActivityC
 
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 30000
     }
 }
