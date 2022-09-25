@@ -35,7 +35,7 @@ object CourseMapper {
 
     fun mapperToGetCourseByCourseNameEntity(courseName: String, getCourseByCourseNameDTO: GetCourseByCourseNameDTO): GetCourseByCourseNameEntity {
         return getCourseByCourseNameDTO.run {
-            GetCourseByCourseNameEntity(courseName, address, mapperToHashtagEntity(allHashtags), WalkMapper.convertToPaths(coordinates), courseIdx, courseImg, courseTime, description, distance, mapperToHashtagEntity(selectedHashtags), walkIdx)
+            GetCourseByCourseNameEntity(courseName, address, mapperToHashtagEntity(allHashtags), courseIdx, courseImg, courseTime, description, distance, mapperToHashtagEntity(selectedHashtags), walkIdx)
         }
     }
 
@@ -82,7 +82,6 @@ object CourseMapper {
                     courseIdx,
                     courseName,
                     courseImg,
-                    WalkMapper.convertToCoordinates(coordinates as MutableList<MutableList<LatLng>>),
                     mapperToHashtagDTO(hashtags),
                     address,
                     length,

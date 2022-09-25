@@ -347,7 +347,7 @@ class CourseShareActivity : BaseActivity<ActivityCourseShareBinding>(ActivityCou
             binding.courseShareLoadingPb.visibility = View.INVISIBLE
 
             updateCourseReqEntity = it.run {
-                 UpdateCourseReqEntity(courseIdx, courseName, courseImg, coordinates, allHashtags, address, distance, courseTime, walkIdx, description)
+                 UpdateCourseReqEntity(courseIdx, courseName, courseImg, allHashtags, address, distance, courseTime, walkIdx, description)
             }
 
             if (updateCourseReqEntity.courseImg.isNotBlank())
