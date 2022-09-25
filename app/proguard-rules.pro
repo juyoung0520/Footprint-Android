@@ -23,7 +23,9 @@
 -keep class com.kakao.sdk.**.model.* { <fields>; }
 -keep class * extends com.google.gson.TypeAdapter
 -keep class com.footprint.footprint.data.dto.** { *; }
+-keep class com.footprint.footprint.domain.model.** { *; }
 -keep class com.footprint.footprint.data.remote.** { *; }
+-keep class com.footprint.footprint.ui.main.course.model.** { *; }
 
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
