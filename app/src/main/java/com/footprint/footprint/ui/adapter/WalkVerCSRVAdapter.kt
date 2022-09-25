@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.footprint.footprint.databinding.ItemCsTypeABinding
@@ -47,7 +48,7 @@ class WalkVerCSRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     titleTv.text = "$position 번째 산책"
                     timeTv.text = items[position].data!!.walkTime
 
-                    nextIv.setOnClickListener {
+                    cardView.setOnClickListener {
                         myClickListener.click(position)
                     }
                 }
@@ -77,10 +78,10 @@ class WalkVerCSRVAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     inner class ViewHolderTypeB(itemView: ItemCsTypeBBinding): RecyclerView.ViewHolder(itemView.root) {
+        val cardView: CardView = itemView.root
         val rv: RecyclerView = itemView.itemWalkCsRv
         val pathIv: ImageView = itemView.itemWalkCsThumbnailIv
         val titleTv: TextView = itemView.itemWalkCsTitleTv
         val timeTv: TextView = itemView.itemWalkCsWalkTimeTv
-        val nextIv: ImageView = itemView.itemWalkCsNextIv
     }
 }

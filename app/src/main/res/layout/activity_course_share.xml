@@ -55,14 +55,16 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/course_share_nsv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:clipToPadding="false"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/course_share_top_layout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/course_share_nsv_cl"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -299,10 +301,10 @@
                 android:gravity="top"
                 android:hint="@string/msg_input_course_desc"
                 android:inputType="textMultiLine"
+                android:paddingBottom="18dp"
                 android:scrollbars="vertical"
                 android:textAppearance="@style/tv_subtitle_b_16"
                 android:textColorHint="@color/white_dark"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/course_share_course_desc_tv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

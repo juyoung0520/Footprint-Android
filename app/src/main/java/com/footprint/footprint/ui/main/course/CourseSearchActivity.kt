@@ -30,7 +30,6 @@ import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
-import okhttp3.internal.notify
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CourseSearchActivity: BaseActivity<ActivityCourseSearchBinding>(ActivityCourseSearchBinding::inflate), OnMapReadyCallback{

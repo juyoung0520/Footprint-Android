@@ -105,4 +105,9 @@ class CourseListRVAdapter(val context: Context): RecyclerView.Adapter<CourseList
         notifyItemChanged(idx)
     }
 
+    fun deleteCourse(courseIdx: Int) {
+        val idx: Int = courseList.indexOf(courseList.find { it.courseIdx==courseIdx })
+        this.courseList.removeAt(idx)
+        notifyItemRemoved(idx)
+    }
 }

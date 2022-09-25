@@ -28,6 +28,7 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
     private lateinit var networkErrSb: Snackbar
 
     override fun initAfterBinding() {
+        initRVAdapter()
         initBottomSheetDialogFragment()
         initActionFrag()
         setMyEventListener()
@@ -146,7 +147,9 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
     }
 
     override fun observer(courses: List<CourseDTO>) {
-        initRVAdapter()
+        if (!::courseRVAdapter.isInitialized)
+            initRVAdapter()
+
         courseRVAdapter.addAll(courses as ArrayList<CourseDTO>)
     }
 }

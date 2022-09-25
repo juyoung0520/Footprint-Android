@@ -104,6 +104,7 @@
             app:rsb_minThumbOffsetHorizontal="-6dp"
             app:rsb_progress_default_color="@color/white_dark"
             app:rsb_sidePadding="10dp"
+            app:rsb_touchRadius="0dp"
             app:rsb_trackColor="@color/white_dark"
             app:rsb_trackRoundedCaps="true"
             app:rsb_trackSelectedColor="@color/primary"
