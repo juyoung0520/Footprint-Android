@@ -281,10 +281,9 @@ class CourseDetailActivity :
     }
 
     override fun onStop() {
-        super.onStop()
-
         if (::networkErrSb.isInitialized && networkErrSb.isShown)
             networkErrSb.dismiss()
+        super.onStop()
     }
 
     companion object {
