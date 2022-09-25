@@ -147,6 +147,9 @@ class RecommendedCourseFragment : BaseFragment<FragmentRecommendedCourseBinding>
     }
 
     override fun observer(courses: List<CourseDTO>) {
+        if (!::courseRVAdapter.isInitialized)
+            initRVAdapter()
+
         courseRVAdapter.addAll(courses as ArrayList<CourseDTO>)
     }
 }
