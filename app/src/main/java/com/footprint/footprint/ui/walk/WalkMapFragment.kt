@@ -55,6 +55,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
     private var currentTime: Int = 0
     private var firstLocationCome = false
     private var isFootprint = false
+    private var isShowCourse = false
 
     private val saveWalkFootprints: ArrayList<SaveWalkFootprintEntity> =
         arrayListOf() //지금까지 사용자가 기록한 총 데이터
@@ -166,7 +167,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
 
         BackgroundWalkService.paths.observe(viewLifecycleOwner, Observer { paths ->
             this.paths = paths
-            //LogUtils.d("$TAG/WALKMAP", paths.toString())
+//            LogUtils.d("WALKMAP", paths.toString())
 
             if (paths.isNotEmpty() && paths.last().size >= 2) {
                 currentPathOverlay.coords = paths.last()
@@ -180,7 +181,7 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         })
 
         BackgroundWalkService.currentLocation.observe(viewLifecycleOwner, Observer { location ->
-            if (location != null) {
+            if (location != null && !isShowCourse) {
                 if (!firstLocationCome) {
                     firstLocationCome = true
 
@@ -272,9 +273,19 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
             }
 
             binding.walkmapShowCourseBtn.setOnClickListener {
-                moveMapCamera(course.coords, map)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    showCourseDelay(course)
+                }
             }
         }
+    }
+
+    private suspend fun showCourseDelay(course: CourseInfoModel) {
+        isShowCourse = true
+        locationOverlay.isVisible = false
+        moveMapCamera(course.coords, map)
+        delay(5000)
+        isShowCourse = false
     }
 
     private fun setWalkState(isWalking: Boolean) {
@@ -391,7 +402,9 @@ class WalkMapFragment : BaseFragment<FragmentWalkmapBinding>(FragmentWalkmapBind
         courseInfoDialogFragment.setMyCallbackListener(object :
             CourseInfoDialogFragment.MyCallbackListener {
             override fun showCourse() {
-                moveMapCamera(course.coords, map)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    showCourseDelay(course)
+                }
             }
         })
         courseInfoDialogFragment.show(requireActivity().supportFragmentManager, null)
