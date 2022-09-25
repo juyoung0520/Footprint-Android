@@ -48,7 +48,6 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
     private fun setClickEvent(){
         // 코스 검색으로 이동
         binding.courseSearchIv.setOnClickListener {
-            if(!mapFragment.isInitialized()) return@setOnClickListener
             startSearchActivity()
         }
 
@@ -73,8 +72,8 @@ class CourseFragment() : BaseFragment<FragmentCourseBinding>(FragmentCourseBindi
         val searchWord = binding.courseSearchBarEt.text
         val cameraPosition: CameraPosition? = (mapFragment as CourseMapFragment).getCameraPosition()
 
-        // Validation (1) 지도 초기화 (2) 검색어 입력 (3) 카메라 위치
-        if(!mapFragment.isInitialized() || searchWord.isEmpty() || cameraPosition == null) return
+        // Validation 검색어 입력 & 카메라 위치
+        if(searchWord.isEmpty() || cameraPosition == null) return
 
         val intent = Intent(requireContext(), CourseSearchActivity::class.java).apply {
             putExtra("searchWord", searchWord.toString())

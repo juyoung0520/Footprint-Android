@@ -15,11 +15,9 @@ import com.footprint.footprint.data.dto.CourseDTO
 import com.footprint.footprint.databinding.FragmentCourseMapBinding
 import com.footprint.footprint.domain.model.BoundsModel
 import com.footprint.footprint.ui.BaseFragment
-import com.footprint.footprint.utils.ErrorType
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.viewmodel.CourseViewModel
 import com.google.android.gms.location.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
@@ -37,6 +35,7 @@ class CourseMapFragment() :
 
     private lateinit var map: NaverMap
     private val markerList = arrayListOf<Marker>()
+    val icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
     private var isCameraInitialized = false // 카메라 현위치로 이동했는지 확인하는 변수
 
     private val courseVm: CourseViewModel by sharedViewModel()
@@ -237,7 +236,7 @@ class CourseMapFragment() :
             val marker = Marker()
             marker.position = LatLng(course.startLat, course.startLong)
             marker.map = map
-            marker.icon = OverlayImage.fromResource(R.drawable.ic_location_pin_start)
+            marker.icon = icon
 
             // 코스 상세보기로 이동
             marker.setOnClickListener {
