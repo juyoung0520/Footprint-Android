@@ -23,7 +23,7 @@ android {
         applicationId "com.footprint.footprint"
         minSdk 26
         targetSdk 31
-        versionCode 10
+        versionCode 11
         versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
