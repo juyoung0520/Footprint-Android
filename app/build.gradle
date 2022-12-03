@@ -164,7 +164,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //GlideToVectorYou
-    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+    implementation 'com.github.2coffees1team:GlideToVectorYou:v2.0.0'
 
     //그래프
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
@@ -195,4 +195,6 @@ dependencies {
 
     //Seekbar
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 }
