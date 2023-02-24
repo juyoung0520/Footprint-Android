@@ -18,7 +18,7 @@ class XAccessTokenInterceptor : Interceptor {
         val builder: Request.Builder = chain.request().newBuilder()
 
         val jwtToken: String? = getJwt()
-        // LogUtils.d("jwt", jwtToken!!)
+        LogUtils.d("jwt", jwtToken!!)
 
         builder.addHeader("isEncrypted", "yes")
         jwtToken?.let {
@@ -27,9 +27,9 @@ class XAccessTokenInterceptor : Interceptor {
 
         val response = chain.proceed(builder.build())
         val responseJson = response.extractResponseJson()
-        d("responseJson", responseJson.toString())
+        // d("responseJson", responseJson.toString())
 
-        if (responseJson["isSuccess"].toString().toBoolean()) {
+        if (responseJson["isSuccess"].toString().toBoolean() && responseJson.has("result")) {
             val decrypt = AES128(BuildConfig.encrypt_key).decrypt(responseJson["result"].toString())
             responseJson.put("result", decrypt)
             LogUtils.d("responseJson-decrypt", responseJson.toString())
