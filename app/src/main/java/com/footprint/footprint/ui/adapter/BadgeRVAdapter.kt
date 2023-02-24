@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.footprint.footprint.R
 import com.footprint.footprint.databinding.ItemBadgeBinding
 import com.footprint.footprint.domain.model.Badge
+import com.footprint.footprint.domain.model.RepresentativeBadge
 import com.footprint.footprint.utils.loadSvg
 
-class BadgeRVAdapter(private var representativeBadge: Badge, private val size: Int) :
+class BadgeRVAdapter(private var representativeBadge: RepresentativeBadge, private val size: Int) :
     RecyclerView.Adapter<BadgeRVAdapter.BadgeViewHolder>() {
 
     interface MyItemClickListener {
@@ -57,7 +58,7 @@ class BadgeRVAdapter(private var representativeBadge: Badge, private val size: I
                 visibility = View.VISIBLE
             }
 
-            if (representativeBadge.badgeIdx==badge.badgeIdx) //대표 뱃지는 뱃지 클릭 리스너 비활성화
+            if (representativeBadge.repBadgeInfo.badgeIdx==badge.badgeIdx) //대표 뱃지는 뱃지 클릭 리스너 비활성화
                 holder.root.isEnabled = false
             else {
                 holder.root.isEnabled = true    //뱃지 클릭 리스너 활성화
@@ -68,7 +69,7 @@ class BadgeRVAdapter(private var representativeBadge: Badge, private val size: I
         }
 
         //대표뱃지에는 대표뱃지 뷰를 보여주고, 그 외 뱃지는 보여주지 않는다.
-        if (representativeBadge.badgeIdx == badge?.badgeIdx)
+        if (representativeBadge.repBadgeInfo.badgeIdx == badge?.badgeIdx)
             holder.representativeBadge.visibility = View.VISIBLE
         else
             holder.representativeBadge.visibility = View.GONE
@@ -84,7 +85,7 @@ class BadgeRVAdapter(private var representativeBadge: Badge, private val size: I
         this.myItemClickListener = myItemClickListener
     }
 
-    fun changeRepresentativeBadge(representativeBadge: Badge) {
+    fun changeRepresentativeBadge(representativeBadge: RepresentativeBadge) {
         this.representativeBadge = representativeBadge
         notifyDataSetChanged()
     }

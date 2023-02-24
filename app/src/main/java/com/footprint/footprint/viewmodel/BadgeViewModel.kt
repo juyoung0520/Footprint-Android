@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.domain.model.BadgeInfo
+import com.footprint.footprint.domain.model.RepresentativeBadge
 import com.footprint.footprint.domain.usecase.ChangeRepresentativeBadgeUseCase
 import com.footprint.footprint.domain.usecase.GetBadgesUseCase
 import com.footprint.footprint.utils.ErrorType
@@ -17,8 +18,8 @@ class BadgeViewModel(private val getBadgesUseCase: GetBadgesUseCase, private val
     private val _badges: MutableLiveData<BadgeInfo> = MutableLiveData()
     val badges: LiveData<BadgeInfo> get() = _badges
 
-    private val _representativeBadge: MutableLiveData<Badge> = MutableLiveData()
-    val representativeBadge: LiveData<Badge> get() = _representativeBadge
+    private val _representativeBadge: MutableLiveData<RepresentativeBadge> = MutableLiveData()
+    val representativeBadge: LiveData<RepresentativeBadge> get() = _representativeBadge
 
     fun getBadges() {
         viewModelScope.launch {

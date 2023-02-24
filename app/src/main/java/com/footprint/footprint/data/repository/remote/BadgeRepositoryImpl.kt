@@ -5,6 +5,7 @@ import com.footprint.footprint.data.dto.MonthBadgeInfoDTO
 import com.footprint.footprint.data.dto.Result
 import com.footprint.footprint.domain.model.Badge
 import com.footprint.footprint.domain.model.BadgeInfo
+import com.footprint.footprint.domain.model.RepresentativeBadge
 import com.footprint.footprint.domain.repository.BadgeRepository
 import com.footprint.footprint.utils.LogUtils
 import com.footprint.footprint.utils.NetworkUtils
@@ -23,11 +24,11 @@ class BadgeRepositoryImpl(private val dataSource: BadgeRemoteDataSource): BadgeR
         }
     }
 
-    override suspend fun changeRepresentativeBadge(badgeIdx: Int): Result<Badge> {
+    override suspend fun changeRepresentativeBadge(badgeIdx: Int): Result<RepresentativeBadge> {
         return when(val response = dataSource.changeRepresentativeBadge(badgeIdx)) {
             is Result.Success -> {
                 if (response.value.isSuccess)
-                    Result.Success(NetworkUtils.decrypt(response.value.result, Badge::class.java))
+                    Result.Success(NetworkUtils.decrypt(response.value.result, RepresentativeBadge::class.java))
                 else
                     Result.GenericError(response.value.code, response.value.message)
             }
